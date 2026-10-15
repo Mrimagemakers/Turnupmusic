@@ -192,6 +192,7 @@ dialog h2{margin:0 0 4px;font:700 20px var(--f-display)}
 .xp-bottom .hint{margin:0;color:rgba(255,255,255,.7)}
 .xp-bottom .hint:empty{display:none}
 .chipbtn.xr{border-color:rgba(255,255,255,.35)}
+.chipbtn.dim{opacity:.55}
 .chipbtn:disabled{opacity:.45;cursor:not-allowed}
 .xr-overlay{position:fixed;left:0;right:0;bottom:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:rgba(7,4,3,.6);color:#fff;font-weight:600}
 .xr-overlay p{margin:0;flex:1;min-width:0}
@@ -424,8 +425,8 @@ textarea.field{resize:vertical;font:inherit}
     <div class="btnrow">
       <button class="chipbtn" id="btnSnap" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Snapshot</button>
       <button class="chipbtn" id="btnMood" type="button"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16"/></svg>Change mood</button>
-      <button class="chipbtn xr" id="btnVR" type="button" disabled>Enter VR</button>
-      <button class="chipbtn xr" id="btnAR" type="button" disabled>Place in my room (AR)</button>
+      <button class="chipbtn xr" id="btnVR" type="button">Enter VR</button>
+      <button class="chipbtn xr" id="btnAR" type="button">Place in my room (AR)</button>
     </div>
     <p class="hint" id="xpHint"></p>
     <p class="hint" id="xrSupport"></p>
@@ -2114,10 +2115,14 @@ const Lounge = {
     await Promise.race([loadThreeExtras(), new Promise(r => setTimeout(r, 7000))]);
     if (!this.running) return;
     $("#loungeLoading").hidden = true;
-    if (!this.built){ this.build(); this.loadPeople().catch(() => { this.peopleFailed = true; (this.slots || []).forEach(s => s.p.userData.torso.visible = true); }); }
+    this.checkXR();
+    if (!this.built){
+      try{ this.build(); }
+      catch(e){ console.error(e); $("#loungeLoading").hidden = false; $("#loungeLoading").textContent = "The lounge hit a problem while loading: " + (e.message || e); }
+      if (this.renderer) this.loadPeople().catch(() => { this.peopleFailed = true; (this.slots || []).forEach(s => s.p.userData.torso.visible = true); }); }
+    if (!this.renderer) return;
     this.resize();
     this.renderer.setAnimationLoop((t, frame) => this.frame(t, frame));
-    this.checkXR();
   },
   stop(){
     this.running = false;
@@ -3606,26 +3611,41 @@ const Lounge = {
     if (!this.userLooked) this.pitch = w < h ? -.02 : -.12;
   },
 
+  /* The VR and AR buttons always respond: if headset mode can't start, they say why on screen. */
+  xrSupported: {vr: null, ar: null},
   async checkXR(){
-    const vr = $("#btnVR"), ar = $("#btnAR");
-    vr.disabled = ar.disabled = true;
-    vr.title = ar.title = "";
-    if (!navigator.xr){ vr.title = ar.title = "This browser doesn't support WebXR. Open Turn Up Music in a headset browser (Quest) or Chrome on an AR-capable Android phone."; $("#xrSupport").textContent = "VR and AR need a WebXR browser: a Meta Quest headset, or Chrome on an ARCore Android phone. Opened from a website (https), not a downloaded file."; return; }
-    try{ vr.disabled = !(await navigator.xr.isSessionSupported("immersive-vr")); }catch(e){}
-    try{ ar.disabled = !(await navigator.xr.isSessionSupported("immersive-ar")); }catch(e){}
-    $("#xrSupport").textContent = vr.disabled && ar.disabled ? "No VR headset or AR phone found on this device. The 3D lounge still works here: drag to look around." : "";
+    const vr = $("#btnVR"), ar = $("#btnAR"), msg = $("#xrSupport");
+    vr.disabled = ar.disabled = false;
+    if (!navigator.xr){
+      this.xrSupported = {vr: false, ar: false};
+      msg.textContent = !isSecureContext
+        ? "Headset mode needs this page to be opened from a website (https://…), not a downloaded file. On your Quest, open the Turn Up Music web link in the Meta Quest Browser."
+        : "This browser can't do VR or AR. On a Quest, use the Meta Quest Browser; on Android, use Chrome.";
+      return;
+    }
+    try{ this.xrSupported.vr = await navigator.xr.isSessionSupported("immersive-vr"); }catch(e){ this.xrSupported.vr = false; }
+    try{ this.xrSupported.ar = await navigator.xr.isSessionSupported("immersive-ar"); }catch(e){ this.xrSupported.ar = false; }
+    vr.classList.toggle("dim", !this.xrSupported.vr); ar.classList.toggle("dim", !this.xrSupported.ar);
+    msg.textContent = this.xrSupported.vr ? "Headset ready: tap Enter VR." : this.xrSupported.ar ? "" : "No VR headset or AR phone found on this device. The 3D lounge still works here: drag to look around.";
   },
-
+  xrFail(text){ $("#xrSupport").textContent = text; toast(text, 7000); },
   async enterXR(kind){
-    if (!navigator.xr || this.session) return;
+    if (this.session) return;
+    if (!navigator.xr){ this.checkXR(); this.xrFail($("#xrSupport").textContent); return; }
+    if (!this.renderer){ this.xrFail("The lounge is still loading. Give it a few seconds, then tap again."); return; }
     try{
       const opts = kind === "ar"
         ? {requiredFeatures:["hit-test"], optionalFeatures:["dom-overlay","local-floor"], domOverlay:{root: $("#xrOverlay")}}
-        : {optionalFeatures:["local-floor","bounded-floor"]};
-      const session = await navigator.xr.requestSession(kind === "ar" ? "immersive-ar" : "immersive-vr", opts);
+        : {optionalFeatures:["local-floor","bounded-floor","hand-tracking"]};
+      $("#xrSupport").textContent = kind === "vr" ? "Starting VR… put on your headset." : "Starting AR…";
+      let session;
+      try{ session = await navigator.xr.requestSession(kind === "ar" ? "immersive-ar" : "immersive-vr", opts); }
+      catch(e1){ if (kind === "vr") session = await navigator.xr.requestSession("immersive-vr"); else throw e1; }
       this.session = session; this.mode = kind;
       this.renderer.xr.setReferenceSpaceType(kind === "ar" ? "local" : "local-floor");
-      await this.renderer.xr.setSession(session);
+      try{ await this.renderer.xr.setSession(session); }
+      catch(e2){ this.renderer.xr.setReferenceSpaceType("local"); await this.renderer.xr.setSession(session); }
+      $("#xrSupport").textContent = "";
       session.addEventListener("end", () => this.exitXR());
       session.addEventListener("select", e => this.onXRSelect(e));
       if (kind === "ar"){
@@ -3640,7 +3660,8 @@ const Lounge = {
         toast("Tip: reach for a bottle or glass and squeeze the grip to pick it up. Shake the champagne!", 6000);
       }
     }catch(e){
-      toast(kind === "ar" ? "AR couldn't start on this device." : "VR couldn't start. Put on your headset and try again.", 5000);
+      const why = e && (e.name || e.message) ? ` (${[e.name, e.message].filter(Boolean).join(": ")})` : "";
+      this.xrFail((kind === "ar" ? "AR couldn't start on this device" : "VR couldn't start. In the Meta Quest Browser, allow virtual reality when asked, then tap Enter VR again") + why);
       this.session = null;
     }
   },
