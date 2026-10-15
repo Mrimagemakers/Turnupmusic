@@ -802,7 +802,7 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
   <div class="btnrow"><label class="primary filebtn">Upload music or video<input type="file" id="mediaFile" accept="audio/*,video/*" multiple hidden></label><span class="hint" id="mediaUsage"></span></div>
   <div id="mediaList" class="medialist"></div>
   <p class="hint">Only upload music and videos you own or have permission to share.</p>
-  <div class="btnrow end"><button class="ghost" id="mediaClose" type="button">Close</button></div>
+  <div class="btnrow end"><button class="ghost" id="mediaDlgClose" type="button">Close</button></div>
 </dialog>
 
 <dialog id="linkDlg" class="wide">
@@ -1782,7 +1782,13 @@ $("#xpClose").addEventListener("click", closeStage);
 $("#xpPlay").addEventListener("click", togglePlay);
 $("#btnStage").addEventListener("click", () => openStage("dancers" === S.vizMode || SCENE_MODES.includes(S.vizMode) ? S.vizMode : undefined));
 $("#btnLounge").addEventListener("click", () => openStage("lounge"));
-document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#stage").hidden) closeStage(); });
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape" || $("#stage").hidden || document.querySelector("dialog[open]")) return;   // a window closes itself
+  if (!$("#booth").hidden){ Booth.close(); return; }
+  if (!$("#artist").hidden){ $("#apClose").click(); return; }
+  if (!$("#embedBox").hidden){ Links.close(); return; }
+  closeStage();
+});
 
 // Tap the 2D stage: pop an orb, or burst notes where you tapped
 $("#stageCv").addEventListener("pointerdown", e => {
@@ -2677,12 +2683,16 @@ const Lounge = {
     try{ await document.fonts?.load('italic 700 120px "Chakra Petch"'); }catch(e){}
     await Promise.race([loadThreeExtras(), new Promise(r => setTimeout(r, 7000))]);
     if (!this.running) return;
-    $("#loungeLoading").hidden = true;
     this.checkXR();
     if (!this.built){
+      $("#loungeLoading").textContent = "Building the lounge…"; $("#loungeLoading").hidden = false;
+      await new Promise(r => requestAnimationFrame(() => setTimeout(r, 30)));
+      if (!this.running) return;
       try{ this.build(); }
       catch(e){ console.error(e); $("#loungeLoading").hidden = false; $("#loungeLoading").textContent = "The lounge hit a problem while loading: " + (e.message || e); }
+      if (this.renderer) setTimeout(() => { const idle = window.requestIdleCallback || (f => setTimeout(f, 200)); idle(() => Profile.warm()); }, 6000);
       if (this.renderer) this.loadPeople().catch(() => { this.peopleFailed = true; (this.slots || []).forEach(s => s.p.userData.torso.visible = true); }); }
+    $("#loungeLoading").hidden = true;
     if (!this.renderer) return;
     this.resize();
     this.renderer.setAnimationLoop((t, frame) => this.frame(t, frame));
@@ -3335,7 +3345,7 @@ const Lounge = {
   spotOn(g, from, to, color, intensity, angle = .35){
     const T = THREE, s = new T.SpotLight(color, intensity, 16, angle, .5, 1.6); s.position.set(...from); s.target.position.set(...to); g.add(s, s.target); return s;
   },
-  dressed(list){ return {style: list[0], c1: list[1], c2: list[2] || "#d4a937", c3: list[3] || "#ffffff", seed: Math.floor(Math.random()*9999), finish: list[4] || "satin"}; },
+  dressed(list){ return {style: list[0], c1: list[1], c2: list[2] || "#d4a937", c3: list[3] || "#ffffff", seed: 4242, finish: list[4] || "satin"}; },
 
   /* ================= A late-night jazz café ================= */
   buildJazz(){
@@ -4189,6 +4199,13 @@ const Lounge = {
     this.renderer.shadowMap.needsUpdate = true;
     document.querySelectorAll("#worldSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.w === id));
     if (this.rig){ if (typeof Party !== "undefined" && Party.room){ if (Party.kind === "world") Party.worldChanged(); else this.spawnInParty(); } else this.resetRig(); }
+  },
+  /* switching worlds from the buttons: show a message while a new world is built */
+  chooseWorld(id){
+    if (this.worlds && this.worlds[id]){ this.setWorld(id); return; }
+    const w = this.WORLDS.find(x => x.id === id), el = $("#loungeLoading");
+    el.textContent = `Loading ${w ? w.name : "the world"}…`; el.hidden = false;
+    requestAnimationFrame(() => setTimeout(() => { try{ this.setWorld(id); } finally { el.hidden = true; } }, 30));
   },
   nextWorld(){
     const i = this.WORLDS.findIndex(w => w.id === this.worldId);
@@ -6075,7 +6092,7 @@ $("#btnVR").addEventListener("click", () => Lounge.enterXR("vr"));
 $("#btnAR").addEventListener("click", () => Lounge.enterXR("ar"));
 $("#btnMood").addEventListener("click", () => { if (Lounge.built) Lounge.nextMood(); });
 $("#worldSeg").innerHTML = Lounge.WORLDS.map(w => `<button type="button" data-w="${w.id}" aria-pressed="${w.id === store.get("world", "rooftop")}">${w.name}</button>`).join("");
-$("#worldSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (Lounge.built) Lounge.setWorld(b.dataset.w); else store.set("world", b.dataset.w); document.querySelectorAll("#worldSeg button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+$("#worldSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (Lounge.built) Lounge.chooseWorld(b.dataset.w); else store.set("world", b.dataset.w); document.querySelectorAll("#worldSeg button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
 $("#xrExit").addEventListener("click", () => { try{ Lounge.session?.end(); }catch(e){} });
 
 /* ---------- Artist profile: bio, photos, videos, song details, discography (+ your own links) ---------- */
@@ -6536,7 +6553,8 @@ const Profile = {
     $("#mePhones").value = p.phones ? "1" : ""; $("#meAura").value = p.aura; $("#meHeight").value = Math.round(p.height*100);
     $("#meAvatars").innerHTML = AV_NAMES.map(n => `<button type="button" data-av="${n}" aria-pressed="${n === p.avatar}" aria-label="${n.replace(/_/g, " ")}" style="${avThumbStyle(n)}"></button>`).join("");
     $("#meDlg").showModal();
-    this.startPreview();
+    $("#mePrevHint").textContent = this.pv ? "" : "Loading your avatar…";
+    requestAnimationFrame(() => setTimeout(() => { if ($("#meDlg").open) this.startPreview(); }, 30));
   },
   renderOutfit(){
     const vip = VIP.can("dj"), o = this.draft.outfit = Outfit.clean(this.draft.outfit, true);
@@ -6551,14 +6569,17 @@ const Profile = {
     d.hat = $("#meHat").value; d.eyes = $("#meEyes").value; d.neck = $("#meNeck").value; d.phones = !!$("#mePhones").value; d.aura = $("#meAura").value; d.height = (+$("#meHeight").value)/100;
     return d;
   },
+  /* create the preview's 3D engine ahead of time (it takes a moment on some devices) */
+  warm(){ if (this.pvR || !window.THREE) return; try{ this.pvR = new THREE.WebGLRenderer({canvas: $("#mePrev"), antialias: true, alpha: true}); }catch(e){} },
   async startPreview(){
     const hint = $("#mePrevHint"); hint.textContent = "";
     if (!window.THREE || !THREE.SkeletonUtils || !Lounge.peopleSet || Lounge.peopleSet.mode !== "real"){
       hint.textContent = "Open the VR Lounge first to see your avatar in 3D."; this.drawFlat(); return;
     }
     const T = THREE, cv = $("#mePrev");
+    this.warm();
     if (!this.pv){
-      const r = new T.WebGLRenderer({canvas: cv, antialias: true, alpha: true}); r.outputEncoding = T.sRGBEncoding; r.toneMapping = T.ACESFilmicToneMapping; r.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+      const r = this.pvR; r.outputEncoding = T.sRGBEncoding; r.toneMapping = T.ACESFilmicToneMapping; r.setPixelRatio(Math.min(2, devicePixelRatio || 1));
       const sc = new T.Scene(); sc.environment = Lounge.envTex;
       sc.add(new T.HemisphereLight(0xfff2e0, 0x2a1a10, .9)); const key = new T.DirectionalLight(0xffe2c0, 1.3); key.position.set(1.5, 3, 2.5); sc.add(key);
       const rim = new T.DirectionalLight(0xffa040, .8); rim.position.set(-2, 2, -2); sc.add(rim);
@@ -7433,7 +7454,7 @@ const Media = {
   },
   bindUI(){
     $("#mediaFile").addEventListener("change", e => { this.add([...e.target.files]); e.target.value = ""; });
-    $("#mediaClose").addEventListener("click", () => $("#mediaDlg").close());
+    $("#mediaDlgClose").addEventListener("click", () => $("#mediaDlg").close());
     $("#mediaList").addEventListener("click", e => {
       const b = e.target.closest("button[data-act]"), row = e.target.closest("[data-id]"); if (!b || !row) return;
       const it = this.items.find(x => x.id === row.dataset.id); if (!it) return;
@@ -7816,7 +7837,7 @@ const Outfit = {
   rng(seed){ let s = (seed*9301 + 49297) % 233280 || 1; return () => (s = (s*9301 + 49297) % 233280)/233280; },
   // the print itself, 512 x 512
   async pattern(o){
-    const [c, x] = Tex.canvas(512, 512), r = this.rng(o.seed + 7), {c1, c2, c3} = o;
+    const [c, x] = this.cv(512), r = this.rng(o.seed + 7), {c1, c2, c3} = o;
     const fill = col => { x.fillStyle = col; x.fillRect(0, 0, 512, 512); };
     switch (o.style){
       case "solid": fill(c1); break;
@@ -7850,16 +7871,27 @@ const Outfit = {
   loadImg(src){ return new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); },
   // average face colour, used to keep skin as skin
   skinOf(headImg){
-    const [c, x] = Tex.canvas(64, 64); x.drawImage(headImg, 0, 0, 64, 64);
+    const [c, x] = this.cv(64); x.drawImage(headImg, 0, 0, 64, 64);
     const d = x.getImageData(16, 16, 32, 32).data, v = [];
     for (let i=0;i<d.length;i+=4){ const l = (d[i] + d[i+1] + d[i+2])/3; if (l > 30 && l < 235 && d[i] >= d[i+2]) v.push([d[i], d[i+1], d[i+2]]); }
     if (!v.length) return [180, 130, 100];
     v.sort((a, b) => (a[0] + a[1] + a[2]) - (b[0] + b[1] + b[2]));
     return v[Math.floor(v.length/2)];
   },
-  async texture(bodyImg, headImg, o, key){
+  /* one recolor per frame so the screen never stalls, even when a whole crowd gets dressed */
+  queue: Promise.resolve(),
+  texture(bodyImg, headImg, o, key){
+    if (this.cache.has(key)) return Promise.resolve(this.cache.get(key));
+    if (this.pending.has(key)) return this.pending.get(key);
+    const job = this.queue.then(() => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)))).then(() => this.textureNow(bodyImg, headImg, o, key));
+    this.queue = job.catch(() => {}); this.pending.set(key, job); job.finally(() => this.pending.delete(key));
+    return job;
+  },
+  pending: new Map(),
+  cv(S){ const c = document.createElement("canvas"); c.width = c.height = S; return [c, c.getContext("2d", {willReadFrequently: true})]; },
+  async textureNow(bodyImg, headImg, o, key){
     if (this.cache.has(key)) return this.cache.get(key);
-    const S = 512, [c, x] = Tex.canvas(S, S);
+    const S = 512, [c, x] = this.cv(S);
     x.drawImage(bodyImg, 0, 0, S, S);
     const img = x.getImageData(0, 0, S, S), d = img.data;
     const pat = (await this.pattern(o)).getContext("2d").getImageData(0, 0, S, S).data;
