@@ -2718,7 +2718,8 @@ const Lounge = {
     this.camera.position.set(0, 1.15, 0);
     this.rig = new T.Group(); scene.add(this.rig); this.rig.add(this.camera);   // you: move the rig to walk around
     this.clock = new T.Clock();
-    this.ray = new T.Raycaster();
+    this.ray = new T.Raycaster(); this.ray.camera = this.camera;
+    if (!T.Sprite.prototype.__safeRay){ const sr = T.Sprite.prototype.raycast; T.Sprite.prototype.raycast = function(rc, out){ if (!rc.camera) rc.camera = Lounge.camera; return sr.call(this, rc, out); }; T.Sprite.prototype.__safeRay = true; }
     this.clickables = [];
     this.anim = {};
 
@@ -5386,7 +5387,6 @@ const Lounge = {
   async enterXR(kind){
     if (this.session) return;
     if (!navigator.xr){ this.checkXR(); this.xrFail($("#xrSupport").textContent); return; }
-    if (!this.renderer){ this.xrFail("The lounge is still loading. Give it a few seconds, then tap again."); return; }
     try{
       const opts = kind === "ar"
         ? {requiredFeatures:["hit-test"], optionalFeatures:["dom-overlay","local-floor"], domOverlay:{root: $("#xrOverlay")}}
@@ -5395,12 +5395,20 @@ const Lounge = {
       let session;
       try{ session = await navigator.xr.requestSession(kind === "ar" ? "immersive-ar" : "immersive-vr", opts); }
       catch(e1){ if (kind === "vr") session = await navigator.xr.requestSession("immersive-vr"); else throw e1; }
-      this.session = session; this.mode = kind;
+      this.session = session; this.mode = kind; this.xrStart = performance.now();
+      if (!this.renderer){
+        $("#xrSupport").textContent = "Loading the lounge for VR…";
+        if (!this.running) this.start();
+        for (let i=0; i<240 && !this.renderer && this.session === session; i++) await new Promise(r => setTimeout(r, 250));
+        if (!this.renderer){ try{ session.end(); }catch(e){} throw new Error("The lounge took too long to load"); }
+      }
       this.renderer.xr.setReferenceSpaceType(kind === "ar" ? "local" : "local-floor");
       try{ await this.renderer.xr.setSession(session); }
       catch(e2){ this.renderer.xr.setReferenceSpaceType("local"); await this.renderer.xr.setSession(session); }
       $("#xrSupport").textContent = "";
-      session.addEventListener("end", () => this.exitXR());
+      try{ const bl = session.renderState.baseLayer; if (bl && "fixedFoveation" in bl) bl.fixedFoveation = 1; }catch(e){}
+      session.addEventListener("end", () => { const quick = performance.now() - (this.xrStart || 0) < 4000; this.exitXR();
+        if (quick) this.xrFail("VR closed right after it started. Close other browser tabs, then tap Enter VR again. If it keeps happening, restart the Quest Browser."); });
       session.addEventListener("select", e => this.onXRSelect(e));
       if (kind === "ar"){
         this.resetRig();
@@ -6033,6 +6041,11 @@ const Lounge = {
   },
 
   frame(time, xrFrame){
+    try{ this.frameInner(time, xrFrame); }
+    catch(e){ if (!this.frameErr || performance.now() - this.frameErr > 5000){ this.frameErr = performance.now(); console.error("Lounge frame:", e); }
+      try{ this.renderer.render(this.scene, this.camera); }catch(e2){} }
+  },
+  frameInner(time, xrFrame){
     if (!this.running) return;
     const T = THREE, dt = Math.min(.05, this.clock.getDelta()), t = this.clock.elapsedTime;
     readBands();
