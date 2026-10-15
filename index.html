@@ -385,6 +385,19 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 .svc{display:inline-flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .svc a{font-size:12px;padding:4px 9px;border-radius:99px;background:rgba(255,255,255,.07);color:var(--chrome);text-decoration:none}
 .chatlog .card{display:inline-block;margin-top:2px;padding:3px 8px;border-radius:8px;background:rgba(255,194,26,.12);color:var(--gold);font-weight:600;cursor:pointer;border:0}
+.ofstyles{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+.ofstyles button{position:relative;padding:8px 6px;border-radius:10px;border:1px solid var(--line);font-size:12px;font-weight:600;background:rgba(255,255,255,.04);text-align:center}
+.ofstyles button[aria-pressed=true]{border-color:var(--gold);color:var(--gold)}
+.ofstyles button.locked{opacity:.55}
+.ofstyles button.locked::after{content:"★";position:absolute;top:2px;right:5px;font-size:10px;color:var(--gold)}
+.stylemaker{display:grid;gap:8px;padding:12px;border-radius:14px;background:rgba(255,194,26,.06);border:1px solid rgba(255,194,26,.25)}
+.stylemaker h3{margin:0}
+.vipchip{font-size:10px;padding:2px 6px;border-radius:6px;background:var(--gold);color:#2a1405;letter-spacing:.06em}
+.css3d{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.css3d-screen{pointer-events:auto;background:#000}
+.css3d-screen iframe,.css3d-screen video{width:100%;height:100%;border:0;display:block;background:#000}
+.seg-like{padding:8px 12px;border-radius:10px;border:1px solid var(--line);font-weight:600;font-size:13px;color:var(--muted)}
+.seg-like[aria-pressed=true]{color:var(--gold);border-color:rgba(255,194,26,.5)}
 </style>
 </head>
 <body>
@@ -542,7 +555,7 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
   <div class="xp-bottom">
     <div class="seg" id="xpModes"></div>
     <div class="seg" id="worldSeg" hidden></div>
-    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
+    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
     <div class="emotes" id="emoteBar" hidden><button type="button" data-e="wave">👋 Wave</button><button type="button" data-e="dance">💃 Dance</button><button type="button" data-e="cheer">🙌 Cheer</button><button type="button" data-e="idle">🧍 Chill</button><button type="button" data-r="🔥">🔥</button><button type="button" data-r="❤️">❤️</button><button type="button" data-r="😂">😂</button><button type="button" data-r="🎉">🎉</button><button type="button" id="btnChat">💬 Chat</button><button type="button" id="btnMic">🎤 Mic off</button><button type="button" id="btnDJ">🎧 Be the DJ</button></div>
     <div class="btnrow">
       <button class="chipbtn" id="btnSnap" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Snapshot</button>
@@ -579,6 +592,24 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 
 <div class="toast" id="toast" role="status"></div>
 
+<dialog id="screenDlg" class="wide">
+  <h2>📺 Screens</h2>
+  <p class="hint" id="scrTier"></p>
+  <div class="seg" id="scrList"></div>
+  <div class="btnrow"><button class="ghost" id="scrAdd" type="button">＋ Add a screen in front of me</button><button class="ghost" id="scrRemove" type="button">Remove this screen</button></div>
+  <div class="setgroup">
+    <h3>Show a link</h3>
+    <p class="hint">A YouTube link, a video link (.mp4), a photo link or a web page.</p>
+    <div class="row2"><input class="field" id="scrUrl" placeholder="https://youtu.be/…  or  https://…/video.mp4"><button class="primary" id="scrGo" type="button">Show it</button></div>
+  </div>
+  <div class="setgroup">
+    <h3>Upload</h3>
+    <p class="hint">A video, a photo, or a presentation as a PDF (from PowerPoint, Keynote or Google Slides: File → Download/Export → PDF). Use ◀ ▶ under the screen to change slides.</p>
+    <div class="btnrow"><label class="primary filebtn">Choose a file<input type="file" id="scrFile" accept="video/*,image/*,application/pdf,.pdf,.ppt,.pptx,.key" hidden></label><button class="ghost" id="scrStop" type="button">Stop showing</button></div>
+  </div>
+  <div class="btnrow end"><button class="ghost" id="scrClose" type="button">Close</button></div>
+</dialog>
+
 <dialog id="meDlg" class="wide">
   <h2>My avatar &amp; profile</h2>
   <p class="hint">This is how other guests see you in the lounge.</p>
@@ -600,6 +631,17 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
       <div class="row2">
         <label class="lbl">Neck<select class="field" id="meNeck"></select></label>
         <label class="lbl">Headphones<select class="field" id="mePhones"><option value="">No</option><option value="1">Yes</option></select></label>
+      </div>
+      <h3>Outfit <span class="hint" id="ofTier" style="text-transform:none;letter-spacing:0;font-weight:500"></span></h3>
+      <div class="ofstyles" id="ofStyles"></div>
+      <div class="swatches" id="ofColors"></div>
+      <div class="row2" id="ofCustom"><label class="lbl">Main color<input type="color" class="field colorf" id="ofC1" value="#e53935"></label><label class="lbl">Second color<input type="color" class="field colorf" id="ofC2" value="#111111"></label></div>
+      <div class="row2"><label class="lbl">Finish<select class="field" id="ofFinish"><option value="matte">Matte</option><option value="satin">Satin</option><option value="shiny">Shiny</option></select></label><button class="ghost" id="ofShuffle" type="button">🎲 Surprise me</button></div>
+      <div class="stylemaker">
+        <h3>✨ Style Maker <span class="vipchip">VIP</span></h3>
+        <p class="hint">Describe an outfit and it's designed for you: colors, prints and finish.</p>
+        <div class="row2"><input class="field" id="ofPrompt" maxlength="80" placeholder="shiny gold and black kente print"><button class="primary" id="ofMake" type="button">Make it</button></div>
+        <label class="ghost filebtn tiny">📷 Use a photo as my fabric<input type="file" id="ofFabric" accept="image/*" hidden></label>
       </div>
       <div class="row2">
         <label class="lbl">Glow color<input type="color" class="field colorf" id="meAura" value="#ffc21a"></label>
@@ -1223,7 +1265,8 @@ $("#btnSleep").addEventListener("click", () => {
   const tick = () => { const left = S.sleepAt - Date.now(); if (left <= 0){ clearInterval(sleepTimer); if (S.playing || S.loading) togglePlay(); sleepIdx = 0; $("#sleepTxt").textContent = "Sleep"; $("#btnSleep").classList.remove("on"); return; } $("#sleepTxt").textContent = Math.ceil(left/60000) + " min"; };
   tick(); sleepTimer = setInterval(tick, 15000);
 });
-const VIZ = ["bars","mirror","wave","ring","orbs","notes","dancers","mix","off"];
+const VIZ = ["bars","mirror","wave","ring","orbs","notes","dancers","off"];
+if (S.vizMode === "mix") S.vizMode = "orbs";   // the old "Orbs + notes" background was merged into Orbs
 const VIZ_LABEL = {bars:"Bars", mirror:"Mirror", wave:"Wave", ring:"Ring", orbs:"Orbs", notes:"Notes", dancers:"Dancers", mix:"Orbs+", off:"Off"};
 const VIZ_LONG = {bars:"Bars", mirror:"Mirror", wave:"Wave", ring:"Ring", orbs:"Glowing orbs", notes:"Floating notes", dancers:"Silhouette dancers", mix:"Orbs + notes", off:"Off"};
 $("#btnViz").addEventListener("click", () => setViz(VIZ[(VIZ.indexOf(S.vizMode)+1)%VIZ.length]));
@@ -1448,12 +1491,12 @@ class SceneRenderer {
     for (let i=0;i<count;i++){
       const x = w*(i+.5)/count + Math.sin(t*.3 + i)*w*.01;
       const s = H*(i % 2 ? .92 : 1);
-      this.dancer(x, ground, s, t*2*Math.PI*1.95 + i*1.3, e, i % 3, ink, cA);
+      this.dancer(x, ground, s, t*2*Math.PI*1.95 + i*1.3, e, i % 3, ink, cA, i);
     }
     if (!o.deck) this.crowd(P, ink);
   }
 
-  dancer(x, ground, H, ph, e, variant, ink, rim){
+  dancer(x, ground, H, ph, e, variant, ink, rim, idx = 0){
     const cx = this.cx;
     const bob = Math.abs(Math.sin(ph))*H*.045*(.4 + e);
     const sway = Math.sin(ph*.5)*H*.06*(.35 + e);
@@ -1478,18 +1521,60 @@ class SceneRenderer {
       const kn = [(hp[0] + ft[0])/2 + side*H*.035*(1 + bob/H*12), (hp[1] + ft[1])/2 - bob*.4];
       return [hp, kn, ft];
     };
-    const strokeBody = (color, extra) => {
-      cx.strokeStyle = color; cx.fillStyle = color; cx.lineCap = "round"; cx.lineJoin = "round";
-      cx.lineWidth = H*.075 + extra;
-      for (const limb of [L, R, leg(-1), leg(1)]){ cx.beginPath(); cx.moveTo(...limb[0]); cx.lineTo(...limb[1]); cx.lineTo(...limb[2]); cx.stroke(); }
-      cx.lineWidth = H*.13 + extra; cx.beginPath(); cx.moveTo(...neck); cx.lineTo(...hip); cx.stroke();
-      cx.beginPath(); cx.arc(head[0], head[1], H*.072 + extra/2, 0, Math.PI*2); cx.fill();
+    this.figure(L, R, [leg(-1), leg(1)], neck, hip, head, H, ph, variant, idx, ink, rim, e);
+  }
+
+  // A human silhouette: tapered limbs, shaped torso, hands, shoes, hair. Rim-lit in the accent colour.
+  figure(L, R, legs, neck, hip, head, H, ph, variant, idx, ink, rim, e){
+    const cx = this.cx, fem = idx % 2 === 1, hair = idx % 5;
+    const seg = (a, b, ra, rb) => {
+      const dx = b[0] - a[0], dy = b[1] - a[1], d = Math.hypot(dx, dy) || 1, nx = -dy/d, ny = dx/d;
+      cx.beginPath(); cx.moveTo(a[0] + nx*ra, a[1] + ny*ra); cx.lineTo(b[0] + nx*rb, b[1] + ny*rb); cx.lineTo(b[0] - nx*rb, b[1] - ny*rb); cx.lineTo(a[0] - nx*ra, a[1] - ny*ra); cx.closePath(); cx.fill();
+      cx.beginPath(); cx.arc(a[0], a[1], ra, 0, Math.PI*2); cx.arc(b[0], b[1], rb, 0, Math.PI*2); cx.fill();
     };
-    cx.save();
-    cx.shadowColor = rim; cx.shadowBlur = 18 + e*24;
-    strokeBody(hexA(rim, .55), 3);
-    cx.restore();
-    strokeBody(ink, 0);
+    const draw = (color, x0) => {
+      cx.fillStyle = color;
+      const k = H, w = fem ? .86 : 1;
+      // legs: thigh, calf, shoe
+      for (const [hp, kn, ft] of legs){
+        seg(hp, kn, k*.06*w + x0, k*.04*w + x0); seg(kn, [ft[0], ft[1] - k*.035], k*.04*w + x0, k*.024 + x0);
+        cx.beginPath(); cx.ellipse(ft[0] + (ft[0] > hip[0] ? 1 : -1)*k*.018, ft[1] - k*.02, k*(fem ? .038 : .048) + x0, k*.02 + x0, 0, 0, Math.PI*2); cx.fill();
+      }
+      // torso: shoulders, waist, hips (and a flared dress for some)
+      const sw = k*(fem ? .085 : .108) + x0, ww = k*(fem ? .052 : .072) + x0, hw = k*(fem ? .08 : .07) + x0;
+      const sy = neck[1] + k*.012, wy = hip[1] - k*.11, lean = (hip[0] - neck[0]);
+      cx.beginPath();
+      cx.moveTo(neck[0] - sw, sy);
+      cx.quadraticCurveTo(neck[0] - sw*1.04, sy - k*.03, neck[0], sy - k*.035);
+      cx.quadraticCurveTo(neck[0] + sw*1.04, sy - k*.03, neck[0] + sw, sy);
+      cx.quadraticCurveTo(neck[0] + lean*.5 + ww*1.1, (sy + wy)/2, hip[0] + ww + lean*.2, wy);
+      cx.quadraticCurveTo(hip[0] + hw*1.05, hip[1] - k*.04, hip[0] + hw, hip[1] + k*.03);
+      cx.lineTo(hip[0] - hw, hip[1] + k*.03);
+      cx.quadraticCurveTo(hip[0] - hw*1.05, hip[1] - k*.04, hip[0] - ww + lean*.2, wy);
+      cx.quadraticCurveTo(neck[0] + lean*.5 - ww*1.1, (sy + wy)/2, neck[0] - sw, sy);
+      cx.fill();
+      if (fem && idx % 4 === 1){ const sk = Math.sin(ph)*k*.02; cx.beginPath(); cx.moveTo(hip[0] - hw, hip[1] - k*.02); cx.lineTo(hip[0] + hw, hip[1] - k*.02); cx.lineTo(hip[0] + hw*1.9 + sk, hip[1] + k*.2); cx.quadraticCurveTo(hip[0], hip[1] + k*.23, hip[0] - hw*1.9 + sk, hip[1] + k*.2); cx.fill(); }
+      // arms with hands
+      for (const [sh, el, hd] of [L, R]){
+        seg(sh, el, k*.038*w + x0, k*.029*w + x0); seg(el, hd, k*.029*w + x0, k*.021*w + x0);
+        cx.beginPath(); cx.ellipse(hd[0], hd[1], k*.022 + x0, k*.028 + x0, Math.atan2(hd[1] - el[1], hd[0] - el[0]) - Math.PI/2, 0, Math.PI*2); cx.fill();
+      }
+      // neck and head
+      seg([neck[0], neck[1] + k*.02], [head[0], head[1] + k*.04], k*.03 + x0, k*.026 + x0);
+      const tilt = (head[0] - neck[0])/k*1.5;
+      cx.beginPath(); cx.ellipse(head[0], head[1] + k*.008, k*.054 + x0, k*.068 + x0, tilt, 0, Math.PI*2); cx.fill();
+      // hair styles
+      cx.beginPath();
+      if (hair === 0){ cx.ellipse(head[0], head[1] - k*.018, k*.056 + x0, k*.052 + x0, tilt, Math.PI, 0); }
+      else if (hair === 1){ cx.arc(head[0], head[1] - k*.022, k*.082 + x0, 0, Math.PI*2); }
+      else if (hair === 2){ cx.ellipse(head[0], head[1] - k*.02, k*.056 + x0, k*.05 + x0, tilt, Math.PI, 0); cx.fill(); cx.beginPath();
+        const sw2 = Math.sin(ph*.5)*k*.03; cx.moveTo(head[0] + k*.03, head[1] - k*.04); cx.quadraticCurveTo(head[0] + k*.11 + sw2, head[1], head[0] + k*.07 + sw2, head[1] + k*.1); cx.lineTo(head[0] + k*.045, head[1] + k*.02); }
+      else if (hair === 3){ cx.arc(head[0] - k*.004, head[1] - k*.075, k*.032 + x0, 0, Math.PI*2); cx.fill(); cx.beginPath(); cx.ellipse(head[0], head[1] - k*.02, k*.054 + x0, k*.048 + x0, tilt, Math.PI, 0); }
+      else { cx.ellipse(head[0], head[1] - k*.03, k*.058 + x0, k*.04 + x0, tilt, Math.PI, 0); cx.fill(); cx.beginPath(); cx.ellipse(head[0] + k*.045, head[1] - k*.028, k*.04 + x0, k*.009 + x0, tilt, 0, Math.PI*2); }
+      cx.fill();
+    };
+    cx.save(); cx.shadowColor = rim; cx.shadowBlur = 18 + e*24; draw(hexA(rim, .55), 2.5); cx.restore();
+    draw(ink, 0);
   }
 
   crowd(P, ink){
@@ -1500,12 +1585,18 @@ class SceneRenderer {
       const x = i*sp + sp/2 + (i % 2)*sp*.25;
       const j = this.jump*h*.03*((i*7919) % 3 === 0 ? 1 : .55);
       const hr = h*.035, by = h + hr*.3 - j - (i % 2)*hr*.4;
-      cx.beginPath(); cx.arc(x, by - hr*2.2, hr, 0, Math.PI*2); cx.fill();
-      cx.beginPath(); cx.ellipse(x, by, hr*2.1, hr*1.4, 0, Math.PI, 0); cx.fill(); cx.fillRect(x - hr*2.1, by, hr*4.2, hr*2);
+      const hv = ((i % 5) + 5) % 5;
+      cx.beginPath(); cx.ellipse(x, by - hr*2.25, hr*.82, hr*1.02, 0, 0, Math.PI*2); cx.fill();                       // head
+      if (hv === 1){ cx.beginPath(); cx.arc(x, by - hr*2.5, hr*1.25, 0, Math.PI*2); cx.fill(); }                    // afro
+      else if (hv === 2){ cx.beginPath(); cx.ellipse(x + hr*.9, by - hr*1.6, hr*.35, hr*.9, -.3, 0, Math.PI*2); cx.fill(); } // ponytail
+      else if (hv === 3){ cx.beginPath(); cx.ellipse(x, by - hr*3.05, hr*.95, hr*.38, 0, Math.PI, 0); cx.fill(); cx.fillRect(x, by - hr*3.1, hr*1.5, hr*.18); } // cap
+      cx.fillRect(x - hr*.32, by - hr*1.5, hr*.64, hr*.6);                                                            // neck
+      cx.beginPath(); cx.moveTo(x - hr*2.2, by + hr*2); cx.quadraticCurveTo(x - hr*2.3, by - hr*1.1, x - hr*.8, by - hr*1.05); cx.lineTo(x + hr*.8, by - hr*1.05); cx.quadraticCurveTo(x + hr*2.3, by - hr*1.1, x + hr*2.2, by + hr*2); cx.fill(); // shoulders
       if ((i + Math.floor(t*1.2)) % 4 === 0 && high + this.jump*.5 > .25){
         cx.lineWidth = hr*.55;
         const side = i % 2 ? 1 : -1, wave = Math.sin(t*6 + i)*hr*.6;
-        cx.beginPath(); cx.moveTo(x + side*hr*1.4, by - hr*.8); cx.lineTo(x + side*hr*2 + wave, by - hr*5 - j*.3); cx.stroke();
+        cx.beginPath(); cx.moveTo(x + side*hr*1.5, by - hr*.6); cx.quadraticCurveTo(x + side*hr*2.4, by - hr*2.6, x + side*hr*2 + wave, by - hr*5 - j*.3); cx.stroke();
+        cx.beginPath(); cx.ellipse(x + side*hr*2 + wave, by - hr*5.3 - j*.3, hr*.32, hr*.42, 0, 0, Math.PI*2); cx.fill();
       }
     }
   }
@@ -1574,7 +1665,7 @@ requestAnimationFrame(drawViz);
 /* ---------- Stage: full-screen 2D scenes + 3D VR Lounge (three.js + WebXR) ---------- */
 const XP_MODES = [
   {id:"orbs", label:"Orbs"}, {id:"notes", label:"Floating notes"}, {id:"dancers", label:"Silhouettes"},
-  {id:"mix", label:"Orbs + notes"}, {id:"lounge", label:"VR Lounge"}
+  {id:"lounge", label:"VR Lounge"}
 ];
 const stageScene = new SceneRenderer($("#stageCv"));
 let xpMode = store.get("xpMode", "lounge");
@@ -1603,6 +1694,7 @@ function setXpMode(m){
   $("#stageCv").hidden = is3d; $("#loungeCv").hidden = !is3d;
   $("#btnSnap").hidden = is3d;
   ["btnMood","btnVR","btnAR","worldSeg"].forEach(id => $("#"+id).hidden = !is3d);
+  $("#partyBar").hidden = !is3d; if (!is3d) $("#emoteBar").hidden = true; else { try{ Party.ui(); }catch(e){} }
   $("#xpHint").textContent = is3d
     ? "Drag to look around. Tap the floor to walk there (or use W A S D). Tap a bottle, glass or ball to pick it up. Join the party to hang out with other guests."
     : "Tap anywhere to burst notes. Tap an orb to pop it.";
@@ -1658,7 +1750,7 @@ let extrasPromise = null;
 function loadThreeExtras(){
   if (extrasPromise) return extrasPromise;
   return extrasPromise = (async () => {
-    try{ await Promise.all(["loaders/GLTFLoader.js", "utils/SkeletonUtils.js", "shaders/CopyShader.js", "shaders/LuminosityHighPassShader.js"].map(f => addScript(THREE_EX + f))); }catch(e){}
+    try{ await Promise.all(["loaders/GLTFLoader.js", "utils/SkeletonUtils.js", "shaders/CopyShader.js", "shaders/LuminosityHighPassShader.js", "renderers/CSS3DRenderer.js"].map(f => addScript(THREE_EX + f))); }catch(e){}
     try{ await addScript(THREE_EX + "postprocessing/EffectComposer.js"); await Promise.all(["postprocessing/RenderPass.js", "postprocessing/ShaderPass.js", "postprocessing/UnrealBloomPass.js"].map(f => addScript(THREE_EX + f))); }catch(e){}
   })();
 }
@@ -4804,6 +4896,7 @@ const Lounge = {
   },
   playVideo(url, name){
     if (!this.built) return;
+    if (typeof Screens !== "undefined"){ Screens.showVideo(Screens.main(), url, {label: (name || "Your video") + " is on the big screen. Tap the screen to pause."}); return; }
     if (S.playing || S.loading){ playToken++; killAudio(); S.playing = false; S.loading = false; stopMeta(); ui(); }
     const v = this.localVideo || (this.localVideo = Object.assign(document.createElement("video"), {playsInline: true, preload: "auto"}));
     v.srcObject = null; v.src = url; v.muted = false; v.onended = () => this.stopVideo();
@@ -4993,12 +5086,13 @@ const Lounge = {
     let p = hit.object; while (p && !p.userData.grab) p = p.parent;
     return p ? {obj: p, near: false, dist: hit.distance} : null;
   },
-  grabStart(ctl){
+  grabStart(ctl, squeeze){
     if (ctl.userData.holding) return false;
     const tg = this.xrTarget(ctl);
     if (!tg) return false;
+    if (tg.obj.userData.grab.float && !squeeze) return false;     // screens: use the grip button to move them
     const o = tg.obj, gd = o.userData.grab, grip = ctl.userData.grip, hand = grip && grip.visible ? grip : ctl;
-    gd.held = ctl; gd.resting = false; gd.hist = []; gd.pull = !tg.near;
+    gd.held = ctl; gd.resting = false; gd.hist = []; gd.pull = !tg.near && !gd.float;
     hand.attach(o);
     if (gd.pull){ gd.pullFrom = o.position.clone(); gd.pullT = 0; }
     ctl.userData.holding = o; this.heldSources.add(ctl.userData.source);
@@ -5016,6 +5110,7 @@ const Lounge = {
     const gd = o.userData.grab, w = this.worlds[gd.world];
     (w ? w.group : this.scene).attach(o);
     gd.held = null; gd.resting = false;
+    if (gd.float){ gd.resting = true; gd.vel.set(0, 0, 0); const e = new THREE.Euler().setFromQuaternion(o.quaternion, "YXZ"); o.rotation.set(0, e.y, 0); return; }
     // throw speed from the last few frames of hand movement
     const h = gd.hist;
     if (h.length > 1){ const a = h[0], b = h[h.length - 1], dt = Math.max(.016, b.t - a.t); gd.vel.subVectors(b.p, a.p).divideScalar(dt); if (gd.vel.length() > 9) gd.vel.setLength(9); }
@@ -5037,9 +5132,9 @@ const Lounge = {
       const dot = new T.Mesh(new T.SphereGeometry(.012, 12, 8), new T.MeshBasicMaterial({color:0xffc21a, toneMapped:false})); grip.add(dot);
       ctl.addEventListener("connected", e => { ctl.userData.source = e.data; });
       ctl.addEventListener("disconnected", () => { this.grabEnd(ctl); ctl.userData.source = null; });
-      const down = () => { if (this.mode === "vr") this.grabStart(ctl); }, up = () => this.grabEnd(ctl);
-      ctl.addEventListener("selectstart", down); ctl.addEventListener("selectend", up);
-      ctl.addEventListener("squeezestart", down); ctl.addEventListener("squeezeend", up);
+      const down = sq => { if (this.mode === "vr") this.grabStart(ctl, sq); }, up = () => this.grabEnd(ctl);
+      ctl.addEventListener("selectstart", () => down(false)); ctl.addEventListener("selectend", up);
+      ctl.addEventListener("squeezestart", () => down(true)); ctl.addEventListener("squeezeend", up);
       this.xrCtls.push(ctl);
     }
   },
@@ -5051,7 +5146,7 @@ const Lounge = {
       gd.hist = []; this.release(o); gd.vel.copy(dir.multiplyScalar(2.6)).add(new THREE.Vector3(0, 1.2, 0));
       return true;
     }
-    const items = this.grabCandidates(); if (!items.length) return false;
+    const items = this.grabCandidates().filter(o => !o.userData.grab.float); if (!items.length) return false;
     const hit = this.ray.intersectObjects(items, true)[0];
     const ui = this.ray.intersectObjects(this.clickables, false).filter(h => this.isShown(h.object))[0];
     if (!hit || hit.distance > 6 || (ui && ui.distance < hit.distance)) return false;
@@ -5195,7 +5290,7 @@ const Lounge = {
     this.drawScreen();
     this.lastBass = bass;
     if (this.btnMeshes){ const xr = this.renderer.xr.isPresenting; for (const id of ["party", "dance", "react", "mic"]) if (this.btnMeshes[id]) this.btnMeshes[id].visible = xr; }
-    this.updateMove(dt, xrFrame); this.updateBooths(dt); this.updateGrab(dt); this.updateCorks(dt); Party.update(dt);
+    this.updateMove(dt, xrFrame); this.updateBooths(dt); this.updateGrab(dt); this.updateCorks(dt); Party.update(dt); Screens.update();
     this.updatePeople(dt, bass);
     if (this.composer && !this.renderer.xr.isPresenting){ this.finalPass.uniforms.exposure.value = this.renderer.toneMappingExposure; this.composer.render(dt); }
     else this.renderer.render(this.scene, this.camera);
@@ -5491,8 +5586,9 @@ $("#btnResetYes").addEventListener("click", () => { S.user = []; S.favs.clear();
   // Deep links: turn-up-music.html#lounge opens the VR Lounge, #stage opens the Stage, #artist the artist profile
   const h = location.hash.slice(1);
   const worldLinks = {rooftop:"rooftop", club:"club", nightclub:"club", beach:"beach", nyc:"nyc", cafe:"nyc", madrid:"madrid", spain:"madrid", concert:"concert", hiphop:"concert", rodeo:"rodeo", texas:"rodeo", coffee:"coffee", coffeeshop:"coffee", tv:"tvshow", tvshow:"tvshow", show:"tvshow"};
-  if (worldLinks[h]){ store.set("world", worldLinks[h]); openStage("lounge"); }
-  else if (h === "lounge") openStage("lounge"); else if (h === "stage") openStage("dancers");
+  // wait until every part of the app has loaded before opening a deep link
+  setTimeout(() => { if (worldLinks[h]){ store.set("world", worldLinks[h]); openStage("lounge"); }
+    else if (h === "lounge") openStage("lounge"); else if (h === "stage") openStage("dancers"); }, 0);
 })();
 
 /* ================= Guests: profiles, custom avatars, the party and live events =================
@@ -5622,7 +5718,7 @@ const Gear = {
 
 /* ---------- Your profile ---------- */
 const Profile = {
-  defaults: {name:"", bio:"", genre:"", link:"", avatar:"", hat:"none", eyes:"none", neck:"none", phones:false, aura:"#ffc21a", height:1},
+  defaults: {name:"", bio:"", genre:"", link:"", avatar:"", hat:"none", eyes:"none", neck:"none", phones:false, aura:"#ffc21a", height:1, outfit:{style:"original"}},
   get(){ return Object.assign({}, this.defaults, store.get("profile", {})); },
   save(p){ store.set("profile", p); if (typeof Party !== "undefined") Party.profileChanged(); },
   ensure(){
@@ -5643,6 +5739,7 @@ const Profile = {
       hat: pick(p.hat, Gear.HATS, "none"), eyes: pick(p.eyes, Gear.EYES, "none"), neck: pick(p.neck, Gear.NECK, "none"),
       phones: !!p.phones, aura: /^#[0-9a-f]{6}$/i.test(p.aura) ? p.aura : "#ffc21a",
       height: Math.max(.92, Math.min(1.08, +p.height || 1)), dj: !!p.dj, pk: /^[0-9a-f]{64}$/.test(p.pk || "") ? p.pk : "",
+      outfit: Outfit.clean(p.outfit, true),
       spotify: Links.okSvc(p.spotify || "", ["spotify.com"]), apple: Links.okSvc(p.apple || "", ["music.apple.com"]), tidal: Links.okSvc(p.tidal || "", ["tidal.com"]), youtube: Links.okSvc(p.youtube || "", ["youtube.com", "youtu.be"])
     };
   },
@@ -5655,7 +5752,8 @@ const Profile = {
 
   /* the "My avatar" window, with a live 3D preview */
   open(){
-    const p = this.ensure(); this.draft = Object.assign({}, p);
+    const p = this.ensure(); this.draft = Object.assign({}, p, {outfit: Object.assign({}, p.outfit || {style: "original"})});
+    this.renderOutfit();
     $("#meName").value = p.name; $("#meBio").value = p.bio; $("#meLink").value = p.link;
     $("#meGenre").innerHTML = `<option value="">—</option>` + GENRES.map(g => `<option value="${esc(g)}"${g === p.genre ? " selected" : ""}>${esc(g.replace(/\b\w/g, c => c.toUpperCase()))}</option>`).join("");
     const opts = (set, v) => Object.entries(set).map(([k, l]) => `<option value="${k}"${k === v ? " selected" : ""}>${esc(l)}</option>`).join("");
@@ -5664,6 +5762,13 @@ const Profile = {
     $("#meAvatars").innerHTML = AV_NAMES.map(n => `<button type="button" data-av="${n}" aria-pressed="${n === p.avatar}" aria-label="${n.replace(/_/g, " ")}" style="${avThumbStyle(n)}"></button>`).join("");
     $("#meDlg").showModal();
     this.startPreview();
+  },
+  renderOutfit(){
+    const vip = VIP.can("dj"), o = this.draft.outfit = Outfit.clean(this.draft.outfit, true);
+    $("#ofTier").textContent = vip ? "· every style and color unlocked" : "· free: 4 styles and 8 colors · ★ styles are VIP";
+    $("#ofStyles").innerHTML = Object.entries(Outfit.STYLES).filter(([k]) => k !== "fabric" || o.style === "fabric").map(([k, l]) => `<button type="button" data-of="${k}" aria-pressed="${o.style === k}" class="${!vip && Outfit.isVIPStyle(k) ? "locked" : ""}">${esc(l)}</button>`).join("");
+    $("#ofColors").innerHTML = Outfit.FREE_COLORS.map(c => `<button type="button" class="swatch" data-ofc="${c}" style="background:${c}" aria-pressed="${o.c1 === c && o.style !== "original"}" aria-label="Color ${c}"></button>`).join("");
+    $("#ofCustom").hidden = !vip; $("#ofC1").value = o.c1; $("#ofC2").value = o.c2; $("#ofFinish").value = o.finish; $("#ofFinish").disabled = !vip;
   },
   readForm(){
     const d = this.draft;
@@ -5706,6 +5811,8 @@ const Profile = {
     const holder = new T.Group(), m = T.SkeletonUtils.clone(A.root);
     holder.add(m); m.scale.multiplyScalar(d.height);
     Gear.attach(m, d);
+    await Outfit.apply(m, A.name || d.avatar, d.outfit);
+    if (token !== this.pvTok) return;
     const glow = new T.Mesh(new T.RingGeometry(.3, .42, 48).rotateX(-Math.PI/2), new T.MeshBasicMaterial({color:new T.Color(d.aura), transparent:true, opacity:.55, toneMapped:false, depthWrite:false})); glow.position.y = .01; holder.add(glow);
     const mixer = new T.AnimationMixer(m), clip = A.clips.dance2 || A.clips.idle; if (clip) mixer.clipAction(clip).play();
     this.pv.sc.add(holder); this.pv.holder = holder; this.pv.mixer = mixer; holder.rotation.y = .4;
@@ -5713,7 +5820,30 @@ const Profile = {
   drawFlat(){ const cv = $("#mePrev"), x = cv.getContext("2d"); x && x.clearRect(0, 0, cv.width, cv.height); cv.style.cssText = avThumbStyle(this.readForm().avatar, 200) + ";background-color:#2e201a;background-repeat:no-repeat;background-position-x:center"; },
   bindUI(){
     $("#meAvatars").addEventListener("click", e => { const b = e.target.closest("button[data-av]"); if (!b) return; this.draft.avatar = b.dataset.av; document.querySelectorAll("#meAvatars button").forEach(x => x.setAttribute("aria-pressed", x === b)); if (!this.pvRun) this.drawFlat(); });
-    $("#meSave").addEventListener("click", () => { const d = this.readForm(); this.save(Profile.clean(Object.assign({}, d, {dj: this.get().dj}))); this.pvRun = false; $("#meDlg").close(); toast("Profile saved"); });
+    $("#ofStyles").addEventListener("click", e => { const b = e.target.closest("[data-of]"); if (!b) return; if (b.classList.contains("locked")){ VIP.open("That style is a VIP perk. Free outfits: Original, Solid, Stripes and Ombré."); return; } this.draft.outfit.style = b.dataset.of; this.renderOutfit(); });
+    $("#ofColors").addEventListener("click", e => { const b = e.target.closest("[data-ofc]"); if (!b) return; const o = this.draft.outfit; if (o.style === "original") o.style = "solid"; o.c1 = b.dataset.ofc; this.renderOutfit(); });
+    $("#ofC1").addEventListener("input", e => { this.draft.outfit.c1 = e.target.value; if (this.draft.outfit.style === "original") this.draft.outfit.style = "solid"; });
+    $("#ofC2").addEventListener("input", e => { this.draft.outfit.c2 = e.target.value; });
+    $("#ofFinish").addEventListener("change", e => { this.draft.outfit.finish = e.target.value; });
+    $("#ofShuffle").addEventListener("click", () => {
+      const vip = VIP.can("dj"), styles = Object.keys(Outfit.STYLES).filter(k => k !== "original" && k !== "fabric" && (vip || !Outfit.isVIPStyle(k))), pick = a => a[Math.floor(Math.random()*a.length)];
+      const col = () => vip ? "#" + new THREE.Color().setHSL(Math.random(), .7, .45).getHexString() : pick(Outfit.FREE_COLORS);
+      this.draft.outfit = {style: pick(styles), c1: col(), c2: col(), c3: col(), seed: Math.floor(Math.random()*99999), finish: vip ? pick(["matte", "satin", "shiny"]) : "matte"}; this.renderOutfit();
+    });
+    $("#ofMake").addEventListener("click", () => {
+      if (!VIP.can("dj")){ VIP.open("The Style Maker is a VIP perk."); return; }
+      const t = $("#ofPrompt").value.trim(); if (!t){ toast("Describe your outfit first, like “red and gold leopard print, shiny”."); return; }
+      this.draft.outfit = Outfit.fromWords(t); this.renderOutfit(); toast("✨ Designed: " + Outfit.STYLES[this.draft.outfit.style]);
+    });
+    $("#ofFabric").addEventListener("change", async e => {
+      const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+      if (!VIP.can("dj")){ VIP.open("Custom fabrics are a VIP perk."); return; }
+      try{ const bmp = await createImageBitmap(f), [c, x] = Tex.canvas(192, 192), k = Math.max(192/bmp.width, 192/bmp.height); x.drawImage(bmp, (192 - bmp.width*k)/2, (192 - bmp.height*k)/2, bmp.width*k, bmp.height*k);
+        let q = .75, url = c.toDataURL("image/jpeg", q); while (url.length > 22000 && q > .3){ q -= .1; url = c.toDataURL("image/jpeg", q); }
+        this.draft.outfit = Object.assign({}, this.draft.outfit, {style: "fabric", fabric: url}); this.renderOutfit(); toast("Your fabric is on!");
+      }catch(err){ toast("Couldn't read that photo."); }
+    });
+    $("#meSave").addEventListener("click", () => { const d = this.readForm(); d.outfit = Outfit.clean(d.outfit, VIP.can("dj")); this.save(Profile.clean(Object.assign({}, d, {dj: this.get().dj}))); this.pvRun = false; $("#meDlg").close(); toast("Profile saved"); });
     $("#meCancel").addEventListener("click", () => { this.pvRun = false; $("#meDlg").close(); });
     $("#meDlg").addEventListener("close", () => { this.pvRun = false; });
   }
@@ -5754,7 +5884,8 @@ const Party = {
     catch(e){ toast("The party couldn't connect right now.", 5000); return; }
     this.room = room; this.roomKey = key; this.kind = kind; this.eventId = kind === "event" ? code : null;
     const A = {};
-    for (const n of ["hello", "pose", "chat", "react", "music", "mod", "link"]) A[n] = room.makeAction(n);
+    for (const n of ["hello", "pose", "chat", "react", "music", "mod", "link", "screen"]) A[n] = room.makeAction(n);
+    A.screen.onMessage = (d, ctx) => { const p = this.peers[ctx.peerId]; if (p) Screens.onMsg(p, d); };
     A.mod.onMessage = (d, ctx) => this.onMod(ctx.peerId, d);
     A.link.onMessage = (d, ctx) => this.onLink(ctx.peerId, d);
     this.act = A;
@@ -5769,6 +5900,7 @@ const Party = {
       if (this.mic) try{ room.addStream(this.mic, {target: id}); }catch(e){}
       if (this.djStream) try{ room.addStream(this.djStream, {target: id, metadata: {kind: "dj"}}); }catch(e){}
       if (this.vidStream) try{ room.addStream(this.vidStream, {target: id, metadata: {kind: "video"}}); }catch(e){}
+      setTimeout(() => Screens.resend(id), 1500);
       this.sysMsg("Someone joined the party");
     };
     room.onPeerLeave = id => { const p = this.peers[id]; if (p) this.sysMsg(`${p.profile.name} left`); this.dropPeer(id); };
@@ -5805,6 +5937,7 @@ const Party = {
     try{ const a = d && d.auth; if (a && a.kind === 22242 && a.content === this.roomKey + "|" + id && Math.abs(a.created_at - Date.now()/1000) < 900 && TUNet.verifyEvent(a)) pk = a.pubkey; }catch(e){}
     prof.pk = pk;
     p.role = !pk ? "guest" : VIP.OWNERS.includes(pk) ? "owner" : (VIP.checkPass(d && d.pass, pk) || {}).role || VIP.roleOf(pk);
+    prof.outfit = Outfit.clean(d && d.outfit, p.role !== "guest");
     if (p.role === "guest") prof.dj = false;
     if (this.banned && this.banned.has(pk)) return;
     const changed = JSON.stringify(prof) !== JSON.stringify(p.profile);
@@ -5917,6 +6050,7 @@ const Party = {
       group.add(m); m.scale.multiplyScalar((A.scale || 1)*p.profile.height);
       m.traverse(o => { if (o.isMesh){ o.frustumCulled = false; } });
       Gear.attach(m, p.profile);
+      await Outfit.apply(m, A.name || p.profile.avatar, p.profile.outfit);
       // glow ring and soft shadow at the feet
       const ring = new T.Mesh(new T.RingGeometry(.28, p.role !== "guest" ? .42 : .36, 40).rotateX(-Math.PI/2), new T.MeshBasicMaterial({color:new T.Color(p.profile.aura), transparent:true, opacity:.5, toneMapped:false, depthWrite:false}));
       ring.position.y = .015; group.add(ring);
@@ -6020,6 +6154,7 @@ const Party = {
       return;
     }
     if (kind === "video"){ if (p.role !== "guest") Lounge.playVideoStream(stream, p.profile.name); return; }
+    if (kind === "screen"){ Screens.onStream(p, stream, meta); return; }
     if (!p.audio){ p.audio = document.createElement("audio"); p.audio.autoplay = true; p.audio.playsInline = true; document.body.appendChild(p.audio); }
     p.audio.srcObject = stream; p.audio.muted = !!p.muted; p.audio.play().catch(() => {});
   },
@@ -6855,6 +6990,394 @@ const Social = {
     $("#btnSocial2").addEventListener("click", () => this.open());
   }
 };
+/* ================= Outfits: re-dress any avatar =================
+   The clothes are re-printed on the avatar's own texture: skin is found by matching the colour of the
+   face, everything else is clothing and gets the new fabric, keeping the original folds and shading. */
+const Outfit = {
+  FREE: ["original", "solid", "stripes", "ombre"],
+  STYLES: {original: "Original", solid: "Solid", stripes: "Stripes", ombre: "Ombré", plaid: "Plaid", camo: "Camo", leopard: "Leopard", zebra: "Zebra", tiedye: "Tie-dye",
+    kente: "Kente print", galaxy: "Galaxy", flames: "Flames", floral: "Floral", sequins: "Sequins", denim: "Denim wash", checker: "Checkerboard", dots: "Polka dots", metallic: "Metallic", graffiti: "Graffiti", fabric: "My fabric"},
+  FREE_COLORS: ["#e53935", "#1e88e5", "#43a047", "#fdd835", "#8e24aa", "#fb8c00", "#111111", "#f5f5f5"],
+  cache: new Map(),
+  isVIPStyle(st){ return !this.FREE.includes(st); },
+  clean(o, vip){
+    o = o && typeof o === "object" ? o : {};
+    const hex = v => /^#[0-9a-f]{6}$/i.test(v || "") ? v.toLowerCase() : null;
+    let style = Object.prototype.hasOwnProperty.call(this.STYLES, o.style) ? o.style : "original";
+    if (!vip && this.isVIPStyle(style)) style = "original";
+    const out = {style, c1: hex(o.c1) || "#e53935", c2: hex(o.c2) || "#111111", c3: hex(o.c3) || "#ffc21a", seed: (o.seed|0) % 100000, finish: ["matte", "satin", "shiny"].includes(o.finish) ? o.finish : "matte"};
+    if (!vip && !this.FREE_COLORS.includes(out.c1)) out.c1 = this.FREE_COLORS[0];
+    if (style === "fabric"){ out.fabric = typeof o.fabric === "string" && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(o.fabric) && o.fabric.length < 24000 ? o.fabric : ""; if (!out.fabric) out.style = "original"; }
+    return out;
+  },
+  rng(seed){ let s = (seed*9301 + 49297) % 233280 || 1; return () => (s = (s*9301 + 49297) % 233280)/233280; },
+  // the print itself, 512 x 512
+  async pattern(o){
+    const [c, x] = Tex.canvas(512, 512), r = this.rng(o.seed + 7), {c1, c2, c3} = o;
+    const fill = col => { x.fillStyle = col; x.fillRect(0, 0, 512, 512); };
+    switch (o.style){
+      case "solid": fill(c1); break;
+      case "stripes": fill(c1); x.fillStyle = c2; for (let i=0;i<512;i+=48) x.fillRect(0, i, 512, 20); break;
+      case "ombre": { const g = x.createLinearGradient(0, 0, 0, 512); g.addColorStop(0, c1); g.addColorStop(1, c2); x.fillStyle = g; x.fillRect(0, 0, 512, 512); break; }
+      case "plaid": fill(c1); x.globalAlpha = .55; x.fillStyle = c2; for (let i=0;i<512;i+=64){ x.fillRect(i, 0, 26, 512); x.fillRect(0, i, 512, 26); } x.globalAlpha = .7; x.fillStyle = c3; for (let i=40;i<512;i+=64){ x.fillRect(i, 0, 4, 512); x.fillRect(0, i, 512, 4); } x.globalAlpha = 1; break;
+      case "camo": fill(c1); for (const col of [c2, c3, "#2a2a1e"]) for (let i=0;i<26;i++){ x.fillStyle = col; x.beginPath(); const px = r()*512, py = r()*512; for (let k=0;k<7;k++){ const a = k/7*Math.PI*2, rr = 20 + r()*40; k ? x.lineTo(px + Math.cos(a)*rr, py + Math.sin(a)*rr*.7) : x.moveTo(px + rr, py); } x.fill(); } break;
+      case "leopard": fill(c1); for (let i=0;i<140;i++){ const px = r()*512, py = r()*512, rr = 8 + r()*10; x.fillStyle = c3; x.beginPath(); x.ellipse(px, py, rr, rr*.8, r()*3, 0, Math.PI*2); x.fill(); x.strokeStyle = c2; x.lineWidth = 4; x.beginPath(); x.arc(px, py, rr*1.1, r()*2, r()*2 + 3.6); x.stroke(); } break;
+      case "zebra": fill(c1 === "#111111" ? "#f5f5f5" : c1); x.fillStyle = c2; for (let i=0;i<22;i++){ const y0 = i*24 + r()*10; x.beginPath(); x.moveTo(0, y0); for (let k=0;k<=8;k++) x.lineTo(k*64, y0 + Math.sin(k + i)*10 + r()*8); for (let k=8;k>=0;k--) x.lineTo(k*64, y0 + 9 + Math.sin(k + i + 1)*6); x.fill(); } break;
+      case "tiedye": { for (let i=0;i<6;i++){ const g = x.createRadialGradient(256, 256, i*40, 256, 256, i*40 + 60); const cs = [c1, c2, c3]; g.addColorStop(0, cs[i % 3]); g.addColorStop(1, cs[(i + 1) % 3]); x.fillStyle = g; x.beginPath(); x.arc(256, 256, 400 - i*60, 0, Math.PI*2); x.fill(); }
+        x.globalAlpha = .4; for (let i=0;i<14;i++){ x.strokeStyle = [c1, c2, c3][i % 3]; x.lineWidth = 18; x.beginPath(); for (let a=0;a<12;a+=.2){ const rr = a*22; x.lineTo(256 + Math.cos(a + i*.45)*rr, 256 + Math.sin(a + i*.45)*rr); } x.stroke(); } x.globalAlpha = 1; break; }
+      case "kente": fill(c3); for (let row=0;row<8;row++) for (let col=0;col<8;col++){ const px = col*64, py = row*64, t = (row + col) % 3; x.fillStyle = t === 0 ? c1 : t === 1 ? c2 : "#111111"; x.fillRect(px + 4, py + 4, 56, 56);
+        x.fillStyle = c3; if (t === 0){ for (let k=0;k<4;k++) x.fillRect(px + 8 + k*13, py + 8, 6, 48); } else if (t === 1){ for (let k=0;k<4;k++) x.fillRect(px + 8, py + 8 + k*13, 48, 6); } else { x.beginPath(); x.moveTo(px + 32, py + 10); x.lineTo(px + 54, py + 32); x.lineTo(px + 32, py + 54); x.lineTo(px + 10, py + 32); x.fill(); } } break;
+      case "galaxy": { const g = x.createLinearGradient(0, 0, 512, 512); g.addColorStop(0, "#0b0630"); g.addColorStop(.5, c1); g.addColorStop(1, "#05020f"); x.fillStyle = g; x.fillRect(0, 0, 512, 512);
+        for (let i=0;i<10;i++){ const rg = x.createRadialGradient(r()*512, r()*512, 0, 256, 256, 200); rg.addColorStop(0, c2 + "88"); rg.addColorStop(1, "#00000000"); x.fillStyle = rg; x.fillRect(0, 0, 512, 512); }
+        for (let i=0;i<500;i++){ x.fillStyle = `rgba(255,255,255,${r()})`; x.fillRect(r()*512, r()*512, r()*2 + .5, r()*2 + .5); } break; }
+      case "flames": fill(c2); for (let i=0;i<16;i++){ const px = i*34 - 10, hgt = 180 + r()*200; const g = x.createLinearGradient(0, 512, 0, 512 - hgt); g.addColorStop(0, c1); g.addColorStop(.6, c3); g.addColorStop(1, c3 + "00"); x.fillStyle = g; x.beginPath(); x.moveTo(px, 512); x.quadraticCurveTo(px + 10, 512 - hgt*.6, px + 24 + r()*10, 512 - hgt); x.quadraticCurveTo(px + 30, 512 - hgt*.5, px + 50, 512); x.fill(); } break;
+      case "floral": fill(c1); for (let i=0;i<46;i++){ const px = r()*512, py = r()*512, rr = 10 + r()*14; x.fillStyle = i % 2 ? c2 : c3; for (let k=0;k<5;k++){ const a = k/5*Math.PI*2; x.beginPath(); x.ellipse(px + Math.cos(a)*rr*.7, py + Math.sin(a)*rr*.7, rr*.55, rr*.32, a, 0, Math.PI*2); x.fill(); } x.fillStyle = "#ffe066"; x.beginPath(); x.arc(px, py, rr*.25, 0, Math.PI*2); x.fill(); x.fillStyle = "#2f6b2a"; x.beginPath(); x.ellipse(px + rr, py + rr, rr*.5, rr*.2, .6, 0, Math.PI*2); x.fill(); } break;
+      case "sequins": fill(c1); for (let yy=0;yy<512;yy+=8) for (let xx=(yy/8 % 2)*4; xx<512; xx+=8){ const v = r(); x.fillStyle = v > .85 ? "#ffffff" : v > .5 ? c3 : c1; x.beginPath(); x.arc(xx, yy, 3.6, 0, Math.PI*2); x.fill(); } break;
+      case "denim": fill("#2e4a7a"); x.globalAlpha = .25; for (let i=0;i<512;i+=3){ x.fillStyle = i % 6 ? "#9ab4dc" : "#0d1a33"; x.fillRect(0, i, 512, 1); } x.globalAlpha = 1; for (let i=0;i<30;i++){ const rg = x.createRadialGradient(r()*512, r()*512, 0, r()*512, r()*512, 90); rg.addColorStop(0, "rgba(200,220,255,.25)"); rg.addColorStop(1, "rgba(200,220,255,0)"); x.fillStyle = rg; x.fillRect(0, 0, 512, 512); } break;
+      case "checker": for (let yy=0;yy<8;yy++) for (let xx=0;xx<8;xx++){ x.fillStyle = (xx + yy) % 2 ? c1 : c2; x.fillRect(xx*64, yy*64, 64, 64); } break;
+      case "dots": fill(c1); x.fillStyle = c2; for (let yy=0;yy<512;yy+=40) for (let xx=(yy/40 % 2)*20; xx<512; xx+=40){ x.beginPath(); x.arc(xx, yy, 9, 0, Math.PI*2); x.fill(); } break;
+      case "metallic": { const g = x.createLinearGradient(0, 0, 512, 0); g.addColorStop(0, c1); g.addColorStop(.3, "#ffffff"); g.addColorStop(.5, c1); g.addColorStop(.75, "#ffffff"); g.addColorStop(1, c1); x.fillStyle = g; x.fillRect(0, 0, 512, 512); break; }
+      case "graffiti": fill(c1); for (let i=0;i<40;i++){ x.strokeStyle = [c2, c3, "#ffffff", "#111111"][i % 4]; x.lineWidth = 6 + r()*14; x.lineCap = "round"; x.beginPath(); let px = r()*512, py = r()*512; x.moveTo(px, py); for (let k=0;k<5;k++){ px += (r() - .5)*160; py += (r() - .5)*160; x.quadraticCurveTo(px + 30, py - 30, px, py); } x.stroke(); }
+        x.font = '900 70px "Chakra Petch", sans-serif'; x.fillStyle = c3; x.fillText("TURN UP", 40, 300); break;
+      case "fabric": if (o.fabric){ const img = await this.loadImg(o.fabric); const pat = x.createPattern(img, "repeat"); x.fillStyle = pat; x.fillRect(0, 0, 512, 512); } else fill(c1); break;
+      default: fill(c1);
+    }
+    return c;
+  },
+  loadImg(src){ return new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); },
+  // average face colour, used to keep skin as skin
+  skinOf(headImg){
+    const [c, x] = Tex.canvas(64, 64); x.drawImage(headImg, 0, 0, 64, 64);
+    const d = x.getImageData(16, 16, 32, 32).data, v = [];
+    for (let i=0;i<d.length;i+=4){ const l = (d[i] + d[i+1] + d[i+2])/3; if (l > 30 && l < 235 && d[i] >= d[i+2]) v.push([d[i], d[i+1], d[i+2]]); }
+    if (!v.length) return [180, 130, 100];
+    v.sort((a, b) => (a[0] + a[1] + a[2]) - (b[0] + b[1] + b[2]));
+    return v[Math.floor(v.length/2)];
+  },
+  async texture(bodyImg, headImg, o, key){
+    if (this.cache.has(key)) return this.cache.get(key);
+    const S = 512, [c, x] = Tex.canvas(S, S);
+    x.drawImage(bodyImg, 0, 0, S, S);
+    const img = x.getImageData(0, 0, S, S), d = img.data;
+    const pat = (await this.pattern(o)).getContext("2d").getImageData(0, 0, S, S).data;
+    const sk = this.skinOf(headImg), skL = (sk[0] + sk[1] + sk[2])/3, skr = sk[0]/(sk[0] + sk[1] + sk[2] + 1), skg = sk[1]/(sk[0] + sk[1] + sk[2] + 1);
+    // mean brightness of the clothing, to keep the original shading
+    let sum = 0, n = 0;
+    const isSkin = i => { const r = d[i], g = d[i+1], b = d[i+2], t = r + g + b + 1, L = t/3; return Math.abs(r/t - skr) < .045 && Math.abs(g/t - skg) < .035 && Math.abs(L - skL) < 70 && r > b; };
+    const mask = new Uint8Array(S*S);
+    for (let p=0, i=0; p<S*S; p++, i+=4){ if (d[i+3] < 10 || isSkin(i)){ mask[p] = 1; continue; } sum += (d[i] + d[i+1] + d[i+2])/3; n++; }
+    const mean = n ? sum/n : 128, shine = o.finish === "shiny" ? 1.25 : o.finish === "satin" ? 1.1 : 1;
+    for (let p=0, i=0; p<S*S; p++, i+=4){
+      if (mask[p]) continue;
+      const L = (d[i] + d[i+1] + d[i+2])/3, k = Math.min(1.8, Math.pow(L/mean, shine)*.92 + .08);
+      for (let ch=0; ch<3; ch++) d[i+ch] = Math.max(0, Math.min(255, pat[i+ch]*k*.9 + d[i+ch]*.1));
+    }
+    x.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding; tex.flipY = false; tex.anisotropy = 4;
+    this.cache.set(key, tex);
+    if (this.cache.size > 40) this.cache.delete(this.cache.keys().next().value);
+    return tex;
+  },
+  // dress a cloned avatar
+  async apply(model, avatarName, o){
+    if (!o || o.style === "original") return;
+    let body = null, head = null;
+    model.traverse(m => { if (m.isMesh && m.material){ if (/_body$/i.test(m.material.name)) body = m; if (/_head$/i.test(m.material.name)) head = m; } });
+    if (!body || !body.material.map || !head || !head.material.map) return;
+    const key = avatarName + "|" + JSON.stringify(o).slice(0, 400) + (o.fabric ? o.fabric.length : "");
+    try{
+      const tex = await this.texture(body.material.map.image, head.material.map.image, o, key);
+      const m = body.material.clone(); m.map = tex; if (o.finish !== "matte"){ m.roughness = o.finish === "shiny" ? .3 : .45; } m.needsUpdate = true; body.material = m;
+    }catch(e){}
+  },
+  /* the Style Maker: read a description and design the fabric */
+  COLORS: {red: "#d32f2f", crimson: "#b0122c", maroon: "#6d1222", burgundy: "#6d1222", pink: "#f06292", hot: "#ff2d95", magenta: "#d81b60", purple: "#7b1fa2", violet: "#8e44ad", lavender: "#b39ddb",
+    blue: "#1e63d6", navy: "#13275a", royal: "#2541b2", sky: "#64b5f6", teal: "#00897b", turquoise: "#1de9b6", aqua: "#26c6da", green: "#2e7d32", olive: "#6b7c2a", lime: "#9ccc1a", mint: "#98e2c6", emerald: "#0c9a5a",
+    yellow: "#fdd835", gold: "#d4a937", orange: "#fb8c00", peach: "#ffb38a", coral: "#ff7a5a", brown: "#6d4c41", tan: "#c8a27a", beige: "#e8d9bc", cream: "#f3ead6",
+    black: "#111111", white: "#f5f5f5", gray: "#8a8a8a", grey: "#8a8a8a", silver: "#c0c4c8", neon: "#39ff14", rose: "#e8879c", wine: "#5a0a16"},
+  PATTERN_WORDS: [["stripe", "stripes"], ["plaid", "plaid"], ["flannel", "plaid"], ["tartan", "plaid"], ["camo", "camo"], ["military", "camo"], ["leopard", "leopard"], ["cheetah", "leopard"], ["animal", "leopard"], ["zebra", "zebra"],
+    ["tie", "tiedye"], ["dye", "tiedye"], ["psychedelic", "tiedye"], ["kente", "kente"], ["african", "kente"], ["ankara", "kente"], ["galaxy", "galaxy"], ["space", "galaxy"], ["star", "galaxy"], ["cosmic", "galaxy"],
+    ["flame", "flames"], ["fire", "flames"], ["floral", "floral"], ["flower", "floral"], ["tropical", "floral"], ["hawaiian", "floral"], ["sequin", "sequins"], ["glitter", "sequins"], ["sparkl", "sequins"], ["disco", "sequins"],
+    ["denim", "denim"], ["jean", "denim"], ["checker", "checker"], ["check", "checker"], ["dot", "dots"], ["polka", "dots"], ["metal", "metallic"], ["chrome", "metallic"], ["gold", "metallic"], ["graffiti", "graffiti"], ["street", "graffiti"],
+    ["ombre", "ombre"], ["gradient", "ombre"], ["fade", "ombre"], ["solid", "solid"], ["plain", "solid"]],
+  fromWords(text){
+    const t = String(text || "").toLowerCase(), words = t.match(/[a-z]+/g) || [];
+    const cols = words.map(w => this.COLORS[w]).filter(Boolean);
+    let style = "solid"; for (const [w, s] of this.PATTERN_WORDS) if (t.includes(w)){ style = s; break; }
+    if (style === "metallic" && !/metal|chrome/.test(t) && cols.length > 1) style = "solid";
+    const seed = [...t].reduce((a, ch) => (a*31 + ch.charCodeAt(0)) % 99991, 7);
+    const pastel = /pastel|soft|light/.test(t), dark = /dark|deep|midnight/.test(t);
+    const tone = h => { let c = new THREE.Color(h); if (pastel) c.lerp(new THREE.Color("#ffffff"), .45); if (dark) c.multiplyScalar(.55); return "#" + c.getHexString(); };
+    const def = {camo: ["#4b5320", "#2e3b1e", "#8a7a52"], leopard: ["#d9a35f", "#2a1a10", "#8a5a2a"], zebra: ["#f5f5f5", "#111111", "#888888"], galaxy: ["#4b1fa2", "#ff4fd8", "#64b5f6"], flames: ["#ff3d00", "#111111", "#ffc21a"], denim: ["#2e4a7a", "#9ab4dc", "#f5f5f5"], kente: ["#d4a937", "#2e7d32", "#b0122c"]}[style] || ["#e53935", "#111111", "#ffc21a"];
+    return {style, c1: tone(cols[0] || def[0]), c2: tone(cols[1] || def[1]), c3: tone(cols[2] || def[2]), seed, finish: /shiny|glossy|latex|leather|silk/.test(t) ? "shiny" : /satin|velvet/.test(t) ? "satin" : "matte"};
+  }
+};
+
+/* ================= Screens: videos and presentations in the lounge =================
+   The main screen and extra pop-up screens can show a YouTube video, a video or web page from a link,
+   or an upload: a video, a photo, or a presentation (PDF; export PowerPoint/Keynote/Google Slides as PDF).
+   VIP presenters' screens appear for everyone in the party. */
+const PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
+const Screens = {
+  list: [], seq: 0, cur: null, css: null,
+  limit(){ return VIP.can("watch") ? 4 : 1; },
+  presenter(){ return VIP.can("watch"); },
+  ensureCSS(){
+    if (this.css || !THREE.CSS3DRenderer) return this.css;
+    const r = this.css = new THREE.CSS3DRenderer(); r.domElement.className = "css3d";
+    $("#stage").insertBefore(r.domElement, $("#stage").querySelector(".xp-top"));
+    this.cssScene = new THREE.Scene();
+    return r;
+  },
+  /* the main screen counts as screen 0 */
+  main(){
+    let s = this.list.find(x => x.id === "main");
+    if (!s){ s = {id: "main", plane: Lounge.videoMat(), group: Lounge.screenGroup, kind: "", w: 3.6, h: 2.025}; this.list.unshift(s); }
+    return s;
+  },
+  add(opts = {}){
+    const extras = this.list.filter(s => s.id !== "main" && !s.remote);
+    if (!opts.remote && extras.length >= this.limit()){ if (!VIP.can("watch")) VIP.open("Free guests get 1 extra screen. VIPs get 4, and everyone in the party sees them."); else toast("You can have up to 4 screens."); return null; }
+    const T = THREE, L = Lounge, id = opts.id || ("s" + Date.now().toString(36) + (this.seq++));
+    const g = new T.Group(), w = 1.92, h = 1.08;
+    const frame = new T.Mesh(roundedBox(w + .08, h + .08, .05, .02), new T.MeshStandardMaterial({color: 0x111114, roughness: .35, metalness: .5}));
+    frame.position.z = -.03; g.add(frame);
+    const plane = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({color: 0x0b0b10, toneMapped: false})); g.add(plane);
+    const glow = new T.Mesh(new T.PlaneGeometry(w + .5, h + .5), new T.MeshBasicMaterial({map: L.glowT, color: 0xffc21a, transparent: true, opacity: .18, depthWrite: false, blending: T.AdditiveBlending})); glow.position.z = -.06; g.add(glow);
+    // ◀ ▶ ✕ buttons under the screen (they work in VR too)
+    const btn = (label, x, fn) => { const [c, cx2] = Tex.canvas(128, 128); cx2.fillStyle = "rgba(20,13,10,.85)"; cx2.beginPath(); cx2.arc(64, 64, 58, 0, Math.PI*2); cx2.fill(); cx2.strokeStyle = "#ffc21a"; cx2.lineWidth = 6; cx2.stroke(); cx2.fillStyle = "#ffc21a"; cx2.font = '700 60px "Hanken Grotesk", sans-serif'; cx2.textAlign = "center"; cx2.textBaseline = "middle"; cx2.fillText(label, 64, 68);
+      const m = new T.Mesh(new T.CircleGeometry(.075, 32), new T.MeshBasicMaterial({map: Tex.make(c), transparent: true, toneMapped: false})); m.position.set(x, -h/2 - .13, .01); g.add(m); L.addClickable(m, fn); return m; };
+    const s = {id, group: g, plane, w, h, kind: "", page: 0, pages: [], remote: !!opts.remote, owner: opts.owner || "me"};
+    s.btns = [btn("◀", -.25, () => this.step(s, -1)), btn("▶", .25, () => this.step(s, 1)), btn("☰", 0, () => this.open(s))];
+    if (!s.remote) s.btns.push(btn("✕", w/2 - .05, () => this.close(s)));
+    L.addClickable(plane, () => this.tapScreen(s));
+    // place it in front of you, or where the presenter put it
+    if (opts.pos){ g.position.set(opts.pos[0], opts.pos[1], opts.pos[2]); g.rotation.y = opts.pos[3]; }
+    else {
+      // off to the side, turned toward you, so it doesn't block the main screen
+      const head = L.headPos(), n = extras.length, side = n % 2 ? -1 : 1, yaw = L.headYaw() + side*(.8 + Math.floor(n/2)*.5), d = 2.6;
+      g.position.set(head.x - Math.sin(yaw)*d, Math.max(1.45, head.y + .05), head.z - Math.cos(yaw)*d); g.rotation.y = yaw;
+    }
+    (L.world ? L.world.group : L.scene).add(g);
+    if (!s.remote){ L.grabbable(g, {upright: true, float: true}); g.userData.kind = "screen"; }
+    s.world = L.worldId;
+    this.list.push(s);
+    return s;
+  },
+  close(s, quiet){
+    this.stop(s);
+    if (s.id === "main"){ Lounge.stopVideo(); return; }
+    s.group.parent && s.group.parent.remove(s.group);
+    Lounge.clickables = Lounge.clickables.filter(o => o !== s.plane && !s.btns.includes(o));
+    if (Lounge.grabbables) Lounge.grabbables = Lounge.grabbables.filter(o => o !== s.group);
+    this.list = this.list.filter(x => x !== s);
+    if (!quiet && !s.remote && this.shared(s)) Party.act.screen.send({op: "close", id: s.id});
+  },
+  shared(s){ return typeof Party !== "undefined" && Party.room && Party.act && this.presenter() && !s.remote; },
+  stop(s){
+    if (s.video){ try{ s.video.pause(); s.video.removeAttribute("src"); s.video.srcObject = null; s.video.load(); }catch(e){} s.video = null; }
+    if (s.cssObj){ this.cssScene && this.cssScene.remove(s.cssObj); s.cssObj.element.remove(); s.cssObj = null; }
+    if (s.stream && typeof Party !== "undefined" && Party.room){ try{ Party.room.removeStream(s.stream); }catch(e){} } s.stream = null;
+    s.kind = ""; s.pages = []; s.page = 0; s.pdf = null;
+    if (s.id !== "main"){ s.plane.material.map = null; s.plane.material.color.setHex(0x0b0b10); s.plane.material.needsUpdate = true; }
+  },
+  setTex(s, tex, aspect){
+    const p = s.plane; if (p.material.map && p.material.map !== tex && !p.material.map.isVideoTexture) p.material.map.dispose();
+    p.material.map = tex; p.material.color.setHex(0xffffff); p.material.needsUpdate = true; p.visible = true;
+    const a = aspect || 16/9, base = s.w/s.h;
+    if (a > base) p.scale.set(1, base/a, 1); else p.scale.set(a/base, 1, 1);
+    if (s.id === "main"){ Lounge.videoOn = s.video || null; $("#btnStopVideo").hidden = false; }
+  },
+  /* sources */
+  async showVideo(s, src, {stream, label, share = true} = {}){
+    this.stop(s);
+    if (S.playing || S.loading){ playToken++; killAudio(); S.playing = false; S.loading = false; stopMeta(); ui(); }
+    const v = s.video = Object.assign(document.createElement("video"), {playsInline: true, preload: "auto", loop: false});
+    if (stream){ v.srcObject = stream; v.autoplay = true; }
+    else { if (/^https?:/.test(src)) v.crossOrigin = "anonymous"; v.src = src; }
+    s.kind = "video";
+    v.addEventListener("error", () => { if (!stream && /^https?:/.test(src)) this.showWeb(s, src, {video: true, share}); }, {once: true});
+    const tex = new THREE.VideoTexture(v); tex.encoding = THREE.sRGBEncoding;
+    v.addEventListener("loadedmetadata", () => this.setTex(s, tex, v.videoWidth/(v.videoHeight || 1)), {once: true});
+    this.setTex(s, tex, 16/9);
+    v.play().catch(() => toast("Tap the screen to start the video."));
+    if (label) toast("📺 " + label);
+    if (share && this.shared(s)){
+      if (/^https?:/.test(src || "")) Party.act.screen.send(this.openMsg(s, {kind: "url", url: src}));
+      else setTimeout(() => { try{ const st = v.captureStream ? v.captureStream() : v.mozCaptureStream(); s.stream = st; Party.room.addStream(st, {metadata: {kind: "screen", id: s.id, pos: this.pos(s)}}); toast("📺 Everyone in the party sees your video."); }catch(e){} }, 400);
+    }
+  },
+  showImage(s, img, share = true){
+    const T = THREE, [c, x] = Tex.canvas(1280, 720);
+    x.fillStyle = "#000"; x.fillRect(0, 0, 1280, 720);
+    const k = Math.min(1280/img.width, 720/img.height), w = img.width*k, h = img.height*k; x.drawImage(img, (1280 - w)/2, (720 - h)/2, w, h);
+    const tex = new T.CanvasTexture(c); tex.encoding = T.sRGBEncoding; tex.anisotropy = 8;
+    this.setTex(s, tex, 16/9);
+    if (share && this.shared(s)){ s.lastImg = c.toDataURL("image/jpeg", .72); Party.act.screen.send(Object.assign(this.openMsg(s, {kind: "slide"}), {page: s.page, total: s.pages.length || 1, img: s.lastImg})); }
+  },
+  async showPDF(s, file){
+    this.stop(s); s.kind = "slides";
+    try{
+      if (!window.pdfjsLib){ await addScript(PDFJS + "pdf.min.js"); pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + "pdf.worker.min.js"; }
+      const pdf = await pdfjsLib.getDocument({data: new Uint8Array(await file.arrayBuffer())}).promise;
+      s.pdf = pdf; s.pages = new Array(Math.min(pdf.numPages, 200)).fill(null); s.page = 0;
+      await this.renderPage(s); toast(`📑 ${s.pages.length} slides. Use ◀ ▶ under the screen.`);
+    }catch(e){ toast("Couldn't open that file. Save your presentation as a PDF and try again."); }
+  },
+  async renderPage(s){
+    if (s.kind === "slides" && s.pdf){
+      if (!s.pages[s.page]){
+        const pg = await s.pdf.getPage(s.page + 1), vp0 = pg.getViewport({scale: 1}), k = Math.min(1600/vp0.width, 1000/vp0.height), vp = pg.getViewport({scale: k});
+        const [c, x] = Tex.canvas(Math.round(vp.width), Math.round(vp.height)); await pg.render({canvasContext: x, viewport: vp}).promise; s.pages[s.page] = c;
+      }
+      this.showImage(s, s.pages[s.page]);
+    } else if (s.kind === "photos" && s.pages[s.page]) this.showImage(s, s.pages[s.page]);
+  },
+  step(s, d){
+    if (!s.pages.length){ if (s.video){ if (s.video.paused) s.video.play(); else s.video.pause(); } return; }
+    if (s.remote){ toast("The presenter controls these slides."); return; }
+    s.page = Math.max(0, Math.min(s.pages.length - 1, s.page + d)); this.renderPage(s);
+  },
+  showYouTube(s, info, opts = {}){
+    this.stop(s); s.kind = "youtube";
+    const r = this.ensureCSS();
+    if (!r || Lounge.renderer.xr.isPresenting){
+      // headsets can't draw YouTube inside a 3D scene; show it as a panel instead
+      Links.play(info, opts); this.placard(s, "▶ YouTube is playing in the panel on your screen"); return;
+    }
+    const el = document.createElement("div"); el.className = "css3d-screen"; el.style.width = "1280px"; el.style.height = "720px";
+    const start = info.start + (opts.at ? Math.max(0, Math.round((Date.now() - opts.at)/1000)) : 0);
+    el.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${info.id}?autoplay=1&playsinline=1&start=${start}" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="YouTube"></iframe>`;
+    this.attachCSS(s, el); s.ytInfo = info; s.ytAt = opts.at || Date.now();
+    if (S.playing || S.loading){ playToken++; killAudio(); S.playing = false; S.loading = false; stopMeta(); ui(); }
+    if (opts.share !== false && this.shared(s)) Party.act.screen.send(Object.assign(this.openMsg(s, {kind: "youtube", url: info.url}), {at: Date.now()}));
+  },
+  showWeb(s, url, {video, share = true} = {}){
+    this.stop(s); s.kind = "web";
+    const r = this.ensureCSS();
+    if (!r || Lounge.renderer.xr.isPresenting){ this.placard(s, "This page opens outside VR"); open(url, "_blank", "noopener"); return; }
+    const el = document.createElement("div"); el.className = "css3d-screen"; el.style.width = "1280px"; el.style.height = "720px";
+    el.innerHTML = video ? `<video src="${esc(url)}" autoplay controls playsinline></video>` : `<iframe src="${esc(url)}" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation" title="Web page"></iframe>`;
+    this.attachCSS(s, el); s.url = url;
+    toast(video ? "📺 Playing the video link" : "🌐 Some sites don't allow being shown inside other apps. If it stays blank, that site blocks it.");
+    if (share && this.shared(s)) Party.act.screen.send(this.openMsg(s, {kind: "url", url}));
+  },
+  attachCSS(s, el){
+    const T = THREE, obj = new T.CSS3DObject(el);
+    const k = s.w/1280; obj.scale.setScalar(k*(s.id === "main" ? (Lounge.screenGroup.scale.x || 1) : 1));
+    s.cssObj = obj; this.cssScene.add(obj);
+    this.placard(s, "");
+  },
+  placard(s, text){
+    const [c, x] = Tex.canvas(1280, 720); x.fillStyle = "#050507"; x.fillRect(0, 0, 1280, 720);
+    if (text){ x.fillStyle = "#ffc21a"; x.font = '700 54px "Hanken Grotesk", sans-serif'; x.textAlign = "center"; x.fillText(text, 640, 380, 1180); }
+    const tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding; this.setTex(s, tex, 16/9);
+  },
+  tapScreen(s){
+    if (s.video){ if (s.video.paused) s.video.play(); else s.video.pause(); return; }
+    if (s.pages.length){ this.step(s, 1); return; }
+    if (s.id === "main"){ togglePlay(); return; }
+    this.open(s);
+  },
+  /* keep web/YouTube panels glued to their screen */
+  update(){
+    if (!this.css) return;
+    const L = Lounge, on = !L.renderer.xr.isPresenting && this.list.some(s => s.cssObj);
+    this.css.domElement.style.display = on ? "" : "none";
+    if (!on) return;
+    for (const s of this.list){
+      if (!s.cssObj) continue;
+      const target = s.id === "main" ? L.videoMat() : s.plane;
+      target.updateMatrixWorld(); target.matrixWorld.decompose(s.cssObj.position, s.cssObj.quaternion, new THREE.Vector3());
+      const ws = new THREE.Vector3(); target.getWorldScale(ws); s.cssObj.scale.setScalar(ws.x*(s.id === "main" ? 3.6 : s.w)/1280);
+      s.cssObj.element.style.visibility = (s.world === L.worldId || s.id === "main") && !this.blocked(s, target) ? "visible" : "hidden";
+    }
+    const cv = $("#loungeCv"); this.css.setSize(cv.clientWidth, cv.clientHeight);
+    this.css.render(this.cssScene, L.camera);
+  },
+  /* web pages draw on top of the 3D scene, so hide one when another screen is in front of it */
+  blocked(s, target){
+    const others = this.list.filter(x => x !== s && x.id !== "main" && x.group.parent && x.world === Lounge.worldId).map(x => x.group);
+    if (!others.length) return false;
+    const cam = Lounge.camera.getWorldPosition(new THREE.Vector3()), rc = this._rc || (this._rc = new THREE.Raycaster());
+    const box = new THREE.Box3().setFromObject(target), c = box.getCenter(new THREE.Vector3()), sz = box.getSize(new THREE.Vector3());
+    const pts = [c, c.clone().add(new THREE.Vector3(sz.x*.4, sz.y*.4, 0)), c.clone().add(new THREE.Vector3(-sz.x*.4, -sz.y*.4, 0)), c.clone().add(new THREE.Vector3(sz.x*.4, -sz.y*.4, sz.z*.4)), c.clone().add(new THREE.Vector3(-sz.x*.4, sz.y*.4, -sz.z*.4))];
+    let hits = 0;
+    for (const p of pts){ const dir = p.clone().sub(cam), dist = dir.length(); rc.set(cam, dir.normalize()); rc.far = dist - .05; if (rc.intersectObjects(others, true).length) hits++; }
+    return hits >= 3;
+  },
+  pos(s){ const p = s.group.getWorldPosition(new THREE.Vector3()); return [+p.x.toFixed(2), +p.y.toFixed(2), +p.z.toFixed(2), +s.group.rotation.y.toFixed(3)]; },
+  openMsg(s, extra){ return Object.assign({op: "open", id: s.id, pos: s.id === "main" ? null : this.pos(s), world: Lounge.worldId}, extra); },
+  resend(peerId){
+    if (!this.presenter() || !Party.act) return;
+    for (const s of this.list){
+      if (s.remote || !s.kind) continue;
+      if (s.stream){ try{ Party.room.addStream(s.stream, {target: peerId, metadata: {kind: "screen", id: s.id, pos: s.id === "main" ? null : this.pos(s)}}); }catch(e){} }
+      else if (s.kind === "youtube" && s.ytInfo) Party.act.screen.send(Object.assign(this.openMsg(s, {kind: "youtube", url: s.ytInfo.url}), {at: s.ytAt}), {target: peerId});
+      else if (s.kind === "web" && s.url) Party.act.screen.send(this.openMsg(s, {kind: "url", url: s.url}), {target: peerId});
+      else if ((s.kind === "slides" || s.kind === "photos") && s.lastImg) Party.act.screen.send(Object.assign(this.openMsg(s, {kind: "slide"}), {img: s.lastImg}), {target: peerId});
+    }
+  },
+  /* from other people in the party (only VIP presenters are shown) */
+  onMsg(p, d){
+    if (!d || p.role === "guest") return;
+    const id = "r-" + String(d.id || "").slice(0, 30), mainId = d.id === "main";
+    let s = mainId ? this.main() : this.list.find(x => x.id === id);
+    if (d.op === "close" || d.op === "stop"){ if (s && !mainId && d.op === "close") this.close(s, true); else if (s){ this.stop(s); if (mainId) Lounge.stopVideo(); else this.placard(s, ""); } return; }
+    if (!s){ if (!Array.isArray(d.pos) || !d.pos.every(Number.isFinite)) return; s = this.add({remote: true, id, pos: d.pos, owner: p.id}); if (!s) return; }
+    s.world = String(d.world || Lounge.worldId);
+    if (d.kind === "youtube"){ const info = Links.parse(d.url); if (info) this.showYouTube(s, info, {at: +d.at || 0, from: p.profile.name, share: false}); }
+    else if (d.kind === "url" && typeof d.url === "string" && /^https:\/\//.test(d.url)){ if (/\.(mp4|webm|mov|m4v)(\?|$)/i.test(d.url)) this.showVideo(s, d.url, {share: false}); else this.showWeb(s, d.url, {share: false}); }
+    else if (d.kind === "slide" && typeof d.img === "string" && /^data:image\/jpeg;base64,/.test(d.img) && d.img.length < 2e6){ Outfit.loadImg(d.img).then(img => { s.kind = "photos"; this.showImage(s, img, false); }); }
+  },
+  onStream(p, stream, meta){
+    if (p.role === "guest") return;
+    let s = meta.id === "main" ? this.main() : this.list.find(x => x.id === "r-" + meta.id);
+    if (!s && Array.isArray(meta.pos)) s = this.add({remote: true, id: "r-" + meta.id, pos: meta.pos, owner: p.id});
+    if (s) this.showVideo(s, null, {stream, label: `${p.profile.name}'s video`, share: false});
+  },
+  /* the Screens window */
+  open(s){
+    this.cur = s || this.main();
+    const box = $("#scrList");
+    const items = this.list.filter(x => !x.remote || x.world === Lounge.worldId);
+    box.innerHTML = items.map(x => `<button type="button" class="seg-like" data-sid="${esc(x.id)}" aria-pressed="${x === this.cur}">${x.id === "main" ? "Main screen" : x.remote ? "Shared screen" : "Screen " + (this.list.filter(y => y.id !== "main" && !y.remote).indexOf(x) + 1)}${x.kind ? " · " + ({video: "video", youtube: "YouTube", web: "web", slides: "slides", photos: "photo"}[x.kind] || "") : ""}</button>`).join("");
+    $("#scrTier").textContent = this.presenter() ? "VIP: up to 4 extra screens, shown to everyone in the party." : "Free: 1 extra screen, just for you. VIP screens are shown to the whole party.";
+    $("#scrRemove").hidden = !this.cur || this.cur.id === "main" || this.cur.remote;
+    $("#screenDlg").showModal();
+  },
+  bindUI(){
+    $("#scrClose").addEventListener("click", () => $("#screenDlg").close());
+    $("#scrList").addEventListener("click", e => { const b = e.target.closest("[data-sid]"); if (b){ this.cur = this.list.find(x => x.id === b.dataset.sid); this.open(this.cur); } });
+    $("#scrAdd").addEventListener("click", () => { const s = this.add(); if (s){ this.open(s); toast("New screen in front of you. Grab it in VR to move it."); } });
+    $("#scrRemove").addEventListener("click", () => { if (this.cur && this.cur.id !== "main"){ this.close(this.cur); $("#screenDlg").close(); } });
+    $("#scrGo").addEventListener("click", () => {
+      const s = this.cur || this.main(), url = $("#scrUrl").value.trim(); if (!url) return;
+      if (s.remote){ toast("That screen belongs to the presenter."); return; }
+      const yt = Links.parse(url);
+      if (yt && yt.svc === "YouTube") this.showYouTube(s, yt);
+      else if (!/^https:\/\//.test(url)){ toast("Links must start with https://"); return; }
+      else if (/\.(mp4|webm|mov|m4v)(\?|$)/i.test(url)) this.showVideo(s, url, {label: "Video link"});
+      else if (/\.(jpe?g|png|gif|webp)(\?|$)/i.test(url)) Outfit.loadImg(url).then(img => { s.kind = "photos"; s.pages = [img]; s.page = 0; this.showImage(s, img); }).catch(() => this.showWeb(s, url));
+      else this.showWeb(s, url);
+      $("#screenDlg").close();
+    });
+    $("#scrFile").addEventListener("change", async e => {
+      const s = this.cur || this.main(), f = e.target.files[0]; e.target.value = ""; if (!f) return;
+      if (s.remote){ toast("That screen belongs to the presenter."); return; }
+      $("#screenDlg").close();
+      if (/^video\//.test(f.type) || /\.(mp4|webm|mov|m4v)$/i.test(f.name)) this.showVideo(s, URL.createObjectURL(f), {label: f.name});
+      else if (/pdf$/i.test(f.type) || /\.pdf$/i.test(f.name)) this.showPDF(s, f);
+      else if (/^image\//.test(f.type)){ const img = await Outfit.loadImg(URL.createObjectURL(f)); this.stop(s); s.kind = "photos"; s.pages = [img]; s.page = 0; this.showImage(s, img); }
+      else if (/\.(pptx?|key|odp)$/i.test(f.name)) toast("Save the presentation as a PDF first (File → Export → PDF), then upload the PDF.", 6000);
+      else toast("Upload a video, a photo or a PDF.");
+    });
+    $("#scrStop").addEventListener("click", () => { const s = this.cur || this.main(); if (s.remote) return; this.stop(s); if (s.id === "main") Lounge.stopVideo(); else this.placard(s, ""); if (this.shared(s)) Party.act.screen.send({op: "stop", id: s.id}); $("#screenDlg").close(); });
+    $("#btnScreens").addEventListener("click", () => this.open());
+  }
+};
+
+Screens.bindUI();
 VIP.bindUI(); Media.bindUI(); Booth.bindUI(); Links.bindUI(); Social.bindUI();
 setTimeout(() => VIP.load(), 1500);
 
