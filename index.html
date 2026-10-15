@@ -2149,6 +2149,72 @@ const Props = {
   }
 };
 
+/* Textures for the Madrid, concert, rodeo, coffee shop and TV studio worlds */
+Object.assign(Tex, {
+  tiles(){   // terracotta courtyard tiles
+    const [c, x] = this.canvas(512, 512), n = 4, s = 512/n;
+    for (let r=0;r<n;r++) for (let k=0;k<n;k++){ const l = 38 + Math.random()*10; x.fillStyle = `hsl(${14 + Math.random()*8},${48 + Math.random()*12}%,${l}%)`; x.fillRect(k*s, r*s, s, s); }
+    this.noise(x, 512, 512, 26);
+    x.fillStyle = "#b8a68a"; for (let i=0;i<=n;i++){ x.fillRect(i*s - 3, 0, 6, 512); x.fillRect(0, i*s - 3, 512, 6); }
+    for (let r=0;r<n;r++) for (let k=0;k<n;k++){ x.fillStyle = "#e9dcc0"; x.save(); x.translate(k*s, r*s); x.rotate(Math.PI/4); x.fillRect(-9, -9, 18, 18); x.restore(); }
+    return c;
+  },
+  stucco(color = "#d9a35f"){
+    const [c, x] = this.canvas(512, 512); x.fillStyle = color; x.fillRect(0, 0, 512, 512); this.noise(x, 512, 512, 30);
+    for (let i=0;i<40;i++){ x.fillStyle = `rgba(${Math.random() < .5 ? "90,50,20" : "255,240,210"},${Math.random()*.08})`; x.beginPath(); x.ellipse(Math.random()*512, Math.random()*512, 20 + Math.random()*80, 10 + Math.random()*40, Math.random()*3, 0, Math.PI*2); x.fill(); }
+    return c;
+  },
+  brick(){
+    const [c, x] = this.canvas(512, 512); x.fillStyle = "#cfc4b4"; x.fillRect(0, 0, 512, 512);
+    for (let r=0;r<16;r++) for (let k=-1;k<9;k++){ const ox = (r % 2)*32; x.fillStyle = `hsl(${8 + Math.random()*12},${40 + Math.random()*15}%,${28 + Math.random()*14}%)`; x.fillRect(k*64 + ox + 2, r*32 + 2, 60, 28); }
+    this.noise(x, 512, 512, 30); return c;
+  },
+  dirt(){
+    const [c, x] = this.canvas(512, 512); x.fillStyle = "#8a6440"; x.fillRect(0, 0, 512, 512);
+    for (let i=0;i<900;i++){ x.fillStyle = `rgba(${Math.random() < .5 ? "60,40,22" : "190,150,105"},${Math.random()*.35})`; x.beginPath(); x.arc(Math.random()*512, Math.random()*512, Math.random()*3 + .5, 0, Math.PI*2); x.fill(); }
+    for (let i=0;i<30;i++){ x.strokeStyle = "rgba(70,48,28,.25)"; x.lineWidth = 3; x.beginPath(); const y = Math.random()*512; x.moveTo(0, y); x.bezierCurveTo(170, y + 30, 340, y - 30, 512, y + 10); x.stroke(); }
+    this.noise(x, 512, 512, 30); return c;
+  },
+  straw(){
+    const [c, x] = this.canvas(256, 256); x.fillStyle = "#c9a24e"; x.fillRect(0, 0, 256, 256);
+    for (let i=0;i<500;i++){ x.strokeStyle = `rgba(${Math.random() < .5 ? "120,85,30" : "240,215,140"},${.3 + Math.random()*.4})`; x.lineWidth = 1 + Math.random(); x.beginPath(); const px = Math.random()*256, py = Math.random()*256; x.moveTo(px, py); x.lineTo(px + 18 + Math.random()*20, py + (Math.random() - .5)*6); x.stroke(); }
+    return c;
+  },
+  ledGrid(cols = 12, rows = 12){   // glossy studio floor with glowing seams
+    const [c, x] = this.canvas(1024, 1024); x.fillStyle = "#07070b"; x.fillRect(0, 0, 1024, 1024);
+    const s = 1024/cols;
+    for (let r=0;r<rows;r++) for (let k=0;k<cols;k++){ const g = x.createRadialGradient(k*s + s/2, r*s + s/2, 2, k*s + s/2, r*s + s/2, s*.7); g.addColorStop(0, "#14141c"); g.addColorStop(1, "#08080c"); x.fillStyle = g; x.fillRect(k*s + 2, r*s + 2, s - 4, s - 4); }
+    x.fillStyle = "#ffffff"; for (let i=0;i<=cols;i++){ x.fillRect(i*s - 2, 0, 4, 1024); x.fillRect(0, i*s - 2, 1024, 4); }
+    return c;
+  },
+  rainGlass(){   // droplets on a window
+    const [c, x] = this.canvas(512, 512); x.clearRect(0, 0, 512, 512);
+    for (let i=0;i<260;i++){ const px = Math.random()*512, py = Math.random()*512, r = Math.random()*4 + 1.2;
+      const g = x.createRadialGradient(px - r*.3, py - r*.3, 0, px, py, r); g.addColorStop(0, "rgba(255,255,255,.55)"); g.addColorStop(.6, "rgba(200,220,255,.18)"); g.addColorStop(1, "rgba(255,255,255,0)");
+      x.fillStyle = g; x.beginPath(); x.ellipse(px, py, r, r*1.25, 0, 0, Math.PI*2); x.fill();
+      if (Math.random() < .15){ x.strokeStyle = "rgba(220,235,255,.18)"; x.lineWidth = r*.6; x.beginPath(); x.moveTo(px, py); x.lineTo(px + (Math.random() - .5)*6, py + 20 + Math.random()*60); x.stroke(); } }
+    return c;
+  },
+  rainyStreet(){   // blurry night street seen through a wet window
+    const [c, x] = this.canvas(1024, 512), g = x.createLinearGradient(0, 0, 0, 512);
+    g.addColorStop(0, "#0b1020"); g.addColorStop(.55, "#1a2236"); g.addColorStop(1, "#2a2422"); x.fillStyle = g; x.fillRect(0, 0, 1024, 512);
+    x.fillStyle = "#121624"; for (let i=0;i<8;i++){ const w = 90 + Math.random()*120, h = 120 + Math.random()*200; x.fillRect(i*130 + Math.random()*30, 330 - h, w, h); }
+    for (let i=0;i<90;i++){ const px = Math.random()*1024, py = 120 + Math.random()*300, r = 6 + Math.random()*26, hue = [35, 40, 0, 200, 50][i % 5];
+      const rg = x.createRadialGradient(px, py, 0, px, py, r); rg.addColorStop(0, `hsla(${hue},90%,70%,.75)`); rg.addColorStop(1, `hsla(${hue},90%,60%,0)`); x.fillStyle = rg; x.fillRect(px - r, py - r, r*2, r*2); }
+    for (let i=0;i<40;i++){ const px = Math.random()*1024; x.fillStyle = `hsla(${[35, 0, 50][i % 3]},90%,60%,.12)`; x.fillRect(px, 360, 6 + Math.random()*10, 152); }
+    return c;
+  },
+  westernSign(text, w = 1024, h = 256){
+    const [c, x] = this.canvas(w, h); x.fillStyle = "#3b2414"; x.fillRect(0, 0, w, h);
+    for (let i=0;i<h;i+=h/4){ x.fillStyle = "rgba(0,0,0,.35)"; x.fillRect(0, i, w, 4); }
+    this.noise(x, w, h, 30);
+    x.strokeStyle = "#d9b26a"; x.lineWidth = 10; x.strokeRect(14, 14, w - 28, h - 28);
+    x.fillStyle = "#f2d38a"; x.font = `700 ${h*.55}px "Rockwell", "Georgia", serif`; x.textAlign = "center"; x.textBaseline = "middle";
+    x.shadowColor = "#000"; x.shadowBlur = 6; x.fillText(text, w/2, h/2 + 6, w*.9);
+    return c;
+  }
+});
+
 /* ================= Detailed cars: sedan, SUV and NYC yellow cab =================
    Body is a side profile with wheel arches, extruded and bevelled so the edges catch light.
    Front of the car points along +x. */
@@ -2595,6 +2661,608 @@ const Lounge = {
     addEventListener("resize", () => this.resize());
   },
 
+  /* ---------- shared bits for the newer worlds ---------- */
+  festoon(g, a, b, sag, n, color = 0xffd08a, size = .24){
+    const T = THREE, pts = [];
+    for (let i=0;i<=n;i++){ const t = i/n; pts.push(a[0] + (b[0] - a[0])*t, a[1] + (b[1] - a[1])*t - Math.sin(t*Math.PI)*sag, a[2] + (b[2] - a[2])*t); }
+    const geo = new T.BufferGeometry(); geo.setAttribute("position", new T.Float32BufferAttribute(pts, 3));
+    const bulbs = new T.Points(geo, new T.PointsMaterial({color, size, map: this.glowT, transparent: true, depthWrite: false, blending: T.AdditiveBlending, toneMapped: false}));
+    g.add(bulbs, new T.Line(geo, new T.LineBasicMaterial({color: 0x161210})));
+    return bulbs;
+  },
+  skyDome(g, top, mid, hor, stars = 0){
+    const T = THREE, c = v => new T.Color(v);
+    const m = new T.ShaderMaterial({side: T.BackSide, depthWrite: false, fog: false, uniforms: {t: {value: c(top)}, m: {value: c(mid)}, h: {value: c(hor)}},
+      vertexShader: "varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }",
+      fragmentShader: "uniform vec3 t; uniform vec3 m; uniform vec3 h; varying vec3 vP; void main(){ float y = clamp(vP.y, -0.2, 1.0); vec3 c = y < 0.18 ? mix(h, m, smoothstep(-0.05, 0.18, y)) : mix(m, t, smoothstep(0.18, 0.8, y)); gl_FragColor = vec4(c, 1.0); }"});
+    g.add(new T.Mesh(new T.SphereGeometry(160, 32, 16), m));
+    if (stars){ const p = []; for (let i=0;i<stars;i++){ const th = Math.random()*Math.PI*2, ph = Math.acos(.2 + Math.random()*.8); p.push(140*Math.sin(ph)*Math.cos(th), 140*Math.cos(ph), 140*Math.sin(ph)*Math.sin(th)); }
+      const sg = new T.BufferGeometry(); sg.setAttribute("position", new T.Float32BufferAttribute(p, 3));
+      g.add(new T.Points(sg, new T.PointsMaterial({color: 0xffffff, size: .45, map: this.glowT, transparent: true, depthWrite: false, fog: false}))); }
+    return m;
+  },
+  stdMat(color, rough = .8, extra = {}){ return new THREE.MeshStandardMaterial(Object.assign({color, roughness: rough}, extra)); },
+  cafeChair(g, x, y, z, ry, wood){
+    const T = THREE, c = new T.Group(); c.position.set(x, y, z); c.rotation.y = ry; g.add(c);
+    const add = this.add;
+    add(new T.Mesh(roundedBox(.42, .04, .42, .015), wood), c).position.y = .46;
+    for (const [lx, lz] of [[-.18, -.18], [.18, -.18], [-.18, .18], [.18, .18]]) add(new T.Mesh(new T.CylinderGeometry(.018, .016, .46, 8), wood), c).position.set(lx, .23, lz);
+    add(new T.Mesh(roundedBox(.42, .38, .035, .015), wood), c).position.set(0, .68, .2);
+    return c;
+  },
+
+  /* ================= Madrid: a fiesta in a Spanish courtyard ================= */
+  buildMadrid(){
+    const T = THREE, M = this.mats, add = this.add;
+    const g = this.room = new T.Group(); this.scene.add(g);
+    this.skyDome(g, 0x0b1030, 0x1c1a4a, 0x3a2340, 900);
+    // terracotta tile floor
+    const tC = Tex.tiles(), tileT = Tex.make(tC, {repeat: [9, 8]}), tileN = Tex.make(Tex.normal(tC, 4), {repeat: [9, 8], srgb: false});
+    const floor = add(new T.Mesh(new T.PlaneGeometry(22, 18), new T.MeshStandardMaterial({map: tileT, normalMap: tileN, normalScale: new T.Vector2(.6, .6), roughness: .55})), g, false, true);
+    floor.rotation.x = -Math.PI/2; floor.position.set(0, 0, -3); this.walkable(floor); this.surface(floor);
+    // four stucco walls with an arcade, shuttered windows and iron balconies
+    const stC = Tex.stucco("#d9a35f"), stuccoM = new T.MeshStandardMaterial({map: Tex.make(stC, {repeat: [4, 2]}), normalMap: Tex.make(Tex.normal(stC, 2), {repeat: [4, 2], srgb: false}), roughness: .9});
+    const stone = this.stdMat(0xd8c6a2, .75), shutterM = this.stdMat(0x2f5a3a, .6), iron = this.stdMat(0x151515, .5, {metalness: .6});
+    const archM = new T.MeshStandardMaterial({color: 0x2a160c, emissive: 0x3a1a08, roughness: 1});
+    const winM = new T.MeshStandardMaterial({map: this.interiorT, emissive: 0xffffff, emissiveMap: this.interiorT, emissiveIntensity: .8, roughness: .6});
+    const potM = this.stdMat(0xb4532a, .8), geranium = new T.MeshStandardMaterial({color: 0xd61f2c, roughness: .6, emissive: 0x200004}), leafM = this.stdMat(0x2f6b2a, .8);
+    const rails = [], flowers = [];
+    const wall = (cx, cz, ry, len) => {
+      const w = new T.Group(); w.position.set(cx, 0, cz); w.rotation.y = ry; g.add(w);
+      add(new T.Mesh(new T.BoxGeometry(len, 11, .5), stuccoM), w).position.set(0, 5.5, -.25);
+      add(new T.Mesh(new T.BoxGeometry(len, .35, .15), stone), w).position.set(0, 4.05, .06);
+      add(new T.Mesh(new T.BoxGeometry(len, .5, .4), stone), w).position.set(0, 11.1, .1);
+      const bays = Math.floor(len/3.2), step = len/bays;
+      for (let i=0;i<bays;i++){
+        const x = -len/2 + step*(i + .5);
+        const s = new T.Shape(); s.moveTo(-1.05, 0); s.lineTo(-1.05, 2.4); s.absarc(0, 2.4, 1.05, Math.PI, 0, true); s.lineTo(1.05, 0); s.closePath();
+        add(new T.Mesh(new T.ShapeGeometry(s, 16), archM), w, false).position.set(x, 0, .01);
+        const trim = new T.Mesh(new T.TorusGeometry(1.1, .08, 8, 24, Math.PI), stone); trim.position.set(x, 2.4, .05); w.add(trim);
+        add(new T.Mesh(new T.CylinderGeometry(.16, .19, 3.5, 14), stone), w).position.set(x - step/2, 1.75, .18);
+        for (const fy of [5.6, 8.6]){
+          add(new T.Mesh(new T.PlaneGeometry(1, 1.7), winM), w, false).position.set(x, fy, .02);
+          for (const sx of [-1, 1]){ const sh = add(new T.Mesh(new T.BoxGeometry(.5, 1.75, .05), shutterM), w); sh.position.set(x + sx*.78, fy, .06); sh.rotation.y = sx*.25; }
+          add(new T.Mesh(new T.BoxGeometry(1.7, .1, .6), stone), w).position.set(x, fy - .9, .3);
+          for (let k=0;k<9;k++) rails.push([w, x - .8 + k*.2, fy - .55, .58]);
+          add(new T.Mesh(new T.BoxGeometry(1.7, .04, .04), iron), w).position.set(x, fy - .2, .58);
+          for (const px of [-.55, .55]){ add(new T.Mesh(new T.CylinderGeometry(.11, .08, .18, 12), potM), w).position.set(x + px, fy - .76, .42); flowers.push([w, x + px, fy - .6, .42]); }
+        }
+      }
+    };
+    wall(0, -12, 0, 22); wall(-11, -3, Math.PI/2, 18); wall(11, -3, -Math.PI/2, 18); wall(0, 6, Math.PI, 22);
+    // iron balcony bars and geraniums as instanced meshes (cheap on Quest)
+    const bars = new T.InstancedMesh(new T.CylinderGeometry(.012, .012, .7, 5), iron, rails.length), dd = new T.Object3D(), wp = new T.Vector3();
+    rails.forEach(([w, x, y, z], i) => { w.updateMatrixWorld(true); wp.set(x, y, z).applyMatrix4(w.matrixWorld); dd.position.copy(wp); dd.rotation.set(0, 0, 0); dd.updateMatrix(); bars.setMatrixAt(i, dd.matrix); });
+    g.add(bars);
+    const bloom = new T.InstancedMesh(new T.IcosahedronGeometry(.13, 1), geranium, flowers.length), leafI = new T.InstancedMesh(new T.IcosahedronGeometry(.16, 0), leafM, flowers.length);
+    flowers.forEach(([w, x, y, z], i) => { wp.set(x, y, z).applyMatrix4(w.matrixWorld); dd.position.copy(wp); dd.updateMatrix(); leafI.setMatrixAt(i, dd.matrix); dd.position.y += .1; dd.updateMatrix(); bloom.setMatrixAt(i, dd.matrix); });
+    g.add(bloom, leafI);
+    // wall lanterns
+    this.mdLanterns = [];
+    for (const [x, y, z] of [[-11 + .35, 3.2, -9], [-11 + .35, 3.2, 2], [11 - .35, 3.2, -9], [11 - .35, 3.2, 2], [-6, 3.2, -12 + .35], [6, 3.2, -12 + .35]]){
+      const l = new T.Group(); l.position.set(x, y, z); g.add(l);
+      add(new T.Mesh(new T.CylinderGeometry(.12, .16, .36, 6), new T.MeshStandardMaterial({color: 0xffc777, emissive: 0xff9a3a, emissiveIntensity: 1.4, transparent: true, opacity: .9})), l);
+      add(new T.Mesh(new T.ConeGeometry(.2, .16, 6), iron), l).position.y = .26;
+      const s = new T.Sprite(new T.SpriteMaterial({map: this.glowT, color: 0xffa040, transparent: true, opacity: .55, depthWrite: false, blending: T.AdditiveBlending})); s.scale.setScalar(1.6); l.add(s);
+      const pl = new T.PointLight(0xffa04a, .7, 7, 2); l.add(pl); this.mdLanterns.push(pl);
+    }
+    // the fountain
+    const fx = 0, fz = -5.2, stoneF = this.stdMat(0xcbb894, .7);
+    add(new T.Mesh(Props.lathe([[0, 0], [1.75, 0], [1.8, .05], [1.8, .55], [1.62, .58], [1.6, .2], [0, .2]], 48), stoneF), g).position.set(fx, 0, fz);
+    add(new T.Mesh(Props.lathe([[0, .2], [.28, .2], [.2, .6], [.16, 1.15], [.3, 1.25], [.75, 1.32], [.8, 1.42], [.7, 1.45], [.2, 1.4], [.13, 1.9], [.2, 2.0], [.06, 2.25], [0, 2.3]], 36), stoneF), g).position.set(fx, 0, fz);
+    this.fountainWater = new T.MeshPhysicalMaterial({color: 0x3c8fb0, roughness: .05, metalness: .1, transparent: true, opacity: .78, clearcoat: 1, envMap: this.envTex});
+    add(new T.Mesh(new T.CircleGeometry(1.6, 40).rotateX(-Math.PI/2), this.fountainWater), g, false).position.set(fx, .5, fz);
+    add(new T.Mesh(new T.CircleGeometry(.7, 24).rotateX(-Math.PI/2), this.fountainWater), g, false).position.set(fx, 1.41, fz);
+    const streamM = new T.MeshBasicMaterial({color: 0xbfe8ff, transparent: true, opacity: .35, depthWrite: false});
+    add(new T.Mesh(new T.CylinderGeometry(.75, 1.05, .9, 32, 1, true), streamM), g, false).position.set(fx, .95, fz);
+    this.fountainSpray = add(new T.Mesh(new T.ConeGeometry(.12, .5, 12, 1, true), streamM), g, false); this.fountainSpray.position.set(fx, 2.45, fz); this.fountainSpray.rotation.x = Math.PI;
+    // orange trees in big pots
+    const fol = Tex.make(Tex.foliage()), folM = new T.MeshStandardMaterial({map: fol, color: 0x4f8f3a, roughness: .9}), orangeM = new T.MeshStandardMaterial({color: 0xff8a1a, roughness: .5});
+    for (const [x, z] of [[-8.6, -9.6], [8.6, -9.6], [-8.6, 3.6], [8.6, 3.6]]){
+      add(new T.Mesh(Props.lathe([[0, 0], [.42, 0], [.55, .6], [.6, .66], [0, .66]], 24), potM), g).position.set(x, 0, z);
+      add(new T.Mesh(new T.CylinderGeometry(.07, .1, 1.6, 8), this.stdMat(0x5a3a22, .9)), g).position.set(x, 1.4, z);
+      for (let k=0;k<5;k++){ const b = add(new T.Mesh(new T.IcosahedronGeometry(.55 + Math.random()*.2, 1), folM), g); b.position.set(x + rnd(-.4, .4), 2.4 + rnd(-.2, .4), z + rnd(-.4, .4)); }
+      for (let k=0;k<10;k++) add(new T.Mesh(new T.SphereGeometry(.06, 8, 6), orangeM), g).position.set(x + rnd(-.7, .7), 2.2 + rnd(0, .8), z + rnd(-.7, .7));
+    }
+    // festoon lights across the courtyard
+    this.mdBulbs = [
+      this.festoon(g, [-10.8, 6.2, -11.8], [10.8, 6.2, 5.8], 1.2, 40, 0xffd08a),
+      this.festoon(g, [10.8, 6.2, -11.8], [-10.8, 6.2, 5.8], 1.2, 40, 0xff9a5a),
+      this.festoon(g, [-10.8, 5.6, -4], [10.8, 5.6, -4], .9, 30, 0xffe2a0)
+    ];
+    // tables with tapas; yours is right in front of you
+    const woodM = M.walnut, clothT = Tex.make(Tex.stripes("#b3192a", "#f4ece0", 14)), clothM = new T.MeshStandardMaterial({map: clothT, roughness: .9});
+    const table = (x, z) => { const t = new T.Group(); t.position.set(x, 0, z); g.add(t);
+      add(new T.Mesh(new T.CylinderGeometry(.04, .05, .72, 10), iron), t).position.y = .36;
+      add(new T.Mesh(new T.CylinderGeometry(.28, .3, .04, 20), iron), t).position.y = .02;
+      const top = this.surface(add(new T.Mesh(new T.CylinderGeometry(.45, .45, .04, 32), woodM), t)); top.position.y = .74;
+      add(new T.Mesh(new T.CylinderGeometry(.47, .52, .2, 32, 1, true), clothM), t).position.y = .66;
+      return t; };
+    table(0, -.95);
+    const onT = (o, x, z, ry = 0) => { o.position.set(x, .76, z); o.rotation.y = ry; g.add(o); return this.grabbable(o); };
+    // paella pan with saffron rice, prawns and lemon
+    const paella = new T.Group();
+    Props.mesh(Props.lathe([[0, 0], [.2, 0], [.23, .045], [.235, .05]], 40), this.stdMat(0x2a2a2a, .4, {metalness: .8, side: T.DoubleSide}), paella);
+    const [rc, rx] = Tex.canvas(256, 256); rx.fillStyle = "#e3a82b"; rx.fillRect(0, 0, 256, 256); for (let i=0;i<1400;i++){ rx.fillStyle = `rgba(${Math.random() < .5 ? "255,220,120" : "170,110,20"},.6)`; rx.fillRect(Math.random()*256, Math.random()*256, 3, 1.5); }
+    for (let i=0;i<30;i++){ rx.fillStyle = Math.random() < .5 ? "#5aa03a" : "#b8261b"; rx.beginPath(); rx.arc(Math.random()*256, Math.random()*256, 4, 0, Math.PI*2); rx.fill(); }
+    Props.mesh(new T.CircleGeometry(.215, 40).rotateX(-Math.PI/2), new T.MeshStandardMaterial({map: Tex.make(rc), roughness: .7}), paella, 0, .035, 0);
+    for (let i=0;i<6;i++){ const a = i/6*Math.PI*2; const pr = Props.mesh(new T.TorusGeometry(.03, .012, 6, 12, Math.PI*1.4), this.stdMat(0xf26b3a, .5), paella, Math.cos(a)*.13, .045, Math.sin(a)*.13); pr.rotation.set(-Math.PI/2, 0, a); }
+    const lem = Props.mesh(new T.SphereGeometry(.035, 12, 8, 0, Math.PI), this.stdMat(0xf5d53a, .5), paella, 0, .04, 0); lem.rotation.x = -Math.PI/2;
+    onT(paella, .02, -.98);
+    // sangria pitcher with fruit
+    const pitcher = new T.Group(), pm = Props.mats();
+    Props.mesh(Props.lathe([[0, 0], [.07, 0], [.075, .02], [.08, .14], [.07, .2], [.072, .22], [.085, .235]]), pm.glass, pitcher);
+    Props.mesh(new T.CylinderGeometry(.068, .07, .16, 24), pm.redWine, pitcher, 0, .09, 0).castShadow = false;
+    for (let i=0;i<4;i++){ const s = Props.mesh(new T.CylinderGeometry(.025, .025, .006, 14), this.stdMat(i % 2 ? 0xff8a1a : 0xf5d53a, .5), pitcher, rnd(-.03, .03), .12 + i*.02, rnd(-.03, .03)); s.rotation.x = rnd(0, 1.5); }
+    const hd = Props.mesh(new T.TorusGeometry(.05, .008, 8, 16, Math.PI), pm.glass, pitcher, .085, .12, 0); hd.rotation.z = -Math.PI/2;
+    onT(pitcher, -.25, -.78);
+    onT(Props.wineGlass("redWine"), .3, -.72); onT(Props.wineGlass("redWine"), -.32, -1.18); onT(Props.tumbler("water", 1), .28, -1.22);
+    for (const [x, z, ry] of [[0, .3, 0], [.85, -1.3, -2.2]]) this.cafeChair(g, x, 0, z, ry, woodM);
+    // other tables with friends sitting
+    for (const [x, z] of [[-6.5, -1.5], [6.5, -1.5], [-6.8, -8.2], [6.8, -8.2]]){
+      table(x, z);
+      const cA = Math.atan2(.55, .35), cB = cA + Math.PI;
+      this.cafeChair(g, x + .55, 0, z + .35, cA, woodM); this.cafeChair(g, x - .55, 0, z - .35, cB, woodM);
+      this.person(g, x + .55 - Math.sin(cA + Math.PI)*.04, 0, z + .35 - Math.cos(cA + Math.PI)*.04, cA + Math.PI, "sit");
+      this.person(g, x - .55 - Math.sin(cB + Math.PI)*.04, 0, z - .35 - Math.cos(cB + Math.PI)*.04, cB + Math.PI, "sit");
+      onT(Props.wineGlass("redWine"), x + .12, z + .1); this.grabbables[this.grabbables.length - 1].position.y = .76;
+    }
+    // guitarist on a stool with his guitar on a stand
+    this.person(g, -3.6, 0, -9.4, .35, "sit", {gender: "m"});
+    add(new T.Mesh(new T.CylinderGeometry(.18, .18, .45, 16), woodM), g).position.set(-3.6, .22, -9.45);
+    const gtr = new T.Group(); gtr.position.set(-2.8, 0, -9.6); gtr.rotation.set(-.15, .3, 0); g.add(gtr);
+    const gwood = this.stdMat(0xb5743a, .35, {metalness: .05});
+    add(new T.Mesh(new T.SphereGeometry(.2, 20, 12), gwood), gtr).scale.set(1, 1.15, .35); gtr.children[0].position.y = .45;
+    add(new T.Mesh(new T.SphereGeometry(.16, 20, 12), gwood), gtr).scale.set(1, 1, .35); gtr.children[1].position.y = .74;
+    add(new T.Mesh(new T.BoxGeometry(.06, .55, .03), this.stdMat(0x3a2414, .5)), gtr).position.set(0, 1.1, 0);
+    add(new T.Mesh(new T.CircleGeometry(.06, 20), this.stdMat(0x111111, .9)), gtr).position.set(0, .7, .072);
+    // flamenco dancers around the fountain, friends chatting under the arcade
+    this.mdDancers = [];
+    for (let i=0;i<12;i++){ const a = i/12*Math.PI*2 + .2, r = 2.8 + (i % 3)*.6, x = fx + Math.sin(a)*r, z = fz + Math.cos(a)*r;
+      if (z > -1.6 && Math.abs(x) < 1.6) continue;
+      this.mdDancers.push(this.person(g, x, 0, z, Math.atan2(fx - x, fz - z) + Math.PI + rnd(-.5, .5), i % 5 === 0 ? "cheer" : "dance", {gender: i % 2 ? "f" : "m"})); }
+    this.person(g, 9.2, 0, -6.5, -Math.PI/2 + .4, "talk", {gender: "f"}); this.person(g, 9.0, 0, -5.6, -Math.PI/2 - .5 + Math.PI, "talk", {gender: "m"});
+    this.person(g, -9.3, 0, 1.5, Math.PI/2, "idle", {gender: "f"});
+    // lights
+    g.add(new T.HemisphereLight(0xffc89a, 0x3a2030, .55));
+    const key = new T.DirectionalLight(0xffd6a8, .55); key.position.set(4, 14, 6); key.castShadow = true; key.shadow.mapSize.set(1024, 1024); Object.assign(key.shadow.camera, {left: -12, right: 12, top: 12, bottom: -12}); g.add(key);
+    this.mdFill = new T.PointLight(0xff9a5a, 1.2, 14, 2); this.mdFill.position.set(0, 5, -4); g.add(this.mdFill);
+    return {id: "madrid", name: "Madrid Courtyard Fiesta", group: g, floorY: 0, fog: new T.FogExp2(0x1a1230, .01), exposure: 1.05,
+      screen: [0, 4.6, -11.45, 1.45, 0],
+      onMood: m => { this.mdBulbs[0].material.color.setHex(m.a); this.mdBulbs[1].material.color.setHex(m.b); this.mdFill.color.setHex(m.a); },
+      update: (dt, t, A) => {
+        this.fountainSpray.scale.set(1 + Math.sin(t*8)*.08, 1 + A.bass*.5, 1);
+        this.fountainWater.color.setHSL(.55, .45, .35 + Math.sin(t*2)*.03);
+        this.mdBulbs.forEach((b, i) => { b.material.size = .22 + A.mid*.18 + Math.sin(t*3 + i)*.02; });
+        this.mdLanterns.forEach((l, i) => { l.intensity = .6 + Math.sin(t*9 + i*2)*.08 + A.bass*.3; });
+        this.mdFill.intensity = 1 + A.bass*1.2;
+      }};
+  },
+
+  /* ================= Hip-hop concert in an arena ================= */
+  buildConcert(){
+    const T = THREE, M = this.mats, add = this.add, glowT = this.glowT;
+    const g = this.room = new T.Group(); this.scene.add(g);
+    g.add(new T.Mesh(new T.BoxGeometry(70, 30, 70), new T.MeshBasicMaterial({color: 0x050508, side: T.BackSide})));
+    // floors: the pit is a step down from the VIP riser where you start
+    const cC = Tex.concrete(), concT = Tex.make(cC, {repeat: [10, 10]});
+    const pit = add(new T.Mesh(new T.PlaneGeometry(36, 30), new T.MeshStandardMaterial({map: concT, color: 0x6a6a72, roughness: .5, metalness: .2})), g, false, true);
+    pit.rotation.x = -Math.PI/2; pit.position.set(0, -1, -8); this.walkable(pit); this.surface(pit);
+    const riserM = new T.MeshStandardMaterial({color: 0x15151a, roughness: .35, metalness: .4});
+    const riser = add(new T.Mesh(new T.BoxGeometry(10, 1, 5), riserM), g, false, true); riser.position.set(0, -.5, .9); this.walkable(riser); this.surface(riser);
+    for (let i=0;i<5;i++) add(new T.Mesh(new T.BoxGeometry(10/5 - .05, .02, .04), new T.MeshBasicMaterial({color: 0xffc21a, toneMapped: false})), g).position.set(-4 + i*2, .01, -1.58);
+    add(new T.Mesh(new T.BoxGeometry(10, .55, .03), M.glass), g).position.set(0, .28, -1.6);
+    add(new T.Mesh(new T.BoxGeometry(10, .04, .06), M.brass), g).position.set(0, .57, -1.6);
+    // the stage
+    const stageY = .6, stM = new T.MeshPhysicalMaterial({color: 0x0c0c10, roughness: .15, metalness: .3, clearcoat: .8, envMap: this.envTex});
+    const stage = add(new T.Mesh(new T.BoxGeometry(20, stageY + 1, 8), stM), g); stage.position.set(0, (stageY - 1)/2, -18); this.walkable(stage);
+    add(new T.Mesh(new T.BoxGeometry(20, .06, .06), new T.MeshBasicMaterial({color: 0xff4fd8, toneMapped: false})), g).position.set(0, stageY - .02, -14.02);
+    // barricade
+    const barM = this.stdMat(0x9aa0a8, .4, {metalness: .9});
+    for (let i=0;i<16;i++){ const b = new T.Group(); b.position.set(-9.4 + i*1.25, -1, -12.6); g.add(b);
+      add(new T.Mesh(new T.BoxGeometry(1.2, .05, .05), barM), b).position.y = 1.15; add(new T.Mesh(new T.BoxGeometry(1.2, .05, .05), barM), b).position.y = .3;
+      for (let k=0;k<6;k++) add(new T.Mesh(new T.BoxGeometry(.02, .85, .02), barM), b).position.set(-.5 + k*.2, .72, 0);
+      add(new T.Mesh(new T.BoxGeometry(.06, 1.2, .5), barM), b).position.set(-.6, .6, .2); }
+    // LED side panels and the screen wall
+    this.ccSide = [];
+    for (const sx of [-1, 1]){
+      const [c] = Tex.canvas(256, 512); const tex = Tex.make(c); this.ccSide.push({c, tex});
+      const p = add(new T.Mesh(new T.PlaneGeometry(4, 8), new T.MeshBasicMaterial({map: tex, toneMapped: false})), g, false); p.position.set(sx*8.6, 4.6, -21.2); p.rotation.y = -sx*.2;
+    }
+    add(new T.Mesh(new T.BoxGeometry(12.2, 7.2, .3), M.black), g).position.set(0, 6.2, -21.6);
+    // truss, line arrays, moving-head beams
+    const trussM = this.stdMat(0xb8bcc4, .3, {metalness: .9});
+    for (const z of [-15, -19.5]) add(new T.Mesh(new T.BoxGeometry(22, .35, .35), trussM), g).position.set(0, 11, z);
+    for (const sx of [-1, 1]){
+      add(new T.Mesh(new T.BoxGeometry(.35, 12, .35), trussM), g).position.set(sx*10.8, 5.5, -15);
+      for (let k=0;k<7;k++){ const sp = add(new T.Mesh(roundedBox(1.1, .42, .8, .04), M.grille), g); sp.position.set(sx*11.8, 9.8 - k*.44, -13.2); sp.rotation.x = .06*k; sp.rotation.y = -sx*.25; }
+    }
+    this.ccBeams = [];
+    const beamT = Tex.make(Tex.beam());
+    for (let i=0;i<10;i++){
+      const b = new T.Group(); b.position.set(-9 + i*2, 10.7, i % 2 ? -15 : -19.5); g.add(b);
+      add(new T.Mesh(new T.CylinderGeometry(.18, .22, .4, 12), M.black), b);
+      const cone = new T.Mesh(new T.ConeGeometry(1.6, 14, 24, 1, true), new T.MeshBasicMaterial({map: beamT, color: 0xffffff, transparent: true, opacity: .18, depthWrite: false, blending: T.AdditiveBlending, side: T.DoubleSide, toneMapped: false}));
+      cone.position.y = -7; b.add(cone); b.userData = {ph: i*.7}; this.ccBeams.push(b);
+    }
+    // lasers from the stage
+    this.ccLasers = new T.Group(); this.ccLasers.position.set(0, 1.2, -14.2); g.add(this.ccLasers);
+    for (let i=0;i<14;i++){ const l = new T.Mesh(new T.CylinderGeometry(.008, .008, 40, 4), new T.MeshBasicMaterial({color: 0x39ff88, transparent: true, opacity: .7, blending: T.AdditiveBlending, depthWrite: false, toneMapped: false}));
+      l.geometry.translate(0, 20, 0); l.rotation.x = -1.3; l.rotation.z = (i - 6.5)*.09; this.ccLasers.add(l); }
+    // pyro: flame jets along the front of the stage
+    const flameT = Tex.make(Tex.flame());
+    this.ccPyro = [];
+    for (const x of [-8, -4, 4, 8]){
+      add(new T.Mesh(new T.CylinderGeometry(.18, .22, .3, 12), M.black), g).position.set(x, stageY + .15, -14.6);
+      const f = new T.Sprite(new T.SpriteMaterial({map: flameT, transparent: true, opacity: 0, depthWrite: false, blending: T.AdditiveBlending})); f.position.set(x, stageY + 2, -14.6); f.scale.set(1.4, 4, 1); g.add(f);
+      const fl = new T.PointLight(0xff7a1a, 0, 14, 2); fl.position.set(x, stageY + 2, -13.8); g.add(fl);
+      this.ccPyro.push({f, fl, life: 0});
+    }
+    // smoke along the stage lip
+    const smokeT = Tex.make(Tex.cloud());
+    for (let i=0;i<10;i++){ const s = new T.Sprite(new T.SpriteMaterial({map: smokeT, color: 0x8a7cff, transparent: true, opacity: .1, depthWrite: false})); s.position.set(rnd(-9, 9), stageY + .5, rnd(-17, -14.5)); s.scale.set(rnd(4, 6), 1.6, 1); g.add(s); }
+    // performers: the rapper, a hype man and the DJ on stage
+    const sb = Props.djBooth(); sb.position.set(4.5, stageY, -18.6); g.add(sb); this.ccBooth = sb;
+    this.person(g, 4.5, stageY, -19.25, 0, "dj", {gender: "m"});
+    this.ccRapper = this.person(g, 0, stageY, -15.6, 0, "cheer", {gender: "m"});
+    this.person(g, -3, stageY, -16.2, .2, "dance", {gender: "m"});
+    this.person(g, -6.5, stageY, -17.5, .3, "dance", {gender: "f"}); this.person(g, 7.2, stageY, -17.2, -.3, "dance", {gender: "f"});
+    const mic = add(new T.Mesh(new T.CylinderGeometry(.012, .012, 1.4, 8), M.black), g); mic.position.set(.5, stageY + .7, -15.2);
+    // the crowd in the pit, fans in the stands
+    for (let r=0;r<4;r++) for (let k=0;k<7;k++){ const x = -7.2 + k*2.4 + (r % 2)*1.1 + rnd(-.3, .3), z = -11.6 + r*1.9 + rnd(-.3, .3);
+      this.person(g, x, -1, z, Math.PI + Math.atan2(x*.08, 1) + rnd(-.3, .3), (r + k) % 4 === 0 ? "cheer" : "dance"); }
+    const benchM = this.stdMat(0x2b2b33, .6);
+    for (const sx of [-1, 1]) for (let tier=0;tier<4;tier++){
+      const b = add(new T.Mesh(new T.BoxGeometry(1.2, .45 + tier*.55, 16), benchM), g); b.position.set(sx*(13.5 + tier*1.2), -1 + (.45 + tier*.55)/2, -9); this.walkable(b);
+      for (let k=0;k<4;k++) if ((k + tier) % 2 === 0) this.person(g, sx*(13.5 + tier*1.2), -1 + .45 + tier*.55 - .42, -14 + k*3.2, sx > 0 ? -Math.PI/2 : Math.PI/2, tier % 2 ? "cheer" : "sit");
+    }
+    // drinks on the VIP riser rail table
+    const rt = add(new T.Mesh(roundedBox(2.2, .05, .45, .02), M.walnut), g); rt.position.set(2.6, 1.05, -1.25); this.surface(rt);
+    add(new T.Mesh(new T.CylinderGeometry(.04, .04, 1.05, 8), M.black), g).position.set(2.6, .52, -1.25);
+    for (const [x, maker] of [[1.8, () => Props.tumbler("whiskey")], [2.25, () => Props.beerBottle()], [2.7, () => Props.flute()], [3.2, () => Props.champagne()]]){ const o = maker(); o.position.set(x, 1.075, -1.25); g.add(o); this.grabbable(o); }
+    // lights
+    g.add(new T.HemisphereLight(0x5a4aff, 0x0a0606, .25));
+    this.ccSpot = new T.SpotLight(0xffffff, 3, 30, .22, .5, 1.5); this.ccSpot.position.set(0, 11, -8); this.ccSpot.target.position.set(0, stageY, -15.6); g.add(this.ccSpot, this.ccSpot.target);
+    this.ccWash = new T.PointLight(0xff4fd8, 1.6, 26, 2); this.ccWash.position.set(0, 7, -12); g.add(this.ccWash);
+    const front = new T.DirectionalLight(0xffe0d0, .35); front.position.set(0, 6, 4); front.target.position.set(0, 0, -15); g.add(front, front.target);
+    return {id: "concert", name: "Hip-Hop Concert", group: g, floorY: -1, noEnv: true, fog: new T.FogExp2(0x07060c, .018), exposure: 1.05,
+      screen: [0, 6.2, -21.4, 3.2, 0],
+      onMood: m => { this.ccWash.color.setHex(m.a); this.ccBeams.forEach((b, i) => b.children[1].material.color.setHex(i % 2 ? m.a : m.b)); },
+      update: (dt, t, A) => {
+        this.ccBeams.forEach(b => { const p = b.userData.ph; b.rotation.z = Math.sin(t*.7 + p)*.45; b.rotation.x = Math.cos(t*.5 + p)*.3 - .1; b.children[1].material.opacity = .1 + A.bass*.25; });
+        this.ccLasers.visible = A.mid > .25 || Math.sin(t*.5) > .6;
+        this.ccLasers.children.forEach((l, i) => { l.rotation.z = (i - 6.5)*.09 + Math.sin(t*1.3)*.25; l.rotation.x = -1.3 + Math.sin(t*.9 + i)*.08; });
+        if (A.hit && Math.random() < .5){ const p = this.ccPyro[Math.floor(Math.random()*4)]; p.life = .7; }
+        this.ccPyro.forEach(p => { p.life = Math.max(0, p.life - dt); const k = p.life/.7; p.f.material.opacity = k; p.f.scale.set(1.4, 2 + k*4, 1); p.f.position.y = .6 + 1 + k*2; p.fl.intensity = k*6; });
+        this.ccWash.intensity = 1.2 + A.bass*2.4; this.ccSpot.intensity = 2.5 + A.mid*2;
+        this.ccSide.forEach(({c, tex}, i) => { const x = c.getContext("2d"); x.fillStyle = "rgba(0,0,0,.25)"; x.fillRect(0, 0, 256, 512);
+          for (let k=0;k<8;k++){ const h = (A.vals[(k*4 + i*2) % A.vals.length] || 0)/255*512; x.fillStyle = `hsl(${(t*40 + k*30 + i*120) % 360},90%,60%)`; x.fillRect(k*32 + 2, 512 - h, 28, h); } tex.needsUpdate = true; });
+        this.ccBooth.userData.platters.forEach(p => p.rotation.y -= dt*3.5);
+      }};
+  },
+
+  /* ================= Texas rodeo night ================= */
+  buildRodeo(){
+    const T = THREE, M = this.mats, add = this.add, glowT = this.glowT;
+    const g = this.room = new T.Group(); this.scene.add(g);
+    this.skyDome(g, 0x241a4a, 0xc2557a, 0xff9a4a, 300);
+    // mesas on the horizon
+    const mesaM = new T.MeshBasicMaterial({color: 0x3a2030, fog: false});
+    for (let i=0;i<9;i++){ const a = -1.4 + i*.35 + rnd(-.1, .1), r = 120; const m = new T.Mesh(new T.CylinderGeometry(rnd(8, 16), rnd(12, 22), rnd(6, 14), 7), mesaM); m.position.set(Math.sin(a)*r, 2, -Math.cos(a)*r); g.add(m); }
+    // dusty ground
+    const dC = Tex.dirt(), dirtT = Tex.make(dC, {repeat: [30, 30]}), dirtN = Tex.make(Tex.normal(dC, 4), {repeat: [30, 30], srgb: false});
+    const ground = add(new T.Mesh(new T.PlaneGeometry(240, 240), new T.MeshStandardMaterial({map: dirtT, normalMap: dirtN, roughness: 1})), g, false, true);
+    ground.rotation.x = -Math.PI/2; this.walkable(ground); this.surface(ground);
+    const woodC = Tex.wood(), boardM = new T.MeshStandardMaterial({map: Tex.make(woodC, {repeat: [2, 2]}), color: 0xb08860, roughness: .85});
+    const postM = this.stdMat(0x5a3a22, .9), ironM = this.stdMat(0x1c1a18, .5, {metalness: .6});
+    // dance floor and the saloon
+    const df = add(new T.Mesh(new T.BoxGeometry(13, .12, 9), boardM), g, false, true); df.position.set(0, .06, -6.2); this.walkable(df); this.surface(df);
+    const sal = new T.Group(); sal.position.set(0, 0, -12); g.add(sal);
+    add(new T.Mesh(new T.BoxGeometry(14, 7.5, .4), boardM), sal).position.set(0, 3.75, -.2);
+    add(new T.Mesh(new T.BoxGeometry(14.4, 1.4, .3), boardM), sal).position.set(0, 8.1, -.1);
+    add(new T.Mesh(new T.BoxGeometry(14, .25, 2.4), boardM), sal).position.set(0, .12, 1.0);
+    const roof = add(new T.Mesh(new T.BoxGeometry(14.2, .15, 2.6), this.stdMat(0x4a3020, .9)), sal); roof.position.set(0, 3.1, 1.1); roof.rotation.x = .12;
+    for (const x of [-6.8, -3.4, 3.4, 6.8]) add(new T.Mesh(new T.CylinderGeometry(.1, .12, 3, 8), postM), sal).position.set(x, 1.6, 2.2);
+    for (let i=0;i<24;i++) add(new T.Mesh(new T.BoxGeometry(.05, .5, .05), postM), sal).position.set(-6.8 + i*.59, .6, 2.2);
+    add(new T.Mesh(new T.BoxGeometry(13.6, .06, .08), postM), sal).position.set(0, .86, 2.2);
+    const doorM = this.stdMat(0x6a4426, .7);
+    for (const s of [-1, 1]){ const d = add(new T.Mesh(new T.BoxGeometry(.7, 1.1, .06), doorM), sal); d.position.set(s*.38, 1.4, .1); d.rotation.y = s*.2; }
+    add(new T.Mesh(new T.PlaneGeometry(1.6, 2.4), new T.MeshStandardMaterial({map: this.interiorT, emissive: 0xffffff, emissiveMap: this.interiorT, emissiveIntensity: .7})), sal, false).position.set(0, 1.25, .02);
+    for (const x of [-4.5, 4.5]) add(new T.Mesh(new T.PlaneGeometry(2, 1.3), new T.MeshStandardMaterial({map: this.interiorT, emissive: 0xffffff, emissiveMap: this.interiorT, emissiveIntensity: .6})), sal, false).position.set(x, 1.7, .02);
+    const signT = Tex.make(Tex.westernSign("SALOON"));
+    add(new T.Mesh(new T.PlaneGeometry(6, 1.3), new T.MeshStandardMaterial({map: signT, roughness: .7})), sal, false).position.set(0, 8.1, .06);
+    this.rdBulbs = [this.festoon(g, [-6.5, 4.6, -10.6], [6.5, 4.6, -10.6], .6, 26, 0xffc870), this.festoon(g, [-6.5, 4.6, -10.6], [-6.5, 3.4, -1.5], .4, 16, 0xffc870), this.festoon(g, [6.5, 4.6, -10.6], [6.5, 3.4, -1.5], .4, 16, 0xffc870), this.festoon(g, [-6.5, 3.4, -1.5], [6.5, 3.4, -1.5], .5, 26, 0xffd8a0)];
+    for (const x of [-6.5, 6.5]) add(new T.Mesh(new T.CylinderGeometry(.08, .1, 3.5, 8), postM), g).position.set(x, 1.75, -1.5);
+    // the arena: oval fence, rodeo lights and a bucking mechanical bull
+    const ax = 15, az = -9, rxA = 8, rzA = 6;
+    const posts = [], railsN = [];
+    for (let i=0;i<40;i++){ const a = i/40*Math.PI*2; posts.push([ax + Math.cos(a)*rxA, az + Math.sin(a)*rzA]); }
+    const postI = new T.InstancedMesh(new T.CylinderGeometry(.09, .11, 1.8, 6), postM, posts.length), dd = new T.Object3D();
+    posts.forEach(([x, z], i) => { dd.position.set(x, .9, z); dd.rotation.set(0, 0, 0); dd.updateMatrix(); postI.setMatrixAt(i, dd.matrix); }); g.add(postI);
+    const railI = new T.InstancedMesh(new T.BoxGeometry(1, .14, .05), boardM, posts.length*3);
+    posts.forEach(([x, z], i) => { const [x2, z2] = posts[(i + 1) % posts.length]; const len = Math.hypot(x2 - x, z2 - z), ry = Math.atan2(-(z2 - z), x2 - x);
+      for (let k=0;k<3;k++){ dd.position.set((x + x2)/2, .5 + k*.5, (z + z2)/2); dd.rotation.set(0, ry, 0); dd.scale.set(len, 1, 1); dd.updateMatrix(); railI.setMatrixAt(i*3 + k, dd.matrix); } });
+    dd.scale.set(1, 1, 1); g.add(railI);
+    add(new T.Mesh(new T.CircleGeometry(1, 48).rotateX(-Math.PI/2), new T.MeshStandardMaterial({map: dirtT, color: 0xa07850, roughness: 1})), g, false).scale.set(rxA, 1, rzA);
+    g.children[g.children.length - 1].position.set(ax, .01, az);
+    const pad = add(new T.Mesh(new T.TorusGeometry(2.2, .35, 12, 32).rotateX(Math.PI/2), this.stdMat(0xb8261b, .6)), g); pad.position.set(ax, .3, az);
+    const bull = this.rdBull = new T.Group(); bull.position.set(ax, 0, az); g.add(bull);
+    add(new T.Mesh(new T.CylinderGeometry(.3, .45, .7, 16), ironM), bull).position.y = .35;
+    const body = new T.Group(); body.position.y = 1.1; bull.add(body); this.rdBody = body;
+    const hide = new T.MeshStandardMaterial({color: 0x2a1a12, roughness: .55});
+    add(new T.Mesh(new T.SphereGeometry(.5, 24, 16), hide), body).scale.set(1.45, .78, .72);
+    const head = add(new T.Mesh(new T.SphereGeometry(.3, 20, 14), hide), body); head.position.set(.82, .15, 0); head.scale.set(1.1, .85, .8);
+    add(new T.Mesh(new T.SphereGeometry(.16, 16, 12), this.stdMat(0x3a2418, .5)), body).position.set(1.08, .05, 0);
+    for (const s of [-1, 1]){ const hrn = add(new T.Mesh(new T.ConeGeometry(.05, .4, 10), this.stdMat(0xe9dfc8, .4)), body); hrn.position.set(.85, .38, s*.24); hrn.rotation.set(s*-1.0, 0, -.5); }
+    add(new T.Mesh(new T.CylinderGeometry(.42, .42, .1, 20, 1, false, 0, Math.PI), this.stdMat(0x7a4a22, .6)), body).position.set(-.05, .38, 0);
+    for (const [lx, lz] of [[-.45, -.2], [-.45, .2], [.45, -.2], [.45, .2]]) add(new T.Mesh(new T.CylinderGeometry(.08, .07, .5, 10), hide), body).position.set(lx, -.45, lz);
+    for (const [x, z] of [[ax - 9.5, az - 6], [ax + 9.5, az - 6], [ax - 9.5, az + 6], [ax + 9.5, az + 6]]){
+      add(new T.Mesh(new T.CylinderGeometry(.15, .2, 12, 8), ironM), g).position.set(x, 6, z);
+      for (let k=0;k<4;k++){ const lamp = add(new T.Mesh(new T.BoxGeometry(.4, .4, .3), new T.MeshStandardMaterial({color: 0xfff4d8, emissive: 0xfff0c8, emissiveIntensity: 2})), g); lamp.position.set(x + (k % 2 ? .25 : -.25), 12.2 + (k > 1 ? .45 : 0), z); }
+      const s = new T.Sprite(new T.SpriteMaterial({map: glowT, color: 0xfff0d0, transparent: true, opacity: .6, depthWrite: false, blending: T.AdditiveBlending})); s.position.set(x, 12.3, z); s.scale.setScalar(4); g.add(s);
+    }
+    // grandstand with fans
+    for (let tier=0;tier<4;tier++){ const b = add(new T.Mesh(new T.BoxGeometry(14, .45 + tier*.5, 1.1), boardM), g); b.position.set(ax, (.45 + tier*.5)/2, az - rzA - 2 - tier*1.1); }
+    for (let k=0;k<6;k++){ const tier = k % 4; this.person(g, ax - 5 + k*2, .45 + tier*.5 - .42, az - rzA - 2 - tier*1.1, 0, k % 2 ? "cheer" : "sit", {gear: {hat: "cowboy"}}); }
+    for (const [x, z] of [[ax - 7, az + 5.5], [ax + 6, az + 6.6]]) this.person(g, x, 0, z, Math.atan2(ax - x, az - z), "cheer", {gear: {hat: "cowboy"}});
+    // hay bales, barrels, wagon wheel, cactus, windmill
+    const straw = Tex.make(Tex.straw(), {repeat: [1, 1]}), strawM = new T.MeshStandardMaterial({map: straw, roughness: 1});
+    for (const [x, z, ry, y] of [[-7.8, -3, .2, 0], [-7.8, -4.3, -.1, 0], [-7.8, -3.6, .1, .5], [7.6, -2.6, -.3, 0], [8.4, -8, .4, 0], [-1.6, .9, 0, 0]]){ const b = add(new T.Mesh(roundedBox(1.1, .5, .55, .08), strawM), g); b.position.set(x, .25 + y, z); b.rotation.y = ry; this.surface(b); }
+    const barrelM = new T.MeshStandardMaterial({map: Tex.make(woodC), color: 0x9a6a40, roughness: .8});
+    const barrels = [];
+    for (const [x, z] of [[2.3, -.9], [-4.6, .4]]){ const b = add(new T.Mesh(Props.lathe([[0, 0], [.3, 0], [.36, .45], [.3, .9], [0, .9]], 20), barrelM), g); b.position.set(x, 0, z); this.surface(b);
+      for (const y of [.12, .78]) add(new T.Mesh(new T.TorusGeometry(.32, .015, 6, 24).rotateX(Math.PI/2), ironM), g).position.set(x, y, z); barrels.push([x, z]); }
+    const on = (o, x, z, y = .9) => { o.position.set(x, y, z); g.add(o); return this.grabbable(o); };
+    on(Props.beerBottle(), 2.2, -.95); on(Props.beerBottle(), 2.42, -.82); on(Props.tumbler("whiskey", 2), 2.3, -1.1);
+    on(Props.beerBottle(), -4.55, .3); on(Props.tumbler("whiskey", 1), -4.7, .5);
+    const hat = new T.Group(); Gear.cowboyHat(hat, .11, 0x6a4a2a); on(hat, -1.6, .9, .5);
+    const wheel = new T.Group(); wheel.position.set(-8.6, .85, -6.3); wheel.rotation.set(0, Math.PI/2, .15); g.add(wheel);
+    add(new T.Mesh(new T.TorusGeometry(.8, .05, 8, 32), postM), wheel); add(new T.Mesh(new T.CylinderGeometry(.12, .12, .2, 12).rotateX(Math.PI/2), postM), wheel);
+    for (let k=0;k<12;k++){ const sp = add(new T.Mesh(new T.CylinderGeometry(.025, .025, .8, 6), postM), wheel); sp.rotation.z = k/12*Math.PI*2; sp.position.set(Math.sin(k/12*Math.PI*2)*-.4, Math.cos(k/12*Math.PI*2)*.4, 0); }
+    const cactM = new T.MeshStandardMaterial({color: 0x3f6a3a, roughness: .8});
+    const cactus = (x, z, h) => { const c = new T.Group(); c.position.set(x, 0, z); g.add(c);
+      add(new T.Mesh(new T.CylinderGeometry(.28, .3, h, 12), cactM), c).position.y = h/2; add(new T.Mesh(new T.SphereGeometry(.28, 12, 8, 0, Math.PI*2, 0, Math.PI/2), cactM), c).position.y = h;
+      for (const s of [-1, 1]){ const arm = new T.Group(); arm.position.set(s*.28, h*.5, 0); c.add(arm);
+        add(new T.Mesh(new T.CylinderGeometry(.16, .16, .5, 10), cactM), arm).rotation.z = s*Math.PI/2; arm.children[0].position.x = s*.25;
+        add(new T.Mesh(new T.CylinderGeometry(.16, .16, h*.45, 10), cactM), arm).position.set(s*.48, h*.22, 0); } };
+    cactus(-14, -10, 3.2); cactus(-20, 4, 2.6); cactus(24, 6, 3.6); cactus(-11, -22, 4);
+    const mill = new T.Group(); mill.position.set(-22, 0, -24); g.add(mill);
+    for (const s of [-1, 1]) for (const t2 of [-1, 1]){ const leg = add(new T.Mesh(new T.CylinderGeometry(.06, .08, 10, 6), ironM), mill); leg.position.set(s*.8, 5, t2*.8); leg.rotation.set(t2*.08, 0, -s*.08); }
+    this.rdBlades = new T.Group(); this.rdBlades.position.set(0, 10.2, .4); mill.add(this.rdBlades);
+    for (let k=0;k<16;k++){ const bl = add(new T.Mesh(new T.BoxGeometry(.18, 1.6, .02), this.stdMat(0xc8c0b0, .6)), this.rdBlades); bl.rotation.z = k/16*Math.PI*2; bl.position.set(Math.sin(k/16*Math.PI*2)*-.9, Math.cos(k/16*Math.PI*2)*.9, 0); }
+    // line dancers, folks on the porch
+    for (let r=0;r<3;r++) for (let k=0;k<5;k++) this.person(g, -4 + k*2, .12, -3.2 - r*1.9, Math.PI + (r % 2 ? .1 : -.1), "dance", {gear: {hat: "cowboy"}});
+    this.person(g, -5.2, .25, -11, .2, "talk", {gear: {hat: "cowboy"}}); this.person(g, -4.4, .25, -10.6, Math.PI + .5, "talk");
+    this.person(g, 5.5, .25, -10.8, -.3, "idle", {gear: {hat: "cowboy"}});
+    // lights
+    g.add(new T.HemisphereLight(0xffb48a, 0x3a2418, .65));
+    const sun = new T.DirectionalLight(0xffa060, 1.1); sun.position.set(-30, 18, -60); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024); Object.assign(sun.shadow.camera, {left: -25, right: 25, top: 25, bottom: -25, far: 150}); g.add(sun);
+    this.rdLight = new T.PointLight(0xffc070, 1.4, 16, 2); this.rdLight.position.set(0, 4, -6); g.add(this.rdLight);
+    const arenaL = new T.PointLight(0xfff0d0, 1.6, 28, 2); arenaL.position.set(ax, 10, az); g.add(arenaL);
+    return {id: "rodeo", name: "Texas Rodeo Night", group: g, floorY: 0, fog: new T.FogExp2(0x8a4a5a, .007), exposure: 1.0,
+      screen: [0, 5.6, -11.65, 1.3, 0],
+      onMood: m => { this.rdBulbs.forEach((b, i) => b.material.color.setHex(i % 2 ? m.a : m.b)); this.rdLight.color.setHex(m.a); },
+      update: (dt, t, A) => {
+        const k = .25 + A.bass*.7;
+        this.rdBody.rotation.z = Math.sin(t*3.1)*.22*k; this.rdBody.rotation.x = Math.sin(t*2.3 + 1)*.12*k; this.rdBull.rotation.y = Math.sin(t*.7)*.9;
+        this.rdBody.position.y = 1.1 + Math.abs(Math.sin(t*3.1))*.12*k;
+        this.rdBlades.rotation.z += dt*.8;
+        this.rdBulbs.forEach(b => b.material.size = .22 + A.mid*.16);
+        this.rdLight.intensity = 1.2 + A.bass*1.4;
+      }};
+  },
+
+  /* ================= A quiet coffee shop on a rainy night ================= */
+  buildCoffee(){
+    const T = THREE, M = this.mats, add = this.add, glowT = this.glowT;
+    const g = this.room = new T.Group(); this.scene.add(g);
+    const W = 13, D = 10, H = 3.3, zc = -3.2;    // room: x -6.5..6.5, z -8.2..1.8
+    const woodC = Tex.wood(), floorM = new T.MeshStandardMaterial({map: Tex.make(woodC, {repeat: [4, 3]}), normalMap: Tex.make(Tex.normal(woodC, 4), {repeat: [4, 3], srgb: false}), color: 0x9a7050, roughness: .55, envMapIntensity: .5});
+    const floor = add(new T.Mesh(new T.PlaneGeometry(W, D), floorM), g, false, true); floor.rotation.x = -Math.PI/2; floor.position.z = zc; this.walkable(floor); this.surface(floor);
+    const bC = Tex.brick(), brickM = new T.MeshStandardMaterial({map: Tex.make(bC, {repeat: [4, 1.6]}), normalMap: Tex.make(Tex.normal(bC, 5), {repeat: [4, 1.6], srgb: false}), roughness: .9});
+    const plaster = new T.MeshStandardMaterial({map: Tex.make(Tex.stucco("#e6d9c4"), {repeat: [3, 1]}), roughness: .95});
+    add(new T.Mesh(new T.PlaneGeometry(W, H), brickM), g, false, true).position.set(0, H/2, zc - D/2);
+    const right = add(new T.Mesh(new T.PlaneGeometry(D, H), plaster), g, false, true); right.rotation.y = -Math.PI/2; right.position.set(W/2, H/2, zc);
+    const back = add(new T.Mesh(new T.PlaneGeometry(W, H), plaster), g, false, true); back.rotation.y = Math.PI; back.position.set(0, H/2, zc + D/2);
+    const ceil = add(new T.Mesh(new T.PlaneGeometry(W, D), this.stdMat(0x3a2a20, .9)), g, false); ceil.rotation.x = Math.PI/2; ceil.position.set(0, H, zc);
+    for (let i=0;i<6;i++) add(new T.Mesh(new T.BoxGeometry(.18, .22, D), M.walnut), g).position.set(-5 + i*2, H - .11, zc);
+    // the big rainy window on the left wall
+    const lx = -W/2;
+    for (const [y, h] of [[.45, .9], [H - .25, .5]]) { const seg = add(new T.Mesh(new T.BoxGeometry(.25, h, D), brickM), g); seg.position.set(lx - .12, y, zc); }
+    const view = add(new T.Mesh(new T.PlaneGeometry(D*1.4, 3.2), new T.MeshBasicMaterial({map: Tex.make(Tex.rainyStreet()), toneMapped: false})), g, false); view.rotation.y = Math.PI/2; view.position.set(lx - 3, 1.6, zc);
+    const pane = add(new T.Mesh(new T.PlaneGeometry(D, 1.7), new T.MeshPhysicalMaterial({map: Tex.make(Tex.rainGlass()), color: 0xcfe0ff, transparent: true, opacity: .55, roughness: .05, clearcoat: 1, envMap: this.envTex, depthWrite: false})), g, false);
+    pane.rotation.y = Math.PI/2; pane.position.set(lx + .02, 1.75, zc); this.cfDrops = pane.material.map; this.cfDrops.wrapT = T.RepeatWrapping;
+    for (let i=0;i<=5;i++) add(new T.Mesh(new T.BoxGeometry(.08, 1.75, .08), M.black), g).position.set(lx + .04, 1.75, zc - D/2 + i*D/5);
+    add(new T.Mesh(new T.BoxGeometry(.1, .08, D), M.black), g).position.set(lx + .04, 2.62, zc);
+    add(new T.Mesh(new T.BoxGeometry(.35, .06, D), M.walnut), g).position.set(lx + .17, .92, zc);
+    // rain outside
+    const rp = []; for (let i=0;i<500;i++) rp.push(lx - .4 - Math.random()*2.4, Math.random()*4, zc + (Math.random() - .5)*D*1.2);
+    const rg = new T.BufferGeometry(); rg.setAttribute("position", new T.Float32BufferAttribute(rp, 3));
+    this.cfRain = new T.Points(rg, new T.PointsMaterial({color: 0xa8c4ff, size: .05, transparent: true, opacity: .6, depthWrite: false})); g.add(this.cfRain);
+    // counter, espresso machine, pastry case, menu board
+    const counter = add(new T.Mesh(roundedBox(5.2, 1.05, .8, .03), M.walnut), g); counter.position.set(2.6, .525, -6.4);
+    const ctop = add(new T.Mesh(new T.BoxGeometry(5.4, .06, .95), M.marble), g); ctop.position.set(2.6, 1.08, -6.4); this.surface(ctop);
+    const steel = Props.mats().steel;
+    const esp = new T.Group(); esp.position.set(3.8, 1.11, -6.55); g.add(esp);
+    add(new T.Mesh(roundedBox(.8, .5, .5, .04), steel), esp).position.y = .25;
+    add(new T.Mesh(roundedBox(.82, .08, .52, .02), this.stdMat(0x8a1c1c, .3, {metalness: .3})), esp).position.y = .54;
+    for (const sx of [-.2, .2]){ add(new T.Mesh(new T.CylinderGeometry(.05, .05, .1, 16), steel), esp).position.set(sx, .2, .28); add(new T.Mesh(new T.CylinderGeometry(.02, .02, .12, 8), M.black), esp).position.set(sx, .17, .38); }
+    for (let i=0;i<4;i++){ const cp = Props.coffeeCup(); cp.scale.setScalar(.8); cp.position.set(-.3 + i*.2, .58, 0); esp.add(cp); }
+    const steamT = Tex.make(Tex.cloud()); this.cfSteam = [];
+    const mkSteam = (x, y, z) => { const s = new T.Sprite(new T.SpriteMaterial({map: steamT, color: 0xffffff, transparent: true, opacity: .25, depthWrite: false})); s.position.set(x, y, z); s.scale.set(.12, .25, 1); s.userData = {y, ph: Math.random()*6}; g.add(s); this.cfSteam.push(s); };
+    mkSteam(3.8, 1.75, -6.3);
+    const caseG = add(new T.Mesh(roundedBox(1.4, .5, .6, .02), Props.mats().glass), g, false); caseG.position.set(1.4, 1.36, -6.35);
+    for (let i=0;i<5;i++){ const cr = Props.croissant(); cr.position.set(.9 + i*.24, 1.12, -6.35 + (i % 2)*.12); g.add(cr); }
+    add(new T.Mesh(new T.PlaneGeometry(2.4, 1.3), new T.MeshStandardMaterial({map: Tex.make(Tex.chalk(["MENU", "Espresso  3", "Latte  4.5", "Chai  4", "Croissant  3.5"])), roughness: .9})), g, false).position.set(-2.8, 2.0, zc - D/2 + .02);
+    // pendant lights over the counter
+    this.cfBulbs = [];
+    for (let i=0;i<4;i++){ const x = .8 + i*1.3;
+      add(new T.Mesh(new T.CylinderGeometry(.004, .004, 1.1, 4), M.black), g).position.set(x, H - .55, -6.3);
+      add(new T.Mesh(new T.ConeGeometry(.16, .18, 20, 1, true), this.stdMat(0x1a1a1a, .4, {metalness: .7, side: T.DoubleSide})), g).position.set(x, H - 1.12, -6.3);
+      const b = add(new T.Mesh(new T.SphereGeometry(.05, 12, 8), new T.MeshBasicMaterial({color: 0xffc56a, toneMapped: false})), g, false); b.position.set(x, H - 1.2, -6.3);
+      const pl = new T.PointLight(0xffb060, .55, 4, 2); pl.position.set(x, H - 1.3, -6.3); g.add(pl); this.cfBulbs.push(pl); }
+    // shelves with books and plants on the right wall, a ceiling fan
+    const shelfM = M.walnut;
+    for (const y of [1.3, 1.8, 2.3]){ add(new T.Mesh(new T.BoxGeometry(.28, .04, 3.2), shelfM), g).position.set(W/2 - .14, y, -2.5);
+      for (let k=0;k<12;k++){ if (Math.random() < .2) continue; const h = .2 + Math.random()*.08; add(new T.Mesh(new T.BoxGeometry(.18, h, .05 + Math.random()*.03), this.stdMat(new T.Color().setHSL(Math.random(), .45, .35).getHex(), .8)), g).position.set(W/2 - .16, y + h/2 + .02, -3.9 + k*.24); } }
+    const fol = Tex.make(Tex.foliage()), plantM = new T.MeshStandardMaterial({map: fol, color: 0x4f8f3a, roughness: .9}), potM = this.stdMat(0xd8d0c4, .5);
+    for (const [x, y, z, s] of [[W/2 - .2, 2.42, -1.2, .5], [-5.8, 0, -7.6, 1.2], [5.9, 0, .9, 1.1], [W/2 - .2, 1.42, -3.6, .45]]){
+      add(new T.Mesh(Props.lathe([[0, 0], [.16*s, 0], [.2*s, .32*s], [0, .32*s]], 16), potM), g).position.set(x, y, z);
+      for (let k=0;k<4;k++) add(new T.Mesh(new T.IcosahedronGeometry(.22*s, 1), plantM), g).position.set(x + rnd(-.12, .12)*s, y + .45*s + rnd(0, .25)*s, z + rnd(-.12, .12)*s);
+    }
+    this.cfFan = new T.Group(); this.cfFan.position.set(-1.5, H - .35, -2.5); g.add(this.cfFan);
+    add(new T.Mesh(new T.CylinderGeometry(.12, .12, .14, 16), M.brass), this.cfFan);
+    for (let k=0;k<5;k++){ const bl = add(new T.Mesh(new T.BoxGeometry(.7, .015, .14), M.walnut), this.cfFan); bl.rotation.y = k/5*Math.PI*2; bl.position.set(Math.cos(k/5*Math.PI*2)*.42, -.04, -Math.sin(k/5*Math.PI*2)*.42); }
+    // a rug, small tables, armchairs
+    const rug = add(new T.Mesh(new T.PlaneGeometry(3, 2), new T.MeshStandardMaterial({map: Tex.make(Tex.rug()), roughness: 1})), g, false, true); rug.rotation.x = -Math.PI/2; rug.position.set(2.6, .005, -2.4);
+    const tableAt = (x, z, r = .38) => { const t = new T.Group(); t.position.set(x, 0, z); g.add(t);
+      add(new T.Mesh(new T.CylinderGeometry(.03, .03, .72, 10), M.black), t).position.y = .36; add(new T.Mesh(new T.CylinderGeometry(.22, .24, .03, 20), M.black), t).position.y = .015;
+      const tp = this.surface(add(new T.Mesh(new T.CylinderGeometry(r, r, .04, 32), M.marble), t)); tp.position.y = .74; return t; };
+    const chairWood = M.walnut;
+    const armchair = (x, z, ry, col) => { const c = new T.Group(); c.position.set(x, 0, z); c.rotation.y = ry; g.add(c); const fm = new T.MeshStandardMaterial({color: col, roughness: .9, bumpMap: this.fabricB, bumpScale: .002});
+      add(new T.Mesh(roundedBox(.85, .3, .8, .07, 3), fm), c).position.y = .3; add(new T.Mesh(roundedBox(.85, .6, .18, .07, 3), fm), c).position.set(0, .65, .32);
+      for (const s of [-1, 1]) add(new T.Mesh(roundedBox(.14, .35, .8, .05, 3), fm), c).position.set(s*.42, .5, 0);
+      for (const s of [-1, 1]) for (const t2 of [-1, 1]) add(new T.Mesh(new T.CylinderGeometry(.02, .015, .15, 8), chairWood), c).position.set(s*.35, .07, t2*.32); };
+    // your window seat
+    tableAt(0, -.9); this.cafeChair(g, 0, 0, .25, 0, chairWood);
+    const onT = (o, x, z, ry = 0, y = .76) => { o.position.set(x, y, z); o.rotation.y = ry; g.add(o); return this.grabbable(o); };
+    const sc = Props.saucer(); sc.position.set(-.12, .76, -.85); g.add(sc); this.surface(sc.children[0]);
+    onT(Props.coffeeCup(), -.12, -.85, .5, .776); mkSteam(-.12, .9, -.85);
+    const pl = Props.plate(.09); pl.position.set(.15, .76, -1.02); g.add(pl); this.surface(pl.children[0]);
+    onT(Props.croissant(), .15, -1.02, .4, .772);
+    onT(Props.book(0x5a2a2a, "SLOW DAYS"), .2, -.7, -.4);
+    onT(Props.candle(), -.25, -1.15); onT(Props.tumbler("water", 0), .02, -1.2);
+    for (const [x, z] of [[-3.6, -4.4], [3.5, -2.2]]) tableAt(x, z);
+    armchair(-3.6 + .62, -4.4 + .2, -Math.PI/2 - .4 + Math.PI, 0x6b3f26); armchair(-3.6 - .62, -4.4 - .1, Math.PI/2 + .3 + Math.PI, 0x2f4a5a);
+    armchair(3.5 + .62, -2.2, -Math.PI/2 + Math.PI, 0x5a5040); armchair(1.5, -1.2, .6 + Math.PI, 0x7a2f2f);
+    onT(Props.coffeeCup(), -3.55, -4.35, 1); onT(Props.book(0x223a2a, "POEMS"), -3.75, -4.5, .3);
+    onT(Props.coffeeCup(), 3.45, -2.15, 2); onT(Props.wineGlass("water"), 3.62, -2.3);
+    // a laptop on the reader's table
+    const lap = new T.Group(); lap.position.set(3.35, .76, -2.3); lap.rotation.y = -Math.PI/2; g.add(lap);
+    add(new T.Mesh(new T.BoxGeometry(.32, .012, .22), steel), lap).position.y = .006;
+    const lsc = add(new T.Mesh(new T.PlaneGeometry(.3, .19), new T.MeshBasicMaterial({color: 0xa8c8ff, toneMapped: false})), lap); lsc.position.set(0, .1, -.1); lsc.rotation.x = -.25;
+    // a few people, keeping to themselves
+    this.person(g, 2.8, 0, -7.25, 0, "idle", {gender: "f"});                       // barista
+    this.person(g, 2.0, 0, -5.55, Math.PI, "talk", {gender: "m"});                 // ordering
+    this.person(g, -3.6 + .62 + Math.sin(-Math.PI/2 - .4)*.05, 0, -4.4 + .2 + Math.cos(-Math.PI/2 - .4)*.05, -Math.PI/2 - .4, "sit", {gender: "f"});
+    this.person(g, 3.5 + .62, 0, -2.2, -Math.PI/2, "sit", {gender: "m"});
+    // lights: warm and low
+    g.add(new T.HemisphereLight(0xffd8b0, 0x2a1a12, .45));
+    this.cfLamp = new T.PointLight(0xffb070, .9, 6, 2); this.cfLamp.position.set(-.2, 1.9, -1.0); g.add(this.cfLamp);
+    const win = new T.PointLight(0x8aa8ff, .5, 9, 2); win.position.set(lx + .6, 1.8, zc); g.add(win);
+    return {id: "coffee", name: "Quiet Coffee Shop", group: g, floorY: 0, fog: new T.FogExp2(0x1a120c, .02), exposure: .95,
+      screen: [2.6, 2.35, zc - D/2 + .06 + 0, .42, 0],
+      onMood: m => { this.cfLamp.color.setHex(m.a); },
+      update: (dt, t, A) => {
+        const p = this.cfRain.geometry.attributes.position;
+        for (let i=0;i<p.count;i++){ let y = p.getY(i) - dt*6; if (y < 0) y = 4; p.setY(i, y); } p.needsUpdate = true;
+        this.cfDrops.offset.y = (this.cfDrops.offset.y + dt*.01) % 1;
+        this.cfFan.rotation.y += dt*1.4;
+        this.cfSteam.forEach(s => { const u = s.userData, k = ((t*.4 + u.ph) % 1); s.position.y = u.y + k*.35; s.material.opacity = .22*(1 - k); s.scale.set(.1 + k*.15, .2 + k*.2, 1); });
+        this.cfBulbs.forEach((b, i) => { b.intensity = .5 + Math.sin(t*2 + i)*.02; });
+        this.cfLamp.intensity = .85 + Math.sin(t*7)*.04;
+      }};
+  },
+
+  /* ================= "Turn Up Music" — the live TV dance show ================= */
+  buildTV(){
+    const T = THREE, M = this.mats, add = this.add, glowT = this.glowT;
+    const g = this.room = new T.Group(); this.scene.add(g);
+    g.add(new T.Mesh(new T.BoxGeometry(60, 24, 60), new T.MeshBasicMaterial({color: 0x07060c, side: T.BackSide})));
+    // glossy LED floor
+    const ledC = Tex.ledGrid(12, 12), ledT = Tex.make(ledC, {repeat: [2, 2]});
+    this.tvFloorM = new T.MeshPhysicalMaterial({color: 0x101018, emissive: 0xff4fd8, emissiveMap: ledT, emissiveIntensity: .35, roughness: .12, metalness: .3, clearcoat: 1, clearcoatRoughness: .05, envMap: this.envTex, envMapIntensity: .8});
+    const floor = add(new T.Mesh(new T.PlaneGeometry(26, 24), this.tvFloorM), g, false, true); floor.rotation.x = -Math.PI/2; floor.position.z = -7; this.walkable(floor); this.surface(floor);
+    // the dance line: a glowing runway with dancers on both sides
+    const lineT = Tex.make(Tex.stripes("#ffc21a", "#ff4fd8", 10));
+    this.tvLineM = new T.MeshBasicMaterial({map: lineT, toneMapped: false, transparent: true, opacity: .85});
+    const line = add(new T.Mesh(new T.PlaneGeometry(1.6, 11), this.tvLineM), g, false); line.rotation.x = -Math.PI/2; line.position.set(0, .012, -7.6);
+    this.tvLineT = lineT; lineT.wrapT = T.RepeatWrapping; lineT.repeat.set(1, 4);
+    for (const s of [-1, 1]) add(new T.Mesh(new T.BoxGeometry(.06, .04, 11), new T.MeshBasicMaterial({color: 0xffffff, toneMapped: false})), g).position.set(s*.85, .02, -7.6);
+    for (let k=0;k<6;k++) for (const s of [-1, 1]) this.person(g, s*1.55, 0, -3.2 - k*1.6, s > 0 ? -Math.PI/2 + .2 : Math.PI/2 - .2, k % 3 === 2 ? "cheer" : "dance", {gender: (k + (s > 0 ? 1 : 0)) % 2 ? "f" : "m"});
+    this.tvStrutter = this.person(g, 0, 0, -8, Math.PI, "dance", {gender: "f"});
+    // backdrop: LED wall, neon show logo, risers
+    add(new T.Mesh(new T.BoxGeometry(18, 8, .4), M.black), g).position.set(0, 4, -18.4);
+    const logoC = Tex.sign("TURN UP MUSIC", "#ffc21a", {w: 2048, h: 256, font: 'italic 700 170px "Chakra Petch", "Arial Narrow", sans-serif'});
+    this.tvLogo = add(new T.Mesh(new T.PlaneGeometry(10, 1.25), new T.MeshBasicMaterial({map: Tex.make(logoC), transparent: true, toneMapped: false})), g, false); this.tvLogo.position.set(0, 7.3, -18.15);
+    this.tvPanels = [];
+    for (const sx of [-1, 1]) for (let k=0;k<3;k++){ const p = add(new T.Mesh(new T.PlaneGeometry(1.7, 5.2), new T.MeshBasicMaterial({color: 0xff4fd8, toneMapped: false})), g, false); p.position.set(sx*(5.6 + k*1.9), 3.2, -18.15); this.tvPanels.push(p); }
+    const riserM = new T.MeshPhysicalMaterial({color: 0x1b1622, roughness: .25, metalness: .4, clearcoat: .6});
+    for (let k=0;k<3;k++){ const r = add(new T.Mesh(new T.BoxGeometry(10 - k*2, .3, 1.2), riserM), g); r.position.set(0, .15 + k*.3, -15.6 - k*1.1); this.walkable(r);
+      add(new T.Mesh(new T.BoxGeometry(10 - k*2, .03, .03), new T.MeshBasicMaterial({color: 0x4de1ff, toneMapped: false})), g).position.set(0, .3 + k*.3, -15.0 - k*1.1); }
+    for (let k=0;k<4;k++) this.person(g, -3 + k*2, .9, -17.8, 0, "dance", {gender: k % 2 ? "m" : "f"});
+    // studio audience on bleachers
+    const benchM = this.stdMat(0x2a2236, .6);
+    for (const sx of [-1, 1]) for (let tier=0;tier<3;tier++){
+      const b = add(new T.Mesh(new T.BoxGeometry(1.1, .45 + tier*.5, 9), benchM), g); b.position.set(sx*(7.5 + tier*1.1), (.45 + tier*.5)/2, -7.5); this.walkable(b);
+      for (let k=0;k<5;k++) if ((k + tier + (sx > 0 ? 1 : 0)) % 2 === 0) this.person(g, sx*(7.5 + tier*1.1), .45 + tier*.5 - .42, -11 + k*1.8, sx > 0 ? -Math.PI/2 : Math.PI/2, tier === 2 ? "cheer" : "sit");
+    }
+    // host podium with the show logo
+    const pod = new T.Group(); pod.position.set(-4.6, 0, -3.4); pod.rotation.y = .5; g.add(pod);
+    add(new T.Mesh(roundedBox(1.1, 1.1, .6, .05), riserM), pod).position.y = .55;
+    const podLogo = Tex.sign("TURN UP", "#ffc21a", {w: 512, h: 160, font: 'italic 700 96px "Chakra Petch", sans-serif'});
+    add(new T.Mesh(new T.PlaneGeometry(1, .32), new T.MeshBasicMaterial({map: Tex.make(podLogo), transparent: true, toneMapped: false})), pod, false).position.set(0, .7, .305);
+    this.person(g, -4.6 - Math.sin(.5)*.55, 0, -3.4 - Math.cos(.5)*.55, .5, "talk", {gender: "m"});
+    const micS = add(new T.Mesh(new T.CylinderGeometry(.012, .012, .4, 8), M.black), pod); micS.position.set(0, 1.3, .1); micS.rotation.x = -.5;
+    // TV cameras: two on tripods and one on a swinging crane, with red tally lights
+    this.tvTally = [];
+    const camRig = (parent) => { const c = new T.Group(); parent.add(c);
+      add(new T.Mesh(roundedBox(.5, .34, .3, .04), this.stdMat(0x2a2a30, .4, {metalness: .5})), c);
+      add(new T.Mesh(new T.CylinderGeometry(.11, .13, .38, 20).rotateX(Math.PI/2), M.black), c).position.z = -.32;
+      add(new T.Mesh(new T.PlaneGeometry(.22, .15), new T.MeshBasicMaterial({color: 0x5ad1ff, toneMapped: false})), c).position.set(0, .05, .16);
+      const tl = add(new T.Mesh(new T.SphereGeometry(.03, 10, 8), new T.MeshBasicMaterial({color: 0xff2020, toneMapped: false})), c); tl.position.set(.2, .2, -.1); this.tvTally.push(tl);
+      return c; };
+    for (const [x, z, ry] of [[3.6, -1.6, -.35], [-2.8, -.2, .2]]){
+      const tri = new T.Group(); tri.position.set(x, 0, z); tri.rotation.y = ry; g.add(tri);
+      for (let k=0;k<3;k++){ const leg = add(new T.Mesh(new T.CylinderGeometry(.02, .02, 1.5, 6), M.black), tri); const a = k/3*Math.PI*2; leg.position.set(Math.sin(a)*.3, .7, Math.cos(a)*.3); leg.rotation.set(Math.cos(a)*.22, 0, -Math.sin(a)*.22); }
+      const c = camRig(tri); c.position.y = 1.5;
+    }
+    const crane = this.tvCrane = new T.Group(); crane.position.set(6.2, 0, -5); g.add(crane);
+    add(new T.Mesh(new T.CylinderGeometry(.18, .3, 2.4, 12), M.black), crane).position.y = 1.2;
+    const arm = this.tvArm = new T.Group(); arm.position.y = 2.4; crane.add(arm);
+    const boom = add(new T.Mesh(new T.BoxGeometry(5, .14, .14), this.stdMat(0x9aa0a8, .35, {metalness: .8})), arm); boom.position.x = -1.4;
+    add(new T.Mesh(new T.BoxGeometry(.6, .5, .4), M.black), arm).position.x = 1.3;
+    const cc = camRig(arm); cc.position.set(-3.9, -.25, 0); cc.rotation.y = Math.PI/2;
+    // ON AIR sign and the lighting grid
+    const onAirC = Tex.sign("ON AIR", "#ff3030", {w: 512, h: 160, font: '700 110px "Chakra Petch", sans-serif'});
+    this.tvOnAir = add(new T.Mesh(new T.PlaneGeometry(1.8, .56), new T.MeshBasicMaterial({map: Tex.make(onAirC), transparent: true, toneMapped: false})), g, false); this.tvOnAir.position.set(-7, 6.2, -18.15);
+    const trussM = this.stdMat(0x9aa0a8, .3, {metalness: .9});
+    for (const z of [-4, -9, -14]) add(new T.Mesh(new T.BoxGeometry(18, .3, .3), trussM), g).position.set(0, 8.5, z);
+    this.tvBeams = [];
+    const beamT = Tex.make(Tex.beam());
+    for (let i=0;i<12;i++){ const b = new T.Group(); b.position.set(-7.5 + (i % 6)*3, 8.3, [-4, -9, -14][i % 3]); g.add(b);
+      add(new T.Mesh(new T.CylinderGeometry(.14, .18, .32, 12), M.black), b);
+      const cone = new T.Mesh(new T.ConeGeometry(1.2, 9, 20, 1, true), new T.MeshBasicMaterial({map: beamT, color: i % 2 ? 0xff4fd8 : 0x4de1ff, transparent: true, opacity: .14, depthWrite: false, blending: T.AdditiveBlending, side: T.DoubleSide, toneMapped: false}));
+      cone.position.y = -4.5; b.add(cone); b.userData.ph = i*.9; this.tvBeams.push(b); }
+    // front-row VIP couch with drinks
+    const couch = new T.Group(); couch.position.set(0, 0, .55); g.add(couch);
+    const vel = new T.MeshStandardMaterial({color: 0x5a1a6a, roughness: .7, bumpMap: this.fabricB, bumpScale: .002});
+    add(new T.Mesh(roundedBox(2.4, .42, .85, .08, 3), vel), couch).position.y = .21; add(new T.Mesh(roundedBox(2.4, .5, .2, .08, 3), vel), couch).position.set(0, .62, .35);
+    const side = add(new T.Mesh(new T.CylinderGeometry(.3, .3, .5, 24), riserM), g); side.position.set(1.7, .25, .2);
+    const st = add(new T.Mesh(new T.CylinderGeometry(.32, .32, .03, 24), M.marble), g); st.position.set(1.7, .515, .2); this.surface(st);
+    for (const [dx, mk] of [[-.12, () => Props.martini("pink")], [.12, () => Props.flute()], [0, () => Props.champagne()]]){ const o = mk(); o.position.set(1.7 + dx, .53, .2 + (dx === 0 ? -.14 : .06)); g.add(o); this.grabbable(o); }
+    // lights
+    g.add(new T.HemisphereLight(0x8a7aff, 0x140a14, .4));
+    this.tvKey = new T.SpotLight(0xffffff, 2.2, 30, .5, .6, 1.5); this.tvKey.position.set(0, 8, 2); this.tvKey.target.position.set(0, 0, -8); g.add(this.tvKey, this.tvKey.target);
+    this.tvWash = new T.PointLight(0xff4fd8, 1.4, 20, 2); this.tvWash.position.set(0, 5, -12); g.add(this.tvWash);
+    return {id: "tvshow", name: "Turn Up Music Live (TV show)", group: g, floorY: 0, noEnv: true, fog: new T.FogExp2(0x0a0812, .02), exposure: 1.05,
+      screen: [0, 4.3, -18.15, 1.75, 0],
+      onMood: m => { this.tvWash.color.setHex(m.a); this.tvFloorM.emissive.setHex(m.a); this.tvBeams.forEach((b, i) => b.children[1].material.color.setHex(i % 2 ? m.a : m.b)); },
+      update: (dt, t, A) => {
+        this.tvLineT.offset.y = (this.tvLineT.offset.y - dt*(.6 + A.bass)) % 1;
+        this.tvFloorM.emissiveIntensity = .2 + A.bass*.6;
+        this.tvPanels.forEach((p, i) => p.material.color.setHSL((t*.08 + i*.12) % 1, .9, .3 + A.mid*.3));
+        this.tvBeams.forEach(b => { b.rotation.z = Math.sin(t*.6 + b.userData.ph)*.4; b.rotation.x = Math.cos(t*.45 + b.userData.ph)*.3; b.children[1].material.opacity = .08 + A.bass*.22; });
+        this.tvArm.rotation.y = Math.sin(t*.25)*.7; this.tvArm.rotation.z = Math.sin(t*.4)*.12;
+        this.tvOnAir.material.opacity = .65 + Math.sin(t*3)*.35;
+        this.tvTally.forEach((l, i) => l.visible = (Math.floor(t/4) % 3) === i);
+        this.tvLogo.scale.setScalar(1 + A.bass*.04);
+        // one dancer struts down the line and back
+        const s = this.tvStrutter; if (s){ const k = (t*.12) % 2, z = -2.8 - (k < 1 ? k : 2 - k)*9.6; s.position.z = z; s.rotation.y = k < 1 ? Math.PI : 0; }
+        this.tvWash.intensity = 1.2 + A.bass*2;
+      }};
+  },
+
   buildRooftop(){
     const T = THREE, M = this.mats, scene = this.scene, add = this.add, fabricB = this.fabricB;
     // ---------- Room: sky, city, rooftop deck ----------
@@ -2833,7 +3501,12 @@ const Lounge = {
     {id:"rooftop", name:"Rooftop Lounge"},
     {id:"club",    name:"Nightclub"},
     {id:"beach",   name:"Beach Party"},
-    {id:"nyc",     name:"NYC Market Street Café"}
+    {id:"nyc",     name:"NYC Market Street Café"},
+    {id:"madrid",  name:"Madrid Courtyard Fiesta"},
+    {id:"concert", name:"Hip-Hop Concert"},
+    {id:"rodeo",   name:"Texas Rodeo Night"},
+    {id:"coffee",  name:"Quiet Coffee Shop"},
+    {id:"tvshow",  name:"Turn Up Music Live (TV)"}
   ],
   isShown(o){ for (let p = o; p; p = p.parent) if (!p.visible) return false; return true; },
 
@@ -2842,7 +3515,7 @@ const Lounge = {
     for (const k in this.worlds) this.worlds[k].group.visible = false;
     if (!this.worlds[id]){
       this.buildingWorld = id;
-      const builder = {rooftop:"buildRooftop", club:"buildClub", beach:"buildBeach", nyc:"buildNYC"}[id];
+      const builder = {rooftop:"buildRooftop", club:"buildClub", beach:"buildBeach", nyc:"buildNYC", madrid:"buildMadrid", concert:"buildConcert", rodeo:"buildRodeo", coffee:"buildCoffee", tvshow:"buildTV"}[id];
       this.worlds[id] = this[builder]();
     }
     const w = this.world = this.worlds[id];
@@ -3618,6 +4291,11 @@ const Lounge = {
              "Female_Adult_01", "Male_Adult_06", "Female_Adult_03", "Male_Adult_09", "Female_Adult_17", "Male_Adult_08", "Business_Female_01", "Male_Adult_01"],
     beach:  ["Sports_Female_01", "Sports_Male_01", "Sports_Female_02", "Sports_Male_04", "Female_Party_02", "Male_Adult_01", "Female_Adult_17", "Male_Adult_09",
              "Female_Party_01", "Female_Adult_03"],
+    madrid: ["Female_Adult_11", "Male_Adult_06", "Female_Party_02", "Male_Adult_03", "Female_Adult_06", "Male_Adult_09", "Female_Adult_15", "Business_Male_05", "Female_Adult_03", "Male_Adult_15", "Female_Adult_04", "Business_Female_03"],
+    concert:["Male_Adult_17", "Female_Party_01", "Male_Adult_18", "Female_Party_02", "Male_Adult_12", "Female_Adult_12", "Male_Adult_04", "Female_Adult_17", "Sports_Male_04", "Sports_Female_02", "Male_Adult_01", "Female_Adult_11", "Male_Adult_09", "Delivery_Male_01"],
+    rodeo:  ["Male_Adult_08", "Female_Adult_01", "Male_Adult_06", "Female_Adult_03", "Male_Adult_09", "Female_Adult_17", "Male_Adult_03", "Female_Adult_04", "Male_Adult_01", "Female_Party_01", "Delivery_Male_01", "Female_Adult_12"],
+    coffee: ["Female_Adult_15", "Business_Male_02", "Female_Adult_06", "Male_Adult_03", "Business_Female_01", "Male_Adult_15"],
+    tvshow: ["Female_Party_01", "Male_Adult_17", "Female_Party_02", "Male_Adult_12", "Female_Adult_11", "Male_Adult_18", "Sports_Female_02", "Business_Male_05", "Female_Adult_12", "Male_Adult_04", "Female_Adult_17", "Male_Adult_01", "Business_Female_01", "Sports_Male_04"],
     nyc:    ["Business_Female_01", "Business_Male_05", "Female_Adult_06", "Male_Adult_03", "Business_Female_03", "Business_Male_02", "Female_Adult_04", "Delivery_Male_01",
              "Female_Adult_15", "Male_Adult_15", "Female_Adult_11", "Male_Adult_17", "Female_Adult_03", "Male_Adult_06", "Male_Adult_08", "Male_Adult_04"]
   },
@@ -3733,7 +4411,7 @@ const Lounge = {
     const p = this.makePerson(mat);
     p.userData.torso.visible = false;          // no stand-in mannequins: real people fade in when ready
     p.position.set(x, y, z); p.rotation.y = ry; parent.add(p);
-    const slot = {p, behavior, world: this.buildingWorld, speed: opts.speed || 1.2, gender: opts.gender, avatar: opts.avatar};
+    const slot = {p, behavior, world: this.buildingWorld, speed: opts.speed || 1.2, gender: opts.gender, avatar: opts.avatar, gear: opts.gear};
     p.userData.slot = slot;
     (this.slots || (this.slots = [])).push(slot);
     if (this.peopleSet && (this.peopleSet.mode === "simple" || this.castReady(slot.world))) this.upgradeSlot(slot);
@@ -3762,6 +4440,7 @@ const Lounge = {
     if (set.mode === "simple" && slot.behavior === "sit") return;     // the simple characters can't sit
     const A = this.pickAvatar(slot.gender, slot.world, slot.avatar), m = T.SkeletonUtils.clone(A.root);
     m.scale.multiplyScalar((A.scale || 1)*rnd(.95, 1.04));
+    if (slot.gear && set.mode === "real"){ try{ Gear.attach(m, Object.assign({}, Profile.defaults, {aura: ["#6a4a2a", "#2a2a2a", "#c8b08a", "#8a2a1a"][Math.floor(Math.random()*4)]}, slot.gear)); }catch(e){} }
     slot.p.add(m);
     // soft contact shadow so people sit on the ground instead of floating
     if (!this.blobGeo){
@@ -4066,7 +4745,8 @@ const Lounge = {
   },
 
   /* ================= Big-screen video, DJ booths and VIP sections ================= */
-  VIPZONES: {club:[-2.4, 2.4, -.45, 1.8], rooftop:[-2.6, 2.6, -2.25, 1.45], beach:[-2.2, 2.2, -.55, 1.8], nyc:[-.95, 1.05, -1.65, .55]},
+  VIPZONES: {club:[-2.4, 2.4, -.45, 1.8], rooftop:[-2.6, 2.6, -2.25, 1.45], beach:[-2.2, 2.2, -.55, 1.8], nyc:[-.95, 1.05, -1.65, .55],
+    madrid:[-1.6, 1.6, -2, 1.2], concert:[-5, 5, -1.55, 3.4], rodeo:[-2, 2, -1.6, 1.4], tvshow:[-2.2, 2.2, -.3, 1.6]},
   inVipZone(x, z){ const r = this.VIPZONES[this.worldId]; return !!r && x > r[0] && x < r[1] && z > r[2] && z < r[3]; },
   vipBlocked(x, z){
     if (typeof Party === "undefined" || !Party.room || VIP.can("vipzone")) return false;
@@ -4088,7 +4768,8 @@ const Lounge = {
     // a DJ booth in every world (the club already has one on its stage)
     const spots = this.boothSpots || (this.boothSpots = {});
     if (id === "club"){ spots.club = {x: 0, y: .6, z: -12.35, ry: 0}; return; }
-    const place = {rooftop: [-2.9, 0, -4.3, .45], beach: [5.6 + .6*Math.sin(Math.atan2(-5.6, 6.2)), .5, -6.2 + .6*Math.cos(Math.atan2(-5.6, 6.2)), Math.atan2(-5.6, 6.2)], nyc: [6.3, .16, 2.0, -Math.PI/2]}[id];
+    if (id === "concert"){ spots.concert = {x: 4.5, y: .6, z: -19.25, ry: 0}; return; }
+    const place = {madrid: [6.4, 0, -10.2, -.35], rodeo: [4.6, .12, -9.6, -.25], tvshow: [5.2, 0, -13.2, -.35], rooftop: [-2.9, 0, -4.3, .45], beach: [5.6 + .6*Math.sin(Math.atan2(-5.6, 6.2)), .5, -6.2 + .6*Math.cos(Math.atan2(-5.6, 6.2)), Math.atan2(-5.6, 6.2)], nyc: [6.3, .16, 2.0, -Math.PI/2]}[id];
     if (!place) return;
     const b = Props.djBooth(); b.position.set(place[0], place[1], place[2]); b.rotation.y = place[3]; g.add(b);
     w.booth = b;
@@ -4101,7 +4782,7 @@ const Lounge = {
   },
   updateBooths(dt){
     const live = this.boothActive || (typeof Party !== "undefined" && Party.liveDJ());
-    if (this.dj) this.dj.visible = !live;
+    if (this.dj) this.dj.visible = !(live && this.worldId === "club");
     const w = this.world; if (w && w.booth && live) w.booth.userData.platters.forEach(p => p.rotation.y -= dt*3.5);
   },
   videoMat(){
@@ -4145,8 +4826,10 @@ const Lounge = {
      Tap or click the floor to walk there. Keyboard: W A S D or the arrow keys.
      VR: point at the floor and pull the trigger to jump there; left stick to walk, right stick to turn. */
   walkable(mesh){ const w = this.buildingWorld; ((this.walkables || (this.walkables = {}))[w] || (this.walkables[w] = [])).push(mesh); return mesh; },
-  BOUNDS: {rooftop:[-6.5, 6.5, -6.5, 6.5], club:[-10.3, 10.3, -15.4, 2.8], beach:[-24, 24, -6.2, 14], nyc:[-60, 60, -16.6, 3.7]},
-  SPAWN: {rooftop:[-3.2, 3.2, -4.6, -3.2], club:[-4, 4, -9, -4], beach:[-1, 5, -5.2, -1.6], nyc:[-8, 8, 1.4, 2.9]},
+  BOUNDS: {rooftop:[-6.5, 6.5, -6.5, 6.5], club:[-10.3, 10.3, -15.4, 2.8], beach:[-24, 24, -6.2, 14], nyc:[-60, 60, -16.6, 3.7],
+    madrid:[-10.4, 10.4, -11.4, 5.4], concert:[-12, 12, -21, 3], rodeo:[-40, 40, -40, 30], coffee:[-6.1, 6.1, -7.7, 1.4], tvshow:[-12, 12, -18, 4]},
+  SPAWN: {rooftop:[-3.2, 3.2, -4.6, -3.2], club:[-4, 4, -9, -4], beach:[-1, 5, -5.2, -1.6], nyc:[-8, 8, 1.4, 2.9],
+    madrid:[-5, 5, -1.5, 2.5], concert:[-6, 6, -10, -4], rodeo:[-5, 5, -9, -2.5], coffee:[-1.5, 4.5, -4.5, -1], tvshow:[-5, 5, -4, -1]},
   headPos(v = new THREE.Vector3()){ this.camera.updateMatrixWorld(true); return v.setFromMatrixPosition(this.camera.matrixWorld); },
   headYaw(){ const d = new THREE.Vector3(); this.camera.getWorldDirection(d); return Math.atan2(-d.x, -d.z); },
   clampToWorld(x, z){
@@ -4807,7 +5490,7 @@ $("#btnResetYes").addEventListener("click", () => { S.user = []; S.favs.clear();
   $("#frameNotice").hidden = !IN_FRAME;
   // Deep links: turn-up-music.html#lounge opens the VR Lounge, #stage opens the Stage, #artist the artist profile
   const h = location.hash.slice(1);
-  const worldLinks = {rooftop:"rooftop", club:"club", nightclub:"club", beach:"beach", nyc:"nyc", cafe:"nyc"};
+  const worldLinks = {rooftop:"rooftop", club:"club", nightclub:"club", beach:"beach", nyc:"nyc", cafe:"nyc", madrid:"madrid", spain:"madrid", concert:"concert", hiphop:"concert", rodeo:"rodeo", texas:"rodeo", coffee:"coffee", coffeeshop:"coffee", tv:"tvshow", tvshow:"tvshow", show:"tvshow"};
   if (worldLinks[h]){ store.set("world", worldLinks[h]); openStage("lounge"); }
   else if (h === "lounge") openStage("lounge"); else if (h === "stage") openStage("dancers");
 })();
@@ -4831,7 +5514,20 @@ function avThumbStyle(name, w = 52){
 
 /* ---------- Accessories (hats, glasses, chains, headphones) ---------- */
 const Gear = {
-  HATS: {none:"No hat", cap:"Ball cap", beanie:"Beanie", fedora:"Fedora", bucket:"Bucket hat", crown:"Party crown"},
+  HATS: {none:"No hat", cap:"Ball cap", beanie:"Beanie", fedora:"Fedora", bucket:"Bucket hat", cowboy:"Cowboy hat", crown:"Party crown"},
+  // a cowboy hat with a pinched crown and curled brim, base at y = 0
+  cowboyHat(g, r, color){
+    const T = THREE, felt = new T.MeshStandardMaterial({color, roughness: .85}), band = new T.MeshStandardMaterial({color: 0x2a1a10, roughness: .6});
+    const crown = new T.Mesh(Props.lathe([[0, .13], [r*.5, .125], [r*.82, .1], [r*.95, .03], [r*.97, 0]], 24), felt); crown.scale.set(1, 1, 1.12); crown.geometry.computeVertexNormals();
+    const top = new T.Mesh(new T.CircleGeometry(r*.6, 20).rotateX(-Math.PI/2), felt); top.position.y = .126; top.scale.set(1, 1, 1.1);
+    const brimG = new T.RingGeometry(r*.92, r*1.9, 40, 2).rotateX(-Math.PI/2), bp = brimG.attributes.position;
+    for (let i=0;i<bp.count;i++){ const x = bp.getX(i), z = bp.getZ(i), d = Math.hypot(x, z), a = Math.atan2(z, x); bp.setY(i, Math.max(0, d - r*1.2)*Math.abs(Math.cos(a))*.5); }
+    brimG.computeVertexNormals();
+    const brim = new T.Mesh(brimG, new T.MeshStandardMaterial({color, roughness: .85, side: T.DoubleSide})); brim.scale.set(1, 1, 1.15);
+    const bd = new T.Mesh(new T.CylinderGeometry(r*.96, r*.975, .025, 24, 1, true), band); bd.position.y = .015; bd.scale.set(1, 1, 1.12);
+    for (const m of [crown, top, brim, bd]){ m.castShadow = true; g.add(m); }
+    return g;
+  },
   EYES: {none:"None", shades:"Sunglasses", round:"Round glasses", visor:"LED visor"},
   NECK: {none:"None", chain:"Gold chain", pearls:"Pearls", bandana:"Bandana"},
   mats(){
@@ -4882,6 +5578,8 @@ const Gear = {
       add(new T.CylinderGeometry(r*.9, r*1.02, crownH, 24), fm, c.x, hy + crownH/2 - .01, c.z - .006);
       add(new T.CylinderGeometry(r*(p.hat === "fedora" ? 1.75 : 1.45), r*(p.hat === "fedora" ? 1.75 : 1.5), .008, 32), fm, c.x, hy - .012, c.z - .006);
       if (p.hat === "fedora") add(new T.CylinderGeometry(r*1.025, r*1.025, .02, 24, 1, true), M.cloth(color), c.x, hy + .005, c.z - .006);
+    } else if (p.hat === "cowboy"){
+      const hg = new T.Group(); hg.position.set(c.x, hy - .02*k, c.z - .006); hg.scale.setScalar(k); this.cowboyHat(hg, r, new T.Color(p.aura || "#6a4a2a").multiplyScalar(.6).getHex()); g.add(hg);
     } else if (p.hat === "crown"){
       const pts = []; for (let i=0;i<=10;i++){ const a = i/10*Math.PI*2; pts.push(a); }
       const ring = add(new T.CylinderGeometry(r*.9, r*.9, .045, 30, 1, true), M.gold, c.x, hy + .03, c.z - .006); ring.material = M.gold;
@@ -5459,7 +6157,10 @@ const Events = {
       {id: "rooftop-fri", day: 5, h: 21, len: 3, world: "rooftop", st: "soma-fluid", title: "Friday Night Rooftop Sessions", desc: "Kick off the weekend above the city lights. Future soul and instrumental hip-hop till midnight."},
       {id: "club-sat", day: 6, h: 22, len: 3, world: "club", st: "soma-beat", title: "Saturday Night Turn Up", desc: "The club is open. Deep house and dance floor heaters all night."},
       {id: "brunch-sun", day: 0, h: 11, len: 2, world: "nyc", st: "soma-lush", title: "Sunday Soul Brunch", desc: "Lattes, croissants and smooth vocals at the Market Street café."},
-      {id: "beach-wed", day: 3, h: 19, len: 2, world: "beach", st: "soma-groove", title: "Midweek Sunset Beach Chill", desc: "Toes in the sand, bonfire lit, downtempo grooves as the sun goes down."}
+      {id: "beach-wed", day: 3, h: 19, len: 2, world: "beach", st: "soma-groove", title: "Midweek Sunset Beach Chill", desc: "Toes in the sand, bonfire lit, downtempo grooves as the sun goes down."},
+      {id: "tv-tue", day: 2, h: 20, len: 2, world: "tvshow", st: "soma-fluid", title: "Turn Up Music LIVE", desc: "The TV dance show: hit the line, show your moves, and the crowd votes with 🔥."},
+      {id: "madrid-thu", day: 4, h: 20, len: 3, world: "madrid", st: "rp-main", title: "Fiesta en Madrid", desc: "Sangria, tapas and dancing around the fountain in the courtyard."},
+      {id: "concert-sat", day: 6, h: 19, len: 2, world: "concert", st: "kexp", title: "Hip-Hop Live: Saturday Main Stage", desc: "Front row energy: lights, lasers, pyro and the whole arena bouncing."}
     ];
     const out = [], now = Date.now();
     for (const d of defs){
