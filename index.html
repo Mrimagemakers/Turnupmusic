@@ -398,6 +398,28 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 .css3d-screen iframe,.css3d-screen video{width:100%;height:100%;border:0;display:block;background:#000}
 .seg-like{padding:8px 12px;border-radius:10px;border:1px solid var(--line);font-weight:600;font-size:13px;color:var(--muted)}
 .seg-like[aria-pressed=true]{color:var(--gold);border-color:rgba(255,194,26,.5)}
+/* Camera */
+.cambig{gap:10px}.cambig button{flex:1;min-height:52px;font-size:16px}
+.camrec{background:linear-gradient(135deg,#ff4a4a,#c4142c)!important;color:#fff!important}
+.camrec.recording{animation:recblink 1s infinite}
+.camopts{display:flex;flex-wrap:wrap;gap:6px 18px;margin:10px 0 2px}.camopts .row{display:flex;align-items:center;gap:8px;font-size:14px}
+.camgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.camgrid button{aspect-ratio:1;border-radius:12px;border:1px solid var(--line);background:#120b08 center/cover no-repeat;position:relative;cursor:pointer;padding:0}
+.camgrid button span{position:absolute;inset:auto 6px 6px auto;background:rgba(0,0,0,.65);color:#fff;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;font-size:12px}
+.campv{margin-top:12px}.campv img,.campv video{width:100%;max-height:52vh;object-fit:contain;border-radius:14px;background:#000;display:block}
+.recpill{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:0;background:#c4142c;color:#fff;font:700 14px var(--f-body,sans-serif);box-shadow:0 6px 24px rgba(0,0,0,.4);cursor:pointer}
+.recpill i{width:10px;height:10px;border-radius:50%;background:#fff;animation:recblink 1s infinite}
+@keyframes recblink{50%{opacity:.35}}
+.camflash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:70}
+.camflash.go{animation:camflash .45s ease-out}
+@keyframes camflash{0%{opacity:.9}100%{opacity:0}}
+.camcount{position:fixed;inset:0;display:grid;place-items:center;z-index:65;pointer-events:none;font:800 160px var(--f-display);color:#fff;text-shadow:0 6px 40px rgba(0,0,0,.6)}
+.camcount.pop{animation:campop 1s ease-out}
+@keyframes campop{0%{transform:scale(1.6);opacity:0}25%{transform:scale(1);opacity:1}100%{opacity:.2}}
+.camlast{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:60;width:72px;height:72px;border-radius:14px;border:3px solid #fff;background:#000 center/cover no-repeat;box-shadow:0 8px 28px rgba(0,0,0,.5);cursor:pointer}
+.camlast.vid::after{content:"▶";position:absolute;inset:0;display:grid;place-items:center;color:#fff;text-shadow:0 2px 8px #000}
+.camlast.in{animation:camin .35s ease-out}
+@keyframes camin{from{transform:scale(.4) translateY(40px);opacity:0}}
 </style>
 </head>
 <body>
@@ -410,6 +432,7 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
       <button class="loungebtn" id="btnLounge" type="button"><svg viewBox="0 0 24 24"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h13A2.5 2.5 0 0 1 21 8.5v6a2.5 2.5 0 0 1-2.5 2.5h-3.2l-1.6-2.4a2 2 0 0 0-3.4 0L8.7 17H5.5A2.5 2.5 0 0 1 3 14.5z"/><circle cx="8" cy="11.5" r="1.6"/><circle cx="16" cy="11.5" r="1.6"/></svg>VR Lounge</button>
       <button class="vipbtn" id="btnVIP" type="button">★ VIP</button>
       <button class="iconbtn" id="btnSocial" aria-label="The Wall" title="The Wall"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></button>
+      <button class="iconbtn" id="btnCam" aria-label="Camera: photos and video" title="Camera"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
       <button class="iconbtn" id="btnEvents" aria-label="Live events" title="Live events"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="16.5" cy="15" r="1.6" fill="currentColor"/></svg></button>
       <button class="iconbtn" id="btnSettings" aria-label="Customize and settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </div>
@@ -558,7 +581,7 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
     <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
     <div class="emotes" id="emoteBar" hidden><button type="button" data-e="wave">👋 Wave</button><button type="button" data-e="dance">💃 Dance</button><button type="button" data-e="cheer">🙌 Cheer</button><button type="button" data-e="idle">🧍 Chill</button><button type="button" data-r="🔥">🔥</button><button type="button" data-r="❤️">❤️</button><button type="button" data-r="😂">😂</button><button type="button" data-r="🎉">🎉</button><button type="button" id="btnChat">💬 Chat</button><button type="button" id="btnMic">🎤 Mic off</button><button type="button" id="btnDJ">🎧 Be the DJ</button></div>
     <div class="btnrow">
-      <button class="chipbtn" id="btnSnap" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Snapshot</button>
+      <button class="chipbtn" id="btnSnap" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Camera</button>
       <button class="chipbtn" id="btnMood" type="button"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16"/></svg>Change mood</button>
       <button class="chipbtn xr" id="btnVR" type="button">Enter VR</button>
       <button class="chipbtn xr" id="btnAR" type="button">Place in my room (AR)</button>
@@ -591,6 +614,27 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 </div>
 
 <div class="toast" id="toast" role="status"></div>
+
+<dialog id="camDlg" class="wide">
+  <h2>📷 Camera</h2>
+  <p class="hint" id="camWhat"></p>
+  <div class="btnrow cambig"><button class="primary" id="camPhoto" type="button">📸 Take a photo</button><button class="primary camrec" id="camRec" type="button">⏺ Record video</button></div>
+  <div class="camopts"><label class="row"><input type="checkbox" id="camTimer"> 3-second timer</label><label class="row"><input type="checkbox" id="camMic"> Record my voice too</label><label class="row" id="camVertRow"><input type="checkbox" id="camVert"> Vertical for Stories, Reels and TikTok</label></div>
+  <p class="hint">Videos record the music and party sound, up to 5 minutes each. On a computer, press P for a quick photo.</p>
+  <div class="setgroup">
+    <h3>My shots</h3>
+    <div class="camgrid" id="camGrid"></div>
+    <div class="campv" id="camPv" hidden>
+      <div id="camMedia"></div>
+      <div class="btnrow"><button class="primary" id="camSave" type="button">⬇ Save</button><button class="ghost" id="camShare" type="button">Share…</button><button class="ghost" id="camWall" type="button">📣 Post to The Wall</button><span class="grow"></span><button class="ghost" id="camDel" type="button">Delete</button></div>
+    </div>
+  </div>
+  <div class="btnrow end"><button class="ghost" id="camClose" type="button">Close</button></div>
+</dialog>
+<button class="recpill" id="recPill" type="button" hidden><i></i>REC <span id="recTime">0:00</span> · Stop</button>
+<div class="camflash" id="camFlash" aria-hidden="true"></div>
+<div class="camcount" id="camCount" hidden></div>
+<button class="camlast" id="camLast" type="button" aria-label="Open your latest shot" hidden></button>
 
 <dialog id="screenDlg" class="wide">
   <h2>📺 Screens</h2>
@@ -1692,7 +1736,6 @@ function setXpMode(m){
   document.querySelectorAll("#xpModes button").forEach(b => b.setAttribute("aria-pressed", b.dataset.m === m));
   const is3d = m === "lounge";
   $("#stageCv").hidden = is3d; $("#loungeCv").hidden = !is3d;
-  $("#btnSnap").hidden = is3d;
   ["btnMood","btnVR","btnAR","worldSeg"].forEach(id => $("#"+id).hidden = !is3d);
   $("#partyBar").hidden = !is3d; if (!is3d) $("#emoteBar").hidden = true; else { try{ Party.ui(); }catch(e){} }
   $("#xpHint").textContent = is3d
@@ -1720,22 +1763,6 @@ $("#stageCv").addEventListener("pointerdown", e => {
   stageScene.tap(e.clientX - r.left, e.clientY - r.top);
 });
 
-// Snapshot of the 2D stage
-$("#btnSnap").addEventListener("click", () => {
-  const src = $("#stageCv");
-  const out = document.createElement("canvas"); out.width = src.width; out.height = src.height;
-  const c = out.getContext("2d"); c.drawImage(src, 0, 0);
-  const s = out.width/ Math.max(1, src.clientWidth);
-  c.font = `700 ${Math.round(16*s)}px "Chakra Petch", sans-serif`; c.fillStyle = "rgba(255,255,255,.85)"; c.textBaseline = "bottom";
-  c.fillText(`TURN UP MUSIC${S.current ? " · " + S.current.name.toUpperCase() : ""}`, 16*s, out.height - 16*s);
-  out.toBlob(async blob => {
-    if (!blob) return;
-    const file = new File([blob], "turn-up-moment.png", {type:"image/png"});
-    try{ if (navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:"Turn Up Music"}); return; } }catch(err){ if (err.name === "AbortError") return; }
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 3000); toast("Snapshot saved");
-  }, "image/png");
-});
 
 /* ---------- The VR Lounge ---------- */
 const THREE_URL = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
@@ -2709,14 +2736,14 @@ const Lounge = {
     this.platform.position.set(0, .06, -2.6); this.platform.visible = false; stage.add(this.platform);
 
     const btns = [["prev", () => step(-1)], ["play", () => togglePlay()], ["next", () => step(1)], ["burst", () => this.burst(this.stage.localToWorld(new T.Vector3(0, 2, -2)), 18)], ["mood", () => this.nextMood()], ["world", () => this.nextWorld()],
-      ["party", () => { if (Party.room) Party.leave(); else Party.join("world"); }], ["dance", () => Party.setEmote(Party.emote === "dance" ? "idle" : "dance")], ["react", () => Party.react(["🔥", "🙌", "❤️", "🎉"][(this.reactI = ((this.reactI || 0) + 1) % 4)])], ["mic", () => Party.toggleMic()],
+      ["party", () => { if (Party.room) Party.leave(); else Party.join("world"); }], ["dance", () => Party.setEmote(Party.emote === "dance" ? "idle" : "dance")], ["react", () => Party.react(["🔥", "🙌", "❤️", "🎉"][(this.reactI = ((this.reactI || 0) + 1) % 4)])], ["mic", () => Party.toggleMic()], ["cam", () => Cam.showVR(!(Cam.vr && Cam.vr.on))],
       ["exit", () => { try{ this.session?.end(); }catch(e){} }]];
     this.btnMeshes = {};
     btns.forEach(([id, fn], i) => {
       const c = document.createElement("canvas"); c.width = c.height = 128;
       const tex = new T.CanvasTexture(c); tex.encoding = T.sRGBEncoding;
       const m = new T.Mesh(new T.CircleGeometry(.12, 40), new T.MeshBasicMaterial({map:tex, transparent:true, toneMapped:false}));
-      if (i < 6) m.position.set((i - 2.5)*.28, 1.02, .6); else { m.position.set((i - 7.5)*.24, .82, .66); m.scale.setScalar(.82); }
+      if (i < 6) m.position.set((i - 2.5)*.28, 1.02, .6); else { m.position.set((i - 8)*.24, .82, .66); m.scale.setScalar(.82); }
       m.lookAt(0, 1.2, 3.2);
       if (id === "exit"){ m.visible = false; m.position.set(0, .7, .75); m.lookAt(0, 1.2, 3.2); }
       m.userData = {id, c, tex};
@@ -4663,11 +4690,12 @@ const Lounge = {
       else if (id === "prev"){ x.moveTo(88,40); x.lineTo(52,64); x.lineTo(88,88); x.fill(); x.fillRect(39,40,9,48); }
       else if (id === "burst"){ x.textAlign = "center"; x.textBaseline = "middle"; x.font = '64px "Segoe UI Symbol","Noto Music","Apple Symbols","DejaVu Sans",sans-serif'; x.fillText("♫", 64, 68); }
       else if (id === "world"){ x.lineWidth = 6; x.beginPath(); x.arc(64,64,30,0,Math.PI*2); x.stroke(); x.beginPath(); x.ellipse(64,64,13,30,0,0,Math.PI*2); x.stroke(); x.beginPath(); x.moveTo(34,64); x.lineTo(94,64); x.stroke(); }
-      else if (["party", "dance", "react", "mic"].includes(id)){
-        const on = id === "party" ? !!(typeof Party !== "undefined" && Party.room) : id === "dance" ? (typeof Party !== "undefined" && Party.emote === "dance") : id === "mic" ? !!(typeof Party !== "undefined" && Party.mic) : false;
+      else if (["party", "dance", "react", "mic", "cam"].includes(id)){
+        const on = id === "party" ? !!(typeof Party !== "undefined" && Party.room) : id === "dance" ? (typeof Party !== "undefined" && Party.emote === "dance") : id === "mic" ? !!(typeof Party !== "undefined" && Party.mic) : id === "cam" ? !!(typeof Cam !== "undefined" && Cam.vr && Cam.vr.on) : false;
         if (on){ x.fillStyle = hex; x.beginPath(); x.arc(64,64,52,0,Math.PI*2); x.globalAlpha = .35; x.fill(); x.globalAlpha = 1; }
         x.textAlign = "center"; x.textBaseline = "middle"; x.font = '60px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
-        x.fillText({party:"👥", dance:"💃", react:"🔥", mic:"🎤"}[id], 64, 70);
+        x.fillText({party:"👥", dance:"💃", react:"🔥", mic:"🎤", cam:"📷"}[id], 64, 70);
+        if (id === "cam" && typeof Cam !== "undefined" && Cam.rec){ x.fillStyle = "#ff2a2a"; x.beginPath(); x.arc(100, 28, 13, 0, Math.PI*2); x.fill(); }
       }
       else if (id === "exit"){ x.lineWidth = 9; x.lineCap = "round"; x.beginPath(); x.moveTo(44,44); x.lineTo(84,84); x.moveTo(84,44); x.lineTo(44,84); x.stroke(); }
       else if (id === "mood"){ const g = x.createRadialGradient(64,64,4,64,64,34); g.addColorStop(0,"#fff"); g.addColorStop(.4,hex); g.addColorStop(1,"#"+m.b.toString(16).padStart(6,"0")); x.fillStyle = g; x.arc(64,64,30,0,Math.PI*2); x.fill(); }
@@ -4801,7 +4829,7 @@ const Lounge = {
     }
   },
   exitXR(){
-    this.dropAll();
+    this.dropAll(); Cam.onExitXR();
     if (this.rig) this.rig.rotation.set(0, 0, 0);
     this.session = null; this.hitSource = null; this.mode = "3d";
     this.room.visible = true; this.stage.visible = true; this.reticle.visible = false; this.platform.visible = false;
@@ -5289,11 +5317,13 @@ const Lounge = {
 
     this.drawScreen();
     this.lastBass = bass;
-    if (this.btnMeshes){ const xr = this.renderer.xr.isPresenting; for (const id of ["party", "dance", "react", "mic"]) if (this.btnMeshes[id]) this.btnMeshes[id].visible = xr; }
+    if (this.btnMeshes){ const xr = this.renderer.xr.isPresenting; for (const id of ["party", "dance", "react", "mic", "cam"]) if (this.btnMeshes[id]) this.btnMeshes[id].visible = xr; }
     this.updateMove(dt, xrFrame); this.updateBooths(dt); this.updateGrab(dt); this.updateCorks(dt); Party.update(dt); Screens.update();
     this.updatePeople(dt, bass);
+    try{ Cam.xrFrame(dt); }catch(e){ console.warn(e); }
     if (this.composer && !this.renderer.xr.isPresenting){ this.finalPass.uniforms.exposure.value = this.renderer.toneMappingExposure; this.composer.render(dt); }
     else this.renderer.render(this.scene, this.camera);
+    Cam.afterRender();
   }
 };
 $("#btnVR").addEventListener("click", () => Lounge.enterXR("vr"));
@@ -7376,6 +7406,387 @@ const Screens = {
     $("#btnScreens").addEventListener("click", () => this.open());
   }
 };
+
+/* ================= Camera: photos and video recording in the app, the Stage, the Lounge and VR =================
+   Photos and videos are kept on this device (in "My shots") until you save, share or delete them.
+   In VR you hold a camera in your left hand: A or X takes a photo, B or Y starts and stops recording. */
+const Cam = {
+  shots: [], rec: null, pending: null, vr: null, pad: {}, vrCount: 0,
+  /* where the camera is pointed right now */
+  source(){
+    if ($("#stage").hidden) return "app";
+    if (xpMode !== "lounge") return "stage";
+    const r = Lounge.renderer;
+    if (r && r.xr.isPresenting) return Lounge.mode === "vr" ? "vr" : "ar";
+    return "lounge";
+  },
+  /* ---------- the "My shots" store (IndexedDB, this device only) ---------- */
+  idb(){
+    if (this.dbp) return this.dbp;
+    return this.dbp = new Promise((ok, no) => { const r = indexedDB.open("turnup-shots", 1); r.onupgradeneeded = () => r.result.createObjectStore("shots", {keyPath: "id"}); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); });
+  },
+  async store(mode, fn){ const db = await this.idb(); return new Promise((ok, no) => { const t = db.transaction("shots", mode), st = t.objectStore("shots"), r = fn(st); t.oncomplete = () => ok(r && r.result); t.onerror = () => no(t.error); }); },
+  async load(){
+    if (this.loaded) return; this.loaded = true;
+    try{ const all = (await this.store("readonly", st => st.getAll())) || []; const have = new Set(this.shots.map(s => s.id)); this.shots = this.shots.concat(all.filter(s => !have.has(s.id))).sort((a, b) => b.created - a.created); }catch(e){}
+  },
+  async keep(blob, type, thumb){
+    const shot = {id: "m" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), type, blob, mime: blob.type, created: Date.now(), thumb};
+    this.shots.unshift(shot);
+    try{
+      await this.store("readwrite", st => st.put(shot));
+      for (const old of this.shots.slice(40)) await this.store("readwrite", st => st.delete(old.id));
+    }catch(e){}
+    this.shots = this.shots.slice(0, 40);
+    if ($("#camDlg").open) this.renderGrid();
+    if (this.source() !== "vr") this.showLast(shot); else this.vrCount++;
+    return shot;
+  },
+  thumb(src, w, h){ const k = 240/Math.max(w, h), c = document.createElement("canvas"); c.width = Math.round(w*k); c.height = Math.round(h*k); c.getContext("2d").drawImage(src, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", .7); },
+  fileName(shot){ const d = new Date(shot.created), p = n => String(n).padStart(2, "0"); return `turn-up-music-${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}.${shot.type === "photo" ? "jpg" : /mp4/.test(shot.mime) ? "mp4" : "webm"}`; },
+
+  /* ---------- drawing helpers ---------- */
+  canvas(w, h){ const cv = document.createElement("canvas"); cv.width = w; cv.height = h; return {cv, x: cv.getContext("2d"), w, h}; },
+  size(sw, sh, vert){ if (vert){ const h = Math.min(1920, Math.max(sh, 1280)); return [Math.round(h*9/16), h]; } const w = Math.min(1920, sw); return [w, Math.round(w*sh/sw)]; },
+  cover(x, src, sw, sh, w, h){ const k = Math.max(w/sw, h/sh), dw = sw*k, dh = sh*k; x.drawImage(src, (w - dw)/2, (h - dh)/2, dw, dh); },
+  rr(x, X, Y, W, H, r){ x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + W, Y, X + W, Y + H, r); x.arcTo(X + W, Y + H, X, Y + H, r); x.arcTo(X, Y + H, X, Y, r); x.arcTo(X, Y, X + W, Y, r); x.closePath(); },
+  nowLine(){ const t = S.track || {}; return [t.title && t.artist ? `${t.title} — ${t.artist}` : (t.title || ""), S.current ? S.current.name : ""].filter(Boolean).join("  ·  "); },
+  /* the Turn Up Music logo and what's playing, in the corner of every photo and video */
+  stamp(x, w, h){
+    const s = Math.min(w, h)/720, pad = 22*s, line = this.nowLine(), logo = $("header.top img");
+    x.save(); x.shadowColor = "rgba(0,0,0,.65)"; x.shadowBlur = 10*s;
+    if (logo && logo.naturalWidth){ const lw = 150*s, lh = lw*logo.naturalHeight/logo.naturalWidth; x.drawImage(logo, pad, h - pad - lh - (line ? 30*s : 0), lw, lh); }
+    if (line){ x.font = `600 ${Math.round(19*s)}px "Hanken Grotesk", sans-serif`; x.fillStyle = "rgba(255,255,255,.94)"; x.textBaseline = "bottom"; x.fillText(line, pad, h - pad, w - pad*2); }
+    x.restore();
+  },
+  /* the "now playing" card used in the main app (cover art, song and a live visualizer) */
+  loadArt(){
+    const url = S.track.art || (S.current && S.current.logo) || "";
+    if (url === this.artKey) return; this.artKey = url; this.art = null;
+    if (!url) return;
+    const img = new Image(); img.crossOrigin = "anonymous"; img.onload = () => { if (this.artKey === url) this.art = img; }; img.src = url;
+  },
+  drawCard(x, w, h){
+    this.loadArt();
+    const s = w/720, art = this.art, icon = $("#artPh img"), bass = vals[1] || 0;
+    x.save(); x.fillStyle = "#120b08"; x.fillRect(0, 0, w, h);
+    if (art){ x.filter = `blur(${Math.round(46*s)}px) brightness(.5) saturate(1.3)`; this.cover(x, art, art.width, art.height, w*1.1, h*1.1); x.filter = "none"; }
+    else { const g = x.createRadialGradient(w/2, h*.36, 10, w/2, h*.36, h*.75); g.addColorStop(0, "#6a3d0e"); g.addColorStop(1, "#0b0705"); x.fillStyle = g; x.fillRect(0, 0, w, h); }
+    const fade = x.createLinearGradient(0, h*.45, 0, h); fade.addColorStop(0, "rgba(7,4,3,0)"); fade.addColorStop(1, "rgba(7,4,3,.85)"); x.fillStyle = fade; x.fillRect(0, 0, w, h);
+    // logo
+    const logo = $("header.top img");
+    if (logo && logo.naturalWidth){ const lw = w*.42, lh = lw*logo.naturalHeight/logo.naturalWidth; x.drawImage(logo, (w - lw)/2, h*.045, lw, lh); }
+    // cover art, pulsing with the bass
+    const a = Math.min(w*.74, h*.44), ay = h*.16, k = 1 + bass*.035;
+    x.save(); x.translate(w/2, ay + a/2); x.scale(k, k); x.translate(-a/2, -a/2);
+    x.shadowColor = "rgba(255,170,40,.45)"; x.shadowBlur = (30 + bass*50)*s; this.rr(x, 0, 0, a, a, 28*s); x.fillStyle = "#1e1511"; x.fill(); x.shadowBlur = 0;
+    x.clip(); if (art) x.drawImage(art, 0, 0, a, a); else if (icon && icon.naturalWidth){ x.drawImage(icon, a*.18, a*.18, a*.64, a*.64); }
+    x.restore();
+    // song, artist, station
+    const ty = ay + a + 70*s; x.textAlign = "center"; x.fillStyle = "#fff";
+    x.font = `800 ${Math.round(46*s)}px "Chakra Petch", "Hanken Grotesk", sans-serif`; x.fillText(S.track.title || (S.current ? S.current.name : "Turn Up Music"), w/2, ty, w*.88);
+    x.fillStyle = "rgba(255,255,255,.8)"; x.font = `500 ${Math.round(30*s)}px "Hanken Grotesk", sans-serif`; x.fillText(S.track.artist || (S.current ? (S.current.tag || "") : "Feel the beat"), w/2, ty + 46*s, w*.88);
+    if (S.current){ x.fillStyle = "#ffc21a"; x.font = `700 ${Math.round(22*s)}px "Hanken Grotesk", sans-serif`; x.fillText(("● " + (S.playing ? "LIVE · " : "") + S.current.name).toUpperCase(), w/2, ty + 88*s, w*.88); }
+    // visualizer
+    const n = 32, bw = w*.8/n, by = h*.93, bh = h*.16, g2 = x.createLinearGradient(0, by - bh, 0, by); g2.addColorStop(0, "#ffd34d"); g2.addColorStop(1, "#ff7a1a");
+    x.fillStyle = g2;
+    for (let i=0;i<n;i++){ const v = Math.max(.04, vals[Math.floor(i*vals.length/n)] || 0), bhh = v*bh; this.rr(x, w*.1 + i*bw + bw*.15, by - bhh, bw*.7, bhh, Math.min(bw*.3, 6*s)); x.fill(); }
+    x.restore();
+  },
+
+  /* ---------- photos ---------- */
+  async photo(){
+    const src = this.source();
+    if (src === "ar"){ toast("In AR the camera can't see your room. Use your phone's screenshot or screen recorder."); return; }
+    if (src === "vr"){ this.vrPhoto(); return; }
+    if ($("#camTimer").checked) await this.countdown(3);
+    this.flash();
+    if (src === "lounge"){ this.pending = "photo"; return; }          // taken right after the lounge draws its next frame
+    const vert = $("#camVert").checked;
+    if (src === "app"){ const c = this.canvas(1080, vert ? 1920 : 1350); this.drawCard(c.x, c.w, c.h); this.finishPhoto(c); return; }
+    const sc = $("#stageCv"), [w, h] = this.size(sc.width, sc.height, vert), c = this.canvas(w, h);
+    c.x.fillStyle = "#000"; c.x.fillRect(0, 0, w, h); this.cover(c.x, sc, sc.width, sc.height, w, h); this.stamp(c.x, w, h); this.finishPhoto(c);
+  },
+  finishPhoto(c){
+    const thumb = this.thumb(c.cv, c.w, c.h);
+    c.cv.toBlob(b => { if (b) this.keep(b, "photo", thumb); else toast("Couldn't save that photo."); }, "image/jpeg", .92);
+  },
+  countdown(n){
+    return new Promise(done => {
+      const el = $("#camCount"); el.hidden = false;
+      const step = () => { if (n <= 0){ el.hidden = true; done(); return; } el.textContent = n; el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); this.beep(880, .06); n--; setTimeout(step, 1000); };
+      step();
+    });
+  },
+  flash(){ const f = $("#camFlash"); f.classList.remove("go"); void f.offsetWidth; f.classList.add("go"); this.beep(0, .09); },
+  beep(freq, dur){
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext; const ctx = this.sfx || (this.sfx = new AC()); if (ctx.state === "suspended") ctx.resume();
+      const g = ctx.createGain(), t = ctx.currentTime; g.gain.setValueAtTime(.18, t); g.gain.exponentialRampToValueAtTime(.001, t + dur); g.connect(ctx.destination);
+      if (freq){ const o = ctx.createOscillator(); o.frequency.value = freq; o.connect(g); o.start(t); o.stop(t + dur); }
+      else { const b = ctx.createBuffer(1, ctx.sampleRate*dur, ctx.sampleRate), d = b.getChannelData(0); for (let i=0;i<d.length;i++) d[i] = (Math.random()*2 - 1)*(1 - i/d.length); const s = ctx.createBufferSource(); s.buffer = b; s.connect(g); s.start(t); }
+    }catch(e){}
+  },
+
+  /* ---------- video ---------- */
+  mime(){ return ["video/mp4;codecs=avc1.42E01E,mp4a.40.2", "video/mp4", "video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"].find(t => { try{ return MediaRecorder.isTypeSupported(t); }catch(e){ return false; } }) || ""; },
+  async toggleRec(){
+    if (this.rec){ this.stopRec(); return; }
+    const src = this.source();
+    if (src === "ar"){ toast("In AR the camera can't see your room. Use your phone's screen recorder."); return; }
+    if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream){ toast("This browser can't record video. Try Chrome, Edge, Safari or the Quest browser.", 5000); return; }
+    let w = 1280, h = 720;
+    if (src === "vr"){ w = 960; h = 540; this.showVR(true); }
+    else if (src === "app" || $("#camVert").checked){ w = 720; h = 1280; }
+    if (src !== "vr" && $("#camTimer").checked) await this.countdown(3);
+    if (this.rec) return;
+    const c = this.canvas(w, h); c.x.fillStyle = "#000"; c.x.fillRect(0, 0, w, h);
+    const vstream = c.cv.captureStream(30), mix = await this.mixer($("#camMic").checked);
+    const stream = new MediaStream([...vstream.getVideoTracks(), ...mix.dest.stream.getAudioTracks()]), mime = this.mime();
+    let mr; try{ mr = new MediaRecorder(stream, mime ? {mimeType: mime, videoBitsPerSecond: 5e6, audioBitsPerSecond: 160000} : {}); }catch(e){ mix.close(); toast("Couldn't start recording on this device."); return; }
+    const r = this.rec = Object.assign(c, {mr, vstream, mix, chunks: [], t0: performance.now(), last: 0, src, thumbUrl: ""});
+    mr.ondataavailable = e => { if (e.data && e.data.size) r.chunks.push(e.data); };
+    mr.onstop = () => {
+      r.mix.close(); r.vstream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(r.chunks, {type: (mr.mimeType || mime || "video/webm").split(";")[0]});
+      if (blob.size > 2000) this.keep(blob, "video", r.thumbUrl || this.thumb(r.cv, r.w, r.h)); else toast("The recording was empty. Try again.");
+    };
+    mr.start(1000);
+    r.timer = setTimeout(() => this.stopRec(), 5*60*1000);      // 5-minute limit per video
+    r.tickT = setInterval(() => { this.refreshMix(r.mix); this.ui(); }, 1000);
+    this.loop(); this.ui(); this.beep(660, .12);
+    if (src !== "vr") toast("⏺ Recording. Tap the red button at the top to stop.");
+  },
+  stopRec(){
+    const r = this.rec; if (!r) return;
+    this.rec = null; clearTimeout(r.timer); clearInterval(r.tickT); cancelAnimationFrame(r.raf);
+    try{ if (r.mr.state !== "inactive") r.mr.stop(); }catch(e){}
+    this.beep(440, .12); this.ui();
+  },
+  /* the app and the 2D Stage are drawn here; the Lounge feeds frames from its own loop */
+  loop(){
+    const r = this.rec; if (!r) return;
+    cancelAnimationFrame(r.raf); r.raf = requestAnimationFrame(() => this.loop());
+    const now = performance.now(), src = this.source();
+    if (now - r.last < 30) return;
+    if (src === "app"){ r.last = now; this.drawCard(r.x, r.w, r.h); this.tick(r, now); }
+    else if (src === "stage"){ r.last = now; const sc = $("#stageCv"); r.x.fillStyle = "#000"; r.x.fillRect(0, 0, r.w, r.h); this.cover(r.x, sc, sc.width, sc.height, r.w, r.h); this.stamp(r.x, r.w, r.h); this.tick(r, now); }
+  },
+  tick(r, now){ if (!r.thumbUrl && now - r.t0 > 700) r.thumbUrl = this.thumb(r.cv, r.w, r.h); },
+  /* sound: the radio, your uploads in the DJ booth, the party DJ and voices, videos on screens, and (if you choose) your mic */
+  async mixer(withMic){
+    const AC = window.AudioContext || window.webkitAudioContext, ctx = new AC(), dest = ctx.createMediaStreamDestination();
+    try{ if (ctx.state === "suspended") await ctx.resume(); }catch(e){}
+    const m = {ctx, dest, seen: new WeakSet(), stops: [], close(){ try{ if (this.an && this.rd) this.an.disconnect(this.rd); }catch(e){} this.stops.forEach(f => f()); try{ ctx.close(); }catch(e){} }};
+    if (withMic){
+      try{ let mic = typeof Party !== "undefined" && Party.mic; if (!mic){ mic = await navigator.mediaDevices.getUserMedia({audio: {echoCancellation: true, noiseSuppression: true}}); m.stops.push(() => mic.getTracks().forEach(t => t.stop())); } this.addStream(m, mic); }
+      catch(e){ toast("Mic not allowed, so the video won't have your voice."); }
+    }
+    this.refreshMix(m);
+    return m;
+  },
+  addStream(m, st){ if (!st || m.seen.has(st) || !st.getAudioTracks || !st.getAudioTracks().length) return; m.seen.add(st); try{ m.ctx.createMediaStreamSource(st).connect(m.dest); }catch(e){} },
+  refreshMix(m){
+    if (!m) return;
+    if (vizLive && analyser && actx){ if (m.an !== analyser){ try{ if (m.an && m.rd) m.an.disconnect(m.rd); }catch(e){} m.rd = m.rd || actx.createMediaStreamDestination(); try{ analyser.connect(m.rd); m.an = analyser; }catch(e){} this.addStream(m, m.rd.stream); } }
+    else if (audio && m.el !== audio){ m.el = audio; try{ const st = audio.captureStream ? audio.captureStream() : audio.mozCaptureStream && audio.mozCaptureStream(); if (st) setTimeout(() => this.addStream(m, st), 300); }catch(e){} }
+    if (typeof Booth !== "undefined" && Booth.dest) this.addStream(m, Booth.dest.stream);
+    if (typeof Party !== "undefined"){
+      if (Party.djAudio && Party.djAudio.srcObject) this.addStream(m, Party.djAudio.srcObject);
+      for (const p of Object.values(Party.peers || {})) if (p.audio && p.audio.srcObject && !p.muted) this.addStream(m, p.audio.srcObject);
+    }
+    if (typeof Screens !== "undefined") for (const s of Screens.list){
+      const v = s.video; if (!v || m.seen.has(v)) continue;
+      try{ const st = v.srcObject || (v.captureStream ? v.captureStream() : null); if (st){ m.seen.add(v); this.addStream(m, st); } }catch(e){ m.seen.add(v); }
+    }
+  },
+
+  /* ---------- the Lounge (on a screen) ---------- */
+  afterRender(){
+    if (!this.pending && !this.rec) return;
+    if (this.source() !== "lounge") return;
+    const cv = Lounge.renderer.domElement, now = performance.now();
+    if (this.pending === "photo"){
+      this.pending = null;
+      const [w, h] = this.size(cv.width, cv.height, $("#camVert").checked), c = this.canvas(w, h);
+      c.x.fillStyle = "#000"; c.x.fillRect(0, 0, w, h); this.cover(c.x, cv, cv.width, cv.height, w, h); this.stamp(c.x, w, h); this.finishPhoto(c);
+    }
+    const r = this.rec;
+    if (r && now - r.last >= 30){ r.last = now; r.x.fillStyle = "#000"; r.x.fillRect(0, 0, r.w, r.h); this.cover(r.x, cv, cv.width, cv.height, r.w, r.h); this.stamp(r.x, r.w, r.h); this.tick(r, now); }
+  },
+
+  /* ---------- VR: a camera in your left hand ---------- */
+  makeRT(w, h){
+    const T = THREE, ms = Lounge.renderer.capabilities.isWebGL2 && T.WebGLMultisampleRenderTarget;
+    const rt = ms ? new T.WebGLMultisampleRenderTarget(w, h) : new T.WebGLRenderTarget(w, h);
+    rt.texture.encoding = T.sRGBEncoding; return rt;
+  },
+  buildVR(){
+    const T = THREE, g = new T.Group();
+    const dark = new T.MeshStandardMaterial({color: 0x17171a, roughness: .45, metalness: .45});
+    const body = new T.Mesh(roundedBox(.13, .08, .045, .01), dark); g.add(body);
+    const grip = new T.Mesh(roundedBox(.035, .07, .05, .012), new T.MeshStandardMaterial({color: 0x2a2018, roughness: .9})); grip.position.set(.05, 0, -.004); g.add(grip);
+    const lens = new T.Mesh(new T.CylinderGeometry(.024, .027, .032, 32).rotateX(Math.PI/2), new T.MeshStandardMaterial({color: 0x0b0b0d, roughness: .25, metalness: .85})); lens.position.set(-.012, 0, -.038); g.add(lens);
+    const ring = new T.Mesh(new T.TorusGeometry(.024, .0025, 8, 32), new T.MeshStandardMaterial({color: 0xffc21a, roughness: .3, metalness: .9})); ring.position.set(-.012, 0, -.054); g.add(ring);
+    const glass = new T.Mesh(new T.CircleGeometry(.02, 32), new T.MeshStandardMaterial({color: 0x1c2a4a, roughness: .05, metalness: 1})); glass.rotation.y = Math.PI; glass.position.set(-.012, 0, -.0545); g.add(glass);
+    const shutter = new T.Mesh(new T.CylinderGeometry(.009, .009, .008, 20), new T.MeshStandardMaterial({color: 0xc8c8cc, roughness: .3, metalness: .9})); shutter.position.set(.045, .043, 0); g.add(shutter);
+    const led = new T.Mesh(new T.SphereGeometry(.005, 12, 8), new T.MeshBasicMaterial({color: 0xff2a2a, toneMapped: false})); led.position.set(-.05, .03, -.023); led.visible = false; g.add(led);
+    const rt = this.makeRT(960, 540);
+    const vf = new T.Mesh(new T.PlaneGeometry(.118, .0664), new T.MeshBasicMaterial({map: rt.texture, toneMapped: false})); vf.position.set(0, .002, .0232); g.add(vf);
+    const fl = new T.Mesh(new T.PlaneGeometry(.118, .0664), new T.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0, toneMapped: false, depthWrite: false})); fl.position.set(0, .002, .0236); g.add(fl);
+    const [lc, lx] = Tex.canvas(512, 96), lt = Tex.make(lc);
+    const label = new T.Mesh(new T.PlaneGeometry(.13, .024), new T.MeshBasicMaterial({map: lt, transparent: true, toneMapped: false, depthWrite: false})); label.position.set(0, .056, .02); label.rotation.x = -.35; g.add(label);
+    const cam = new T.PerspectiveCamera(64, 16/9, .05, 500); cam.position.set(-.012, 0, -.056); g.add(cam);
+    g.position.set(0, .045, -.03); g.rotation.x = -.25;
+    g.traverse(o => { o.userData.noGrab = true; });
+    this.vr = {g, rt, vf, fl, led, cam, lc, lx, lt, label, on: false, n: 0, last: 0, flashT: 0, labelKey: ""};
+  },
+  showVR(on){
+    if (on && !this.vr) this.buildVR();
+    const v = this.vr; if (!v) return;
+    v.on = on;
+    if (!on){ if (this.rec && this.rec.src === "vr") this.stopRec(); v.g.parent && v.g.parent.remove(v.g); }
+    Lounge.drawButtons();
+  },
+  gripFor(hand){
+    const ctls = Lounge.xrCtls || [];
+    const c = ctls.find(c => c.userData.source && c.userData.source.handedness === hand) || ctls.find(c => c.userData.source) || ctls[0];
+    return c ? {ctl: c, grip: c.userData.grip} : null;
+  },
+  pollPads(){
+    const s = Lounge.session; if (!s) return;
+    for (const src of s.inputSources){
+      const gp = src.gamepad; if (!gp) continue;
+      const k = src.handedness || "none", a = !!(gp.buttons[4] && gp.buttons[4].pressed), b = !!(gp.buttons[5] && gp.buttons[5].pressed), prev = this.pad[k] || {};
+      if (a && !prev.a) this.vrPhoto();
+      if (b && !prev.b) this.toggleRec();
+      this.pad[k] = {a, b};
+    }
+  },
+  renderVR(rt){
+    const v = this.vr, r = Lounge.renderer, xrOn = r.xr.enabled, prev = r.getRenderTarget();
+    v.g.visible = false; v.cam.updateMatrixWorld(true);
+    r.xr.enabled = false; r.setRenderTarget(rt); r.clear(); r.render(Lounge.scene, v.cam); r.setRenderTarget(prev); r.xr.enabled = xrOn;
+    v.g.visible = true;
+  },
+  readRT(rt, w, h){
+    const v = this.vr;
+    if (!v.buf || v.buf.length !== w*h*4){ v.buf = new Uint8Array(w*h*4); v.img = new ImageData(new Uint8ClampedArray(v.buf.buffer), w, h); [v.tmp, v.tx] = Tex.canvas(w, h); }
+    const r = Lounge.renderer; r.readRenderTargetPixels(rt, 0, 0, w, h, v.buf); r.setRenderTarget(r.getRenderTarget());
+    v.tx.putImageData(v.img, 0, 0);
+    return v.tmp;
+  },
+  drawFlipped(x, src, w, h){ x.save(); x.translate(0, h); x.scale(1, -1); x.drawImage(src, 0, 0, w, h); x.restore(); },
+  vrPhoto(){
+    const v = this.vr;
+    if (!v || !v.on){ this.showVR(true); return; }
+    const w = 1920, h = 1080, rt = this.makeRT(w, h);
+    try{ this.renderVR(rt); const img = this.readRT(rt, w, h), c = this.canvas(w, h); this.drawFlipped(c.x, img, w, h); this.stamp(c.x, w, h); this.finishPhoto(c); }
+    catch(e){ console.warn(e); }
+    rt.dispose(); v.buf = null;
+    v.flashT = .25; this.beep(0, .09);
+    const hand = this.gripFor("left"); if (hand) Lounge.haptic(hand.ctl, .7, 60);
+  },
+  drawLabel(){
+    const v = this.vr, r = this.rec && this.rec.src === "vr" ? this.rec : null;
+    const key = r ? "rec" + Math.floor((performance.now() - r.t0)/1000) : "idle" + this.vrCount;
+    if (key === v.labelKey) return; v.labelKey = key;
+    const x = v.lx; x.clearRect(0, 0, 512, 96); x.fillStyle = "rgba(10,7,5,.82)"; this.rr(x, 4, 4, 504, 88, 30); x.fill();
+    x.textBaseline = "middle"; x.textAlign = "center";
+    if (r){ const s = Math.floor((performance.now() - r.t0)/1000); x.fillStyle = "#ff3b3b"; x.font = '700 44px "Hanken Grotesk", sans-serif'; x.fillText(`● REC ${Math.floor(s/60)}:${String(s%60).padStart(2, "0")}   B/Y stop`, 256, 50); }
+    else { x.fillStyle = "#ffc21a"; x.font = '700 36px "Hanken Grotesk", sans-serif'; x.fillText(`A/X photo · B/Y video${this.vrCount ? " · " + this.vrCount + " taken" : ""}`, 256, 50); }
+    v.lt.needsUpdate = true;
+  },
+  /* called by the Lounge every VR frame, before it draws */
+  xrFrame(dt){
+    const v = this.vr; if (!v || !v.on || this.source() !== "vr") return;
+    const hand = this.gripFor("left");
+    if (hand && hand.grip && v.g.parent !== hand.grip) hand.grip.add(v.g);
+    this.pollPads();
+    const r = this.rec && this.rec.src === "vr" ? this.rec : null, now = performance.now();
+    v.led.visible = !!r && Math.floor(now/500) % 2 === 0;
+    v.fl.material.opacity = Math.max(0, v.flashT/.25); v.flashT = Math.max(0, v.flashT - dt);
+    this.drawLabel();
+    v.n++;
+    if (r ? now - v.last < 31 : v.n % 2) return;          // live preview at half rate, recording at 30 fps
+    v.last = now;
+    this.renderVR(v.rt);
+    if (r){ const img = this.readRT(v.rt, 960, 540); this.drawFlipped(r.x, img, r.w, r.h); this.stamp(r.x, r.w, r.h); this.tick(r, now); }
+  },
+  onExitXR(){
+    if (this.rec && this.rec.src === "vr") this.stopRec();
+    if (this.vr){ this.vr.on = false; this.vr.g.parent && this.vr.g.parent.remove(this.vr.g); }
+    if (this.vrCount){ const n = this.vrCount; this.vrCount = 0; setTimeout(() => { toast(`📷 You took ${n} ${n === 1 ? "shot" : "shots"} in VR. They're in Camera → My shots.`, 6000); if (this.shots[0]) this.showLast(this.shots[0]); }, 600); }
+  },
+
+  /* ---------- the Camera window and My shots ---------- */
+  ui(){
+    const r = this.rec;
+    $("#recPill").hidden = !r;
+    if (r){ const s = Math.floor((performance.now() - r.t0)/1000); $("#recTime").textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2, "0")}`; }
+    $("#camRec").textContent = r ? "⏹ Stop recording" : "⏺ Record video";
+    $("#camRec").classList.toggle("recording", !!r);
+    if (typeof Lounge !== "undefined" && Lounge.btnMeshes) Lounge.drawButtons();
+  },
+  async open(){
+    const src = this.source();
+    $("#camWhat").textContent = {
+      app: "Takes a shareable card of what's playing: the cover art, the song and a live visualizer. Videos include the music.",
+      stage: "Captures the Stage visuals with the music.",
+      lounge: "Captures your view of the lounge with the music and the party's sound. In VR, tap the 📷 button to hold a camera: A/X takes a photo, B/Y records.",
+      vr: "", ar: "In AR the camera can't see your room. Use your phone's screenshot or screen recorder."
+    }[src];
+    $("#camVertRow").hidden = src === "app";
+    this.ui(); $("#camPv").hidden = true; $("#camDlg").showModal();
+    await this.load(); this.renderGrid();
+  },
+  renderGrid(){
+    $("#camGrid").innerHTML = this.shots.length ? this.shots.map(s => `<button type="button" data-shot="${s.id}" aria-label="${s.type === "photo" ? "Photo" : "Video"} from ${new Date(s.created).toLocaleString()}" style="background-image:url('${s.thumb || ""}')">${s.type === "video" ? "<span>▶</span>" : ""}</button>`).join("") : `<p class="hint">Nothing yet. Your photos and videos stay on this device until you save or share them.</p>`;
+  },
+  preview(id){
+    const s = this.shots.find(x => x.id === id); if (!s) return;
+    this.cur = s; const pv = $("#camPv"), url = URL.createObjectURL(s.blob);
+    if (this.pvUrl) URL.revokeObjectURL(this.pvUrl); this.pvUrl = url;
+    $("#camMedia").innerHTML = s.type === "photo" ? `<img src="${url}" alt="Your photo">` : `<video src="${url}" controls playsinline></video>`;
+    $("#camWall").hidden = s.type !== "photo";
+    $("#camShare").hidden = !(navigator.canShare && navigator.canShare({files: [new File([s.blob], this.fileName(s), {type: s.mime})]}));
+    pv.hidden = false; pv.scrollIntoView({block: "nearest"});
+  },
+  save(s){ const a = document.createElement("a"); a.href = URL.createObjectURL(s.blob); a.download = this.fileName(s); document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast("Saved to your downloads"); },
+  async share(s){
+    const file = new File([s.blob], this.fileName(s), {type: s.mime});
+    try{ await navigator.share({files: [file], title: "Turn Up Music", text: this.nowLine() ? "🎶 " + this.nowLine() + " on Turn Up Music" : "On Turn Up Music"}); }
+    catch(e){ if (e.name !== "AbortError") this.save(s); }
+  },
+  async remove(s){
+    this.shots = this.shots.filter(x => x !== s); try{ await this.store("readwrite", st => st.delete(s.id)); }catch(e){}
+    $("#camPv").hidden = true; this.renderGrid();
+  },
+  showLast(s){
+    const b = $("#camLast"); b.style.backgroundImage = `url('${s.thumb || ""}')`; b.dataset.shot = s.id; b.classList.toggle("vid", s.type === "video");
+    b.hidden = false; b.classList.remove("in"); void b.offsetWidth; b.classList.add("in");
+    clearTimeout(this.lastT); this.lastT = setTimeout(() => { b.hidden = true; }, 6000);
+  },
+  bindUI(){
+    const go = fn => () => { $("#camDlg").close(); setTimeout(fn, 250); };
+    $("#btnCam").addEventListener("click", () => this.open());
+    $("#btnSnap").addEventListener("click", () => this.open());
+    $("#camPhoto").addEventListener("click", go(() => this.photo()));
+    $("#camRec").addEventListener("click", () => { if (this.rec){ this.stopRec(); return; } go(() => this.toggleRec())(); });
+    $("#recPill").addEventListener("click", () => this.stopRec());
+    $("#camClose").addEventListener("click", () => $("#camDlg").close());
+    $("#camGrid").addEventListener("click", e => { const b = e.target.closest("[data-shot]"); if (b) this.preview(b.dataset.shot); });
+    $("#camSave").addEventListener("click", () => this.cur && this.save(this.cur));
+    $("#camShare").addEventListener("click", () => this.cur && this.share(this.cur));
+    $("#camDel").addEventListener("click", () => this.cur && this.remove(this.cur));
+    $("#camWall").addEventListener("click", async () => { const s = this.cur; if (!s) return; $("#camDlg").close(); Social.open(); await Social.attachImage(new File([s.blob], this.fileName(s), {type: s.mime})); $("#postText").focus(); });
+    $("#camLast").addEventListener("click", async e => { const id = e.currentTarget.dataset.shot; e.currentTarget.hidden = true; await this.open(); this.preview(id); });
+    for (const id of ["camTimer", "camMic", "camVert"]){ const el = $("#" + id); el.checked = !!store.get(id, false); el.addEventListener("change", () => store.set(id, el.checked)); }
+    // keyboard shortcut on computers: P for a photo
+    addEventListener("keydown", e => { if (e.key.toLowerCase() === "p" && !e.ctrlKey && !e.metaKey && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && !document.querySelector("dialog[open]")) this.photo(); });
+  }
+};
+Cam.bindUI();
 
 Screens.bindUI();
 VIP.bindUI(); Media.bindUI(); Booth.bindUI(); Links.bindUI(); Social.bindUI();
