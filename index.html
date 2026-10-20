@@ -6094,7 +6094,7 @@ const Lounge = {
      Each species is a smooth body built from its real proportions, with painted skin (dark back, pale
      belly, the species' own markings), fins with rays, an eye, and a travelling S-wave down the body as it swims. */
   swimMat(map, {metal = 0, rough = .4, amp = .08, freq = 9, len = 1} = {}){
-    const T = THREE, m = new T.MeshStandardMaterial({map, metalness: metal, roughness: rough, alphaTest: .42, side: T.DoubleSide, envMapIntensity: 1.15});
+    const T = THREE, m = new T.MeshStandardMaterial({map, metalness: metal, roughness: Math.max(rough, metal > .3 ? .2 : .55), alphaTest: .42, side: T.DoubleSide, envMapIntensity: metal > .3 ? 1 : .3});
     const time = this.swimTime || (this.swimTime = {value: 0});
     m.onBeforeCompile = sh => {
       sh.uniforms.uTime = time; sh.uniforms.uSwim = {value: new T.Vector3(amp, freq, len)};
