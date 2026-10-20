@@ -138,8 +138,8 @@ Tap **▲ Controls** (or swipe the bar up) to open them, and **▼ Hide controls
 The bar also has quick buttons for the world, the party, the camera and VR. Your choice is remembered.
 
 ## Stations
-70 built-in stations with backup links, including internet-only stations (SomaFM's 30-plus channels, Nightwave Plaza, Radio Meuh, Worldwide FM, dublab, Rinse FM, Dance Wave!, Radio Swiss Jazz/Pop/Classic), plus FIP (Hip-Hop, Groove, Jazz, World, Reggae, Rock, Pop, New Music, Electro), WWOZ, WBGO, Jazz24, KCRW, KEXP, WFUV, WFMU, NTS, Radio Nova, TSF Jazz, NPR News, WNYC, WQXR, BBC World Service and Radio Paradise.
-**Discover** searches 50,000+ stations, with genre buttons for hip-hop, R&B, neo soul, gospel, afrobeats, amapiano, dancehall, reggaeton, trap, K-pop, lo-fi, smooth jazz, salsa, bachata and more.
+71 built-in stations with backup links, including internet-only stations (SomaFM's 30-plus channels, Nightwave Plaza, Radio Meuh, Worldwide FM, dublab, Rinse FM, Dance Wave!, Radio Swiss Jazz/Pop/Classic), plus FIP (Hip-Hop, Groove, Jazz, World, Reggae, Rock, Pop, New Music, Electro), WWOZ, WBGO, Jazz24, KCRW, KEXP, WFUV, WFMU, NTS, Radio Nova, TSF Jazz, NPR News, WNYC, WQXR, BBC World Service and Radio Paradise.
+**Discover** searches 50,000+ stations, with genre buttons for hip-hop, R&B, pop, metal, yacht rock, neo soul, gospel, afrobeats, amapiano, dancehall, reggaeton, trap, K-pop, lo-fi, smooth jazz, salsa, bachata and more.
 
 ## Podcasts
 The **Podcasts** tab browses the Apple Podcasts directory: top charts, 16 categories (Hip-Hop & R&B, Comedy, True Crime, News, Black culture, Business & money, Sports, Health, Faith, Relationships, Pop culture, Tech, History, Kids & family, En español and more) and search by show, host or topic.
