@@ -109,7 +109,8 @@ canvas#viz.full{height:100%}
 input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;background:linear-gradient(90deg,var(--gold) var(--p,80%),rgba(255,255,255,.14) var(--p,80%));outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--chrome);box-shadow:0 2px 6px rgba(0,0,0,.4)}
 input[type=range]::-moz-range-thumb{width:16px;height:16px;border:0;border-radius:50%;background:var(--chrome)}
-.chipbtn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-weight:600;font-size:13px;color:var(--chrome);white-space:nowrap}
+.chipbtn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-weight:600;font-size:13px;color:var(--chrome);white-space:nowrap;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#btnLinks{display:block;text-align:center}
 .chipbtn:hover{background:rgba(255,255,255,.08)}
 .chipbtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .chipbtn.on{color:var(--gold);border-color:rgba(255,194,26,.4)}
@@ -129,6 +130,32 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border:0;border-radiu
 .field::placeholder{color:var(--dim)}
 .gochip{padding:12px 16px;border-radius:12px;background:var(--gold);color:#2a1405;font-weight:700}
 .genres{display:flex;gap:6px;flex-wrap:wrap}
+.podgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;min-width:0}
+.podgrid .empty{grid-column:1/-1}
+.podcard{display:grid;gap:4px;text-align:left;padding:8px;border-radius:14px;background:rgba(30,21,17,.55);border:1px solid transparent;min-width:0}
+.podcard:hover,.podcard:focus-visible{border-color:rgba(255,194,26,.4)}
+.podcard img{width:100%;aspect-ratio:1;border-radius:10px;object-fit:cover;background:var(--ink-2)}
+.podcard b{font-size:13px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.podcard span{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.podbackbtn{justify-self:start}
+.podhead{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center}
+.podhead img{width:120px;height:120px;border-radius:14px;object-fit:cover;background:var(--ink-2)}
+.podhead div{display:grid;gap:6px;justify-items:start;min-width:0}
+.podhead b{font:800 20px/1.2 var(--f-display)}
+.podhead span{color:var(--muted);font-size:13px}
+.podeps{display:grid;gap:8px}
+.podep{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;text-align:left;padding:10px;border-radius:14px;background:rgba(30,21,17,.55);border:1px solid transparent;width:100%}
+.podep.cur{border-color:rgba(255,194,26,.45);background:linear-gradient(160deg,rgba(255,194,26,.12),rgba(30,21,17,.55))}
+.podep .pplay{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#2a1405;font-weight:900;font-size:14px}
+.podep .pt{display:grid;gap:3px;min-width:0}
+.podep b{font-size:14px;line-height:1.3}
+.podep small{color:var(--muted);font-size:12px}
+.podep em{font-style:normal;color:rgba(255,255,255,.6);font-size:12px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.podep i{display:block;height:4px;border-radius:4px;background:linear-gradient(90deg,var(--gold) var(--f),rgba(255,255,255,.12) var(--f))}
+.podbar{display:grid;gap:8px}
+.podseek{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font:600 12px var(--f-body,sans-serif);color:var(--muted)}
+.podseek input{width:100%;accent-color:var(--gold)}
+.podbtns{display:flex;gap:8px;justify-content:center}
 .genres button{padding:6px 12px;border-radius:99px;border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted);background:rgba(255,255,255,.03)}
 .genres button.on,.genres button:hover{color:var(--gold);border-color:rgba(255,194,26,.4)}
 .label{font:700 11px/1 var(--f-display);letter-spacing:.18em;text-transform:uppercase;color:var(--dim);display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -516,6 +543,10 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
       <button class="play" id="btnPlay" aria-label="Play"><svg viewBox="0 0 24 24" id="playIcon"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></button>
       <button class="side" id="btnNext" aria-label="Next station"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
     </div>
+    <div class="podbar" id="podBar" hidden>
+      <div class="podseek"><span id="podCur">0:00</span><input type="range" id="podSeek" min="0" max="1000" value="0" aria-label="Episode position"><span id="podDur">--:--</span></div>
+      <div class="podbtns"><button class="chipbtn" type="button" id="podBackBtn">↺ 15s</button><button class="chipbtn" type="button" id="podSpeed">1×</button><button class="chipbtn" type="button" id="podFwdBtn">30s ↻</button></div>
+    </div>
     <div class="row">
       <div class="vol"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg><input type="range" id="vol" min="0" max="100" value="80" aria-label="Volume"></div>
     </div>
@@ -533,6 +564,7 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
     <div class="tabs" role="tablist">
       <button role="tab" aria-selected="true" data-tab="mine">My Stations</button>
       <button role="tab" aria-selected="false" data-tab="discover">Discover</button>
+      <button role="tab" aria-selected="false" data-tab="podcasts">Podcasts</button>
       <button role="tab" aria-selected="false" data-tab="add">Add</button>
     </div>
 
@@ -553,6 +585,26 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
       <div class="label"><span id="discLabel">Top stations worldwide</span><span id="discCount"></span></div>
       <div class="list" id="listDisc"><div class="empty">Loading stations…</div></div>
       <p class="hint">Station directory from the free Radio Browser community database. Tap + to save a station to your list.</p>
+    </div>
+
+    <div class="panel" id="tab-podcasts" hidden>
+      <div id="podBrowse" class="panel">
+        <form class="search" id="podForm">
+          <input class="field" id="podQ" type="search" placeholder="Search podcasts: show, host or topic" aria-label="Search podcasts">
+          <button class="gochip" type="submit">Search</button>
+        </form>
+        <div class="genres" id="podCats"></div>
+        <div class="label"><span>My podcasts</span><span id="podFollowCount"></span></div>
+        <div class="podgrid" id="podFollow"></div>
+        <div class="label"><span id="podLabel">Top podcasts</span><span id="podCount"></span></div>
+        <div class="podgrid" id="podList"><div class="empty">Loading the charts…</div></div>
+      </div>
+      <div id="podShow" class="panel" hidden>
+        <button class="ghost tiny podbackbtn" type="button" id="podBack">‹ All podcasts</button>
+        <div class="podhead"><img id="podShowArt" alt=""><div><b id="podShowName"></b><span id="podShowBy"></span><button class="primary tiny" type="button" id="podFollowBtn">+ Follow</button></div></div>
+        <div class="podeps" id="podEps"></div>
+      </div>
+      <p class="hint">Podcast directory from Apple Podcasts. Episodes stream from each show's own host. Your place in every episode is remembered.</p>
     </div>
 
     <div class="panel" id="tab-add" hidden>
@@ -969,10 +1021,47 @@ const DEFAULT_STATIONS = {
     {"id":"nts1","name":"NTS Radio 1","tag":"London · Underground","url":"https://stream-relay-geo.ntslive.net/stream","alts":["https://stream-relay-geo.ntslive.net/stream?client=NTSWebApp"]},
     {"id":"nts2","name":"NTS Radio 2","tag":"London · Underground","url":"https://stream-relay-geo.ntslive.net/stream2","alts":[]},
     {"id":"rp-rock","name":"Radio Paradise Rock","tag":"Rock","url":"https://stream.radioparadise.com/rock-192","alts":["https://stream.radioparadise.com/rock-128"],"meta":{"type":"radioparadise","chan":2}},
-    {"id":"rp-global","name":"Radio Paradise Global","tag":"World · Global Grooves","url":"https://stream.radioparadise.com/global-192","alts":["https://stream.radioparadise.com/global-128"],"meta":{"type":"radioparadise","chan":3}}
+    {"id":"rp-global","name":"Radio Paradise Global","tag":"World · Global Grooves","url":"https://stream.radioparadise.com/global-192","alts":["https://stream.radioparadise.com/global-128"],"meta":{"type":"radioparadise","chan":3}},
+    {"id":"soma-reggae","name":"SomaFM Heavyweight Reggae","tag":"Reggae · Dub · Rocksteady · Online radio","url":"https://ice5.somafm.com/reggae-128-mp3","alts":["https://ice6.somafm.com/reggae-128-mp3","https://ice2.somafm.com/reggae-128-mp3"],"meta":{"type":"somafm","id":"reggae"}},
+    {"id":"soma-bagel","name":"SomaFM BAGeL Radio","tag":"Indie Rock · Alternative · Online radio","url":"https://ice5.somafm.com/bagel-128-mp3","alts":["https://ice6.somafm.com/bagel-128-mp3","https://ice2.somafm.com/bagel-128-mp3"],"meta":{"type":"somafm","id":"bagel"}},
+    {"id":"soma-metal","name":"SomaFM Metal Detector","tag":"Metal · Online radio","url":"https://ice5.somafm.com/metal-128-mp3","alts":["https://ice6.somafm.com/metal-128-mp3","https://ice2.somafm.com/metal-128-mp3"],"meta":{"type":"somafm","id":"metal"}},
+    {"id":"soma-gsclassic","name":"SomaFM Groove Salad Classic","tag":"Downtempo · Chill · Online radio","url":"https://ice5.somafm.com/gsclassic-128-mp3","alts":["https://ice6.somafm.com/gsclassic-128-mp3","https://ice2.somafm.com/gsclassic-128-mp3"],"meta":{"type":"somafm","id":"gsclassic"}},
+    {"id":"soma-suburbsofgoa","name":"SomaFM Suburbs of Goa","tag":"Desi · World Beats · Online radio","url":"https://ice5.somafm.com/suburbsofgoa-128-mp3","alts":["https://ice6.somafm.com/suburbsofgoa-128-mp3","https://ice2.somafm.com/suburbsofgoa-128-mp3"],"meta":{"type":"somafm","id":"suburbsofgoa"}},
+    {"id":"soma-folkfwd","name":"SomaFM Folk Forward","tag":"Folk · Americana · Online radio","url":"https://ice5.somafm.com/folkfwd-128-mp3","alts":["https://ice6.somafm.com/folkfwd-128-mp3","https://ice2.somafm.com/folkfwd-128-mp3"],"meta":{"type":"somafm","id":"folkfwd"}},
+    {"id":"soma-dronezone","name":"SomaFM Drone Zone","tag":"Ambient · Sleep · Online radio","url":"https://ice5.somafm.com/dronezone-128-mp3","alts":["https://ice6.somafm.com/dronezone-128-mp3","https://ice2.somafm.com/dronezone-128-mp3"],"meta":{"type":"somafm","id":"dronezone"}},
+    {"id":"soma-spacestation","name":"SomaFM Space Station Soma","tag":"Electronica · Space · Online radio","url":"https://ice5.somafm.com/spacestation-128-mp3","alts":["https://ice6.somafm.com/spacestation-128-mp3","https://ice2.somafm.com/spacestation-128-mp3"],"meta":{"type":"somafm","id":"spacestation"}},
+    {"id":"soma-synphaera","name":"SomaFM Synphaera","tag":"Synthwave · Ambient · Online radio","url":"https://ice5.somafm.com/synphaera-128-mp3","alts":["https://ice6.somafm.com/synphaera-128-mp3","https://ice2.somafm.com/synphaera-128-mp3"],"meta":{"type":"somafm","id":"synphaera"}},
+    {"id":"soma-vaporwaves","name":"SomaFM Vaporwaves","tag":"Vaporwave · Lo-fi · Online radio","url":"https://ice5.somafm.com/vaporwaves-128-mp3","alts":["https://ice6.somafm.com/vaporwaves-128-mp3","https://ice2.somafm.com/vaporwaves-128-mp3"],"meta":{"type":"somafm","id":"vaporwaves"}},
+    {"id":"soma-indiepop","name":"SomaFM Indie Pop Rocks!","tag":"Indie Pop · Online radio","url":"https://ice5.somafm.com/indiepop-128-mp3","alts":["https://ice6.somafm.com/indiepop-128-mp3","https://ice2.somafm.com/indiepop-128-mp3"],"meta":{"type":"somafm","id":"indiepop"}},
+    {"id":"soma-thistle","name":"SomaFM ThistleRadio","tag":"Celtic · Folk · Online radio","url":"https://ice5.somafm.com/thistle-128-mp3","alts":["https://ice6.somafm.com/thistle-128-mp3","https://ice2.somafm.com/thistle-128-mp3"],"meta":{"type":"somafm","id":"thistle"}},
+    {"id":"soma-cliqhop","name":"SomaFM cliqhop idm","tag":"IDM · Glitch · Online radio","url":"https://ice5.somafm.com/cliqhop-128-mp3","alts":["https://ice6.somafm.com/cliqhop-128-mp3","https://ice2.somafm.com/cliqhop-128-mp3"],"meta":{"type":"somafm","id":"cliqhop"}},
+    {"id":"soma-digitalis","name":"SomaFM Digitalis","tag":"Electronic · Indie · Online radio","url":"https://ice5.somafm.com/digitalis-128-mp3","alts":["https://ice6.somafm.com/digitalis-128-mp3","https://ice2.somafm.com/digitalis-128-mp3"],"meta":{"type":"somafm","id":"digitalis"}},
+    {"id":"soma-missioncontrol","name":"SomaFM Mission Control","tag":"Ambient · Space · Online radio","url":"https://ice5.somafm.com/missioncontrol-128-mp3","alts":["https://ice6.somafm.com/missioncontrol-128-mp3","https://ice2.somafm.com/missioncontrol-128-mp3"],"meta":{"type":"somafm","id":"missioncontrol"}},
+    {"id":"soma-covers","name":"SomaFM Covers","tag":"Cover Songs · Online radio","url":"https://ice5.somafm.com/covers-128-mp3","alts":["https://ice6.somafm.com/covers-128-mp3","https://ice2.somafm.com/covers-128-mp3"],"meta":{"type":"somafm","id":"covers"}},
+    {"id":"plaza","name":"Nightwave Plaza","tag":"Vaporwave · Future Funk · Online radio","url":"https://radio.plaza.one/mp3","alts":["https://radio.plaza.one/ogg"]},
+    {"id":"dancewave","name":"Dance Wave!","tag":"Dance · House · Online radio","url":"https://dancewave.online/dance.mp3","alts":["https://dancewave.online/dance.ogg"]},
+    {"id":"radiomeuh","name":"Radio Meuh","tag":"Eclectic · Funk · Soul · Online radio","url":"https://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3","alts":["https://radiomeuh2.ice.infomaniak.ch/radiomeuh-128.mp3"]},
+    {"id":"worldwidefm","name":"Worldwide FM","tag":"Global Soul · Jazz · Online radio","url":"https://worldwidefm.out.airtime.pro/worldwidefm_a","alts":["https://worldwidefm.out.airtime.pro/worldwidefm_b"]},
+    {"id":"dublab","name":"dublab","tag":"Los Angeles · Eclectic · Online radio","url":"https://dublab.out.airtime.pro/dublab_a","alts":["https://dublab.out.airtime.pro/dublab_b"]},
+    {"id":"rinse","name":"Rinse FM","tag":"London · UK Garage · Grime · Online radio","url":"https://admin.stream.rinse.fm/proxy/rinse_uk/stream","alts":[]},
+    {"id":"swissjazz","name":"Radio Swiss Jazz","tag":"Jazz · Soul · Online radio","url":"https://stream.srg-ssr.ch/m/rsj/mp3_128","alts":["https://stream.srg-ssr.ch/m/rsj/aacp_96"]},
+    {"id":"swisspop","name":"Radio Swiss Pop","tag":"Pop · Online radio","url":"https://stream.srg-ssr.ch/m/rsp/mp3_128","alts":["https://stream.srg-ssr.ch/m/rsp/aacp_96"]},
+    {"id":"swissclassic","name":"Radio Swiss Classic","tag":"Classical · Online radio","url":"https://stream.srg-ssr.ch/m/rsc_de/mp3_128","alts":["https://stream.srg-ssr.ch/m/rsc_de/aacp_96"]},
+    {"id":"nova","name":"Radio Nova","tag":"Paris · Hip-Hop · Soul · World","url":"https://novazz.ice.infomaniak.ch/novazz-128.mp3","alts":[]},
+    {"id":"tsfjazz","name":"TSF Jazz","tag":"Paris · Jazz","url":"https://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3","alts":[]},
+    {"id":"fiphiphop","name":"FIP Hip-Hop","tag":"Hip-Hop · Rap","url":"https://icecast.radiofrance.fr/fiphiphop-hifi.aac","alts":["https://icecast.radiofrance.fr/fiphiphop-midfi.mp3"]},
+    {"id":"fiprock","name":"FIP Rock","tag":"Rock","url":"https://icecast.radiofrance.fr/fiprock-hifi.aac","alts":["https://icecast.radiofrance.fr/fiprock-midfi.mp3"]},
+    {"id":"fipnouveautes","name":"FIP Nouveautés","tag":"New Music","url":"https://icecast.radiofrance.fr/fipnouveautes-hifi.aac","alts":["https://icecast.radiofrance.fr/fipnouveautes-midfi.mp3"]},
+    {"id":"fippop","name":"FIP Pop","tag":"Pop","url":"https://icecast.radiofrance.fr/fippop-hifi.aac","alts":["https://icecast.radiofrance.fr/fippop-midfi.mp3"]},
+    {"id":"npr","name":"NPR News","tag":"News · Talk","url":"https://npr-ice.streamguys1.com/live.mp3","alts":[]},
+    {"id":"wnyc","name":"WNYC 93.9 FM","tag":"New York · News · Talk","url":"https://fm939.wnyc.org/wnycfm","alts":["https://fm939.wnyc.org/wnycfm-web"]},
+    {"id":"wqxr","name":"WQXR 105.9","tag":"New York · Classical","url":"https://stream.wqxr.org/wqxr","alts":["https://stream.wqxr.org/wqxr-web"]},
+    {"id":"kcrw","name":"KCRW 89.9","tag":"Los Angeles · Music · News","url":"https://kcrw.streamguys1.com/kcrw_192k_mp3_on_air","alts":[]},
+    {"id":"wfuv","name":"WFUV 90.7","tag":"New York · Adult Alternative","url":"https://onair.wfuv.org/onair-hi","alts":["https://onair.wfuv.org/onair-lo"]},
+    {"id":"bbcws","name":"BBC World Service","tag":"World News","url":"https://stream.live.vc.bbcmedia.co.uk/bbc_world_service","alts":[]}
   ]
 };
-const GENRES = ["hip hop","r&b","jazz","gospel","soul","reggae","afrobeats","pop","rock","electronic","house","classical","latin","country","blues","talk","news","atlanta"];
+const GENRES = ["hip hop","r&b","jazz","gospel","soul","reggae","afrobeats","pop","rock","electronic","house","classical","latin","country","blues","talk","news","atlanta","neo soul","lofi","amapiano","dancehall","reggaeton","trap","kpop","smooth jazz","chillout","funk","disco","salsa","bachata","christian","comedy","sports"];
 const RB_HOSTS = ["de1.api.radio-browser.info","de2.api.radio-browser.info","fi1.api.radio-browser.info","nl1.api.radio-browser.info"];
 
 /* ---------- Storage (safe) ---------- */
@@ -1127,11 +1216,13 @@ function failAll(st){
   toast(msg, 7000);
 }
 function togglePlay(){
+  if (S.current && S.current.kind === "podcast" && audio){ if (audio.paused) audio.play().catch(() => needTap()); else audio.pause(); return; }
   if (!S.current){ const list = allStations(); playStation(list[0]); return; }
   if (S.playing || S.loading){ playToken++; killAudio(); S.playing = false; S.loading = false; stopMeta(); ui(); }
   else playStation(S.current);   // reconnect so radio resumes live, not from a stale buffer
 }
 function step(dir){
+  if (S.current && S.current.kind === "podcast"){ Pod.step(dir); return; }
   const list = allStations(); if (!list.length) return;
   let i = S.current ? list.findIndex(s => s.url === S.current.url) : -1;
   i = (i + dir + list.length) % list.length;
@@ -1152,7 +1243,7 @@ function splitTitle(s){
   const m = s.split(/\s+[-–—]\s+/); return m.length > 1 ? {artist:m[0], title:m.slice(1).join(" - ")} : {artist:"", title:s};
 }
 async function fetchMeta(){
-  const st = S.current; if (!st) return;
+  const st = S.current; if (!st || st.kind === "podcast") return;
   const m = st.meta || {};
   let info = null;
   try{
@@ -1254,7 +1345,8 @@ function ui(){
   else { btn.innerHTML = `<svg viewBox="0 0 24 24">${S.playing?ICON_PAUSE:ICON_PLAY}</svg>`; btn.setAttribute("aria-label", S.playing?"Pause":"Play"); }
   $("#miniIcon").innerHTML = S.playing ? ICON_PAUSE : ICON_PLAY;
   const oa = $("#onair"); oa.className = "onair" + (S.playing ? " live" : S.loading ? " load" : "");
-  $("#onairTxt").textContent = S.playing ? "Live" : S.loading ? "Tuning in" : "Off air";
+  $("#onairTxt").textContent = S.playing ? (st && st.kind === "podcast" ? "Podcast" : "Live") : S.loading ? (st && st.kind === "podcast" ? "Loading" : "Tuning in") : "Off air";
+  $("#btnArtist").hidden = !!(st && st.kind === "podcast");
   const fav = st && S.favs.has(st.url);
   $("#btnFav").classList.toggle("on", !!fav); $("#btnFav span").textContent = fav ? "Favorited" : "Favorite";
   $("#miniTitle").textContent = $("#npTitle").textContent; $("#miniSub").textContent = st ? st.name : "";
@@ -1316,6 +1408,116 @@ function addUserStation(s){
   $(id).addEventListener("keydown", e => { if ((e.key==="Enter"||e.key===" ") && e.target.classList.contains("st")){ e.preventDefault(); onListClick(e); } });
 });
 
+/* ================= Podcasts (Apple Podcasts directory) =================
+   Search and browse shows, follow your favourites, and play episodes with a seek bar, skip buttons,
+   speed control and "pick up where you left off". Episodes stream straight from each show's host. */
+const Pod = {
+  CATS: [["🔥 Top charts", ""], ["Hip-Hop & R&B", "hip hop r&b"], ["Music", "music interviews"], ["Comedy", "comedy"], ["True crime", "true crime"], ["News", "daily news"], ["Black culture", "black culture"],
+    ["Business & money", "business money"], ["Sports", "sports"], ["Health & wellness", "health wellness"], ["Faith", "faith inspiration"], ["Relationships", "relationships dating"], ["Pop culture", "pop culture celebrity"],
+    ["Tech", "technology"], ["History", "history"], ["Kids & family", "kids family stories"], ["En español", "podcast en español"]],
+  follows: [], list: [], show: null, eps: [], speedIdx: 0, SPEEDS: [1, 1.25, 1.5, 1.75, 2, .75],
+  init(){
+    this.follows = store.get("podFollows", []);
+    $("#podCats").innerHTML = this.CATS.map(([l, q], i) => `<button type="button" data-i="${i}" class="${i ? "" : "on"}">${esc(l)}</button>`).join("");
+    $("#podCats").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; document.querySelectorAll("#podCats button").forEach(x => x.classList.toggle("on", x === b)); $("#podQ").value = ""; const [l, q] = this.CATS[+b.dataset.i]; q ? this.search(q, l) : this.top(); });
+    $("#podForm").addEventListener("submit", e => { e.preventDefault(); const q = $("#podQ").value.trim(); if (!q) return; document.querySelectorAll("#podCats button").forEach(x => x.classList.remove("on")); this.search(q, `Results for “${q}”`); });
+    const grid = e => { const c = e.target.closest(".podcard"); if (!c) return; const p = (c.dataset.f ? this.follows : this.list).find(x => String(x.id) === c.dataset.id); if (p) this.open(p); };
+    $("#podList").addEventListener("click", grid); $("#podFollow").addEventListener("click", grid);
+    $("#podBack").addEventListener("click", () => this.close());
+    $("#podFollowBtn").addEventListener("click", () => this.toggleFollow(this.show));
+    $("#podEps").addEventListener("click", e => { const r = e.target.closest("[data-ep]"); if (!r) return; const ep = this.eps.find(x => String(x.id) === r.dataset.ep); if (ep) this.play(this.show, ep, this.eps); });
+    // the podcast player controls
+    $("#podSeek").addEventListener("input", e => { if (audio && isFinite(audio.duration)) audio.currentTime = e.target.value/1000*audio.duration; });
+    $("#podBackBtn").addEventListener("click", () => this.skip(-15)); $("#podFwdBtn").addEventListener("click", () => this.skip(30));
+    $("#podSpeed").addEventListener("click", () => { this.speedIdx = (this.speedIdx + 1) % this.SPEEDS.length; this.applySpeed(); });
+    setInterval(() => this.tick(), 1000);
+    addEventListener("pagehide", () => { if (this.isPod() && audio) this.savePos(S.current.ep.id, audio.currentTime); });
+    this.renderFollows();
+  },
+  isPod(){ return !!(S.current && S.current.kind === "podcast"); },
+  fmt(s){ if (!isFinite(s) || s < 0) return "--:--"; s = Math.floor(s); const h = Math.floor(s/3600), m = Math.floor(s/60) % 60, x = String(s % 60).padStart(2, "0"); return h ? `${h}:${String(m).padStart(2, "0")}:${x}` : `${m}:${x}`; },
+  art(u, n = 400){ return (u || "").replace(/\/\d+x\d+(bb)?\.(jpg|png|webp)$/, `/${n}x${n}bb.jpg`); },
+  card(p, f){ return `<button type="button" class="podcard" data-id="${esc(String(p.id))}"${f ? ' data-f="1"' : ""}><img loading="lazy" alt="" src="${esc(p.art || "")}"><b>${esc(p.name)}</b><span>${esc(p.author || "")}</span></button>`; },
+  status(msg){ $("#podList").innerHTML = `<div class="empty">${esc(msg)}</div>`; $("#podCount").textContent = ""; },
+  async top(){
+    $("#podLabel").textContent = "Top podcasts"; this.status("Loading the charts…");
+    try{
+      const j = await getJSON("https://rss.applemarketingtools.com/api/v2/us/podcasts/top/50/podcasts.json", 9000);
+      const r = (j.feed && j.feed.results) || []; if (!r.length) throw new Error("empty");
+      this.list = r.map(x => ({id: x.id, name: x.name, author: x.artistName, art: this.art(x.artworkUrl100)})); this.renderList();
+    }catch(e){ await this.search("podcast", "Popular podcasts"); }
+  },
+  async search(term, label){
+    $("#podLabel").textContent = label || "Podcasts"; this.status("Searching…");
+    try{
+      const j = await getJSON(`https://itunes.apple.com/search?media=podcast&entity=podcast&limit=48&term=${encodeURIComponent(term)}`, 9000);
+      this.list = (j.results || []).filter(x => x.collectionId).map(x => ({id: x.collectionId, name: x.collectionName, author: x.artistName, art: x.artworkUrl600 || this.art(x.artworkUrl100), genre: x.primaryGenreName}));
+      this.renderList();
+    }catch(e){ this.status("The podcast directory didn't respond. Check your connection and try again."); }
+  },
+  renderList(){ $("#podCount").textContent = this.list.length ? `${this.list.length} shows` : ""; $("#podList").innerHTML = this.list.length ? this.list.map(p => this.card(p)).join("") : `<div class="empty">No shows matched. Try a host's name or a topic.</div>`; },
+  renderFollows(){
+    $("#podFollowCount").textContent = this.follows.length ? `${this.follows.length}` : "";
+    $("#podFollow").innerHTML = this.follows.length ? this.follows.map(p => this.card(p, true)).join("") : `<div class="empty">Follow a show and it appears here.</div>`;
+  },
+  following(p){ return !!p && this.follows.some(x => String(x.id) === String(p.id)); },
+  toggleFollow(p){
+    if (!p) return;
+    if (this.following(p)){ this.follows = this.follows.filter(x => String(x.id) !== String(p.id)); toast(`Unfollowed ${p.name}`); }
+    else { this.follows.unshift({id: p.id, name: p.name, author: p.author, art: p.art}); toast(`Following ${p.name}`); }
+    store.set("podFollows", this.follows); this.renderFollows(); $("#podFollowBtn").textContent = this.following(p) ? "✓ Following" : "+ Follow";
+  },
+  async episodes(p){
+    const j = await getJSON(`https://itunes.apple.com/lookup?id=${encodeURIComponent(p.id)}&entity=podcastEpisode&limit=60`, 12000);
+    const r = j.results || [], head = r.find(x => x.wrapperType === "track" && x.kind === "podcast");
+    if (head){ p.art = p.art || head.artworkUrl600; p.author = p.author || head.artistName; p.genre = head.primaryGenreName; }
+    return r.filter(x => x.episodeUrl).map(x => ({id: x.trackId, title: x.trackName, url: x.episodeUrl, date: x.releaseDate, ms: x.trackTimeMillis, desc: (x.shortDescription || x.description || "").replace(/<[^>]+>/g, "").slice(0, 220), art: x.artworkUrl600 || p.art}));
+  },
+  async open(p){
+    this.show = p; $("#podBrowse").hidden = true; $("#podShow").hidden = false;
+    $("#podShowArt").src = p.art || ""; $("#podShowName").textContent = p.name; $("#podShowBy").textContent = p.author || "";
+    $("#podFollowBtn").textContent = this.following(p) ? "✓ Following" : "+ Follow";
+    $("#podEps").innerHTML = `<div class="empty">Loading episodes…</div>`;
+    try{ this.eps = await this.episodes(p); if (this.show !== p) return; this.renderEps(); }
+    catch(e){ $("#podEps").innerHTML = `<div class="empty">Couldn't load this show's episodes. Try again in a moment.</div>`; }
+    $("#podShow").scrollIntoView({block: "nearest"});
+  },
+  close(){ this.show = null; $("#podShow").hidden = true; $("#podBrowse").hidden = false; },
+  renderEps(){
+    if (!this.eps.length){ $("#podEps").innerHTML = `<div class="empty">This show has no playable episodes in the directory.</div>`; return; }
+    const cur = this.isPod() ? S.current.ep.id : null;
+    $("#podEps").innerHTML = this.eps.map(ep => { const pos = this.pos(ep.id), d = ep.ms ? ep.ms/1000 : 0, f = d && pos ? Math.min(1, pos/d) : 0, done = f > .97;
+      return `<button type="button" class="podep${cur === ep.id ? " cur" : ""}" data-ep="${esc(String(ep.id))}"><span class="pplay">${cur === ep.id && S.playing ? "❚❚" : "▶"}</span><span class="pt"><b>${esc(ep.title)}</b><small>${ep.date ? new Date(ep.date).toLocaleDateString(undefined, {month: "short", day: "numeric", year: "numeric"}) : ""}${d ? " · " + (d >= 3600 ? Math.floor(d/3600) + " hr " : "") + Math.round(d/60 % 60) + " min" : ""}${done ? " · ✓ Played" : pos > 30 ? " · " + this.fmt(d - pos) + " left" : ""}</small>${ep.desc ? `<em>${esc(ep.desc)}</em>` : ""}${f > .01 && !done ? `<i style="--f:${(f*100).toFixed(1)}%"></i>` : ""}</span></button>`; }).join("");
+  },
+  pos(id){ return (store.get("podPos", {}) || {})[id] || 0; },
+  savePos(id, t){ if (!id) return; const m = store.get("podPos", {}) || {}; m[id] = Math.round(t); const keys = Object.keys(m); if (keys.length > 400) delete m[keys[0]]; store.set("podPos", m); },
+  play(p, ep, eps){
+    if (this.isPod() && S.current.ep.id === ep.id && audio){ togglePlay(); return; }
+    this.queue = eps || [ep];
+    const st = {id: "pod:" + ep.id, name: p.name, url: ep.url, tag: "Podcast · " + (p.author || ""), logo: ep.art || p.art, kind: "podcast", pod: {id: p.id, name: p.name, author: p.author, art: p.art}, ep};
+    playStation(st);
+    S.track = {title: ep.title, artist: p.author || p.name, art: ep.art || p.art}; ui(); setMediaSession();
+    toast(`🎙️ ${ep.title}`);
+  },
+  skip(sec){ if (audio && isFinite(audio.duration)) audio.currentTime = Math.max(0, Math.min(audio.duration - 1, audio.currentTime + sec)); },
+  applySpeed(){ const v = this.SPEEDS[this.speedIdx]; if (audio) audio.playbackRate = v; $("#podSpeed").textContent = v + "×"; },
+  step(dir){ const q = this.queue || [], i = q.findIndex(e => e.id === S.current.ep.id), n = q[i + (dir > 0 ? 1 : -1)]; if (n) this.play(S.current.pod, n, q); else toast(dir > 0 ? "That's the newest episode." : "That's the oldest episode here."); },
+  tick(){
+    const on = this.isPod(); $("#podBar").hidden = !on; if (!on) return;
+    const ep = S.current.ep;
+    if (audio && !audio._podInit && audio.readyState >= 1){ audio._podInit = true; const pos = this.pos(ep.id), d = audio.duration; if (pos > 5 && (!isFinite(d) || pos < d - 15)){ audio.currentTime = pos; toast("Picking up where you left off"); } this.applySpeed();
+      audio.addEventListener("ended", () => { this.savePos(ep.id, audio ? audio.duration : 0); this.step(1); }); }
+    if (!audio) return;
+    const t = audio.currentTime || 0, d = audio.duration;
+    $("#podCur").textContent = this.fmt(t); $("#podDur").textContent = isFinite(d) ? this.fmt(d) : "--:--";
+    if (document.activeElement !== $("#podSeek")) $("#podSeek").value = isFinite(d) && d ? Math.round(t/d*1000) : 0;
+    if (t > 3 && Math.abs(t - (this.lastSaved || 0)) >= 4){ this.lastSaved = t; this.savePos(ep.id, t); }
+    if (this.show && Math.floor(t) % 15 === 0) this.renderEps();
+  }
+};
+
+Pod.init();
+
 /* ---------- Discover (Radio Browser) ---------- */
 async function rb(path){
   const hosts = [...RB_HOSTS].sort(()=>Math.random()-.5);
@@ -1353,8 +1555,9 @@ let discLoaded = false;
 /* ---------- Tabs ---------- */
 document.querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => {
   document.querySelectorAll("[data-tab]").forEach(x => x.setAttribute("aria-selected", x===b));
-  ["mine","discover","add"].forEach(t => $("#tab-"+t).hidden = t !== b.dataset.tab);
+  ["mine","discover","podcasts","add"].forEach(t => $("#tab-"+t).hidden = t !== b.dataset.tab);
   if (b.dataset.tab === "discover" && !discLoaded){ discLoaded = true; discover(); }
+  if (b.dataset.tab === "podcasts" && !Pod.loaded){ Pod.loaded = true; Pod.top(); }
 }));
 $("#filterMine").addEventListener("input", renderLists);
 
@@ -10038,12 +10241,23 @@ const VRMenu = {
     this.text(`${this.page + 1} / ${pages}`, 946, Y + per*74 + 8, 20, "rgba(255,255,255,.55)", 600, "center");
   },
   drawMusic(Y){
-    const subs = [["favs", "★ Favorites"], ["mine", "My stations"], ["genre", "Genres"], ["uploads", "My music"]];
-    subs.forEach(([id, l], i) => this.btn("sub-" + id, 24 + i*246, Y, 234, 54, l, () => { this.sub = id; this.page = 0; if (id === "uploads") Media.refresh().then(() => this.draw()); }, {on: this.sub === id, size: 25}));
+    const subs = [["favs", "★ Favorites"], ["mine", "My stations"], ["genre", "Genres"], ["pods", "🎙 Podcasts"], ["uploads", "My music"]];
+    subs.forEach(([id, l], i) => this.btn("sub-" + id, 24 + i*196, Y, 188, 54, l, () => { this.sub = id; this.page = 0; if (id === "uploads") Media.refresh().then(() => this.draw()); }, {on: this.sub === id, size: 25}));
     const Y2 = Y + 70, name = s => s.name + (s.tag ? "  ·  " + s.tag : "");
     if (this.sub === "favs") this.list(Y2, allStations().filter(s => S.favs.has(s.url)), name, s => playStation(s), "No favorites yet. Tap ☆ Save above while a station plays, or star stations in the app.");
     else if (this.sub === "mine") this.list(Y2, allStations(), name, s => playStation(s), "No stations yet.");
     else if (this.sub === "uploads") this.list(Y2, Media.items.filter(it => !Media.isVideo(it)), it => "🎵 " + it.name, it => Media.play(it), "No songs uploaded. Add them in the app under My music & videos.");
+    else if (this.sub === "pods"){
+      if (this.podShow){
+        this.list(Y2, this.podEps || [], ep => (S.current && S.current.ep && S.current.ep.id === ep.id ? "▶ " : "") + ep.title, ep => Pod.play(this.podShow, ep, this.podEps), this.podEps ? "No playable episodes." : "Loading episodes…");
+        this.btn("pback", 24, Y2 + 380, 260, 50, "‹ All shows", () => { this.podShow = null; this.page = 0; }, {size: 24});
+        if (Pod.isPod()){ this.btn("pskb", 300, Y2 + 380, 150, 50, "↺ 15s", () => Pod.skip(-15), {size: 24}); this.btn("pskf", 466, Y2 + 380, 150, 50, "30s ↻", () => Pod.skip(30), {size: 24}); }
+      } else {
+        const shows = Pod.follows.length ? Pod.follows : Pod.list;
+        if (!shows.length && !Pod.loaded){ Pod.loaded = true; Pod.top().then(() => this.draw()); }
+        this.list(Y2, shows, p => (Pod.following(p) ? "★ " : "🎙 ") + p.name, p => { this.podShow = p; this.podEps = null; this.page = 0; this.say(`Loading ${p.name}…`); Pod.episodes(p).then(e => { this.podEps = e; this.draw(); }).catch(() => { this.podEps = []; this.say("Couldn't load that show."); }); }, "Loading podcasts…");
+      }
+    }
     else if (this.sub === "genre"){
       if (this.genre && S.disc.length) this.list(Y2, S.disc, name, s => playStation(s), "Searching…");
       else {
