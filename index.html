@@ -4305,7 +4305,10 @@ const Lounge = {
     const roofS = new T.Shape(); roofS.moveTo(-11.5, 0); roofS.lineTo(0, 7); roofS.lineTo(11.5, 0); roofS.lineTo(-11.5, 0);
     add(new T.Mesh(new T.ExtrudeGeometry(roofS, {depth: 9.5, bevelEnabled: false}).translate(0, 0, -4.75), new T.MeshStandardMaterial({color: 0x3a2a22, roughness: .8})), lodge).position.y = 5.5;
     for (const s of [-1, 1]){ const slab = add(new T.Mesh(new T.BoxGeometry(13.6, .35, 9.8), snowM), lodge); slab.position.set(s*5.75, 5.5 + 3.62, 0); slab.rotation.z = -s*Math.atan2(7, 11.5); }
-    const winM = new T.MeshStandardMaterial({color: 0x2a1a0a, emissive: 0xffb050, emissiveIntensity: 1.1, roughness: .3});
+    const [wnc, wnx] = Tex.canvas(256, 320); { const gr = wnx.createLinearGradient(0, 0, 0, 320); gr.addColorStop(0, "#ffd08a"); gr.addColorStop(1, "#c86a28"); wnx.fillStyle = gr; wnx.fillRect(0, 0, 256, 320);
+      wnx.fillStyle = "rgba(60,25,10,.55)"; wnx.fillRect(20, 210, 110, 70); wnx.fillRect(150, 190, 80, 90); wnx.fillStyle = "rgba(255,240,200,.9)"; wnx.beginPath(); wnx.arc(190, 120, 18, 0, 7); wnx.fill();
+      wnx.fillStyle = "rgba(120,30,20,.7)"; wnx.fillRect(0, 0, 30, 320); wnx.fillRect(226, 0, 30, 320); wnx.fillStyle = "#3a2414"; wnx.fillRect(122, 0, 12, 320); wnx.fillRect(0, 150, 256, 10); }
+    const winM = new T.MeshStandardMaterial({color: 0x000000, emissive: 0xffffff, emissiveMap: Tex.make(wnc), emissiveIntensity: .95, roughness: .15, metalness: .3});
     for (let i=0;i<5;i++){ const x = -7.6 + i*3.8; add(new T.Mesh(new T.PlaneGeometry(2.4, 2.8), winM), lodge, false).position.set(x, 2.1, 4.01);
       for (const dy of [0]) add(new T.Mesh(new T.BoxGeometry(2.6, .12, .12), M.walnut), lodge).position.set(x, 2.1 - 1.45 + dy, 4.06); add(new T.Mesh(new T.BoxGeometry(.1, 2.8, .1), M.walnut), lodge).position.set(x, 2.1, 4.05); }
     const tri = new T.Shape(); tri.moveTo(-5.5, 0); tri.lineTo(0, 3.6); tri.lineTo(5.5, 0); tri.lineTo(-5.5, 0);
@@ -4485,7 +4488,7 @@ const Lounge = {
     add(new T.Mesh(roundedBox(4.2, .5, .25, .1), cushion), sofa).position.set(0, .55, .95);
     const ct = add(new T.Mesh(new T.CylinderGeometry(.55, .55, .45, 30), M.marble), g); ct.position.set(0, .225, 2.1); this.surface(ct);
     onT(Props.champagne(), .1, 2.1, 0, .45); onT(Props.flute(), -.25, 2.0, 0, .45); onT(Props.flute(), .3, 1.9, 0, .45);
-    this.person(g, -1.2, 0, 3.4, Math.PI, "sit", {gender: "f"}); this.person(g, 1.2, 0, 3.4, Math.PI, "sit", {gender: "m"});
+    this.person(g, -1.2, 0, 3.62, Math.PI, "sit", {gender: "f"}); this.person(g, 1.2, 0, 3.62, Math.PI, "sit", {gender: "m"});
     // the party: dancing on the aft deck and up on the flybridge
     const looks = [["sequins", "#d4a937", "#111111", "#ffffff", "shiny"], ["solid", "#ffffff", "#111111"], ["metallic", "#c0c0c0", "#111111", "#ffffff", "shiny"], ["solid", "#c62828", "#111111"], ["floral", "#1565c0", "#ffe08a"], ["solid", "#111111", "#d4a937"], ["ombre", "#ff7a10", "#d81b60"]];
     for (let i=0;i<11;i++){ const a = i*2.4, r = .9 + (i % 3)*.8; this.person(g, .9 + Math.cos(a)*r, 0, -2.1 + Math.sin(a)*r*.75, rnd(-3, 3), i % 4 === 3 ? "cheer" : "dance", {gender: i % 3 === 1 ? "m" : "f", outfit: this.dressed(looks[i % looks.length])}); }
@@ -4589,8 +4592,8 @@ const Lounge = {
     // ---- the gateway: carved posts and a painted sign ----
     const woodM = new T.MeshStandardMaterial({map: Tex.make(Tex.wood(), {repeat: [1, 2]}), color: 0x8a5a34, roughness: .8});
     const GZ = -17;
-    for (const s of [-1, 1]){ const post = add(new T.Mesh(new T.CylinderGeometry(.22, .26, 5.2, 10), woodM), g); post.position.set(s*4.2, 2.6, GZ);
-      for (let k=0;k<5;k++){ const r = add(new T.Mesh(new T.TorusGeometry(.25, .04, 6, 16).rotateX(Math.PI/2), this.stdMat([0xc62828, 0xffd21a, 0x1b7a3a, 0x111111, 0xf2f2f2][k], .6)), g); r.position.set(s*4.2, 1 + k*.7, GZ); } }
+    for (const s of [-1, 1]){ const post = add(new T.Mesh(new T.CylinderGeometry(.22, .26, 5.2, 10), woodM), g); post.position.set(s*4.85, 2.6, GZ);
+      for (let k=0;k<5;k++){ const r = add(new T.Mesh(new T.TorusGeometry(.25, .04, 6, 16).rotateX(Math.PI/2), this.stdMat([0xc62828, 0xffd21a, 0x1b7a3a, 0x111111, 0xf2f2f2][k], .6)), g); r.position.set(s*4.85, 1 + k*.7, GZ); } }
     const [sc, sx] = Tex.canvas(1024, 256);
     const sg = sx.createLinearGradient(0, 0, 1024, 0); sg.addColorStop(0, "#5a2a12"); sg.addColorStop(.5, "#7a3a18"); sg.addColorStop(1, "#5a2a12"); sx.fillStyle = sg; sx.fillRect(0, 0, 1024, 256);
     const band = (y, h) => { for (let i=0;i<1024;i+=32){ sx.fillStyle = ["#c62828", "#ffd21a", "#1b7a3a", "#111111"][(i/32) % 4]; sx.beginPath(); sx.moveTo(i, y); sx.lineTo(i + 16, y + h); sx.lineTo(i + 32, y); sx.fill(); } };
