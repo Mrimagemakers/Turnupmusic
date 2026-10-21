@@ -63,7 +63,7 @@ VR and AR need the page served from a website. A file opened from your downloads
 ## The party, profiles and live events
 
 - **Join the party:** in the VR Lounge tap **Join the party** (or the 👥 button inside VR). You'll see everyone else in the same world as their own avatar with a name tag. Use **Join with code** for a private party with friends.
-- **My avatar:** pick from 29 characters, then add a hat, eyewear, a chain or pearls, headphones, a glow color and height. Add your name, a short bio, favorite genre and Instagram. Tap another guest's name tag to see their profile.
+- **My avatar:** pick from 50 characters, then add a hat, eyewear, a chain or pearls, headphones, a glow color and height. Add your name, a short bio, favorite genre and Instagram. Tap another guest's name tag to see their profile.
 - **In the party:** wave, dance, cheer, send 🔥 ❤️ 😂 🎉, chat, and turn on your mic to talk (people closer to you sound louder). **Be the DJ** makes everyone who follows you hear your station.
 - **Walk around:** tap the floor (or W A S D on a computer). In VR, point at the floor and pull the trigger, or use the left stick to walk and the right stick to turn.
 - **Live events:** the calendar button (top of the app) or **Live events** in the lounge. Four weekly featured shows are built in. Anyone can **Host an event**: pick a world, time and station. When it starts, a red LIVE banner appears in the lounge; **Join now** takes everyone to that world, and the host is the DJ.
@@ -147,3 +147,10 @@ Open a show to see its episodes, **+ Follow** it to keep it under My podcasts, a
 
 ## People in the lounge
 50 characters, most of them women. Every world's crowd is mostly Black, Latino and Asian guests, with others mixed in.
+
+## Talking, touching and moderating
+- **Voice chat:** tap 🎤 (the Party menu inside VR) to talk. If you're not in the party yet, the mic joins it for you. Each voice comes from where that guest stands, so people near you are loud and people across the room are quiet. A 🔊 floats over whoever is talking. Your mic stays on when you change worlds.
+- **Touching people in VR:** reach out and touch someone. They turn to face you and react, and a quick shove makes them stagger back. Hold the grip button on a person to walk them somewhere else; let go and they stay there. On a phone or computer, tap a person to say hi.
+- **Other guests:** touch a guest in VR (or open Party → 👥 People) to see their card. From there you can mute or hide them.
+- **Moderators:** the same card has **Mute for everyone** and **Remove from party**. In VR you tap Remove twice to confirm. On a phone or computer, tap the guest. A removed guest is blocked from that party for an hour, even if they rejoin under a new name on the same device. Any moderator in the room removes them again if they come back.
+- **Hair and hats:** hats now fit each character's real hair, so they sit on the head instead of floating or poking through. NPCs with big afros go without a cowboy hat. Hair edges are softer and no longer show pale streaks in bright light.

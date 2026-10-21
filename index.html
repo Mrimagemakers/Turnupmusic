@@ -6270,7 +6270,7 @@ const Lounge = {
     m.scale.multiplyScalar((A.scale || 1)*rnd(.95, 1.04));
     if (!slot.outfit && A.name === "Pilot_Female_02") slot.outfit = [{style: "solid", c1: "#b0102a", c2: "#111111", c3: "#ffffff", seed: 3, finish: "satin"}, {style: "ombre", c1: "#7b1fa2", c2: "#d81b60", c3: "#ffffff", seed: 5, finish: "satin"}, {style: "solid", c1: "#111111", c2: "#d4a937", c3: "#ffffff", seed: 7, finish: "shiny"}][Math.floor(Math.random()*3)];
     if (slot.outfit && set.mode === "real" && typeof Outfit !== "undefined") Outfit.apply(m, A.name, slot.outfit);
-    if (slot.gear && set.mode === "real"){ try{ Gear.attach(m, Object.assign({}, Profile.defaults, {aura: ["#6a4a2a", "#2a2a2a", "#c8b08a", "#8a2a1a"][Math.floor(Math.random()*4)]}, slot.gear)); }catch(e){} }
+    if (slot.gear && set.mode === "real"){ try{ Gear.attach(m, Object.assign({}, Profile.defaults, {aura: ["#6a4a2a", "#2a2a2a", "#c8b08a", "#8a2a1a"][Math.floor(Math.random()*4)]}, slot.gear, {npc: true})); }catch(e){} }
     slot.p.add(m);
     // soft contact shadow so people sit on the ground instead of floating
     if (!this.blobGeo){
@@ -6288,7 +6288,7 @@ const Lounge = {
     if (slot.behavior === "walk") action.timeScale = slot.speed/1.3;
     // fade in
     m.traverse(o => { if (o.isMesh){ o.material = o.material.clone(); o.material.userData.baseOpacity = o.material.opacity; o.material.transparent = true; o.material.opacity = 0; } });
-    Object.assign(slot, {real:m, mixer, action, fade:0});
+    Object.assign(slot, {real:m, mixer, action, fade:0, clips: C});
     if (slot.behavior === "sit" && set.mode === "real") try{ this.seatSlot(slot); }catch(e){}
     else if (slot.behavior !== "walk" && this.worlds && this.worlds[slot.world] && this.worlds[slot.world].decorated) try{ this.unstickSlot(slot); this.groundSlot(slot); }catch(e){}
   },
@@ -6510,7 +6510,127 @@ const Lounge = {
       if (s.fade < 1){
         s.fade = Math.min(1, s.fade + dt*1.5);
         s.real.traverse(o => { if (o.isMesh){ o.material.opacity = s.fade*(o.material.userData.baseOpacity ?? 1); if (s.fade === 1) { o.material.transparent = false; o.material.opacity = o.material.userData.baseOpacity ?? 1; o.material.depthWrite = true; o.material.needsUpdate = true; } } });
+        if (s.fade === 1) try{ this.softHair(s.real); }catch(e){}
       }
+    }
+    try{ this.updateNPCTouch(dt); }catch(e){ console.warn(e); }
+  },
+  /* ================= Touching people =================
+     In VR your hands can touch the people around you: they turn to face you and react, a hard shove makes
+     them stagger, and holding the grip button on someone lets you walk them somewhere else. Touching another
+     guest opens their card (moderators can mute or remove them from there). On a screen, tap someone. */
+  npcBones(s){
+    if (s.tb) return s.tb; const b = {}; s.real.traverse(o => { if (o.isBone){ const n = o.name; if (/Head$/.test(n)) b.head = o; else if (/Spine2$/.test(n)) b.chest = o; else if (/Pelvis$/.test(n)) b.pelvis = o; } });
+    return s.tb = (b.head && b.chest && b.pelvis) ? b : null;
+  },
+  touchDist(s, hp){
+    const B = this.npcBones(s); if (!B) return 9; const v = new THREE.Vector3();
+    return Math.min(B.head.getWorldPosition(v).distanceTo(hp) - .05, B.chest.getWorldPosition(v).distanceTo(hp) - .1, B.pelvis.getWorldPosition(v).distanceTo(hp) - .1);
+  },
+  npcReact(s, from, push){
+    const T = THREE, now = performance.now(); if (s.touchT && now - s.touchT < 1100) return; s.touchT = now;
+    if (s.behavior !== "walk"){
+      if (s.baseRy === undefined) s.baseRy = s.p.rotation.y;
+      const lp = s.p.parent ? s.p.parent.worldToLocal(from.clone()) : from.clone();
+      s.faceYaw = Math.atan2(lp.x - s.p.position.x, lp.z - s.p.position.z); s.faceT = s.behavior === "sit" ? 0 : 3;
+    }
+    const C = s.clips;
+    if (s.behavior !== "sit" && s.behavior !== "walk" && s.mixer && C){
+      const clip = Math.random() < .5 ? (C.cheer || C.talk) : (C.talk || C.cheer);
+      if (clip && s.action && s.action.getClip() !== clip){
+        const act = s.mixer.clipAction(clip); act.reset(); act.setLoop(T.LoopRepeat, Infinity); act.play(); s.action.crossFadeTo(act, .3, false);
+        const back = s.action; clearTimeout(s.reactTimer);
+        s.reactTimer = setTimeout(() => { try{ back.reset().play(); act.crossFadeTo(back, .45, false); setTimeout(() => act.stop(), 600); }catch(e){} }, 2400);
+      }
+    }
+    if (push && s.behavior !== "sit" && s.behavior !== "walk"){ push.y = 0; if (push.lengthSq() > .004){ if (!s.pushHome) s.pushHome = s.p.position.clone(); const lp = s.p.parent ? s.p.parent.worldToLocal(s.p.getWorldPosition(new T.Vector3()).add(push)).sub(s.p.position) : push; lp.y = 0; s.push = (s.push || new T.Vector3()).add(lp.clampLength(0, .35)); } }
+    const B = this.npcBones(s), at = B ? B.head.getWorldPosition(new T.Vector3()).add(new T.Vector3(0, .34, 0)) : s.p.getWorldPosition(new T.Vector3()).add(new T.Vector3(0, 2, 0));
+    try{ Party.floatEmoji(["😄", "👋", "😮", "🙌", "😂", "🥰"][Math.floor(Math.random()*6)], at); }catch(e){}
+  },
+  /* every frame: turning toward you, staggering back from a push, and being walked around */
+  updateNPCTouch(dt){
+    const T = THREE, xr = this.renderer.xr.isPresenting && this.mode === "vr";
+    for (const s of this.slots || []){
+      if (s.world !== this.worldId || !s.real) continue;
+      if (s.faceT > 0){ s.faceT -= dt; const target = s.faceT > .6 ? s.faceYaw : s.baseRy; let d = target - s.p.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); s.p.rotation.y += d*Math.min(1, dt*5); if (s.faceT <= 0){ s.p.rotation.y = s.baseRy; s.baseRy = undefined; } }
+      if (s.push && !s.dragBy && s.pushHome){
+        const k = Math.min(1, dt*7); s.pushOff = (s.pushOff || new T.Vector3()).lerp(s.push, k); s.push.multiplyScalar(Math.max(0, 1 - dt*2.2));
+        s.p.position.x = s.pushHome.x + s.pushOff.x; s.p.position.z = s.pushHome.z + s.pushOff.z;
+        if (s.push.lengthSq() < 1e-5 && s.pushOff.lengthSq() < 1e-4){ s.p.position.x = s.pushHome.x; s.p.position.z = s.pushHome.z; s.push = s.pushOff = s.pushHome = null; }
+      }
+    }
+    if (!xr) return;
+    const now = performance.now();
+    for (const ctl of this.xrCtls || []){
+      const grip = ctl.userData.grip, hand = grip && grip.visible !== false ? grip : ctl, hp = new T.Vector3().setFromMatrixPosition(hand.matrixWorld);
+      const last = ctl.userData.lastHP || hp.clone(), vel = hp.clone().sub(last).divideScalar(Math.max(dt, .008)); ctl.userData.lastHP = hp.clone();
+      const dragged = ctl.userData.dragNPC;
+      if (dragged){ const np = hp.clone().add(ctl.userData.dragOff); if (dragged.p.parent){ dragged.p.parent.worldToLocal(np); dragged.p.position.x = np.x; dragged.p.position.z = np.z; } continue; }
+      if (ctl.userData.holding) continue;
+      for (const s of this.slots || []){
+        if (s.world !== this.worldId || !s.real) continue;
+        const wp = s.p.getWorldPosition(new T.Vector3()); if (Math.hypot(wp.x - hp.x, wp.z - hp.z) > 1.1) continue;
+        if (this.touchDist(s, hp) < .1){ this.haptic(ctl, Math.min(1, .35 + vel.length()*.2), 50); this.npcReact(s, this.headPos(), vel.length() > 1.4 ? vel.clone().multiplyScalar(.12) : null); }
+      }
+      // other guests: a touch opens their card in the VR menu
+      if (typeof Party !== "undefined" && Party.room) for (const p of Object.values(Party.peers)){
+        const sl = p.slot; if (!sl || !sl.group.visible) continue;
+        const gp = sl.group.getWorldPosition(new T.Vector3()), h = (p.profile.height || 1);
+        const d = Math.min(hp.distanceTo(gp.clone().add(new T.Vector3(0, 1.62*h, 0))), hp.distanceTo(gp.clone().add(new T.Vector3(0, 1.25*h, 0))));
+        if (d < .22 && (!p.touchT || now - p.touchT > 2500)){ p.touchT = now; this.haptic(ctl, .6, 60); try{ VRMenu.showGuest(p.id); }catch(e){} }
+      }
+    }
+  },
+  /* grip on a person (not on an object): walk them to a new spot */
+  npcDragStart(ctl){
+    const T = THREE, grip = ctl.userData.grip, hand = grip && grip.visible !== false ? grip : ctl, hp = new T.Vector3().setFromMatrixPosition(hand.matrixWorld);
+    let best = null, bd = .2;
+    for (const s of this.slots || []){ if (s.world !== this.worldId || !s.real || s.behavior === "sit" || s.behavior === "walk" || s.dragBy) continue; const d = this.touchDist(s, hp); if (d < bd){ bd = d; best = s; } }
+    if (!best) return false;
+    const wp = best.p.getWorldPosition(new T.Vector3()); ctl.userData.dragNPC = best; ctl.userData.dragOff = new T.Vector3(wp.x - hp.x, 0, wp.z - hp.z); best.dragBy = ctl;
+    if (best.pushHome){ best.p.position.x = best.pushHome.x; best.p.position.z = best.pushHome.z; } best.push = best.pushOff = best.pushHome = null; this.haptic(ctl, .7, 60); this.npcReact(best, this.headPos(), null);
+    return true;
+  },
+  npcDragEnd(ctl){
+    const s = ctl.userData.dragNPC; if (!s) return; ctl.userData.dragNPC = null; s.dragBy = null;
+    try{ this.unstickSlot(s); this.groundSlot(s); }catch(e){} s.home = s.p.position.clone(); s.baseRy = undefined; this.haptic(ctl, .4, 40);
+  },
+  /* on a screen: tap a person to say hi (another guest: open their card) */
+  pickPerson(){
+    const T = THREE, ray = this.ray.ray; let best = null, bd = 8;
+    const test = (base, h, fn) => { for (const y of [.95, 1.35, 1.65]){ const pt = base.clone().add(new T.Vector3(0, y*h, 0)), t = pt.clone().sub(ray.origin).dot(ray.direction); if (t < .3 || t > bd) continue; if (ray.distanceToPoint(pt) < .26){ bd = t; best = fn; } } };
+    for (const s of this.slots || []){ if (s.world !== this.worldId || !s.real || !this.isShown(s.p)) continue; test(s.p.getWorldPosition(new T.Vector3()), s.behavior === "sit" ? .75 : 1, () => this.npcReact(s, this.headPos(), null)); }
+    if (typeof Party !== "undefined" && Party.room) for (const p of Object.values(Party.peers)){ const sl = p.slot; if (!sl || !sl.group.visible) continue; test(sl.group.getWorldPosition(new T.Vector3()), p.profile.height || 1, () => Party.showProfile(p.id)); }
+    return best ? {t: bd, fn: best} : null;
+  },
+  /* Hair cards are drawn with a hard cut-out, which leaves jagged, see-through strands. Draw the solid middle
+     of each strand as before, then a second, blended pass over it for the soft wispy edges. */
+  /* the see-through parts of a hair texture are often white underneath; once they're blended in they show as
+     pale streaks. Fill them with the hair's own colour (done once per texture). */
+  hairTex(map){
+    const img = map && map.image; if (!img || !img.width) return null;
+    const C = this._hairTex || (this._hairTex = new Map()); if (C.has(img)) return C.get(img);
+    const w = Math.min(img.width, 1024), h = Math.min(img.height, 1024), cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+    const x = cv.getContext("2d", {willReadFrequently: true}); x.drawImage(img, 0, 0, w, h);
+    const d = x.getImageData(0, 0, w, h), a = d.data; let r = 0, g = 0, b = 0, n = 0;
+    for (let i = 0; i < a.length; i += 16) if (a[i + 3] > 170){ r += a[i]; g += a[i + 1]; b += a[i + 2]; n++; }
+    if (!n){ C.set(img, null); return null; }
+    r /= n; g /= n; b /= n;
+    for (let i = 0; i < a.length; i += 4){ const al = a[i + 3]; if (al < 150){ const k = al/150; a[i] = a[i]*k*k + r*(1 - k*k); a[i + 1] = a[i + 1]*k*k + g*(1 - k*k); a[i + 2] = a[i + 2]*k*k + b*(1 - k*k); } }
+    x.putImageData(d, 0, 0);
+    const t = new THREE.CanvasTexture(cv); t.flipY = map.flipY; t.encoding = map.encoding; t.wrapS = map.wrapS; t.wrapT = map.wrapT; t.anisotropy = 4;
+    C.set(img, t); return t;
+  },
+  softHair(m){
+    const T = THREE, list = [];
+    m.traverse(o => { if (o.isSkinnedMesh && /_opacity$/i.test(o.material.name || "") && !o.userData.soft && !o.userData.hasSoft) list.push(o); });
+    for (const o of list){
+      const mt = o.material; try{ const t = this.hairTex(mt.map); if (t) mt.map = t; }catch(e){}
+      mt.alphaTest = .5; mt.transparent = false; mt.depthWrite = true; mt.side = T.FrontSide;   // the backs of the hair cards light up pale if (mt.roughness !== undefined){ mt.roughness = .82; mt.envMapIntensity = Math.min(mt.envMapIntensity ?? 1, .3); }   // flat hair cards catch the sky like mirrors otherwise mt.needsUpdate = true;
+      const sm = mt.clone(); sm.alphaTest = .04; sm.transparent = true; sm.depthWrite = false; sm.side = T.FrontSide; sm.needsUpdate = true;
+      const c = new T.SkinnedMesh(o.geometry, sm); c.bind(o.skeleton, o.bindMatrix); c.userData.soft = true; o.userData.hasSoft = true;
+      c.position.copy(o.position); c.quaternion.copy(o.quaternion); c.scale.copy(o.scale); c.renderOrder = 3; c.frustumCulled = o.frustumCulled;
+      o.parent.add(c);
     }
   },
 
@@ -6681,6 +6801,8 @@ const Lounge = {
   },
   pick(){
     const hits = this.ray.intersectObjects(this.clickables, false).filter(h => this.isShown(h.object));
+    let person = null; try{ if (this.mode !== "vr") person = this.pickPerson(); }catch(e){}
+    if (person && (!hits.length || person.t < hits[0].distance)){ person.fn(); return true; }
     if (hits.length){ hits[0].object.userData.onClick?.(); return true; }
     return false;
   },
@@ -7404,6 +7526,7 @@ const Lounge = {
   grabStart(ctl, squeeze){
     if (ctl.userData.holding || ctl.userData.menuHit) return false;
     const tg = this.xrTarget(ctl);
+    if (!tg || !tg.near){ try{ if (this.npcDragStart(ctl)) return true; }catch(e){} }   // a person within reach comes before something far away
     if (!tg) return false;
     if (tg.obj.userData.grab.float && !squeeze) return false;     // screens: use the grip button to move them
     const o = tg.obj, gd = o.userData.grab, grip = ctl.userData.grip, hand = grip && grip.visible ? grip : ctl;
@@ -7416,6 +7539,7 @@ const Lounge = {
     return true;
   },
   grabEnd(ctl){
+    if (ctl.userData.dragNPC) this.npcDragEnd(ctl);
     const o = ctl.userData.holding; if (!o) return;
     const gd = o.userData.grab; ctl.userData.holding = null;
     setTimeout(() => this.heldSources.delete(ctl.userData.source), 0);
@@ -7432,6 +7556,15 @@ const Lounge = {
     else gd.vel.set(0, 0, 0);
     gd.spin.set((Math.random() - .5)*gd.vel.length(), (Math.random() - .5)*2, (Math.random() - .5)*gd.vel.length());
     if (o.userData.onRelease) o.userData.onRelease();
+  },
+  /* hearing other guests from where they stand (the ear is your head) */
+  ensureListener(){
+    if (this.listener) return this.listener; if (!this.camera) return null;
+    const lis = this.listener = new THREE.AudioListener(); this.camera.add(lis);
+    const resume = () => { try{ if (lis.context.state !== "running") lis.context.resume(); }catch(e){} };
+    for (const ev of ["pointerdown", "keydown", "touchend"]) addEventListener(ev, resume, {passive: true});
+    try{ this.renderer.xr.addEventListener("sessionstart", resume); }catch(e){}
+    resume(); return lis;
   },
   haptic(ctl, strength, ms){
     try{ const g = ctl.userData.source && ctl.userData.source.gamepad; const a = g && g.hapticActuators && g.hapticActuators[0]; if (a) a.pulse(strength, ms); }catch(e){}
@@ -7936,7 +8069,7 @@ const Gear = {
   HATS: {none:"No hat", cap:"Ball cap", beanie:"Beanie", fedora:"Fedora", bucket:"Bucket hat", cowboy:"Cowboy hat", crown:"Party crown"},
   // a cowboy hat with a pinched crown and curled brim, base at y = 0
   cowboyHat(g, r, color){
-    const T = THREE, felt = new T.MeshStandardMaterial({color, roughness: .85}), band = new T.MeshStandardMaterial({color: 0x2a1a10, roughness: .6});
+    const T = THREE, felt = new T.MeshStandardMaterial({color, roughness: .85, side: T.DoubleSide}), band = new T.MeshStandardMaterial({color: 0x2a1a10, roughness: .6});
     const crown = new T.Mesh(Props.lathe([[0, .13], [r*.5, .125], [r*.82, .1], [r*.95, .03], [r*.97, 0]], 24), felt); crown.scale.set(1, 1, 1.12); crown.geometry.computeVertexNormals();
     const top = new T.Mesh(new T.CircleGeometry(r*.6, 20).rotateX(-Math.PI/2), felt); top.position.y = .126; top.scale.set(1, 1, 1.1);
     const brimG = new T.RingGeometry(r*.92, r*1.9, 40, 2).rotateX(-Math.PI/2), bp = brimG.attributes.position;
@@ -7971,17 +8104,52 @@ const Gear = {
     if (headMesh) box.setFromObject(headMesh); else if (head){ const p = head.getWorldPosition(new T.Vector3()); box.setFromCenterAndSize(p.add(new T.Vector3(0, .1, .02)), new T.Vector3(.18, .26, .2)); }
     return {head, neck: neck || head, box};
   },
+  /* where the hair really is: skin the head and hair vertices into the current pose and measure the top of
+     the hair and how wide it is at each height, so a hat sits ON the hair instead of floating or sinking in */
+  hairFit(model, hb, k){
+    const T = THREE, v = new T.Vector3(), pts = [];
+    model.updateMatrixWorld(true);
+    model.traverse(o => {
+      if (!o.isSkinnedMesh || !/_(head|opacity)$/i.test(o.material.name || "")) return;
+      o.skeleton.update(); const pos = o.geometry.attributes.position, step = pos.count > 9000 ? 2 : 1;
+      for (let i = 0; i < pos.count; i += step){ v.fromBufferAttribute(pos, i); o.boneTransform(i, v); v.applyMatrix4(o.matrixWorld); if (v.y > hb.y + .05*k && Math.abs(v.x - hb.x) < .3*k && Math.abs(v.z - hb.z) < .3*k) pts.push(v.x - hb.x, v.y, v.z - hb.z); }
+    });
+    if (pts.length < 60) return null;
+    let top = -1e9; for (let i = 1; i < pts.length; i += 3) top = Math.max(top, pts[i]);
+    // the centre of the crown: the middle of the hair just below the top (the face would pull it forward)
+    let x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9;
+    for (let i = 0; i < pts.length; i += 3){ const y = pts[i + 1]; if (y > top - .07*k && y < top - .02*k){ x0 = Math.min(x0, pts[i]); x1 = Math.max(x1, pts[i]); z0 = Math.min(z0, pts[i + 2]); z1 = Math.max(z1, pts[i + 2]); } }
+    const cx = x0 < x1 ? (x0 + x1)/2 : 0, cz = z0 < z1 ? (z0 + z1)/2 : 0;
+    // how wide the hair is between two heights (ignoring the odd stray strand)
+    const radAt = (y0, y1) => { const d = []; for (let i = 0; i < pts.length; i += 3){ const y = pts[i + 1]; if (y >= y0 && y <= y1) d.push(Math.hypot(pts[i] - cx, (pts[i + 2] - cz)/1.12)); } if (!d.length) return 0; d.sort((a, b) => a - b); return d[Math.floor(d.length*.97)]; };
+    return {top, cx, cz, radAt};
+  },
   attach(model, p, info){
     const T = THREE, M = this.mats(); info = info || this.headInfo(model);
     if (!info.head) return;
     // anchors from the skeleton: the head bone sits at the base of the skull
     const k = model.getWorldScale(new T.Vector3()).y || 1, hb = info.head.getWorldPosition(new T.Vector3());
     const c = new T.Vector3(hb.x, hb.y, hb.z + .005*k), top = hb.y + .178*k, front = hb.z + .1*k, hw = .084*k;
-    const r = .095*k;
+    let r = .095*k, base = null;
     const g = new T.Group(), color = new T.Color(p.aura || "#ffc21a");
+    // fit the hat to the hair: wide enough to go around it, resting where the hair is as wide as the hat
+    if (p.hat && p.hat !== "none"){
+      let fit = null; try{ fit = this.hairFit(model, hb, k); }catch(e){}
+      if (fit && fit.top > hb.y + .12*k && fit.top < hb.y + .45*k){
+        const brimmed = p.hat === "cowboy" || p.hat === "fedora" || p.hat === "bucket";
+        const want = Math.max(r, fit.radAt(fit.top - .09*k, fit.top - .03*k)*1.04);
+        if (p.npc && want > r*1.3) p = Object.assign({}, p, {hat: "none"});   // a big afro: an NPC just goes without a hat
+        else r = Math.min(want, r*1.6);
+        // walk down from the top of the hair until it's as wide as the inside of the hat
+        let y = fit.top - .01*k; for (; y > fit.top - .16*k; y -= .004*k) if (fit.radAt(y - .006*k, y + .006*k) >= r*(brimmed ? .93 : .9)) break;
+        base = Math.min(y, fit.top - (brimmed ? .08 : .05)*k - Math.max(0, r - .1*k)*1.6);   // big hair gets squashed under the hat   // the crown is never shorter than the hair inside it
+        c.x += fit.cx; c.z += fit.cz;
+      }
+    }
     const add = (geo, mat, x, y, z) => { const m = new T.Mesh(geo, mat); m.position.set(x, y, z); g.add(m); return m; };
     // hats sit on the crown
-    const hy = Math.max(top, info.box.max.y - .03*k) - .035*k;   // tall hair lifts the hat
+    const hy0 = Math.max(top, info.box.max.y - .03*k) - .035*k;   // fallback guess when the hair can't be measured
+    const hy = base === null ? hy0 : base + ({cap: .03*k, beanie: .045*k, fedora: .012, bucket: .012, cowboy: .02*k, crown: -.0075}[p.hat] || 0);
     if (p.hat === "cap"){
       const cm = M.cloth(color.clone().multiplyScalar(.85));
       add(new T.SphereGeometry(r*1.06, 24, 12, 0, Math.PI*2, 0, Math.PI/2), cm, c.x, hy - .03*k, c.z - .005).scale.set(1, .9, 1.08);
@@ -7998,7 +8166,7 @@ const Gear = {
       add(new T.CylinderGeometry(r*(p.hat === "fedora" ? 1.75 : 1.45), r*(p.hat === "fedora" ? 1.75 : 1.5), .008, 32), fm, c.x, hy - .012, c.z - .006);
       if (p.hat === "fedora") add(new T.CylinderGeometry(r*1.025, r*1.025, .02, 24, 1, true), M.cloth(color), c.x, hy + .005, c.z - .006);
     } else if (p.hat === "cowboy"){
-      const hg = new T.Group(); hg.position.set(c.x, hy - .02*k, c.z - .006); hg.scale.setScalar(k); this.cowboyHat(hg, r, new T.Color(p.aura || "#6a4a2a").multiplyScalar(.6).getHex()); g.add(hg);
+      const hg = new T.Group(); hg.position.set(c.x, hy - .02*k, c.z - .006); hg.scale.setScalar(k); this.cowboyHat(hg, r/k, new T.Color(p.aura || "#6a4a2a").multiplyScalar(.6).getHex()); g.add(hg);
     } else if (p.hat === "crown"){
       const pts = []; for (let i=0;i<=10;i++){ const a = i/10*Math.PI*2; pts.push(a); }
       const ring = add(new T.CylinderGeometry(r*.9, r*.9, .045, 30, 1, true), M.gold, c.x, hy + .03, c.z - .006); ring.material = M.gold;
@@ -8183,6 +8351,7 @@ const Party = {
   inParty(){ return !!this.room; },
   myHello(){
     const p = Profile.clean(Object.assign({}, Profile.ensure(), {dj: this.dj, pk: Events.myKey()}));
+    p.did = this.deviceId();
     try{
       // prove this key is mine for this room and this session, so nobody can borrow my VIP pass
       p.auth = TUNet.finalizeEvent({kind: 22242, created_at: Math.floor(Date.now()/1000), content: this.roomKey + "|" + TUNet.selfId, tags: []}, Events.sk());
@@ -8190,6 +8359,15 @@ const Party = {
     }catch(e){}
     return p;
   },
+  /* a random id for this browser, so a removed guest can't just come straight back under a new name */
+  deviceId(){ let d = store.get("did", ""); if (!d){ d = Array.from(crypto.getRandomValues(new Uint8Array(12)), b => b.toString(16).padStart(2, "0")).join(""); store.set("did", d); } return d; },
+  /* removals last an hour, and are remembered per party on this device (so a moderator who reloads still has them) */
+  banList(){ const now = Date.now(), all = store.get("bans:" + this.roomKey, []).filter(b => b.until > now); return all; },
+  addBan(pk, did){
+    if (!pk && !did) return; const list = this.banList().filter(b => !(pk && b.pk === pk) && !(did && b.did === did));
+    list.push({pk: pk || "", did: did || "", until: Date.now() + 60*60e3}); store.set("bans:" + this.roomKey, list.slice(-100));
+  },
+  isBanned(pk, did){ return this.banList().some(b => (pk && b.pk === pk) || (did && b.did === did)); },
   async avatarFor(name){
     const L = Lounge; if (!L.peopleSet) return null;
     if (L.peopleSet.mode === "real"){
@@ -8205,7 +8383,9 @@ const Party = {
     const key = kind === "event" ? "event-" + code : kind === "code" ? "code-" + String(code).toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 16) : "world-" + w;
     if (this.room && this.roomKey === key) return;
     const ban = store.get("ban:" + key, 0); if (ban > Date.now()){ toast(`A moderator removed you from this party. You can come back in ${Math.ceil((ban - Date.now())/60e3)} minutes.`, 6000); return; }
+    const keepMic = this.mic; if (keepMic) this.mic = null;
     this.leave(true);
+    if (keepMic && keepMic.getTracks().some(t => t.readyState === "live")) this.mic = keepMic;
     let room;
     try{ room = TUNet.joinRoom({appId: NET.appId, relayConfig: {urls: NET.relays}}, key); }
     catch(e){ toast("The party couldn't connect right now.", 5000); return; }
@@ -8266,7 +8446,11 @@ const Party = {
     p.role = !pk ? "guest" : VIP.OWNERS.includes(pk) ? "owner" : (VIP.checkPass(d && d.pass, pk) || {}).role || VIP.roleOf(pk);
     prof.outfit = Outfit.clean(d && d.outfit, p.role !== "guest");
     if (p.role === "guest") prof.dj = false;
-    if (this.banned && this.banned.has(pk)) return;
+    p.did = String((d && d.did) || "").replace(/[^a-f0-9]/g, "").slice(0, 32);
+    if ((this.banned && pk && this.banned.has(pk)) || this.isBanned(pk, p.did)){
+      if (VIP.can("moderate") && this.act) try{ this.act.mod.send({act: "kick", target: id, pk, did: p.did}); }catch(e){}
+      this.dropPeer(id); return;
+    }
     const changed = JSON.stringify(prof) !== JSON.stringify(p.profile);
     const first = !p.hello; p.hello = true; p.profile = prof;
     if (changed || !p.slot) this.buildAvatar(p);
@@ -8375,9 +8559,10 @@ const Party = {
   modAct(id, act){
     if (!VIP.can("moderate") || !this.act) return;
     const p = this.peers[id]; if (!p) return;
-    this.act.mod.send({act, target: id});
-    if (act === "kick"){ this.banned = this.banned || new Set(); if (p.profile.pk) this.banned.add(p.profile.pk); this.dropPeer(id); }
+    this.act.mod.send({act, target: id, pk: p.profile.pk || "", did: p.did || ""});
+    if (act === "kick"){ this.banned = this.banned || new Set(); if (p.profile.pk) this.banned.add(p.profile.pk); this.addBan(p.profile.pk, p.did); this.dropPeer(id); }
     else { p.muted = true; if (p.audio) p.audio.muted = true; p.chatMuted = true; }
+    try{ if (act === "kick" && VRMenu.guestId === id){ VRMenu.partyView = "people"; VRMenu.draw(); } }catch(e){}
     toast(act === "kick" ? `${p.profile.name} was removed from the party.` : `${p.profile.name} is muted for everyone.`);
   },
   onMod(id, d){
@@ -8388,7 +8573,7 @@ const Party = {
       return;
     }
     const t = this.peers[d.target]; if (!t) return;
-    if (d.act === "kick"){ this.banned = this.banned || new Set(); if (t.profile.pk) this.banned.add(t.profile.pk); this.dropPeer(d.target); }
+    if (d.act === "kick"){ this.banned = this.banned || new Set(); if (t.profile.pk) this.banned.add(t.profile.pk); this.addBan(t.profile.pk, t.did); this.sysMsg(`${t.profile.name} was removed by a moderator`); this.dropPeer(d.target); }
     else { t.muted = true; t.chatMuted = true; if (t.audio) t.audio.muted = true; }
   },
 
@@ -8415,6 +8600,7 @@ const Party = {
       const mixer = new T.AnimationMixer(m), clips = A.clips, h = [...p.id].reduce((a, c) => a + c.charCodeAt(0), 0);
       const pickClip = st => clips[{idle: "idle", walk: "walk", cheer: "cheer", wave: "talk", dance: ["dance1", "dance2", "dance3", "dance4"][h % 4]}[st]] || clips.idle || Object.values(clips)[0];
       p.slot = {group, model: m, mixer, pickClip, state: "", action: null, tag, ring};
+      try{ L.softHair(m); }catch(e){}
       this.setState(p, "idle");
       group.position.copy(p.pos); group.rotation.y = p.yaw + Math.PI;
       (L.world ? L.world.group : L.scene).add(group);
@@ -8445,7 +8631,9 @@ const Party = {
     const p = this.peers[id]; if (!p) return;
     this.removeSlot(p);
     if (p.audio){ try{ p.audio.srcObject = null; p.audio.remove(); }catch(e){} }
-    delete this.peers[id]; this.ui();
+    if (p.voice){ try{ p.voice.disconnect(); }catch(e){} if (p.voice.parent) p.voice.parent.remove(p.voice); p.voice = null; }
+    if (p.spk && p.spk.parent) p.spk.parent.remove(p.spk);
+    delete this.peers[id]; this.ui(); try{ if (VRMenu.open && VRMenu.tab === "party") VRMenu.draw(); }catch(e){}
   },
   setState(p, st){
     const s = p.slot; if (!s || s.state === st) return;
@@ -8489,12 +8677,13 @@ const Party = {
   },
   setEmote(e){ this.emote = e; this.ui(); this.lastSend = 0; },
   async toggleMic(){
-    if (!this.room){ toast("Join the party to talk."); return; }
+    if (!this.room){ this.join("world"); if (!this.room){ toast("Join the party to talk."); return; } }
     if (this.mutedByMod && !this.mic){ toast("A moderator muted you in this party."); return; }
     if (this.mic){ try{ this.room.removeStream(this.mic); }catch(e){} this.mic.getTracks().forEach(t => t.stop()); this.mic = null; this.ui(); return; }
     try{
       this.mic = await navigator.mediaDevices.getUserMedia({audio: {echoCancellation: true, noiseSuppression: true, autoGainControl: true}});
-      this.room.addStream(this.mic); toast("Mic on: people near you can hear you.");
+      this.room.addStream(this.mic); toast("Mic on: people near you can hear you. The closer they are, the louder you are.");
+      try{ Lounge.ensureListener(); }catch(e){}
     }catch(e){ toast("Microphone not available. Allow mic access in your browser to talk."); this.mic = null; }
     this.ui();
   },
@@ -8512,6 +8701,33 @@ const Party = {
     if (kind === "screen"){ Screens.onStream(p, stream, meta); return; }
     if (!p.audio){ p.audio = document.createElement("audio"); p.audio.autoplay = true; p.audio.playsInline = true; document.body.appendChild(p.audio); }
     p.audio.srcObject = stream; p.audio.muted = !!p.muted; p.audio.play().catch(() => {});
+    // their voice comes from where they're standing: louder up close, quieter across the room
+    try{
+      const L = Lounge, lis = L.ensureListener();
+      if (p.voice){ try{ p.voice.disconnect(); }catch(e){} if (p.voice.parent) p.voice.parent.remove(p.voice); }
+      const v = p.voice = new THREE.PositionalAudio(lis);
+      v.setMediaStreamSource(stream); v.setDistanceModel("inverse"); v.setRefDistance(1.6); v.setRolloffFactor(1.1); v.setMaxDistance(60);
+      v.panner.panningModel = "HRTF"; p.voiceAn = new THREE.AudioAnalyser(v, 64); p.voiceStream = stream;
+    }catch(e){ p.voice = null; }
+  },
+  /* every frame: keep each voice on its owner's head, choose spatial or plain playback, show who's talking */
+  updateVoices(){
+    const L = Lounge, lis = L.listener, run = !!(lis && lis.context.state === "running");
+    for (const p of Object.values(this.peers)){
+      if (!p.audio || !p.audio.srcObject) continue;
+      const off = !!p.muted || this.hidden.has(this.hideKey(p)), sl = p.slot, h = p.profile.height || 1;
+      const spatial = run && p.voice && sl && sl.group.parent;
+      if (p.voice && sl && p.voice.parent !== sl.group){ sl.group.add(p.voice); p.voice.position.set(0, 1.6*h, 0); }
+      if (p.voice) p.voice.setVolume(spatial && !off ? 1.4 : 0);
+      p.audio.muted = off || !!spatial;     // the plain player is the fallback, and it must keep running for the voice to flow
+      // a little speaker over the head while they talk
+      let lvl = 0; try{ if (p.voiceAn && spatial) lvl = p.voiceAn.getAverageFrequency(); }catch(e){}
+      if (sl){
+        if (!p.spk){ const [c, x] = Tex.canvas(64, 64); x.font = "48px serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText("🔊", 32, 34); p.spk = new THREE.Sprite(new THREE.SpriteMaterial({map: Tex.make(c), transparent: true, depthWrite: false})); p.spk.scale.set(.2, .2, 1); }
+        if (p.spk.parent !== sl.group){ sl.group.add(p.spk); p.spk.position.set(0, 2.32*h, 0); }
+        p.talk = Math.max(lvl > 6 && !off ? 1 : 0, (p.talk || 0) - .05); p.spk.visible = p.talk > 0; p.spk.material.opacity = Math.min(1, p.talk*1.5);
+      }
+    }
   },
 
   /* --- every frame --- */
@@ -8522,6 +8738,7 @@ const Party = {
       this.floaters = this.floaters.filter(s => { if (s.userData.life > 0) return true; s.parent && s.parent.remove(s); return false; });
     }
     if (!this.room) return;
+    try{ this.updateVoices(); }catch(e){}
     // send my position ~8 times a second
     const now = performance.now();
     const head = L.headPos(), yaw = L.headYaw(), moving = L.glide || (L.keys && L.keys.size);
@@ -10319,7 +10536,7 @@ const VRMenu = {
     this.rr(x, 4, 4, W - 8, H - 8, 36); x.fillStyle = "rgba(18,11,8,.94)"; x.fill(); x.lineWidth = 3; x.strokeStyle = "rgba(255,194,26,.55)"; x.stroke();
     // tabs
     const tabs = [["music", "🎵 Music"], ["video", "📺 Video"], ["worlds", "🌍 Worlds"], ["party", "👥 Party"]];
-    tabs.forEach(([id, l], i) => this.btn("tab-" + id, 24 + i*218, 22, 206, 64, l, () => { this.tab = id; this.page = 0; if (id === "video") Media.refresh().then(() => this.draw()); }, {on: this.tab === id, size: 29}));
+    tabs.forEach(([id, l], i) => this.btn("tab-" + id, 24 + i*218, 22, 206, 64, l, () => { this.tab = id; this.page = 0; this.partyView = null; if (id === "video") Media.refresh().then(() => this.draw()); }, {on: this.tab === id, size: 29}));
     this.btn("close", W - 112, 22, 88, 64, "✕", () => this.toggle(false), {size: 34});
     this.nowPlaying(104);
     const top = 268;
@@ -10416,9 +10633,41 @@ const VRMenu = {
   drawWorlds(Y){
     Lounge.WORLDS.forEach((w, i) => this.btn("w" + i, 24 + (i % 3)*330, Y + Math.floor(i/3)*92, 318, 80, w.name, () => { this.say(`Going to ${w.name}…`); this.draw(); setTimeout(() => { Lounge.setWorld(w.id); this.place(); this.draw(); }, 60); }, {on: Lounge.worldId === w.id, size: 26}));
   },
+  /* touching someone (or picking them from People) opens their card */
+  showGuest(id){
+    if (typeof Party === "undefined" || !Party.peers[id]) return;
+    this.guestId = id; this.tab = "party"; this.partyView = "guest"; this.page = 0;
+    if (!this.open) this.toggle(true); else this.draw();
+  },
+  drawPeople(Y){
+    const P = Party, list = Object.values(P.peers).filter(p => p.hello);
+    this.btn("pback", 24, Y, 200, 54, "◀ Back", () => { this.partyView = null; this.page = 0; }, {size: 25});
+    this.text(list.length ? `${list.length} ${list.length === 1 ? "person" : "people"} in this party` : "", 250, Y + 28, 26, "rgba(255,255,255,.75)", 600);
+    this.list(Y + 70, list, p => `${P.hidden.has(P.hideKey(p)) ? "🙈 " : p.muted ? "🔇 " : p.talk > 0 ? "🔊 " : ""}${p.profile.name}${p.role !== "guest" ? "  ·  " + VIP.badge(p.role) : ""}`, p => this.showGuest(p.id), P.room ? "Nobody else is here yet. Invite friends with the party code." : "Join the party to see who's here.", 4);
+  },
+  drawGuest(Y){
+    const P = Party, p = P.peers[this.guestId];
+    if (!p){ this.partyView = "people"; return this.drawPeople(Y); }
+    const pr = p.profile, mod = VIP.can("moderate") && p.role !== "owner", hidden = P.hidden.has(P.hideKey(p));
+    this.btn("gback", 24, Y, 200, 54, "◀ People", () => { this.partyView = "people"; this.page = 0; }, {size: 25});
+    this.text(pr.name + (pr.dj ? "  🎧" : ""), 250, Y + 28, 38, "#fff", 800, "left", 740);
+    this.text([p.role !== "guest" ? VIP.badge(p.role) : "Guest", pr.genre ? "Loves " + pr.genre : "", p.talk > 0 ? "🔊 talking" : ""].filter(Boolean).join("   ·   "), 250, Y + 76, 24, "#ffd87a", 600, "left", 740);
+    if (pr.bio) this.text(pr.bio, 24, Y + 120, 24, "rgba(255,255,255,.7)", 500, "left", 970);
+    const b = (id, i, l, fn, o = {}) => this.btn(id, 24 + (i % 3)*330, Y + 160 + Math.floor(i/3)*104, 318, 92, l, fn, Object.assign({size: 27}, o));
+    b("gmute", 0, p.muted ? "🔈 Unmute for me" : "🔇 Mute for me", () => { p.muted = !p.muted; this.say(p.muted ? `You won't hear ${pr.name}.` : `You can hear ${pr.name} again.`); }, {on: !!p.muted});
+    b("ghide", 1, hidden ? "👁 Show again" : "🙈 Hide", () => { if (hidden) P.hidden.delete(P.hideKey(p)); else P.hidden.add(P.hideKey(p)); store.set("hiddenGuests", [...P.hidden].slice(-200)); this.say(hidden ? `${pr.name} is visible again.` : `${pr.name} is hidden.`); }, {on: hidden});
+    b("gwave", 2, "👋 Wave", () => { P.setEmote && P.setEmote("cheer"); try{ P.react("👋"); }catch(e){} });
+    if (mod){
+      b("gmodmute", 3, "🛡 Mute for everyone", () => P.modAct(p.id, "mute"));
+      if (this.confirmKick === p.id) b("gkick2", 4, "⚠ Tap again to remove", () => { this.confirmKick = null; P.modAct(p.id, "kick"); }, {primary: true});
+      else b("gkick", 4, "🚪 Remove from party", () => { this.confirmKick = p.id; setTimeout(() => { if (this.confirmKick === p.id){ this.confirmKick = null; this.draw(); } }, 4000); });
+    } else this.text("Only moderators can remove people from a party.", 24, Y + 300, 23, "rgba(255,255,255,.5)", 500, "left", 970);
+  },
   drawParty(Y){
     const P = typeof Party !== "undefined" ? Party : null, inP = !!(P && P.room);
-    const b = (id, i, l, fn, o = {}) => this.btn(id, 24 + (i % 3)*330, Y + Math.floor(i/3)*112, 318, 100, l, fn, Object.assign({size: 28}, o));
+    if (P && this.partyView === "guest") return this.drawGuest(Y);
+    if (P && this.partyView === "people") return this.drawPeople(Y);
+    const b = (id, i, l, fn, o = {}) => this.btn(id, 24 + (i % 3)*330, Y + Math.floor(i/3)*96, 318, 86, l, fn, Object.assign({size: 28}, o));
     b("join", 0, inP ? "Leave the party" : "👥 Join the party", () => { if (inP) P.leave(); else P.join("world"); setTimeout(() => this.draw(), 800); }, {primary: !inP});
     b("dance", 1, "💃 Dance", () => P && P.setEmote(P.emote === "dance" ? "idle" : "dance"), {on: P && P.emote === "dance"});
     b("cheer", 2, "🙌 Cheer", () => P && P.setEmote("cheer"));
@@ -10428,6 +10677,9 @@ const VRMenu = {
     b("cam", 6, Cam.vr && Cam.vr.on ? "📷 Put camera away" : "📷 Camera", () => Cam.showVR(!(Cam.vr && Cam.vr.on)), {on: !!(Cam.vr && Cam.vr.on)});
     b("mood", 7, "🎨 Change mood", () => Lounge.nextMood());
     b("exit", 8, "🚪 Exit VR", () => { try{ Lounge.session && Lounge.session.end(); }catch(e){} });
+    const n = P && inP ? Object.values(P.peers).filter(p => p.hello).length : 0;
+    b("people", 9, `👥 People${n ? " (" + n + ")" : ""}`, () => { this.partyView = "people"; this.page = 0; });
+    this.text(VIP.can("moderate") ? "🛡 Moderator: open People, or touch a guest, to mute or remove them." : "Touch someone with your hand to say hi. Hold grip on a person to walk them somewhere.", 354, Y + 3*96 + 43, 21, "rgba(255,255,255,.6)", 500, "left", 640);
   },
   /* ---------- pointing ---------- */
   hitFor(ctl){
