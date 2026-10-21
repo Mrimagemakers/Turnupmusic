@@ -154,3 +154,12 @@ Open a show to see its episodes, **+ Follow** it to keep it under My podcasts, a
 - **Other guests:** touch a guest in VR (or open Party → 👥 People) to see their card. From there you can mute or hide them.
 - **Moderators:** the same card has **Mute for everyone** and **Remove from party**. In VR you tap Remove twice to confirm. On a phone or computer, tap the guest. A removed guest is blocked from that party for an hour, even if they rejoin under a new name on the same device. Any moderator in the room removes them again if they come back.
 - **Hair and hats:** hats now fit each character's real hair, so they sit on the head instead of floating or poking through. NPCs with big afros go without a cowboy hat. Hair edges are softer and no longer show pale streaks in bright light.
+
+## Flyers and invitations
+- **Where:** open **Live events**. Your own events have a **🎨 Flyer & invites** button (moderators also get it on the featured weekly shows). While filling in **Host an event** you can tap **🎨 Make a flyer** to preview one, and the flyer maker opens by itself after you publish.
+- **Four looks:** Neon Nights (synthwave), Gold Gala (black-and-gold art deco), Retro Sunset (70s), Bold Poster (one loud color, huge type). Change the color, add your own photo, and edit the headline and details.
+- **Flyer or invitation:** an invitation adds the guest's name and a personal note.
+- **Sizes:** Post (4:5 for Instagram and Facebook), Story (9:16) and Square.
+- **Every design shows** the date, time in the viewer's time zone, world, music, host, and a QR code that opens the event (`…/Turnupmusic/#event=…`). If the event is live, it says so and **Join now** is one tap away.
+- **Sending it:** **Share…** opens the phone's share sheet (Instagram, TikTok, Messages, email, anything) with the picture attached. Other options are **Download** (PNG), **Email** (on a computer it downloads the picture and opens a new email for you to attach it to), **Copy link**, and quick buttons for X, Facebook, WhatsApp and text message.
+- **Saved designs:** **Save this design** keeps up to 12 designs on this device, including the photo, to reopen later.
