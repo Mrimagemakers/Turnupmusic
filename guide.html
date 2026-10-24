@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turn Up Music Guide</title>
+<meta name="description" content="How to use Turn Up Music: radio, podcasts, the VR Lounge, parties, live events, Turn Up Social, memberships and safety.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+:root{--ink:#120c09;--panel:#1d1410;--panel2:#261a14;--line:rgba(255,255,255,.1);--chrome:#f6eee6;--muted:#b9aa9c;--gold:#ffc21a;--amber:#ff8a1a;--live:#ff4d3d;--good:#3ad07a;
+  --f-display:"Chakra Petch",system-ui,sans-serif;--f-body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--ink);color:var(--chrome);font:16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+a{color:var(--gold)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+header.hero{padding:48px 0 28px;background:radial-gradient(1200px 400px at 20% -10%,rgba(255,138,26,.28),transparent 60%),radial-gradient(900px 400px at 90% 0,rgba(255,194,26,.18),transparent 60%)}
+.kicker{font:700 12px var(--f-display);letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+h1{font:700 clamp(32px,6vw,54px)/1.05 var(--f-display);margin:8px 0 12px}
+.lede{font-size:18px;color:var(--muted);max-width:720px;margin:0}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:99px;font:700 15px var(--f-body);text-decoration:none;border:1px solid var(--line);color:var(--chrome);background:rgba(255,255,255,.05)}
+.btn.primary{background:linear-gradient(135deg,var(--gold),var(--amber));color:#2a1405;border:0}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:32px;padding:24px 0 80px}
+nav.toc{position:sticky;top:16px;align-self:start;max-height:calc(100vh - 32px);overflow:auto;padding:14px;border-radius:16px;background:var(--panel);border:1px solid var(--line)}
+nav.toc b{display:block;font:700 11px var(--f-display);letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+nav.toc ol{margin:0;padding-left:20px;display:grid;gap:4px;font-size:14px}
+nav.toc a{color:var(--chrome);text-decoration:none}nav.toc a:hover{color:var(--gold)}
+section{padding:28px 0;border-bottom:1px solid var(--line)}
+section:last-child{border-bottom:0}
+h2{font:700 28px/1.2 var(--f-display);margin:0 0 6px;display:flex;align-items:center;gap:10px}
+h2 .n{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-size:16px;color:var(--gold);flex:none}
+h3{font:700 18px var(--f-display);margin:22px 0 8px}
+p{margin:8px 0}
+.muted{color:var(--muted)}
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:12px 0;display:grid;gap:10px}
+ol.steps>li{counter-increment:s;position:relative;padding:12px 14px 12px 56px;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
+ol.steps>li::before{content:counter(s);position:absolute;left:14px;top:12px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#2a1405;font:800 14px var(--f-display)}
+ol.steps>li b{color:#fff}
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:12px}
+.quick>div{padding:14px;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
+.quick .t{font:700 13px var(--f-display);letter-spacing:.06em;color:var(--gold)}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 12px var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.tablewrap table{min-width:640px}
+.tablewrap{overflow-x:auto;border-radius:14px;border:1px solid var(--line);background:var(--panel)}
+kbd{font:600 13px ui-monospace,Menlo,monospace;padding:2px 7px;border-radius:6px;background:var(--panel2);border:1px solid var(--line)}
+.worlds{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin-top:10px}
+.worlds div{padding:10px 12px;border-radius:12px;background:var(--panel);border:1px solid var(--line);font-size:14px}
+.worlds b{display:block;color:#fff}
+.note{padding:12px 14px;border-radius:14px;border:1px solid rgba(255,194,26,.35);background:rgba(255,194,26,.07);margin:12px 0}
+.warn{padding:12px 14px;border-radius:14px;border:1px solid rgba(255,77,61,.45);background:rgba(255,77,61,.08);margin:12px 0}
+.tiers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px}
+.tier{padding:14px;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
+.tier h4{margin:0;font:700 18px var(--f-display)}.tier .p{font:800 20px var(--f-display);color:var(--gold);margin:4px 0}
+.tier ul{margin:6px 0 0;padding-left:18px;font-size:14px;display:grid;gap:3px}
+details{padding:12px 14px;border-radius:14px;background:var(--panel);border:1px solid var(--line);margin:8px 0}
+summary{cursor:pointer;font-weight:700}
+footer{padding:28px 0 48px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+@media (max-width:860px){.layout{grid-template-columns:1fr}nav.toc{position:static;max-height:none}.tiers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.tiers{grid-template-columns:1fr}h2{font-size:23px}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="kicker">Turn Up Music · How to</div>
+  <h1>The Turn Up Music Guide</h1>
+  <p class="lede">Everything you can do in Turn Up Music, step by step: radio and podcasts, 19 3D worlds you can visit on a phone, a computer or a VR headset, live parties, events, Turn Up Social, memberships, and staying safe.</p>
+  <div class="cta"><a class="btn primary" href="./">▶ Open Turn Up Music</a><a class="btn" href="#quick">Quick start</a><a class="btn" href="#safety">Safety</a></div>
+</div></header>
+
+<div class="wrap layout">
+<nav class="toc" aria-label="Contents"><b>Step-by-step outline</b><ol>
+  <li><a href="#quick">Quick start (10 steps)</a></li>
+  <li><a href="#start">Getting started</a></li>
+  <li><a href="#listen">Radio, podcasts &amp; your music</a></li>
+  <li><a href="#look">Your avatar &amp; look</a></li>
+  <li><a href="#lounge">The VR Lounge &amp; controls</a></li>
+  <li><a href="#worlds">The 19 worlds</a></li>
+  <li><a href="#party">Parties, voice &amp; touch</a></li>
+  <li><a href="#events">Live events, flyers &amp; invites</a></li>
+  <li><a href="#social">Turn Up Social</a></li>
+  <li><a href="#dj">DJ booth, screens &amp; camera</a></li>
+  <li><a href="#plans">Memberships</a></li>
+  <li><a href="#safety">Safety &amp; community</a></li>
+  <li><a href="#help">Troubleshooting &amp; FAQ</a></li>
+  <li><a href="#owner">For the owner &amp; moderators</a></li>
+</ol></nav>
+
+<main>
+<section id="quick">
+  <h2><span class="n">1</span>Quick start: your first 10 minutes</h2>
+  <ol class="steps">
+    <li><b>Open Turn Up Music</b> on your phone, tablet, computer or Meta Quest browser.</li>
+    <li><b>Enter your date of birth</b> and agree to the Community Guidelines. Adults (18+) get everything; under 18 gets music mode.</li>
+    <li><b>Pick a station</b> from the list and tap ▶. Tap ☆ to save it to your favorites.</li>
+    <li><b>Make your look:</b> tap <b>🧑 My avatar</b>, choose one of 50 characters, an outfit, a hat and glasses, and your name.</li>
+    <li><b>Tap “VR Lounge”</b> at the top to step into the 3D world. On a phone, drag to look and tap the floor to walk.</li>
+    <li><b>Change worlds</b> with the world buttons. Try the Reggae Dance Hall, Downtown Tokyo or the Space Station.</li>
+    <li><b>Join the party</b> with <b>👥 Join the party</b> to meet the other people in that world. Wave, dance, cheer and chat.</li>
+    <li><b>Turn on your mic</b> 🎤 to talk. People near you hear you louder.</li>
+    <li><b>Open Turn Up Social</b> (speech-bubble button) to set up your page, follow people and post.</li>
+    <li><b>Got a headset?</b> Tap <b>Enter VR</b>, put it on, and use the menu on your left wrist.</li>
+  </ol>
+</section>
+
+<section id="start">
+  <h2><span class="n">2</span>Getting started</h2>
+  <ol class="steps">
+    <li><b>Age check.</b> The first time you open the app it asks for your date of birth. Only “18 or older: yes or no” is saved, never your birthday.</li>
+    <li><b>Community Guidelines.</b> Read and agree to them (be kind, no hate or harassment, no sexual content, nothing involving minors, no scams).</li>
+    <li><b>Name and avatar.</b> If you skip this, you get a guest name and a random character. You can change them any time under <b>🧑 My avatar</b>.</li>
+    <li><b>Install it (optional).</b> On a phone, use your browser's “Add to Home Screen”. There's also an Android app.</li>
+  </ol>
+  <p class="muted">Under 18? You'll be in <b>music mode</b>: every station, podcast and world is still yours to enjoy, but parties, voice chat, the social feed, events and memberships are switched off. See <a href="#safety">Safety</a>.</p>
+</section>
+
+<section id="listen">
+  <h2><span class="n">3</span>Radio, podcasts &amp; your music</h2>
+  <h3>Listen to the radio</h3>
+  <ol class="steps">
+    <li>Scroll the station list or pick a <b>genre</b> (hip-hop, R&amp;B, reggae, pop, metal, yacht rock and more).</li>
+    <li>Tap a station to play it. ⏮ ⏭ skip between stations, and the slider sets the volume.</li>
+    <li>Tap <b>☆ Save</b> to keep a station in <b>Favorites</b>. Add your own with a stream link in <b>My stations</b>.</li>
+  </ol>
+  <h3>Podcasts</h3>
+  <ol class="steps">
+    <li>Open the <b>🎙 Podcasts</b> tab and search for a show, or pick a suggested one.</li>
+    <li>Tap <b>Follow</b> to keep it, then tap an episode to play. It remembers where you stopped.</li>
+  </ol>
+  <h3>Your own music and videos</h3>
+  <ol class="steps">
+    <li>Open <b>🎵 My media</b> and add songs or videos from your device (they stay on that device).</li>
+    <li>Play a song yourself, put a video on the big screen in the lounge, or load it into the DJ booth.</li>
+  </ol>
+</section>
+
+<section id="look">
+  <h2><span class="n">4</span>Your avatar &amp; look</h2>
+  <ol class="steps">
+    <li>Tap <b>🧑 My avatar</b> (in the lounge) to open your profile and look.</li>
+    <li>Choose a <b>character</b> (50 to pick from), then your <b>height</b> and <b>glow color</b>.</li>
+    <li>Add a <b>hat</b>, <b>eyewear</b>, a <b>chain or pearls</b> and <b>headphones</b>.</li>
+    <li>Dress up with <b>outfits</b>: solid, stripes and ombré are free. Plus members get every style (kente, galaxy, sequins, camo, leopard and more) and can print their own fabric.</li>
+    <li>Add a short bio, your favorite genre and your Instagram, Spotify or YouTube links. Tap <b>Save</b>.</li>
+  </ol>
+  <div class="note">Want the same look on your tablet and your Quest? Link your devices: see <a href="#social">Turn Up Social → Use on another device</a>.</div>
+</section>
+
+<section id="lounge">
+  <h2><span class="n">5</span>The VR Lounge &amp; controls</h2>
+  <ol class="steps">
+    <li>Tap <b>VR Lounge</b> at the top of the app. The music keeps playing and shows on the big screen.</li>
+    <li>Pick a world (see <a href="#worlds">the 19 worlds</a>). The first visit to a world takes a few seconds to load.</li>
+    <li>Walk around, sit with the people there, pick things up and pop the glowing orbs.</li>
+    <li>On a headset, tap <b>Enter VR</b>. For AR on a phone, tap <b>AR</b> to put a mini stage on your table.</li>
+  </ol>
+  <div class="tablewrap"><table>
+    <tr><th>What</th><th>Phone / tablet</th><th>Computer</th><th>VR headset (Quest)</th></tr>
+    <tr><td>Look around</td><td>Drag with one finger</td><td>Drag with the mouse</td><td>Turn your head, or flick the right stick</td></tr>
+    <tr><td>Walk</td><td>Tap the floor</td><td><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / arrows, or click the floor</td><td>Left stick, or point at the floor and pull the trigger</td></tr>
+    <tr><td>Use, choose, pop orbs</td><td>Tap</td><td>Click</td><td>Point and pull the trigger</td></tr>
+    <tr><td>Pick things up</td><td>Tap the object</td><td>Click the object</td><td>Reach out and squeeze the grip (throw by letting go)</td></tr>
+    <tr><td>Say hi to someone</td><td>Tap them</td><td>Click them</td><td>Touch them with your hand. They turn and react</td></tr>
+    <tr><td>Walk someone somewhere</td><td>–</td><td>–</td><td>Hold the grip on a person, move, let go</td></tr>
+    <tr><td>Menu</td><td>Buttons on screen</td><td>Buttons on screen</td><td><b>B</b> / <b>Y</b>, or the ☰ button on your left wrist</td></tr>
+  </table></div>
+  <p class="muted">On phones and tablets, tap <b>Hide controls</b> to minimize the dashboard and see more of the world.</p>
+</section>
+
+<section id="worlds">
+  <h2><span class="n">6</span>The 19 worlds</h2>
+  <p>Every world has its own crowd, music spots, a DJ booth and a roped-off VIP section.</p>
+  <div class="worlds">
+    <div><b>Rooftop Lounge</b>City lights and lounge chairs</div><div><b>Nightclub</b>Dance floor, lasers and a DJ stage</div>
+    <div><b>Beach Party</b>Palms, a bonfire and the waves</div><div><b>NYC Market Street Café</b>A busy street café</div>
+    <div><b>Madrid Courtyard Fiesta</b>Fountain, tapas and dancing</div><div><b>Hip-Hop Concert</b>Arena stage, pyro and a crowd</div>
+    <div><b>Texas Rodeo Night</b>Saloon, bleachers and line dancing</div><div><b>Quiet Coffee Shop</b>Rain on the windows, lattes</div>
+    <div><b>Turn Up Music Live (TV)</b>A dance-show set</div><div><b>Jazz Café</b>Live trio and grand piano</div>
+    <div><b>Aquarium Night</b>A giant ocean window and a reef</div><div><b>Bollywood Party</b>Troupe, belly dancers, street performers</div>
+    <div><b>Rock &amp; Roll Dive Bar</b>Stage, amps and gig posters</div><div><b>Aspen Ski Resort</b>Après-ski with fire pits and snow</div>
+    <div><b>Yacht Party</b>All-white party at sea at sunset</div><div><b>Harambee Jamboree</b>Drummers, dancers and a market</div>
+    <div><b>Reggae Dance Hall</b>A Kingston yard with a sound system</div><div><b>Downtown Tokyo Cyberpunk</b>Neon, rain and holographic koi</div>
+    <div><b>International Space Station</b>Zero-g dancing above the Earth</div>
+  </div>
+</section>
+
+<section id="party">
+  <h2><span class="n">7</span>Parties, voice &amp; touch</h2>
+  <ol class="steps">
+    <li>In the lounge, tap <b>👥 Join the party</b>. The first time, you'll see a short safety note.</li>
+    <li>Everyone else in the same world appears as their avatar with a name tag. Use <b>Join with code</b> for a private party with friends.</li>
+    <li>Use <b>💃 Dance</b>, <b>🙌 Cheer</b>, <b>👋 Wave</b> and the 🔥 ❤️ 😂 🎉 reactions, and type in the chat.</li>
+    <li>Tap <b>🎤</b> to talk. Voices come from where people are standing, and a 🔊 shows who's talking.</li>
+    <li>Tap a guest's name or avatar (or touch them in VR) to see their card: <b>View page</b>, <b>Follow</b>, <b>Mute</b>, <b>Hide/Block</b> or <b>🚩 Report</b>.</li>
+    <li>Leave any time with <b>Leave the party</b>.</li>
+  </ol>
+</section>
+
+<section id="events">
+  <h2><span class="n">8</span>Live events, flyers &amp; invitations</h2>
+  <h3>Go to an event</h3>
+  <ol class="steps">
+    <li>Tap the calendar button (<b>📅 Live events</b>) to see what's on, including the weekly featured shows.</li>
+    <li>Tap <b>I'm going</b> or <b>Add to calendar</b>. When it starts, a red <b>LIVE NOW</b> banner appears in the lounge; tap it to join.</li>
+  </ol>
+  <h3>Host an event (VIP and up)</h3>
+  <ol class="steps">
+    <li>Open <b>Live events → Host an event</b>. Enter a name, date, time, length, world, music and a description.</li>
+    <li>Tap <b>Publish event</b>. When it starts, you're the DJ: everyone who joins hears your station.</li>
+  </ol>
+  <h3>Make a flyer or invitation</h3>
+  <ol class="steps">
+    <li>After publishing (or with <b>🎨 Make a flyer</b> in the form, or <b>🎨 Flyer &amp; invites</b> on your event), the flyer maker opens.</li>
+    <li>Choose <b>Flyer</b> or <b>Invitation</b> and a look: Neon Nights, Gold Gala, Retro Sunset or Bold Poster. Choose a size: Post, Story or Square.</li>
+    <li>Edit the headline and details, add a photo, and change the color. For an invitation, add the person's name and a note.</li>
+    <li>Tap <b>Share…</b> (phone), <b>Download</b>, <b>Email</b>, or the X, Facebook, WhatsApp or Text buttons. The QR code opens your event.</li>
+  </ol>
+</section>
+
+<section id="social">
+  <h2><span class="n">9</span>Turn Up Social</h2>
+  <ol class="steps">
+    <li>Tap the <b>speech-bubble</b> button. The <b>🏠 Feed</b> shows posts from everyone, or from friends and people you follow.</li>
+    <li>Post text, a photo, a link, or <b>🎵 the song that's on</b>. Like ❤️, reply 💬 and share ↗. Use 🚩 to report a post.</li>
+    <li>Open <b>👤 My page</b> and tap <b>Edit my page</b> to add a mood, your city, what you're into, a cover color and your <b>Top friends</b>.</li>
+    <li>Tap anyone's name to see their page: their wall, photos, friends and followers. <b>Follow</b> them, or <b>post on their wall</b>.</li>
+    <li>When you follow each other, you're <b>friends</b>. See them all in <b>👥 Friends</b>, and search everyone in <b>🔎 Find people</b>.</li>
+    <li><b>🔔 Alerts</b> tells you about new followers, likes, replies and wall posts.</li>
+  </ol>
+  <h3>Use on another device (same account on your tablet, phone and Quest)</h3>
+  <ol class="steps">
+    <li>On the device you already use: <b>My page → 📱 Use on another device → Make a code for my other device</b>.</li>
+    <li>On the new device: <b>My page → Use on another device</b>, type the 8-character code (like <kbd>K7Q2-M9XD</kbd>) and tap <b>I have a code</b>.</li>
+    <li>That's it: same name, avatar, outfit, friends and membership on both. The code works for 10 minutes. Never give it to anyone else.</li>
+  </ol>
+</section>
+
+<section id="dj">
+  <h2><span class="n">10</span>DJ booth, screens &amp; camera</h2>
+  <ol class="steps">
+    <li><b>🎧 DJ booth</b> (VIP): load stations or your own songs onto two decks, use the crossfader and effects (echo, horn, siren, talk-over), then <b>Go live to the party</b>.</li>
+    <li><b>📺 Screens</b>: play YouTube videos or your own videos on the big screens for everyone (VIP), or watch on your own.</li>
+    <li><b>📷 Camera</b>: take photos and videos in any world, save them, or share one straight to your wall.</li>
+  </ol>
+</section>
+
+<section id="plans">
+  <h2><span class="n">11</span>Memberships</h2>
+  <p>Open <b>★ VIP</b> to see the plans. Each plan includes everything in the plans before it.</p>
+  <div class="tiers">
+    <div class="tier"><h4>Free</h4><div class="p">Free</div><ul><li>All radio and podcasts</li><li>All 19 worlds, phone, computer and VR</li><li>Parties, voice chat, emotes</li><li>Turn Up Social</li><li>Basic outfits</li></ul></div>
+    <div class="tier"><h4>⭐ Plus</h4><div class="p">$4.99/mo</div><ul><li>Every outfit style and your own fabric</li><li>VIP sections in every world</li><li>Premium page covers</li><li>PLUS badge</li></ul></div>
+    <div class="tier"><h4>★ VIP</h4><div class="p">$9.99/mo</div><ul><li>DJ booth for the whole party</li><li>Host events</li><li>Flyers &amp; invitations</li><li>Watch together on the big screen</li><li>Gold VIP badge</li></ul></div>
+    <div class="tier"><h4>💎 Pro</h4><div class="p">$24.99/mo</div><ul><li>Featured badge on your events</li><li>Moderate your own event parties</li><li>Top of Find people</li><li>PRO badge</li></ul></div>
+  </div>
+  <ol class="steps">
+    <li>Tap <b>Choose …</b> on a plan and pay on the secure checkout page. Your member ID is attached automatically.</li>
+    <li>Your plan turns on once the payment is confirmed (usually within a day). Tap <b>I've paid, check my membership</b>.</li>
+  </ol>
+  <p class="muted">Prices shown are the defaults and can change. Memberships are for adults 18+. Use the same account on all your devices (see <a href="#social">Use on another device</a>) so your plan follows you.</p>
+</section>
+
+<section id="safety">
+  <h2><span class="n">12</span>Safety &amp; community</h2>
+  <div class="warn"><b>Turn Up Music is for adults 18 and older.</b> It has live voice chat, public posts and parties with people you don't know.</div>
+  <h3>How age protection works</h3>
+  <ol class="steps">
+    <li>Everyone enters a date of birth the first time they open the app. Only “18+: yes or no” is kept, never the birthday.</li>
+    <li>Under 18 gets <b>music mode</b>: radio, podcasts, their own music and the worlds on their own. Parties, voice chat, chat, Turn Up Social, events, flyers and memberships are off.</li>
+    <li>The answer is locked on that device, so it can't simply be retried.</li>
+    <li>Adults only ever see and hear other adults in parties. If you think someone is under 18, report them with <b>“This person may be under 18”</b>.</li>
+  </ol>
+  <h3>Your safety tools</h3>
+  <ol class="steps">
+    <li><b>Mute</b>: tap a guest → Mute (or Mute for me in VR).</li>
+    <li><b>Block</b>: on their card or page, choose Hide/Block. You won't see, hear or get posts from them. Unblock any time in the <b>🛡 Safety center</b>.</li>
+    <li><b>Report</b>: 🚩 on a post, on a guest's card or on their page. Pick a reason and send. The person isn't told who reported them.</li>
+    <li><b>🛡 Safety center</b> (shield button): only hear voice from friends, blur photos from strangers, show only friends' wall posts, and manage your blocked list.</li>
+    <li><b>Leave</b>: you can leave a party, switch worlds or turn off your mic at any time.</li>
+  </ol>
+  <h3>Community Guidelines</h3>
+  <ul><li>Be kind. No harassment, hate speech, threats or bullying.</li><li>No sexual content, and nothing involving anyone under 18, ever.</li><li>No spam, scams, or pretending to be someone else.</li><li>Don't share your address, passwords, sign-in codes or money details. Turn Up Music staff will never ask for them.</li><li>Moderators can mute, remove and block people from parties, and hide posts.</li></ul>
+  <div class="note">If anyone is in danger, call <b>911</b> (or your local emergency number). To report a child being exploited, use the NCMEC CyberTipline at <a href="https://report.cybertip.org" rel="noopener">report.cybertip.org</a>.</div>
+</section>
+
+<section id="help">
+  <h2><span class="n">13</span>Troubleshooting &amp; FAQ</h2>
+  <details><summary>I don't hear any music</summary><p>Browsers need one tap before they can play sound. Tap anywhere, or the <b>Tap to turn on sound</b> button. Check your volume and that your phone isn't on silent.</p></details>
+  <details><summary>The Quest browser closed or VR got jumpy</summary><p>Close other browser tabs, then open Turn Up Music again. The app keeps only two worlds in memory on a headset and dims extra lights in VR, but heavy multitasking can still run out of memory. A world you haven't visited recently takes a few seconds to rebuild.</p></details>
+  <details><summary>My friend looks different on my tablet than in VR</summary><p>Make sure both devices are online so they download the same characters. To be the same person everywhere, link your devices with <b>Use on another device</b>.</p></details>
+  <details><summary>I can't hear someone's voice</summary><p>They may be far away (voices get quieter with distance), muted, or blocked. If you turned on “Only hear voice chat from friends” in the Safety center, you'll only hear friends and people you follow.</p></details>
+  <details><summary>I can't join the party or open the feed</summary><p>These are for adults 18+. Some school and work networks also block live connections. Try another Wi-Fi network or your phone's data.</p></details>
+  <details><summary>I paid but my plan isn't on</summary><p>It can take up to a day to confirm. Tap <b>I've paid, check my membership</b>. If it's still off, contact the host with your member ID (in the ★ VIP screen).</p></details>
+  <details><summary>Is my birthday saved?</summary><p>No. Only whether you're 18 or older is saved, on your device.</p></details>
+</section>
+
+<section id="owner">
+  <h2><span class="n">14</span>For the owner &amp; moderators</h2>
+  <ol class="steps">
+    <li><b>Sign in as the owner</b>: ★ VIP → Owner sign-in → paste your private owner code. Never share it or put it in a file.</li>
+    <li><b>Set prices and payment links</b> for Plus, VIP and Pro under Owner tools (Stripe payment links work best; the buyer's member ID is added to the link).</li>
+    <li><b>Give a membership</b>: paste the buyer's member ID, pick Plus, VIP, Pro or VIP + Moderator and a length, then tap <b>Give membership</b>.</li>
+    <li><b>Moderators</b> see a <b>Reports</b> list in the 🛡 Safety center, can hide posts, and can mute or remove guests from any party. Pro members can moderate their own event parties.</li>
+    <li><b>Underage reports</b>: remove the person from the party and, if needed, hide their posts. Age checks rely on what people enter, so reports from the community matter.</li>
+  </ol>
+</section>
+</main>
+</div>
+<footer><div class="wrap">Turn Up Music · Feel the beat. <a href="./">Open the app</a> · <a href="#safety">Safety</a> · <a href="#quick">Back to top</a></div></footer>
+</body>
+</html>

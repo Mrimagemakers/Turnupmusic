@@ -465,6 +465,24 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 .post .acts button.on{color:var(--live);border-color:rgba(255,77,61,.4)}
 .post .replies{display:grid;gap:6px;padding-left:12px;border-left:2px solid var(--line)}
 .post .replies p{font-size:13px}
+.agedlg{width:min(560px,calc(100% - 24px))}
+.agerow{display:grid;grid-template-columns:1.4fr .8fr 1fr;gap:8px;margin:10px 0}
+.rules{margin:6px 0 10px;padding-left:20px;display:grid;gap:5px;font-size:14px}
+.saf-opt{display:flex;gap:8px;align-items:flex-start;font-size:14px;cursor:pointer}.saf-opt input{margin-top:3px}
+.saf-opts{display:grid;gap:8px}
+.saf-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:10px;background:rgba(255,255,255,.04);margin-bottom:6px}
+.saf-row .av{width:24px;height:36px;border-radius:6px;background-repeat:no-repeat;background-color:#2e201a}
+.rep-reasons{display:grid;gap:6px;margin:8px 0}.rep-reasons label{display:flex;gap:8px;font-size:14px;cursor:pointer}
+.post img.pic.blur{filter:blur(22px) brightness(.7);cursor:pointer}
+.teen #btnVIP,.teen #btnVIP2,.teen #btnSocial,.teen #btnSocial2,.teen #btnEvents,.teen #btnEvents2,.teen #btnParty,.teen #btnBooth,.teen #btnSafety,.teen #btnSafety2,.teen #liveBanner,.teen #camWall,.teen .adultonly{display:none!important}
+.tiers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0}
+#vipDlg{width:min(1060px,calc(100% - 16px))}
+@media (max-width:860px){.tiers{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:480px){.tiers{grid-template-columns:1fr}}
+.tier{display:grid;gap:8px;align-content:start;padding:14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.tier.cur{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,194,26,.25)}
+.tier h4{margin:0;font:800 18px var(--f-display)}.tier .price{font:800 22px var(--f-display);color:var(--gold)}.tier .price small{font-size:12px;color:var(--muted);font-weight:600}
+.tier ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:13px}.tier .curtag{font-size:12px;font-weight:800;color:var(--gold)}
+.admtiers{display:grid;gap:8px}.admtiers .row3{display:grid;grid-template-columns:80px 1fr 2fr;gap:8px;align-items:center}
 dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)}
 .soc-top{display:flex;align-items:center;gap:8px}
 .soc-nav{flex-wrap:wrap;margin:6px 0 10px}
@@ -576,6 +594,8 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
       <button class="iconbtn" id="btnSocial" aria-label="The Wall" title="The Wall"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></button>
       <button class="iconbtn" id="btnCam" aria-label="Camera: photos and video" title="Camera"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
       <button class="iconbtn" id="btnEvents" aria-label="Live events" title="Live events"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="16.5" cy="15" r="1.6" fill="currentColor"/></svg></button>
+      <button class="iconbtn" id="btnGuide" aria-label="How to use Turn Up Music" title="How to use"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.8-2.5 2.2-2.5 3.9"/><circle cx="12" cy="17" r=".9" fill="currentColor"/></svg></button>
+      <button class="iconbtn adultonly" id="btnSafety" aria-label="Safety center" title="Safety center"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></button>
       <button class="iconbtn" id="btnSettings" aria-label="Customize and settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </div>
   </header>
@@ -753,7 +773,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
     <button type="button" class="xp-hide" id="xpHide" aria-label="Hide controls">▼ Hide controls</button>
     <div class="seg" id="xpModes"></div>
     <div class="seg" id="worldSeg" hidden></div>
-    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
+    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
     <div class="emotes" id="emoteBar" hidden><button type="button" data-e="wave">👋 Wave</button><button type="button" data-e="dance">💃 Dance</button><button type="button" data-e="cheer">🙌 Cheer</button><button type="button" data-e="idle">🧍 Chill</button><button type="button" data-r="🔥">🔥</button><button type="button" data-r="❤️">❤️</button><button type="button" data-r="😂">😂</button><button type="button" data-r="🎉">🎉</button><button type="button" id="btnChat">💬 Chat</button><button type="button" id="btnMic">🎤 Mic off</button><button type="button" id="btnDJ">🎧 Be the DJ</button></div>
     <div class="btnrow">
       <button class="chipbtn" id="btnSnap" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Camera</button>
@@ -949,10 +969,60 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
   <div class="btnrow end"><button class="ghost" id="flyClose" type="button">Close</button></div>
 </dialog>
 
+<dialog id="ageDlg" class="agedlg">
+  <h2>Welcome to Turn Up Music</h2>
+  <p>Before you start, please enter your date of birth.</p>
+  <div class="agerow"><select class="field" id="ageM" aria-label="Month"></select><select class="field" id="ageD" aria-label="Day"></select><select class="field" id="ageY" aria-label="Year"></select></div>
+  <div class="setgroup">
+    <h3>Community Guidelines</h3>
+    <ul class="rules"><li>Be kind. No harassment, hate speech, threats or bullying.</li><li>No sexual content, and nothing involving anyone under 18.</li><li>No spam, scams or pretending to be someone else.</li><li>People you meet here are strangers. Don't share your address, passwords or money details.</li><li>You can mute, block and report anyone, any time.</li></ul>
+    <label class="saf-opt"><input type="checkbox" id="ageAgree"> I agree to the Community Guidelines</label>
+  </div>
+  <p class="hint" id="ageMsg" role="alert"></p>
+  <div class="btnrow end"><button class="ghost tiny" id="ageGuide" type="button">Read the guide</button><button class="primary" id="ageGo" type="button">Continue</button></div>
+</dialog>
+
+<dialog id="teenDlg">
+  <h2>🎵 Music mode</h2>
+  <p>Parties, voice chat, the social feed, live events and memberships are for adults 18 and older, so they're turned off on this device.</p>
+  <p>You can still listen to all the radio stations and podcasts, play your own music, and explore every 3D world on your own.</p>
+  <div class="btnrow end"><button class="ghost tiny" id="teenGuide" type="button">How to use the app</button><button class="primary" id="teenOk" type="button">OK</button></div>
+</dialog>
+
+<dialog id="advDlg">
+  <h2>Before you join the party</h2>
+  <p>You're about to join a live party with real people. Everyone here should be 18 or older, but people you meet online are strangers.</p>
+  <ul class="rules"><li>🎤 Your mic is off until you turn it on. Anyone nearby can hear you when it's on.</li><li>🔇 Tap a guest (or touch them in VR) to <b>mute</b>, <b>block</b> or <b>report</b> them.</li><li>🚪 You can leave any time with <b>Leave the party</b>.</li><li>🔒 Never share your address, passwords, sign-in codes or money details.</li><li>🆘 If someone is in danger, call 911 (or your local emergency number).</li></ul>
+  <div class="btnrow end"><button class="ghost" id="advCancel" type="button">Not now</button><button class="primary" id="advGo" type="button">I understand, let's go</button></div>
+</dialog>
+
+<dialog id="reportDlg">
+  <h2>🚩 Report <span id="repWho"></span></h2>
+  <p class="hint">Reports go to the Turn Up Music moderators. The person isn't told who reported them.</p>
+  <div id="repReasons" class="rep-reasons"></div>
+  <label class="lbl">Anything else? (optional)<textarea class="field" id="repNote" maxlength="400" rows="2"></textarea></label>
+  <label class="saf-opt"><input type="checkbox" id="repBlock" checked> Also block them (you won't see or hear them)</label>
+  <p class="hint">If anyone is in danger, call 911. To report a child being exploited, use the NCMEC CyberTipline at report.cybertip.org.</p>
+  <div class="btnrow end"><button class="ghost" id="repCancel" type="button">Cancel</button><button class="primary" id="repSend" type="button">Send report</button></div>
+</dialog>
+
+<dialog id="safetyDlg" class="wide">
+  <h2>🛡 Safety center</h2>
+  <div class="setgroup"><h3>My safety settings</h3><div id="safOpts" class="saf-opts"></div></div>
+  <div class="setgroup"><h3>Blocked people</h3><div id="safBlocked"></div></div>
+  <div class="setgroup"><h3>Staying safe</h3>
+    <ul class="rules"><li>Turn Up Music is for adults 18 and older. If you think someone is under 18, report them with <b>“This person may be under 18”</b>.</li><li>To <b>mute, block or report</b> someone, tap their name or avatar (in VR, touch them), or use 🚩 on a post.</li><li>Don't share personal details, sign-in codes or payment info with people you meet here. Turn Up Music staff will never ask for your codes.</li><li>Feel uncomfortable? Leave the party, change worlds, or turn your mic off. It's always okay to go.</li><li>If someone is in danger, call 911. For child safety concerns, use the NCMEC CyberTipline at report.cybertip.org.</li></ul>
+    <div class="btnrow"><button class="ghost tiny" id="safGuide" type="button">Read the full guide</button></div></div>
+  <div class="setgroup" id="safMod" hidden><h3>Reports (moderators)</h3><div id="safReports"></div></div>
+  <div class="btnrow end"><button class="ghost" id="safClose" type="button">Close</button></div>
+</dialog>
+
 <dialog id="vipDlg" class="wide">
-  <h2>★ Turn Up VIP</h2>
+  <h2>★ Turn Up memberships</h2>
   <div id="vipStatus" class="vipstatus"></div>
-  <div class="vipperks">
+  <div class="tiers" id="vipTiers"></div>
+  <p class="hint">Memberships are for adults 18+. Pay with the button on a plan; your membership turns on once it's confirmed (usually within a day). Cancel any time from the receipt email.</p>
+  <div class="vipperks" hidden>
     <div><b>🎧 DJ booth</b><span>Spin your own music and stations for the whole party, with two decks, a crossfader and effects.</span></div>
     <div><b>📅 Host events</b><span>Put your shows on the Live Events calendar and run them as the DJ.</span></div>
     <div><b>🛋 VIP sections</b><span>Get into the roped-off VIP area in every world.</span></div>
@@ -961,19 +1031,21 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
     <div><b>🛡 Moderators</b><span>Trusted VIPs can be made moderators to mute or remove troublemakers.</span></div>
   </div>
   <div class="setgroup" id="vipBuy">
-    <h3>Become a VIP</h3>
+    <h3>Your membership</h3>
     <p class="hint">Your member ID: <code id="vipId" class="selectable"></code> <button class="ghost tiny" id="vipCopy" type="button">Copy</button></p>
     <p class="hint" id="vipBuyNote"></p>
-    <div class="btnrow"><button class="primary" id="vipPay" type="button">Join VIP</button><button class="ghost" id="vipCheck" type="button">I've paid — check my membership</button></div>
+    <div class="btnrow"><button class="primary" id="vipPay" type="button" hidden>Join VIP</button><button class="ghost" id="vipCheck" type="button">I've paid — check my membership</button></div>
   </div>
   <div class="setgroup" id="vipAdmin" hidden>
     <h3>Owner tools</h3>
-    <div class="row2"><label class="lbl">VIP price (shown to guests)<input class="field" id="admPrice" maxlength="40" placeholder="$9.99 / month"></label>
-      <label class="lbl">Payment link (Stripe, PayPal, Cash App…)<input class="field" id="admPay" maxlength="300" placeholder="https://buy.stripe.com/…"></label></div>
-    <div class="btnrow"><button class="ghost" id="admSaveCfg" type="button">Save price and link</button></div>
+    <p class="hint">Price and payment link for each plan (Stripe payment links work best: the buyer's member ID is added to the link, so you can see who paid).</p>
+    <div class="admtiers"><div class="row3"><b>⭐ Plus</b><input class="field" id="admPrice_plus" maxlength="40" placeholder="$4.99 / month"><input class="field" id="admPay_plus" maxlength="300" placeholder="https://buy.stripe.com/…"></div>
+      <div class="row3"><b>★ VIP</b><input class="field" id="admPrice" maxlength="40" placeholder="$9.99 / month"><input class="field" id="admPay" maxlength="300" placeholder="https://buy.stripe.com/…"></div>
+      <div class="row3"><b>💎 Pro</b><input class="field" id="admPrice_pro" maxlength="40" placeholder="$24.99 / month"><input class="field" id="admPay_pro" maxlength="300" placeholder="https://buy.stripe.com/…"></div></div>
+    <div class="btnrow"><button class="ghost" id="admSaveCfg" type="button">Save prices and links</button></div>
     <h3>Give someone a membership</h3>
     <div class="row2"><label class="lbl">Their member ID<input class="field" id="admPk" maxlength="64" placeholder="64 letters and numbers from their VIP screen"></label>
-      <label class="lbl">Role<select class="field" id="admRole"><option value="vip">VIP</option><option value="mod">VIP + Moderator</option></select></label></div>
+      <label class="lbl">Role<select class="field" id="admRole"><option value="plus">⭐ Plus</option><option value="vip" selected>★ VIP</option><option value="pro">💎 Pro</option><option value="mod">🛡 VIP + Moderator</option></select></label></div>
     <div class="row2"><label class="lbl">How long<select class="field" id="admLen"><option value="1">1 month</option><option value="3">3 months</option><option value="12">1 year</option><option value="1200">Lifetime</option></select></label>
       <div class="btnrow"><button class="primary" id="admIssue" type="button">Give membership</button></div></div>
     <h3>Members</h3>
@@ -9008,7 +9080,7 @@ const Profile = {
     $("#ofC2").addEventListener("input", e => { this.draft.outfit.c2 = e.target.value; });
     $("#ofFinish").addEventListener("change", e => { this.draft.outfit.finish = e.target.value; });
     $("#ofShuffle").addEventListener("click", () => {
-      const vip = VIP.can("dj"), styles = Object.keys(Outfit.STYLES).filter(k => k !== "original" && k !== "fabric" && (vip || !Outfit.isVIPStyle(k))), pick = a => a[Math.floor(Math.random()*a.length)];
+      const vip = VIP.can("style"), styles = Object.keys(Outfit.STYLES).filter(k => k !== "original" && k !== "fabric" && (vip || !Outfit.isVIPStyle(k))), pick = a => a[Math.floor(Math.random()*a.length)];
       const col = () => vip ? "#" + new THREE.Color().setHSL(Math.random(), .7, .45).getHexString() : pick(Outfit.FREE_COLORS);
       this.draft.outfit = {style: pick(styles), c1: col(), c2: col(), c3: col(), seed: Math.floor(Math.random()*99999), finish: vip ? pick(["matte", "satin", "shiny"]) : "matte"}; this.renderOutfit();
     });
@@ -9038,7 +9110,7 @@ const Party = {
   inParty(){ return !!this.room; },
   myHello(){
     const p = Profile.clean(Object.assign({}, Profile.ensure(), {dj: this.dj, pk: Events.myKey()}));
-    p.did = this.deviceId();
+    p.did = this.deviceId(); p.adult = Age.adult();
     try{
       // prove this key is mine for this room and this session, so nobody can borrow my VIP pass
       p.auth = TUNet.finalizeEvent({kind: 22242, created_at: Math.floor(Date.now()/1000), content: this.roomKey + "|" + TUNet.selfId, tags: []}, Events.sk());
@@ -9069,6 +9141,8 @@ const Party = {
     return L.peopleSet.list[0];
   },
   join(kind, code){
+    if (!Age.ok("Parties")) return;
+    if (!store.get("partyAdvisory", false)){ Safety.advisory(() => this.join(kind, code)); return; }
     if (!this.available()){ toast("The party couldn't connect. Check your internet connection and try again.", 5000); return; }
     const w = Lounge.worldId || "rooftop";
     const key = kind === "event" ? "event-" + code : kind === "code" ? "code-" + String(code).toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 16) : "world-" + w;
@@ -9130,6 +9204,7 @@ const Party = {
     return this.peers[id] || (this.peers[id] = {id, profile: Profile.clean({}), pos: new THREE.Vector3(), target: new THREE.Vector3(), yaw: 0, tyaw: 0, world: "", emote: "idle", seen: false, slot: null, lastPose: 0});
   },
   onHello(id, d){
+    if (!(d && d.adult === true) || !Age.adult()){ return; }     // only adults (18+) ever see or hear each other
     const p = this.peer(id), prof = Profile.clean(d);
     let pk = "";
     try{ const a = d && d.auth; if (a && a.kind === 22242 && a.content === this.roomKey + "|" + id && Math.abs(a.created_at - Date.now()/1000) < 900 && TUNet.verifyEvent(a)) pk = a.pubkey; }catch(e){}
@@ -9368,6 +9443,7 @@ const Party = {
   },
   setEmote(e){ this.emote = e; this.ui(); this.lastSend = 0; },
   async toggleMic(){
+    if (!this.mic && !Age.ok("Voice chat")) return;
     if (!this.room){ this.join("world"); if (!this.room){ toast("Join the party to talk."); return; } }
     if (this.mutedByMod && !this.mic){ toast("A moderator muted you in this party."); return; }
     if (this.mic){ try{ this.room.removeStream(this.mic); }catch(e){} this.mic.getTracks().forEach(t => t.stop()); this.mic = null; this.ui(); return; }
@@ -9406,7 +9482,7 @@ const Party = {
     const L = Lounge, lis = L.listener, run = !!(lis && lis.context.state === "running");
     for (const p of Object.values(this.peers)){
       if (!p.audio || !p.audio.srcObject) continue;
-      const off = !!p.muted || this.hidden.has(this.hideKey(p)), sl = p.slot, h = p.profile.height || 1;
+      const off = !!p.muted || this.hidden.has(this.hideKey(p)) || (Safety.opt("friendsVoice") && !Social.follows.has(p.profile.pk)), sl = p.slot, h = p.profile.height || 1;
       const spatial = run && p.voice && sl && sl.group.parent;
       if (p.voice && sl && p.voice.parent !== sl.group){ sl.group.add(p.voice); p.voice.position.set(0, 1.6*h, 0); }
       if (p.voice) p.voice.setVolume(spatial && !off ? 1.4 : 0);
@@ -9502,7 +9578,7 @@ const Party = {
     const svc = [["Spotify", pr.spotify], ["Apple Music", pr.apple], ["TIDAL", pr.tidal], ["YouTube", pr.youtube]].filter(x => x[1]).map(([n, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${n}</a>`).join("");
     const isMod = VIP.can("moderate") && p.role !== "owner";
     $("#peerCard").innerHTML = `<div class="av" style="${avThumbStyle(pr.avatar, 96)}"></div><div><h2>${esc(pr.name)}${pr.dj ? " 🎧" : ""}</h2>${p.role !== "guest" ? `<p><b style="color:var(--gold)">${esc(VIP.badge(p.role))}</b></p>` : ""}${pr.bio ? `<p>${esc(pr.bio)}</p>` : ""}${pr.genre ? `<p>Loves ${esc(pr.genre)}</p>` : ""}${href ? `<p><a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(pr.link)}</a></p>` : ""}${svc ? `<div class="svc">${svc}</div>` : ""}
-      <div class="btnrow" style="margin-top:10px">${pr.pk ? `<button class="primary tiny" type="button" data-pc="page">📄 View page</button><button class="ghost tiny" type="button" data-pc="follow">${Social.follows.has(pr.pk) ? "Following" : "Follow"}</button>` : ""}${isMod ? `<button class="ghost tiny" type="button" data-pc="mute">🛡 Mute for everyone</button><button class="ghost tiny" type="button" data-pc="kick">🛡 Remove from party</button>` : ""}</div></div>`;
+      <div class="btnrow" style="margin-top:10px">${pr.pk ? `<button class="primary tiny" type="button" data-pc="page">📄 View page</button><button class="ghost tiny" type="button" data-pc="report">🚩 Report</button><button class="ghost tiny" type="button" data-pc="follow">${Social.follows.has(pr.pk) ? "Following" : "Follow"}</button>` : ""}${isMod ? `<button class="ghost tiny" type="button" data-pc="mute">🛡 Mute for everyone</button><button class="ghost tiny" type="button" data-pc="kick">🛡 Remove from party</button>` : ""}</div></div>`;
     this.cardId = id;
     $("#peerMute").textContent = p.muted ? "Unmute" : "Mute";
     $("#peerDlg").showModal();
@@ -9519,6 +9595,7 @@ const Party = {
     $("#peerCard").addEventListener("click", e => { const b = e.target.closest("[data-pc]"); if (!b) return; const p = this.peers[this.cardId]; if (!p) return;
       if (b.dataset.pc === "follow"){ Social.follow(p.profile.pk); b.textContent = Social.follows.has(p.profile.pk) ? "Following" : "Follow"; }
       else if (b.dataset.pc === "page"){ $("#peerDlg").close(); Social.openPage(p.profile.pk); }
+      else if (b.dataset.pc === "report"){ $("#peerDlg").close(); Safety.report(p.profile.pk, null, p.profile.name); }
       else { this.modAct(this.cardId, b.dataset.pc); $("#peerDlg").close(); } });
     $("#peerMute").addEventListener("click", () => { const p = this.peers[this.cardId]; if (!p) return; p.muted = !p.muted; if (p.audio) p.audio.muted = p.muted; $("#peerMute").textContent = p.muted ? "Unmute" : "Mute"; });
     $("#peerHide").addEventListener("click", () => { const p = this.peers[this.cardId]; if (!p) return; this.hidden.add(this.hideKey(p)); store.set("hiddenGuests", [...this.hidden].slice(-200)); if (p.audio) p.audio.muted = true; $("#peerDlg").close(); toast(`${p.profile.name} is hidden. You won't see their avatar or messages.`); });
@@ -9603,9 +9680,9 @@ const Events = {
       const start = +tag("start")*1000, end = +tag("end")*1000, now = Date.now();
       if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start || end - start > 12*3600e3 || start > now + 120*864e5 || end < now) return null;
       const world = tag("world"); let station = null; try{ station = Party.stationFrom(JSON.parse(tag("station") || "null")); }catch(e){}
-      if (VIP.roleOf(ev.pubkey) === "guest") return null;      // only members can host events
+      if (!VIP.can("host", ev.pubkey)) return null;      // only VIP members and up can host events
       return {id: "n-" + ev.pubkey.slice(0, 16) + "-" + String(tag("d") || "").slice(0, 40), d: tag("d"), title: String(tag("title") || "Untitled event").slice(0, 70), desc: String(ev.content || "").slice(0, 400), start, end,
-        world: Lounge.WORLDS.some(w => w.id === world) ? world : "rooftop", station, host: String(tag("host") || "A guest").slice(0, 24), pk: ev.pubkey, featured: NET.hostKeys.includes(ev.pubkey) || VIP.OWNERS.includes(ev.pubkey)};
+        world: Lounge.WORLDS.some(w => w.id === world) ? world : "rooftop", station, host: String(tag("host") || "A guest").slice(0, 24), pk: ev.pubkey, featured: NET.hostKeys.includes(ev.pubkey) || VIP.OWNERS.includes(ev.pubkey) || VIP.can("featured", ev.pubkey)};
     }catch(e){ return null; }
   },
   async refresh(){
@@ -9651,6 +9728,7 @@ const Events = {
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   },
   join(e){
+    if (!Age.ok("Live events")) return;
     $("#eventsDlg").open && $("#eventsDlg").close();
     const go = () => {
       if (Lounge.worldId !== e.world) Lounge.setWorld(e.world);
@@ -9681,12 +9759,14 @@ const Events = {
   },
   banner(){
     const b = $("#liveBanner"); if (!b) return;
+    if (!Age.adult()){ b.hidden = true; return; }
     const live = this.all().filter(e => this.isLive(e)).sort((a, c) => (this.going.has(c.id) - this.going.has(a.id)) || (c.featured - a.featured))[0];
     const inIt = live && Party.eventId === live.id;
     b.hidden = !live || inIt || $("#stage").hidden;
     if (live && !inIt){ b.textContent = `🔴 LIVE NOW: ${live.title} · ${this.worldName(live.world)} — tap to join`; b.dataset.ev = live.id; }
   },
   open(){
+    if (!Age.ok("Live events")) return;
     $("#eventsDlg").showModal(); this.tab("list"); this.render(); this.refresh();
   },
   tab(t){
@@ -9764,6 +9844,8 @@ const Flyer = {
 
   /* ---------- opening ---------- */
   open(ev, saved){
+    if (!Age.ok("Flyers and invitations")) return;
+    if (!VIP.can("host")){ VIP.open("Flyers and invitations come with VIP."); return; }
     this.ev = Object.assign({}, ev);
     const s = this.st;
     Object.assign(s, {kind: "flyer", tpl: s.tpl || "neon", size: s.size || "post", accent: "", headline: ev.title || "", details: ev.desc || "", to: "", msg: "", photo: null, photoUrl: ""});
@@ -10158,7 +10240,17 @@ Flyer.bindUI();
 const VIP = {
   OWNERS: ["8b9d348dea1d856a15b6d7615f8e23cd3d460b7b23670a412e45a86f22f3e2ef"],
   KIND: 30078,
-  cfg: {price: "$9.99 / month", payUrl: "", note: ""},
+  cfg: {price: "$9.99 / month", payUrl: "", note: "", tiers: {}},
+  /* membership tiers: what each one unlocks (higher tiers include everything below) */
+  TIERS: [
+    {id: "guest", name: "Free", price: "Free", perks: ["All radio stations and podcasts", "Every 3D world, on phone, computer or VR", "Join parties, voice chat and emotes", "Turn Up Social: your page, friends, feed", "Basic outfits (solid, stripes, ombré)"]},
+    {id: "plus", name: "Plus", price: "$4.99 / month", perks: ["Every outfit style, plus your own fabric", "Get into the VIP sections", "Premium page covers", "⭐ PLUS badge"]},
+    {id: "vip", name: "VIP", price: "$9.99 / month", perks: ["🎧 DJ booth: play for the whole party", "📅 Host events on the calendar", "🎨 Flyers & invitations", "📺 Watch together on the big screen", "★ Gold VIP badge"]},
+    {id: "pro", name: "Pro", price: "$24.99 / month", perks: ["Featured badge on your events", "Moderate your own event parties", "Top of Find people", "💎 PRO badge"]}
+  ],
+  rank(role){ return {guest: 0, plus: 1, vip: 2, mod: 2, pro: 3, owner: 9}[role] || 0; },
+  tierPrice(id){ const t = this.cfg.tiers && this.cfg.tiers[id]; return (t && t.price) || (id === "vip" && this.cfg.price) || (this.TIERS.find(x => x.id === id) || {}).price || ""; },
+  tierLink(id){ const t = this.cfg.tiers && this.cfg.tiers[id]; return (t && t.payUrl) || (id === "vip" ? this.cfg.payUrl : ""); },
   passes: {},          // member key -> {role, exp, ev}
   hides: new Set(),    // posts hidden by moderators
   loaded: 0,
@@ -10171,12 +10263,20 @@ const VIP = {
   },
   myRole(){ return this.roleOf(this.me()); },
   can(what, pk){
-    const r = pk === undefined ? this.myRole() : this.roleOf(pk);
+    if (pk === undefined && typeof Age !== "undefined" && !Age.adult()) return false;     // music mode: nothing social or paid
+    const r = pk === undefined ? this.myRole() : this.roleOf(pk), k = this.rank(r);
     if (what === "admin") return r === "owner";
-    if (what === "moderate") return r === "owner" || r === "mod";
-    return r === "owner" || r === "mod" || r === "vip";      // dj, host, vipzone, stream, watch
+    if (what === "moderate"){
+      if (r === "owner" || r === "mod") return true;
+      // Pro members moderate the parties of their own events
+      try{ if (pk === undefined && k >= 3 && Party.kind === "event"){ const e = Events.byId(Party.eventId); return !!(e && e.pk && e.pk === this.me()); } }catch(e){}
+      return false;
+    }
+    if (what === "style" || what === "vipzone" || what === "covers") return k >= 1;
+    if (what === "featured") return k >= 3;
+    return k >= 2;      // dj, host, watch, stream, flyers
   },
-  badge(role){ return {owner: "👑 HOST", mod: "🛡 MOD", vip: "★ VIP"}[role] || ""; },
+  badge(role){ return {owner: "👑 HOST", mod: "🛡 MOD", vip: "★ VIP", plus: "⭐ PLUS", pro: "💎 PRO"}[role] || ""; },
   tag(ev, n){ return (ev.tags.find(t => t[0] === n) || [])[1]; },
   // a pass event is valid if the owner signed it for this exact member and it hasn't run out
   checkPass(ev, pk){
@@ -10184,7 +10284,7 @@ const VIP = {
       if (!ev || ev.kind !== this.KIND || !this.OWNERS.includes(ev.pubkey) || this.tag(ev, "d") !== "tu-pass:" + pk) return null;
       if (!TUNet.verifyEvent(ev)) return null;
       const exp = +this.tag(ev, "exp"), role = this.tag(ev, "role");
-      if (!(exp*1000 > Date.now()) || !["vip", "mod"].includes(role)) return null;
+      if (!(exp*1000 > Date.now()) || !["plus", "vip", "mod", "pro"].includes(role)) return null;
       return {role, exp, ev};
     }catch(e){ return null; }
   },
@@ -10197,7 +10297,8 @@ const VIP = {
       for (const ev of evs){ const d = this.tag(ev, "d") || ""; if (!latest[d] || latest[d].created_at < ev.created_at) latest[d] = ev; }
       this.passes = {};
       for (const [d, ev] of Object.entries(latest)){
-        if (d === "tu-config"){ try{ const c = JSON.parse(ev.content); this.cfg = Object.assign({}, this.cfg, {price: String(c.price || this.cfg.price).slice(0, 40), payUrl: /^https:\/\//.test(c.payUrl || "") ? String(c.payUrl).slice(0, 300) : "", note: String(c.note || "").slice(0, 200)}); }catch(e){} }
+        if (d === "tu-config"){ try{ const c = JSON.parse(ev.content); const tiers = {}; for (const id of ["plus", "vip", "pro"]){ const t = c.tiers && c.tiers[id]; if (t) tiers[id] = {price: String(t.price || "").slice(0, 40), payUrl: /^https:\/\//.test(t.payUrl || "") ? String(t.payUrl).slice(0, 300) : ""}; }
+          this.cfg = Object.assign({}, this.cfg, {price: String(c.price || this.cfg.price).slice(0, 40), payUrl: /^https:\/\//.test(c.payUrl || "") ? String(c.payUrl).slice(0, 300) : "", note: String(c.note || "").slice(0, 200), tiers}); }catch(e){} }
         else if (d.startsWith("tu-pass:")){ const pk = d.slice(8); const p = this.checkPass(ev, pk); if (p) this.passes[pk] = p; else this.passes[pk] = {role: "guest", exp: 0, ev}; }
         else if (d.startsWith("tu-hide:")) this.hides.add(d.slice(8));
       }
@@ -10234,37 +10335,45 @@ const VIP = {
   },
   /* screens */
   open(why){
+    if (!Age.ok("Memberships")) return;
     $("#vipDlg").showModal(); if (why) toast(why, 5000);
     this.ui(); this.load(true).then(() => this.renderAdmin());
   },
   ui(){
     const role = this.myRole(), p = this.passes[this.me()];
-    if ($("#vipStatus")) $("#vipStatus").textContent = role === "owner" ? "👑 You're the owner. Everything is unlocked." : role === "mod" ? `🛡 You're a VIP moderator until ${new Date(p.exp*1000).toLocaleDateString()}.` : role === "vip" ? `★ You're a VIP until ${new Date(p.exp*1000).toLocaleDateString()}.` : "You're a guest. Join VIP to DJ, host events and get into the VIP sections.";
+    if ($("#vipStatus")) $("#vipStatus").textContent = role === "owner" ? "👑 You're the owner. Everything is unlocked." : role === "mod" ? `🛡 You're a VIP moderator until ${new Date(p.exp*1000).toLocaleDateString()}.` : role !== "guest" ? `${this.badge(role)}: your membership runs until ${new Date(p.exp*1000).toLocaleDateString()}.` : "You're on the Free plan. Pick a plan below to unlock more.";
     if ($("#vipId")) $("#vipId").textContent = this.me() || "available when online";
     if ($("#vipBuy")) $("#vipBuy").hidden = role === "owner";
     if ($("#vipBuyNote")) $("#vipBuyNote").textContent = this.cfg.payUrl ? `${this.cfg.price}. After you pay, your VIP turns on automatically once it's confirmed (usually within a day). Keep your member ID handy.${this.cfg.note ? " " + this.cfg.note : ""}` : "VIP sign-up opens soon. Ask the host for a membership and give them your member ID.";
     if ($("#vipPay")) $("#vipPay").hidden = !this.cfg.payUrl;
     if ($("#vipAdmin")) $("#vipAdmin").hidden = role !== "owner";
+    if ($("#vipTiers")){ const cur = role === "mod" ? "vip" : role === "owner" ? "pro" : role;
+      $("#vipTiers").innerHTML = this.TIERS.map(t => `<div class="tier${t.id === cur ? " cur" : ""}"><h4>${t.id === "guest" ? "Free" : esc(this.badge(t.id))}</h4><div class="price">${esc(t.id === "guest" ? "Free" : this.tierPrice(t.id)).replace(/ \/ (\w+)/, " <small>/ $1</small>")}</div>${t.id !== "guest" ? `<div class="hint">Everything in ${t.id === "plus" ? "Free" : t.id === "vip" ? "Plus" : "VIP"}, plus:</div>` : ""}<ul>${t.perks.map(p => `<li>${esc(p)}</li>`).join("")}</ul>${t.id === cur ? `<span class="curtag">✓ Your plan</span>` : t.id !== "guest" && this.rank(t.id) > this.rank(role) ? `<button class="primary tiny" type="button" data-tier="${t.id}">Choose ${esc(t.name)}</button>` : ""}</div>`).join(""); }
     if ($("#vipOwner")) $("#vipOwner").hidden = role === "owner";
     const b = $("#btnVIP"), b2 = $("#btnVIP2"); const label = role === "guest" ? "★ VIP" : this.badge(role);
     if (b) b.textContent = label; if (b2) b2.textContent = label;
   },
   renderAdmin(){
     if (this.myRole() !== "owner") return;
-    $("#admPrice").value = this.cfg.price; $("#admPay").value = this.cfg.payUrl;
+    $("#admPrice").value = this.tierPrice("vip"); $("#admPay").value = this.tierLink("vip");
+    for (const id of ["plus", "pro"]){ $("#admPrice_" + id).value = this.tierPrice(id); $("#admPay_" + id).value = this.tierLink(id); }
     const rows = Object.entries(this.passes).filter(([, p]) => p.exp*1000 > Date.now()).sort((a, b) => b[1].exp - a[1].exp);
     $("#admList").innerHTML = rows.length ? rows.map(([pk, p]) => `<div class="row"><b>${p.role === "mod" ? "🛡 Mod" : "★ VIP"}</b><span>until ${new Date(p.exp*1000).toLocaleDateString()}</span><code>${esc(pk.slice(0, 16))}…</code><span class="grow"></span><button class="ghost tiny" data-revoke="${esc(pk)}" type="button">Remove</button></div>`).join("") : `<p class="hint">No members yet.</p>`;
   },
   bindUI(){
     $("#vipClose").addEventListener("click", () => $("#vipDlg").close());
     $("#vipCopy").addEventListener("click", () => { navigator.clipboard?.writeText(this.me()).then(() => toast("Member ID copied"), () => {}); });
+    $("#vipTiers").addEventListener("click", e => { const b = e.target.closest("[data-tier]"); if (!b) return; const link = this.tierLink(b.dataset.tier);
+      if (!link){ toast("Payments for this plan aren't set up yet. Check back soon!"); return; }
+      const u = new URL(link); u.searchParams.set("client_reference_id", this.me()); open(u.toString(), "_blank", "noopener"); });
     $("#vipPay").addEventListener("click", () => { if (!this.cfg.payUrl) return; const u = new URL(this.cfg.payUrl); u.searchParams.set("client_reference_id", this.me()); open(u.toString(), "_blank", "noopener"); });
-    $("#vipCheck").addEventListener("click", async () => { await this.load(true); toast(this.myRole() === "guest" ? "No membership yet. It can take a little while after paying." : "You're a VIP! 🎉"); });
+    $("#vipCheck").addEventListener("click", async () => { await this.load(true); toast(this.myRole() === "guest" ? "No membership yet. It can take a little while after paying." : `You're ${this.badge(this.myRole())}! 🎉`); });
     $("#ownerGo").addEventListener("click", () => this.ownerSignIn($("#ownerCode").value));
     $("#admSaveCfg").addEventListener("click", async () => {
-      const price = $("#admPrice").value.trim(), payUrl = $("#admPay").value.trim();
-      if (payUrl && !/^https:\/\//.test(payUrl)){ toast("The payment link must start with https://"); return; }
-      try{ await this.publish("tu-config", [], JSON.stringify({price, payUrl})); this.cfg.price = price || this.cfg.price; this.cfg.payUrl = payUrl; this.ui(); toast("Saved. Every guest sees the new price and link."); }catch(e){ toast("Couldn't save right now."); }
+      const price = $("#admPrice").value.trim(), payUrl = $("#admPay").value.trim(), tiers = {vip: {price, payUrl}};
+      for (const id of ["plus", "pro"]) tiers[id] = {price: $("#admPrice_" + id).value.trim(), payUrl: $("#admPay_" + id).value.trim()};
+      if (Object.values(tiers).some(t => t.payUrl && !/^https:\/\//.test(t.payUrl))){ toast("Payment links must start with https://"); return; }
+      try{ await this.publish("tu-config", [], JSON.stringify({price, payUrl, tiers})); this.cfg.price = price || this.cfg.price; this.cfg.payUrl = payUrl; this.cfg.tiers = tiers; this.ui(); toast("Saved. Every guest sees the new price and link."); }catch(e){ toast("Couldn't save right now."); }
     });
     $("#admIssue").addEventListener("click", async () => {
       const pk = $("#admPk").value.trim().toLowerCase();
@@ -10767,6 +10876,7 @@ const Social = {
       const b = e.target.closest("button[data-act]"), card = e.target.closest(".post"); if (!b || !card) return;
       const ev = this.find(card.dataset.id); if (!ev) return;
       const act = b.dataset.act;
+      if (act === "report"){ Safety.report(ev.pubkey, ev.id, this.who(ev.pubkey, ev).name); return; }
       if (act === "like") this.like(ev);
       else if (act === "reply"){ this.openReplies = this.openReplies === ev.id ? null : ev.id; this.render(); }
       else if (act === "follow") this.follow(ev.pubkey);
@@ -10804,7 +10914,7 @@ Object.assign(Social, {
   /* ---------- profiles on the network ---------- */
   publishProfileSoon(){ clearTimeout(this._pubT); this._pubT = setTimeout(() => this.publishProfile().catch(() => {}), 1500); },
   async publishProfile(){
-    if (!window.TUNet) return;
+    if (!window.TUNet || !Age.adult()) return;
     const p = Profile.clean(Profile.ensure()), x = this.extras(); if (!x.since){ x.since = Math.floor(Date.now()/1000); store.set("socx", x); }
     delete p.pk; delete p.dj;
     const at = Math.floor(Date.now()/1000), ev = TUNet.finalizeEvent({kind: 30078, created_at: at, content: JSON.stringify(Object.assign(p, {x})), tags: [["d", "tu-profile"], ["t", "turnupmusic"], ["name", p.name]]}, Events.sk());
@@ -10830,7 +10940,7 @@ Object.assign(Social, {
   },
   /* the same account (and so the same look) on every device: pull my profile from the network if it's newer */
   async syncMine(){
-    if (!window.TUNet) return;
+    if (!window.TUNet || !Age.adult()) return;
     const me = Events.myKey(); await this.loadProfiles([me]); await this.loadFollows();
     const pr = this.profiles.get(me), localAt = store.get("profileAt", 0);
     if (pr && pr.at > localAt){
@@ -10869,7 +10979,7 @@ Object.assign(Social, {
     if (v === "feed") this.render(); else if (v === "friends") this.renderFriends(); else if (v === "find") this.renderFind(); else if (v === "notes") this.renderNotes();
   },
   async openPage(pk){
-    if (!/^[0-9a-f]{64}$/.test(pk || "")) return;
+    if (!/^[0-9a-f]{64}$/.test(pk || "") || !Age.ok("Turn Up Social")) return;
     if (!$("#socialDlg").open) $("#socialDlg").showModal();
     this.pageOf = pk; this.editing = false; this.show("page");
     const box = $("#socPageView"); box.innerHTML = `<p class="evempty">Loading…</p>`;
@@ -10882,9 +10992,11 @@ Object.assign(Social, {
       Events.pool().querySync(NET.relays, {kinds: [7], "#p": [pk], limit: 1000}, {maxWait: 3500}).catch(() => [])
     ]);
     if (this.pageOf !== pk) return;
-    const mine = posts.filter(e => !e.tags.some(t => t[0] === "e") && !VIP.hides.has(e.id)), toWall = wall.filter(e => e.pubkey !== pk && e.tags.some(t => t[0] === "l" && t[1] === "wall") && !VIP.hides.has(e.id));
+    const mine = posts.filter(e => !e.tags.some(t => t[0] === "e") && !VIP.hides.has(e.id));
+    let toWall = wall.filter(e => e.pubkey !== pk && e.tags.some(t => t[0] === "l" && t[1] === "wall") && !VIP.hides.has(e.id) && !Safety.blocked(e.pubkey));
     this.keep(mine); this.keep(toWall);
     const friendsPk = followers.filter(k => following.includes(k));
+    if (pk === Events.myKey() && Safety.opt("wallFriends")) toWall = toWall.filter(e => friendsPk.includes(e.pubkey));
     await this.loadProfiles([...new Set([...friendsPk, ...toWall.map(e => e.pubkey)])].filter(k => !this.profiles.has(k)));
     this.page = {pk, posts: [...mine, ...toWall].sort((a, b) => b.created_at - a.created_at), followers, following, friends: friendsPk, likes: new Set(likes.map(l => l.pubkey + l.id)).size, photos: mine.filter(e => /^data:image\//.test(this.tag(e, "image") || ""))};
     await this.loadLikes(this.page.posts.map(e => e.id));
@@ -10912,7 +11024,7 @@ Object.assign(Social, {
       <div class="pg-stats"><span><b>${P.posts.filter(e => e.pubkey === pk).length}</b> posts</span><button type="button" data-pa="followers"><b>${P.followers.length}</b> followers</button><button type="button" data-pa="following"><b>${P.following.length}</b> following</button><span><b>${P.friends.length}</b> friends</span><span><b>${P.likes}</b> ❤️</span></div>
       <div class="btnrow">${isMe ? `<button class="primary tiny" type="button" data-pa="edit">✏️ Edit my page</button><button class="ghost tiny" type="button" data-pa="look">👤 Change my avatar &amp; look</button><button class="ghost tiny" type="button" data-pa="devices">📱 Use on another device</button>`
         : `<button class="${this.follows.has(pk) ? "ghost" : "primary"} tiny" type="button" data-pa="follow">${this.follows.has(pk) ? (P.following.includes(me) ? "✓ Friends" : "✓ Following") : (P.following.includes(me) ? "Follow back" : "➕ Follow")}</button>`}
-        <button class="ghost tiny" type="button" data-pa="share">↗ Share page</button>${!isMe && typeof Party !== "undefined" && Object.values(Party.peers).some(q => q.profile.pk === pk) ? `<span class="pill-live">● In the lounge with you</span>` : ""}</div>
+        <button class="ghost tiny" type="button" data-pa="share">↗ Share page</button>${!isMe ? `<button class="ghost tiny" type="button" data-pa="block">${Safety.blocked(pk) ? "Unblock" : "🚫 Block"}</button><button class="ghost tiny" type="button" data-pa="report">🚩 Report</button>` : ""}${!isMe && typeof Party !== "undefined" && Object.values(Party.peers).some(q => q.profile.pk === pk) ? `<span class="pill-live">● In the lounge with you</span>` : ""}</div>
       <div id="pgEdit" hidden></div>
       <div class="pg-grid">
         <div class="pg-side">
@@ -10932,7 +11044,7 @@ Object.assign(Social, {
     box.innerHTML = `<form id="pgEditForm" class="pg-edit">
       <div class="row2"><label class="lbl">Mood / status<input class="field" name="mood" maxlength="60" value="${esc(x.mood)}" placeholder="Feeling the bassline 🎶"></label><label class="lbl">City<input class="field" name="city" maxlength="40" value="${esc(x.city)}" placeholder="Atlanta, GA"></label></div>
       <label class="lbl">Into (music, hobbies, anything)<input class="field" name="interests" maxlength="140" value="${esc(x.interests)}" placeholder="Neo-soul, vinyl, skating, cooking"></label>
-      <div class="lbl">Page cover<div class="pg-covers">${Object.keys(this.COVERS).map(k => `<label><input type="radio" name="cover" value="${k}"${k === x.cover ? " checked" : ""}><span style="${this.coverCss(k)}"></span></label>`).join("")}</div></div>
+      <div class="lbl">Page cover${VIP.can("covers") ? "" : " (⭐ = Plus)"}<div class="pg-covers">${Object.keys(this.COVERS).map((k, i) => `<label title="${i > 3 && !VIP.can("covers") ? "Plus members" : k}"><input type="radio" name="cover" value="${k}"${k === x.cover ? " checked" : ""}${i > 3 && !VIP.can("covers") ? " disabled" : ""}><span style="${this.coverCss(k)}">${i > 3 && !VIP.can("covers") ? "⭐" : ""}</span></label>`).join("")}</div></div>
       <div class="lbl">Top friends (up to 8)${cands.length ? `<div class="pg-pick">${cands.map(k => { const f = this.who(k); return `<label><input type="checkbox" name="top" value="${k}"${x.top.includes(k) ? " checked" : ""}><span class="av" style="${avThumbStyle(f.avatar, 30)}"></span>${esc(f.name)}</label>`; }).join("")}</div>` : `<span class="hint"> Follow some people first.</span>`}</div>
       <div class="btnrow end"><button class="ghost tiny" type="button" data-pa="canceledit">Cancel</button><button class="primary tiny" type="submit">Save my page</button></div></form>`;
   },
@@ -10944,10 +11056,10 @@ Object.assign(Social, {
         <div class="who"><button class="av" type="button" data-user="${ev.pubkey}" style="${avThumbStyle(a.avatar, 28)}" aria-label="${esc(a.name)}'s page"></button><span><button class="linkbtn" type="button" data-user="${ev.pubkey}"><b>${esc(a.name)}</b></button>${wallName ? ` ▸ <button class="linkbtn" type="button" data-user="${onWall[1]}"><b>${esc(wallName)}</b></button>` : ""} ${a.role !== "guest" ? `<span class="badge${a.role === "mod" ? " mod" : ""}">${esc(VIP.badge(a.role))}</span>` : ""}<br><span>${this.ago(ev.created_at)}</span></span><span class="grow"></span>${ev.pubkey !== me ? `<button class="ghost tiny" data-act="follow" type="button">${this.follows.has(ev.pubkey) ? "Following" : "Follow"}</button>` : ""}</div>
         <p>${this.linkify(ev.content.replace(/\n?https:\/\/\S+$/, ""))}</p>
         ${song ? `<p class="hint">🎵 ${esc(song.slice(0, 120))}</p>` : ""}
-        ${img && /^data:image\/(jpeg|webp|png);base64,[A-Za-z0-9+/=]+$/.test(img) ? `<img class="pic" src="${img}" alt="Photo from ${esc(a.name)}" loading="lazy">` : ""}
+        ${img && /^data:image\/(jpeg|webp|png);base64,[A-Za-z0-9+/=]+$/.test(img) ? `<img class="pic${Safety.opt("blurPhotos") && ev.pubkey !== me && !this.follows.has(ev.pubkey) ? " blur" : ""}" src="${img}" alt="Photo from ${esc(a.name)}" loading="lazy" title="Tap to show">` : ""}
         ${li ? `<button class="ghost tiny" data-act="play" data-link="${esc(li.url)}" type="button">▶ Play on ${esc(li.svc)}</button>` : ""}
-        <div class="acts"><button type="button" data-act="like" class="${this.mineLiked.has(ev.id) ? "on" : ""}">❤️ ${(this.likes[ev.id] || 0)}</button><button type="button" data-act="reply">💬 ${reps.length}</button><button type="button" data-act="share">↗ Share</button>${VIP.can("moderate") ? `<button type="button" data-act="hide">Hide (mod)</button>` : ""}</div>
-        <div class="replies" ${this.openReplies === ev.id ? "" : "hidden"}>${reps.filter(r => !VIP.hides.has(r.id)).map(r => `<p><button class="linkbtn" type="button" data-user="${r.pubkey}"><b>${esc(this.who(r.pubkey, r).name)}</b></button> ${this.linkify(r.content)}</p>`).join("")}<form data-reply="${ev.id}" class="row2"><input class="field tiny" maxlength="200" placeholder="Reply…"><button class="ghost tiny" type="submit">Send</button></form></div>
+        <div class="acts"><button type="button" data-act="like" class="${this.mineLiked.has(ev.id) ? "on" : ""}">❤️ ${(this.likes[ev.id] || 0)}</button><button type="button" data-act="reply">💬 ${reps.length}</button><button type="button" data-act="share">↗ Share</button>${ev.pubkey !== me ? `<button type="button" data-act="report" aria-label="Report">🚩</button>` : ""}${VIP.can("moderate") ? `<button type="button" data-act="hide">Hide (mod)</button>` : ""}</div>
+        <div class="replies" ${this.openReplies === ev.id ? "" : "hidden"}>${reps.filter(r => !VIP.hides.has(r.id) && !Safety.blocked(r.pubkey)).map(r => `<p><button class="linkbtn" type="button" data-user="${r.pubkey}"><b>${esc(this.who(r.pubkey, r).name)}</b></button> ${this.linkify(r.content)}</p>`).join("")}<form data-reply="${ev.id}" class="row2"><input class="field tiny" maxlength="200" placeholder="Reply…"><button class="ghost tiny" type="submit">Send</button></form></div>
       </div>`;
   },
   personRow(k, sub){ const f = this.who(k); return `<button type="button" class="soc-person" data-user="${k}"><span class="av" style="${avThumbStyle(f.avatar, 34)}"></span><span><b>${esc(f.name)}</b>${f.x && f.x.mood ? `<br><span class="hint">“${esc(f.x.mood)}”</span>` : sub ? `<br><span class="hint">${esc(sub)}</span>` : ""}</span>${this.follows.has(k) ? `<span class="pill">Following</span>` : ""}</button>`; },
@@ -10963,12 +11075,12 @@ Object.assign(Social, {
     if (!$("#socFindQ")){ box.innerHTML = `<input class="field" id="socFindQ" placeholder="Search people by name, city or what they're into…"><div id="socFindList" class="soc-people"></div>`; $("#socFindQ").addEventListener("input", () => this.renderFind()); }
     if (!this.foundAll){ $("#socFindList").innerHTML = `<p class="evempty">Loading…</p>`; await this.loadProfiles(); this.foundAll = true; }
     const q = $("#socFindQ").value.trim().toLowerCase(), me = Events.myKey();
-    const all = [...this.profiles.entries()].filter(([k]) => k !== me).sort((a, b) => b[1].at - a[1].at).filter(([, v]) => !q || [v.p.name, v.x.city, v.x.interests, v.p.genre, v.p.bio].join(" ").toLowerCase().includes(q));
+    const all = [...this.profiles.entries()].filter(([k]) => k !== me && !Safety.blocked(k)).sort((a, b) => (VIP.rank(VIP.roleOf(b[0])) >= 3) - (VIP.rank(VIP.roleOf(a[0])) >= 3) || b[1].at - a[1].at).filter(([, v]) => !q || [v.p.name, v.x.city, v.x.interests, v.p.genre, v.p.bio].join(" ").toLowerCase().includes(q));
     $("#socFindList").innerHTML = all.length ? all.slice(0, 80).map(([k, v]) => this.personRow(k, [v.x.city, v.p.genre].filter(Boolean).join(" · "))).join("") : `<p class="evempty">${q ? "Nobody matches that." : "No one has a page yet."}</p>`;
   },
   /* ---------- notifications: likes, replies, wall posts and new followers ---------- */
   async loadNotes(){
-    if (!window.TUNet) return;
+    if (!window.TUNet || !Age.adult()) return;
     const me = Events.myKey();
     try{ const evs = await Events.pool().querySync(NET.relays, {kinds: [1, 7, 3], "#p": [me], since: Math.floor(Date.now()/1000) - 30*86400, limit: 200}, {maxWait: 4500});
       const out = [], seenF = new Set();
@@ -11037,6 +11149,8 @@ Object.assign(Social, {
   async socialAct(b){
     const a = b.dataset.pa, P = this.page;
     if (a === "follow"){ this.follow(P.pk); this.renderPage(); }
+    else if (a === "block"){ Safety.block(P.pk, !Safety.blocked(P.pk)); toast(Safety.blocked(P.pk) ? "Blocked. You won't see or hear them." : "Unblocked."); this.renderPage(); }
+    else if (a === "report"){ Safety.report(P.pk, null, this.who(P.pk).name); }
     else if (a === "edit"){ this.renderEdit(); }
     else if (a === "canceledit"){ $("#pgEdit").hidden = true; }
     else if (a === "look"){ $("#socialDlg").close(); Profile.open(); }
@@ -11058,18 +11172,21 @@ Social.render = function(){
   let list = this.posts;
   if (this.tab === "following") list = list.filter(p => this.follows.has(p.pubkey));
   if (this.tab === "mine") list = list.filter(p => p.pubkey === me);
+  list = list.filter(p => !Safety.blocked(p.pubkey));
   box.innerHTML = list.length ? list.map(ev => this.postHTML(ev, me)).join("") : `<p class="evempty">${this.tab === "following" ? "Follow people from their posts or pages to see them here." : "No posts yet. Say something!"}</p>`;
 };
-Social.open = function(){ $("#socialDlg").showModal(); this.show("feed"); this.refresh(true).then(() => this.loadProfiles([...new Set(this.posts.map(p => p.pubkey))].filter(k => !this.profiles.has(k))).then(() => this.render())); this.loadNotes(); };
+Social.open = function(){ if (!Age.ok("Turn Up Social")) return; $("#socialDlg").showModal(); this.show("feed"); this.refresh(true).then(() => this.loadProfiles([...new Set(this.posts.map(p => p.pubkey))].filter(k => !this.profiles.has(k))).then(() => this.render())); this.loadNotes(); };
 Social.bindSocial = function(){
   $("#socNav").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; if (b.dataset.v === "me") this.openPage(Events.myKey()); else this.show(b.dataset.v); });
   $("#socialDlg").addEventListener("click", e => {
+    const bl = e.target.closest("img.pic.blur"); if (bl){ bl.classList.remove("blur"); return; }
     const u = e.target.closest("[data-user]"); if (u){ e.preventDefault(); this.openPage(u.dataset.user); return; }
     const pa = e.target.closest("[data-pa]"); if (pa){ this.socialAct(pa); return; }
     if (e.target.closest("#feed")) return;      // the feed has its own handler
     const b = e.target.closest("button[data-act]"), card = e.target.closest(".post"); if (!b || !card) return;
     const ev = this.find(card.dataset.id); if (!ev) return;
     const act = b.dataset.act;
+    if (act === "report"){ Safety.report(ev.pubkey, ev.id, this.who(ev.pubkey, ev).name); return; }
     if (act === "like"){ this.like(ev).then(() => this.renderPage()); this.renderPage(); }
     else if (act === "reply"){ this.openReplies = this.openReplies === ev.id ? null : ev.id; this.renderPage(); }
     else if (act === "follow"){ this.follow(ev.pubkey); this.renderPage(); }
@@ -11096,6 +11213,122 @@ Social.bindSocial = function(){
 // publish the page whenever the avatar or profile is saved
 { const s0 = Profile.save.bind(Profile); Profile.save = function(p){ s0(p); store.set("profileAt", Math.floor(Date.now()/1000)); Social.publishProfileSoon(); }; }
 Social.bindSocial();
+
+/* ================= Age check, safety and advisory =================
+   Turn Up Music is for adults: it has live voice chat, public posts and parties with strangers.
+   The first time the app opens it asks for a date of birth (without hinting at the cut-off). Under 18 gets a
+   music-only mode: radio, podcasts, your own music and exploring the worlds alone. No parties, voice, chat,
+   social, events or purchases. The answer is locked on the device. Only "18+ yes/no" is kept, never the birthday. */
+const Age = {
+  state(){ return store.get("age", null); },
+  teenCookie(){ return /(?:^|; )tu_teen=1/.test(document.cookie); },
+  adult(){ const s = this.state(); return !!(s && s.adult === true) && !this.teenCookie(); },
+  minor(){ const s = this.state(); return !!(s && s.adult === false) || this.teenCookie(); },
+  needCheck(){ return !this.state() && !this.teenCookie(); },
+  open(){
+    const d = $("#ageDlg"); if (d.open) return;
+    const yr = new Date().getFullYear();
+    $("#ageM").innerHTML = `<option value="">Month</option>` + Array.from({length: 12}, (_, i) => `<option value="${i}">${new Date(2000, i, 1).toLocaleDateString([], {month: "long"})}</option>`).join("");
+    $("#ageD").innerHTML = `<option value="">Day</option>` + Array.from({length: 31}, (_, i) => `<option>${i + 1}</option>`).join("");
+    $("#ageY").innerHTML = `<option value="">Year</option>` + Array.from({length: 100}, (_, i) => `<option>${yr - i}</option>`).join("");
+    $("#ageMsg").textContent = ""; d.showModal();
+  },
+  submit(){
+    const m = $("#ageM").value, dd = +$("#ageD").value, y = +$("#ageY").value;
+    if (m === "" || !dd || !y){ $("#ageMsg").textContent = "Please choose your month, day and year of birth."; return; }
+    const b = new Date(y, +m, dd); if (b.getMonth() !== +m){ $("#ageMsg").textContent = "That date doesn't exist. Please check it."; return; }
+    const now = new Date(); let age = now.getFullYear() - y; if (now.getMonth() < +m || (now.getMonth() === +m && now.getDate() < dd)) age--;
+    if (age >= 18 && !$("#ageAgree").checked){ $("#ageMsg").textContent = "Please agree to the Community Guidelines to continue."; return; }
+    const adult = age >= 18;
+    store.set("age", {adult, at: Date.now()});
+    if (!adult){ document.cookie = "tu_teen=1; max-age=" + 5*365*86400 + "; path=/; SameSite=Lax"; try{ Party.leave(true); }catch(e){} }
+    $("#ageDlg").close(); this.apply();
+    if (!adult) $("#teenDlg").showModal();
+  },
+  apply(){ document.documentElement.classList.toggle("teen", !this.adult()); try{ Events.banner(); }catch(e){} },
+  // call before anything social: true if allowed
+  ok(what){
+    if (this.adult()) return true;
+    if (this.needCheck()){ this.open(); return false; }
+    toast(`Sorry, that part of Turn Up Music (${(what || "this").toLowerCase()}) is for adults 18 and older. You can still listen to the radio and explore the worlds.`, 5000);
+    return false;
+  },
+  bindUI(){
+    $("#ageGo").addEventListener("click", () => this.submit());
+    $("#ageDlg").addEventListener("cancel", e => e.preventDefault());     // can't skip it with Esc
+    $("#teenOk").addEventListener("click", () => $("#teenDlg").close());
+    for (const id of ["#ageGuide", "#teenGuide"]) $(id).addEventListener("click", () => open(Flyer.SITE + "guide.html#safety", "_blank", "noopener"));
+    this.apply();
+    if (this.needCheck()) setTimeout(() => this.open(), 400);
+  }
+};
+
+const Safety = {
+  REASONS: {harassment: "Harassment or bullying", hate: "Hate speech or symbols", sexual: "Sexual or nude content", underage: "This person may be under 18", spam: "Spam, scam or fake account", violence: "Threats or violence", selfharm: "Self-harm or someone in danger", other: "Something else"},
+  opts(){ return Object.assign({friendsVoice: false, blurPhotos: true, wallFriends: false}, store.get("safety", {})); },
+  opt(k){ return !!this.opts()[k]; },
+  setOpt(k, v){ const o = this.opts(); o[k] = !!v; store.set("safety", o); },
+  blocked(pk){ return !!pk && typeof Party !== "undefined" && Party.hidden.has(pk); },
+  block(pk, on = true){ if (!pk) return; if (on) Party.hidden.add(pk); else Party.hidden.delete(pk); store.set("hiddenGuests", [...Party.hidden].slice(-200)); },
+  /* the first time you join a live party: what to expect and how to stay safe */
+  advisory(go){
+    if (store.get("partyAdvisory", false)) return go();
+    this.after = go; $("#advDlg").showModal();
+  },
+  /* reporting a person or a post; moderators see the reports */
+  report(pk, eventId, name){
+    if (!Age.ok("Reporting")) return;
+    this.rep = {pk, eventId}; $("#repWho").textContent = name || "this person";
+    $("#repReasons").innerHTML = Object.entries(this.REASONS).map(([k, l], i) => `<label><input type="radio" name="rep" value="${k}"${i ? "" : " checked"}> ${esc(l)}</label>`).join("");
+    $("#repNote").value = ""; $("#repBlock").checked = true; $("#reportDlg").showModal();
+  },
+  async sendReport(){
+    const r = this.rep; if (!r || !r.pk) return; const reason = (document.querySelector("#repReasons input:checked") || {}).value || "other";
+    try{
+      const tags = [["p", r.pk, reason], ["t", "turnupmusic"]]; if (r.eventId) tags.push(["e", r.eventId, reason]);
+      const ev = TUNet.finalizeEvent({kind: 1984, created_at: Math.floor(Date.now()/1000), content: $("#repNote").value.trim().slice(0, 400), tags}, Events.sk());
+      await Promise.any(Events.pool().publish(NET.relays, ev));
+    }catch(e){}
+    if ($("#repBlock").checked) this.block(r.pk);
+    $("#reportDlg").close(); toast("Thanks. Moderators will review your report." + ($("#repBlock").checked ? " You won't see or hear this person anymore." : ""), 5000);
+    try{ Social.render(); if (Social.view === "page") Social.renderPage(); }catch(e){}
+  },
+  async open(){
+    $("#safetyDlg").showModal(); this.render();
+  },
+  async render(){
+    const o = this.opts();
+    $("#safOpts").innerHTML = [["friendsVoice", "Only hear voice chat from friends and people I follow"], ["blurPhotos", "Blur photos from people I don't follow (tap to show)"], ["wallFriends", "Only show wall posts from friends on my page"]]
+      .map(([k, l]) => `<label class="saf-opt"><input type="checkbox" data-opt="${k}"${o[k] ? " checked" : ""}> ${esc(l)}</label>`).join("");
+    const bl = [...Party.hidden].filter(k => /^[0-9a-f]{64}$/.test(k));
+    if (bl.length) try{ await Social.loadProfiles(bl.filter(k => !Social.profiles.has(k))); }catch(e){}
+    $("#safBlocked").innerHTML = bl.length ? bl.map(k => `<div class="saf-row"><span class="av" style="${avThumbStyle(Social.who(k).avatar, 24)}"></span><b>${esc(Social.who(k).name)}</b><span class="grow"></span><button class="ghost tiny" type="button" data-unblock="${k}">Unblock</button></div>`).join("") : `<p class="hint">You haven't blocked anyone.</p>`;
+    const mod = VIP.can("moderate"); $("#safMod").hidden = !mod;
+    if (mod){ $("#safReports").innerHTML = `<p class="hint">Loading reports…</p>`;
+      try{ const evs = await Events.pool().querySync(NET.relays, {kinds: [1984], "#t": ["turnupmusic"], limit: 200}, {maxWait: 5000});
+        const pks = [...new Set(evs.map(e => (e.tags.find(t => t[0] === "p") || [])[1]).filter(Boolean))]; await Social.loadProfiles(pks.filter(k => !Social.profiles.has(k)));
+        $("#safReports").innerHTML = evs.length ? evs.sort((a, b) => b.created_at - a.created_at).slice(0, 80).map(e => { const p = e.tags.find(t => t[0] === "p") || [], ev = e.tags.find(t => t[0] === "e");
+          return `<div class="saf-row rep"><span><b>${esc(Social.who(p[1]).name)}</b> · ${esc(this.REASONS[p[2]] || p[2] || "")}${e.content ? `<br><span class="hint">“${esc(e.content.slice(0, 140))}”</span>` : ""}<br><span class="hint">${Social.ago(e.created_at)} · reported by ${esc(Social.who(e.pubkey).name)}</span></span><span class="grow"></span><button class="ghost tiny" type="button" data-user="${p[1]}">Page</button>${ev ? `<button class="ghost tiny" type="button" data-hidepost="${ev[1]}">Hide post</button>` : ""}</div>`; }).join("") : `<p class="hint">No reports. 🎉</p>`;
+      }catch(e){ $("#safReports").innerHTML = `<p class="hint">Couldn't load reports right now.</p>`; } }
+  },
+  bindUI(){
+    $("#safClose").addEventListener("click", () => $("#safetyDlg").close());
+    $("#safetyDlg").addEventListener("change", e => { const c = e.target.closest("[data-opt]"); if (c) this.setOpt(c.dataset.opt, c.checked); });
+    $("#safetyDlg").addEventListener("click", async e => {
+      const u = e.target.closest("[data-unblock]"); if (u){ this.block(u.dataset.unblock, false); this.render(); return; }
+      const h = e.target.closest("[data-hidepost]"); if (h){ try{ await VIP.hidePost(h.dataset.hidepost); toast("Post hidden for everyone."); h.disabled = true; }catch(err){ toast("Couldn't hide right now."); } return; }
+      const p = e.target.closest("[data-user]"); if (p){ $("#safetyDlg").close(); Social.openPage(p.dataset.user); }
+      if (e.target.closest("#safGuide")) open(Flyer.SITE + "guide.html#safety", "_blank", "noopener");
+    });
+    $("#repSend").addEventListener("click", () => this.sendReport());
+    $("#repCancel").addEventListener("click", () => $("#reportDlg").close());
+    $("#advGo").addEventListener("click", () => { store.set("partyAdvisory", true); $("#advDlg").close(); const g = this.after; this.after = null; if (g) g(); });
+    $("#advCancel").addEventListener("click", () => { this.after = null; $("#advDlg").close(); });
+    for (const id of ["#btnSafety", "#btnSafety2"]) { const b = $(id); if (b) b.addEventListener("click", () => this.open()); }
+    for (const id of ["#btnGuide", "#btnGuide2"]) { const b = $(id); if (b) b.addEventListener("click", () => open(Flyer.SITE + "guide.html", "_blank", "noopener")); }
+  }
+};
+Age.bindUI(); Safety.bindUI();
 
 /* ================= Outfits: re-dress any avatar =================
    The clothes are re-printed on the avatar's own texture: skin is found by matching the colour of the

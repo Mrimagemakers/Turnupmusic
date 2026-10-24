@@ -186,3 +186,25 @@ Open it with the speech-bubble button (it used to be "The Wall").
 - **Shareable links:** `…/Turnupmusic/#user=<their key>` opens a page. Use **Share page** to get yours.
 - **Same you on every device:** before, a tablet and a Quest were two different guests with two different looks. On **My page**, tap **Use on another device → Make a code for my other device**. On the other device, go to **My page → Use on another device**, type the 8-character code and tap **I have a code** (the code works for 10 minutes). Both devices are then the same account, with the same name, avatar, outfit, friends and VIP pass. A change on one device shows up on the other.
 - **Characters match everywhere:** the Android app used to carry only 16 of the 50 characters, so on a tablet running the app other players often showed up as someone else. Now every device downloads the exact character each player chose, and the app's built-in ones are used only when there's no internet.
+
+## User guide
+`guide.html` (…/Turnupmusic/guide.html) is the full how-to guide: a 10-step quick start, then a step-by-step outline of everything in the app (getting started, radio and podcasts, your look, VR Lounge controls for phone, computer and Quest, the 19 worlds, parties, events and flyers, Turn Up Social, the DJ booth, memberships, safety, troubleshooting, and owner and moderator tools). Open it from the **?** button at the top of the app or **❓ Guide** in the lounge.
+
+## Age protection, safety and advisory
+- **Age check:** the first time the app opens it asks for a date of birth, without saying what the cut-off is. Only "18+ yes/no" is stored, never the birthday. Adults also agree to the Community Guidelines.
+- **Under 18 gets music mode:** radio, podcasts, their own music and exploring the worlds alone. Parties, voice chat, text chat, Turn Up Social, live events, flyers and memberships are switched off and hidden. The answer is locked on the device (clearing the saved answer doesn't unlock it).
+- **Adults only meet adults:** party guests only see and hear other guests who passed the check.
+- **First-party advisory:** before your first party you see what to expect and how to mute, block, report and leave.
+- **Report** (🚩) on posts, guest cards and pages, with reasons including "This person may be under 18". Reports go to moderators, who see them in the **🛡 Safety center** and can hide posts or remove people.
+- **🛡 Safety center:** only hear voice from friends, blur photos from people you don't follow (on by default), show only friends' wall posts, and manage your blocked list.
+- Note: a date-of-birth check relies on what people enter. For stronger checks (for example on paid plans), the owner can add an ID-verification service such as Stripe Identity, Persona or Yoti later. This isn't legal advice; check the rules where you operate (for example COPPA in the US).
+
+## Membership plans (paid tiers)
+| Plan | Default price | Unlocks |
+|---|---|---|
+| Free | Free | Radio, podcasts, all worlds, parties, voice, Turn Up Social, basic outfits |
+| ⭐ Plus | $4.99/month | Every outfit style and your own fabric, VIP sections, premium page covers, PLUS badge |
+| ★ VIP | $9.99/month | DJ booth, host events, flyers and invitations, watch together, VIP badge |
+| 💎 Pro | $24.99/month | Featured badge on events, moderate your own event parties, top of Find people, PRO badge |
+
+Each plan includes everything in the plans before it. The owner sets each plan's price and payment link under ★ VIP → Owner tools (Stripe payment links add the buyer's member ID automatically). After a payment, the owner gives the plan with **Give membership** (Plus, VIP, Pro or VIP + Moderator). Turning plans on automatically when a payment clears would need a small server connected to Stripe.
