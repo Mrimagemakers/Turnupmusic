@@ -232,3 +232,11 @@ Tap **🍾 Mogul** on the party bar, or go to **Party → 🍾 Nightclub Mogul**
   - 🔗 Sync
   - 🤚 Scratch
 - **🏆 Daily leaderboard** per job: top earners today, reset every day (shared over TUNet).
+
+## Zoom, watching screens, and moving around
+- **Zoom**: mouse wheel, trackpad pinch, two-finger pinch, the ＋/－ buttons on the right, or the +/− keys (0 resets). Looking around slows down while zoomed in.
+- **Watch up close** (📺, the 🔍 under a screen, or F): glides you in front of a screen so it fills your view, with the menus hidden. ✕ or Esc goes back. Tapping a web or YouTube screen goes up close so you can use the page.
+- **In VR**: point at a screen and click a thumbstick to get a big personal copy floating in front of you.
+- **Videos no longer cover people's heads.** Web and YouTube screens now sit behind the 3D scene, and the screen is a see-through window, so anyone standing in front of it shows in front.
+- **How to move around**: a help sheet for each device (phone or tablet, computer, VR headset). It opens the first time on each device and any time with 🧭 or H. In VR there's a floating controls card (Menu → Party → 🧭 Controls).
+- **🥊 Brawl mode** button: start a bar fight right where you stand, in any world.

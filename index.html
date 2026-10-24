@@ -472,7 +472,8 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 .mogul.hurt::before{content:"";position:fixed;inset:0;background:radial-gradient(circle,rgba(255,0,0,0) 30%,rgba(255,0,0,.55));animation:mhurt .5s forwards;pointer-events:none;z-index:-1}
 @keyframes mhurt{to{opacity:0}}
 .chipbtn.mogulbtn{background:linear-gradient(135deg,#ffc21a,#ff8a1a);color:#2a1405;font-weight:800;border:0}
-.teen #btnMogul{display:none!important}
+.teen #btnMogul,.teen #btnBrawl{display:none!important}
+.chipbtn.brawlbtn{background:linear-gradient(135deg,#ff4a3a,#b0102a);color:#fff;font-weight:800;border:0}
 @media (min-width:1100px){.mogul{width:640px}}
 .agedlg{width:min(560px,calc(100% - 24px))}
 .agerow{display:grid;grid-template-columns:1.4fr .8fr 1fr;gap:8px;margin:10px 0}
@@ -539,7 +540,26 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
 .stylemaker{display:grid;gap:8px;padding:12px;border-radius:14px;background:rgba(255,194,26,.06);border:1px solid rgba(255,194,26,.25)}
 .stylemaker h3{margin:0}
 .vipchip{font-size:10px;padding:2px 6px;border-radius:6px;background:var(--gold);color:#2a1405;letter-spacing:.06em}
-.css3d{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.css3d{position:absolute;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
+.stage.watching .css3d .css3d-screen{pointer-events:auto}
+.zoomctl{position:absolute;right:max(10px,env(safe-area-inset-right,0px));top:calc(78px + env(safe-area-inset-top,0px));display:grid;gap:6px;justify-items:center;padding:6px;border-radius:999px;background:rgba(16,10,8,.72);border:1px solid rgba(255,194,26,.35);backdrop-filter:blur(6px);z-index:6}
+.zoomctl button{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:700 20px var(--f-body);cursor:pointer;display:grid;place-items:center}
+.zoomctl button:hover,.zoomctl button:focus-visible{border-color:#ffc21a;outline:none}
+.zoomctl span{font:800 13px var(--f-body);color:#ffc21a;cursor:pointer;min-width:34px;text-align:center}
+.stage.watching .zoomctl button[data-z="watch"]{background:#ffc21a;color:#241404}
+.watchbar{position:absolute;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:8px 10px 8px 16px;border-radius:999px;background:rgba(16,10,8,.85);border:1px solid rgba(255,194,26,.45);color:#fff;font:700 15px var(--f-body);z-index:7;max-width:calc(100vw - 24px)}
+.watchbar .hint{font-weight:500;font-size:13px;opacity:.7}
+@media (max-width:640px){.watchbar .hint{display:none}}
+.stage.watching .xp-bottom,.stage.watching .xp-top,.stage.watching .mogul{display:none!important}
+.navdlg{width:min(640px,calc(100% - 24px))}
+.navtabs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.navtabs button{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:inherit;font:600 14px var(--f-body);cursor:pointer}
+.navtabs button.on{background:#ffc21a;color:#241404;border-color:#ffc21a}
+.navtable{width:100%;border-collapse:collapse;font-size:15px}
+.navtable th{text-align:left;vertical-align:top;padding:8px 12px 8px 0;white-space:nowrap;color:#ffc21a;font-weight:700}
+.navtable td{padding:8px 0;border-bottom:1px solid var(--line);line-height:1.4}
+.navtable tr:last-child td{border-bottom:0}
+@media (max-width:520px){.navtable th{white-space:normal;width:38%}}
 .css3d-screen{pointer-events:auto;background:#000}
 .css3d-screen iframe,.css3d-screen video{width:100%;height:100%;border:0;display:block;background:#000}
 .seg-like{padding:8px 12px;border-radius:10px;border:1px solid var(--line);font-weight:600;font-size:13px;color:var(--muted)}
@@ -782,7 +802,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
     <button type="button" class="xp-hide" id="xpHide" aria-label="Hide controls">▼ Hide controls</button>
     <div class="seg" id="xpModes"></div>
     <div class="seg" id="worldSeg" hidden></div>
-    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn mogulbtn" id="btnMogul" type="button">🍾 Nightclub Mogul</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
+    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn mogulbtn" id="btnMogul" type="button">🍾 Nightclub Mogul</button><button class="chipbtn brawlbtn" id="btnBrawl" type="button" title="Start a bar fight right here, in any world">🥊 Brawl mode</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
     <div class="emotes" id="emoteBar" hidden><button type="button" data-e="wave">👋 Wave</button><button type="button" data-e="dance">💃 Dance</button><button type="button" data-e="cheer">🙌 Cheer</button><button type="button" data-e="idle">🧍 Chill</button><button type="button" data-r="🔥">🔥</button><button type="button" data-r="❤️">❤️</button><button type="button" data-r="😂">😂</button><button type="button" data-r="🎉">🎉</button><button type="button" id="btnChat">💬 Chat</button><button type="button" id="btnMic">🎤 Mic off</button><button type="button" id="btnDJ">🎧 Be the DJ</button></div>
     <div class="btnrow">
       <button class="chipbtn" id="btnSnap" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Camera</button>
@@ -3271,7 +3291,10 @@ const Lounge = {
     const sg = this.screenGroup = new T.Group(); stage.add(sg);
     const bezel = new T.Mesh(roundedBox(3.74, 2.16, .05, .02), M.black); bezel.position.set(0, 2.1, -2.66); sg.add(bezel);
     const screen = new T.Mesh(new T.PlaneGeometry(3.6, 2.025), new T.MeshBasicMaterial({map:this.screenTex, toneMapped:false}));
-    screen.position.set(0, 2.1, -2.63); sg.add(screen);
+    screen.position.set(0, 2.1, -2.63); sg.add(screen); this.mainScreen = screen;
+    { const [wc, wx] = Tex.canvas(128, 128); wx.fillStyle = "rgba(20,13,10,.88)"; wx.beginPath(); wx.arc(64, 64, 58, 0, Math.PI*2); wx.fill(); wx.strokeStyle = "#ffc21a"; wx.lineWidth = 6; wx.stroke(); wx.fillStyle = "#ffc21a"; wx.font = '700 64px "Hanken Grotesk", sans-serif'; wx.textAlign = "center"; wx.textBaseline = "middle"; wx.fillText("🔍", 64, 70);
+      const wb = this.watchBtn = new T.Mesh(new T.CircleGeometry(.1, 32), new T.MeshBasicMaterial({map: Tex.make(wc), transparent: true, toneMapped: false})); wb.position.set(1.66, .95, -2.6); sg.add(wb);
+      this.addClickable(wb, () => View.watch(this.videoPlane && this.videoPlane.visible ? this.videoPlane : this.mainScreen)); }
     this.screenFrame = new T.Mesh(new T.PlaneGeometry(4.6, 3), new T.MeshBasicMaterial({map:this.glowT, color:0xffc21a, transparent:true, opacity:.25, depthWrite:false, blending:T.AdditiveBlending}));
     this.screenFrame.position.set(0, 2.1, -2.7); sg.add(this.screenFrame);
     this.addClickable(screen, () => togglePlay());
@@ -3319,7 +3342,7 @@ const Lounge = {
 
     this.setWorld(store.get("world", "rooftop"));
     this.setupPost();
-    this.bindPointer(canvas);
+    this.bindPointer(canvas); try{ View.init(); }catch(e){ console.warn(e); }
     addEventListener("resize", () => this.resize());
   },
 
@@ -7405,17 +7428,18 @@ const Lounge = {
       const c = this.composer = new T.EffectComposer(this.renderer);
       c.addPass(new T.RenderPass(this.scene, this.camera));
       this.bloom = new T.UnrealBloomPass(new T.Vector2(512, 512), .42, .45, .92); c.addPass(this.bloom);
+      try{ const bm = this.bloom.materialCopy || this.bloom.blendMaterial; bm.blending = T.CustomBlending; bm.blendEquation = T.AddEquation; bm.blendSrc = T.SrcAlphaFactor; bm.blendDst = T.OneFactor; bm.blendSrcAlpha = T.ZeroFactor; bm.blendDstAlpha = T.OneFactor; bm.needsUpdate = true; }catch(e){}
       this.finalPass = new T.ShaderPass({
-        uniforms:{tDiffuse:{value:null}, exposure:{value:1}},
+        uniforms:{tDiffuse:{value:null}, exposure:{value:1}, holes:{value:0}},
         vertexShader:"varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
-        fragmentShader:`uniform sampler2D tDiffuse; uniform float exposure; varying vec2 vUv;
+        fragmentShader:`uniform sampler2D tDiffuse; uniform float exposure; uniform float holes; varying vec2 vUv;
           vec3 tuRRT(vec3 v){ vec3 a = v*(v + 0.0245786) - 0.000090537; vec3 b = v*(0.983729*v + 0.4329510) + 0.238081; return a/b; }
           vec3 tuAces(vec3 color){
             const mat3 inM = mat3(vec3(0.59719,0.07600,0.02840), vec3(0.35458,0.90834,0.13383), vec3(0.04823,0.01566,0.83777));
             const mat3 outM = mat3(vec3(1.60475,-0.10208,-0.00327), vec3(-0.53108,1.10813,-0.07276), vec3(-0.07367,-0.00605,1.07602));
             color *= exposure/0.6; color = inM*color; color = tuRRT(color); color = outM*color; return clamp(color, 0.0, 1.0); }
           vec3 tuSRGB(vec3 c){ return mix(pow(c, vec3(0.41666))*1.055 - vec3(0.055), c*12.92, vec3(lessThanEqual(c, vec3(0.0031308)))); }
-          void main(){ vec4 t = texture2D(tDiffuse, vUv); gl_FragColor = vec4(tuSRGB(tuAces(t.rgb)), 1.0); }`
+          void main(){ vec4 t = texture2D(tDiffuse, vUv); float a = holes > .5 ? step(.02, t.a) : 1.0; gl_FragColor = vec4(tuSRGB(tuAces(t.rgb))*a, a); }`
       });
       c.addPass(this.finalPass);
     }catch(e){ this.composer = null; }
@@ -7545,16 +7569,24 @@ const Lounge = {
   },
 
   bindPointer(canvas){
-    canvas.addEventListener("pointerdown", e => { this.drag = {x:e.clientX, y:e.clientY, yaw:this.yaw, pitch:this.pitch, moved:false}; canvas.setPointerCapture(e.pointerId); });
+    const ptrs = this.ptrs = new Map(), gap = () => { const [a, b] = [...ptrs.values()]; return Math.hypot(a.x - b.x, a.y - b.y) || 1; };
+    canvas.addEventListener("pointerdown", e => { ptrs.set(e.pointerId, {x: e.clientX, y: e.clientY}); try{ canvas.setPointerCapture(e.pointerId); }catch(err){}
+      if (ptrs.size >= 2){ this.drag = null; this.pinch = {d0: gap(), z0: View.zt}; return; }
+      this.drag = {x:e.clientX, y:e.clientY, yaw:this.yaw, pitch:this.pitch, moved:false}; });
     canvas.addEventListener("pointermove", e => {
+      if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, {x: e.clientX, y: e.clientY});
+      if (this.pinch && ptrs.size >= 2){ View.set(this.pinch.z0*gap()/this.pinch.d0); return; }
       if (!this.drag) return;
-      const dx = e.clientX - this.drag.x, dy = e.clientY - this.drag.y;
+      const dx = e.clientX - this.drag.x, dy = e.clientY - this.drag.y, k = .005/(View.zoom || 1);
       if (Math.abs(dx) + Math.abs(dy) > 6){ this.drag.moved = true; this.userLooked = true; }
-      this.yaw = this.drag.yaw + dx*.005; this.pitch = Math.max(-1.2, Math.min(1.2, this.drag.pitch + dy*.005));
+      this.yaw = this.drag.yaw + dx*k; this.pitch = Math.max(-1.2, Math.min(1.2, this.drag.pitch + dy*k));
     });
+    const lift = e => { ptrs.delete(e.pointerId); if (this.pinch){ if (ptrs.size < 2){ this.pinch = null; this.pinchEnd = performance.now(); } this.drag = null; return true; } return false; };
+    canvas.addEventListener("pointercancel", e => { lift(e); this.drag = null; });
     canvas.addEventListener("pointerup", e => {
+      if (lift(e)) return;
       const d = this.drag; this.drag = null;
-      if (!d || d.moved) return;
+      if (!d || d.moved || performance.now() - (this.pinchEnd || 0) < 350) return;
       const r = canvas.getBoundingClientRect();
       const ndc = new THREE.Vector2(((e.clientX - r.left)/r.width)*2 - 1, -((e.clientY - r.top)/r.height)*2 + 1);
       this.ray.setFromCamera(ndc, this.camera);
@@ -7637,7 +7669,7 @@ const Lounge = {
         Screens.list.forEach(sc => { if (sc.cssObj) Screens.placard(sc, sc.kind === "youtube" ? "▶ YouTube sound is playing. The picture shows when you leave VR." : "Web pages can't show inside VR"); });
         if (!$("#ytTheater").hidden && Theater.info){ const sc = Theater.s || Screens.main(), info = Theater.info, t = Theater.h ? Theater.h.time() : 0; Theater.closePlayer(); $("#ytTheater").hidden = true; Theater.s = null;
           Screens.showYouTube(sc, info, {at: Date.now() - Math.max(0, t - (info.start || 0))*1000, share: false}); }
-        setTimeout(() => { if (this.session === session){ VRMenu.toggle(true); VRMenu.say("Point and pull the trigger to choose. B or Y (or ☰ on your left wrist) opens and closes this menu."); } }, 1200);
+        setTimeout(() => { if (this.session !== session) return; if (kind !== "ar" && !store.get("navSeen:vrcard", false)){ store.set("navSeen:vrcard", true); try{ View.vrCard(); return; }catch(e){} } VRMenu.toggle(true); VRMenu.say("Point and pull the trigger to choose. B or Y (or ☰ on your left wrist) opens and closes this menu."); }, 1200);
       }
     }catch(e){
       const why = e && (e.name || e.message) ? ` (${[e.name, e.message].filter(Boolean).join(": ")})` : "";
@@ -8510,7 +8542,7 @@ const Lounge = {
     this.lastBass = bass;
     if (this.btnMeshes){ const xr = this.renderer.xr.isPresenting; for (const id in this.btnMeshes) this.btnMeshes[id].visible = this.mode === "ar"; }
     this.updateMove(dt, xrFrame); this.updateBooths(dt); this.updateGrab(dt); try{ VRMenu.update(dt); }catch(e){ console.warn(e); } this.updateCorks(dt); Party.update(dt); Screens.update();
-    this.updatePeople(dt, bass); this.updateCurtain(dt); try{ Mogul.update(dt); }catch(e){ console.warn(e); }
+    this.updatePeople(dt, bass); this.updateCurtain(dt); try{ Mogul.update(dt); }catch(e){ console.warn(e); } try{ View.update(dt); }catch(e){ console.warn(e); }
     try{ Cam.xrFrame(dt); }catch(e){ console.warn(e); }
     if (this.composer && !this.renderer.xr.isPresenting){ this.finalPass.uniforms.exposure.value = this.renderer.toneMappingExposure; this.composer.render(dt); }
     else this.renderer.render(this.scene, this.camera);
@@ -11340,7 +11372,7 @@ const Safety = {
   }
 };
 Age.bindUI(); Safety.bindUI();
-document.addEventListener("click", e => { if (e.target.closest("#btnMogul")) Mogul.open(); });
+document.addEventListener("click", e => { if (e.target.closest("#btnMogul")) Mogul.open(); if (e.target.closest("#btnBrawl")) Mogul.brawlHere(); });
 
 /* ================= NIGHTCLUB MOGUL =================
    A game inside the Nightclub: work the jobs (bartender, bouncer, DJ, barback, bottle service, promoter,
@@ -11480,6 +11512,13 @@ const Mogul = {
     if ($("#stage").hidden || !Lounge.built){ store.set("world", "club"); openStage("lounge"); const w = setInterval(() => { if (Lounge.built){ clearInterval(w); go(); } }, 300); setTimeout(() => clearInterval(w), 60000); }
     else go();
   },
+  /* 🥊 Brawl mode: a fight starts right where you're standing, in whatever world you're in */
+  brawlHere(){
+    if (!Age.ok("Brawl mode")) return;
+    const go = () => { this.ensure(); this.on = true; const xr = Lounge.renderer && Lounge.renderer.xr.isPresenting; this.box.hidden = xr; if (xr){ this.vrPanel().visible = true; } if (this.game && this.view === "game") this.quitGame(true); this.startGame("brawl", false); };
+    if ($("#stage").hidden || !Lounge.built){ openStage("lounge"); const w = setInterval(() => { if (Lounge.built && Lounge.worlds[Lounge.worldId]){ clearInterval(w); setTimeout(go, 800); } }, 300); setTimeout(() => clearInterval(w), 60000); }
+    else go();
+  },
   close(){ if (this.game && this.view === "game") this.quitGame(true); this.on = false; if (this.box) this.box.hidden = true; if (this.mesh) this.mesh.visible = false; },
   toMenu(){ if (this.game && this.view === "game") this.quitGame(true); this.view = "menu"; this.draw(); },
   /* ---------- the menu: pick a job ---------- */
@@ -11508,6 +11547,8 @@ const Mogul = {
   /* ---------- running a game ---------- */
   startGame(role, train){
     const G = this.GAMES[role]; if (!G) return;
+    // most jobs happen in the club; take you there first and start once it's ready
+    if (!G.anyWorld && Lounge.worldId !== "club"){ Lounge.chooseWorld("club"); this.say("Heading to the club…"); const t = setInterval(() => { if (Lounge.worldId === "club" && Lounge.worlds.club){ clearInterval(t); setTimeout(() => this.startGame(role, train), 700); } }, 300); setTimeout(() => clearInterval(t), 30000); return; }
     const d = this.d(), lv = this.level(role, d);
     this.shift = {role, train, lv, t: 0, earn: 0, tips: 0, strikes: 0, maxStrikes: train ? 99 : 3, scores: [], log: [], over: false};
     this.game = Object.create(G); this.game.m = this; this.view = "game";
@@ -12193,15 +12234,19 @@ Mogul.GAMES.bouncer = {
 
 /* ================= 🥊 Bar Brawl: block, dodge, counter. In VR, real punches ================= */
 Mogul.GAMES.brawl = {
-  panelSide: .9,
-  howTo: ["Troublemakers stagger in from the dance floor. A red ring under one means he's about to swing.", "Hold 🛡 Block when he swings (keyboard: Space), or dodge ◀ ▶ (A / D).", "Right after a swing he flashes blue: that's your opening. Hit 👊 Punch (keyboard: J).", "Grab stuff! Mugs, bottles and bar stools are on the table next to you. Tap 🍺 Throw (keyboard: T), or in VR grab one and really throw it.", "Drink the glowing 🥃 Liquid Courage for double-power punches, but the room starts spinning.", "Later rounds, their buddies jump in. Only one can swing at a time, so keep your eyes moving. You have 5 hearts."],
+  panelSide: .9, anyWorld: true,
+  howTo: ["Tap 🥊 Brawl mode on the party bar to start a fight right where you stand, in any world. In the club it happens on the dance floor.", "Troublemakers stagger in from the dance floor. A red ring under one means he's about to swing.", "Hold 🛡 Block when he swings (keyboard: Space), or dodge ◀ ▶ (A / D).", "Right after a swing he flashes blue: that's your opening. Hit 👊 Punch (keyboard: J).", "Grab stuff! Mugs, bottles and bar stools are on the table next to you. Tap 🍺 Throw (keyboard: T), or in VR grab one and really throw it.", "Drink the glowing 🥃 Liquid Courage for double-power punches, but the room starts spinning.", "Later rounds, their buddies jump in. Only one can swing at a time, so keep your eyes moving. You have 5 hearts."],
   vrTip: "Hands up in front of your face to block, lean to dodge, and throw real punches when one flashes blue. Grab mugs, bottles and stools off the table and throw them for real. Bring the glowing shot to your mouth to drink it.",
   start(s){
     const m = this.m, T = THREE, L = Lounge;
     this.hp = 5; this.kos = 0; this.total = s.train ? 2 : 3 + Math.floor(s.lv/2); this.foes = []; this.spawned = 0;
     this.blocks = 0; this.hits = 0; this.dodges = 0; this.throwHits = 0; this.drinks = 0; this.courage = 0; this.spawnT = 1.5; this.crowdT = 2;
     this.maxAt = s.train ? 1 : Math.min(3, 1 + (s.lv >= 2 ? 1 : 0) + (s.lv >= 5 ? 1 : 0));
-    m.moveMe(0, -3.4, m.vr() ? 0 : -.38);   // on a screen, turn a little so the fight sits left of the panel
+    // in the club the fight happens on the dance floor; anywhere else it starts right where you're standing
+    let ax, az, yaw; if (L.worldId === "club"){ ax = 0; az = -3.4; yaw = 0; m.moveMe(0, -3.4, m.vr() ? 0 : -.38); }
+    else { const h = L.headPos(); ax = h.x; az = h.z; yaw = L.renderer.xr.isPresenting ? L.headYaw() : L.yaw; if (!m.vr()){ L.yaw = yaw - .38; L.pitch = -.12; } }
+    const fy = L.floorAt(ax, az, L.headPos().y + .5); this.anchor = {x: ax, z: az, yaw, y: fy != null ? fy : (L.rig.position.y || 0)};
+    if (L.worldId !== "club") m.say("🥊 Brawl mode! Trouble's coming from straight ahead.");
     this.buildProps();
     if (s.train) this.steps = [
       {say: "Hold 🛡 Block (or Space) to raise your guard.", vr: "Raise both hands in front of your face to guard.", done: g => g.guardT > .8},
@@ -12213,17 +12258,20 @@ Mogul.GAMES.brawl = {
       {say: "Finish him: knock him out!", done: g => g.kos >= 1}
     ];
   },
+  // a spot relative to where the fight started: rx to your right, fz in front of you
+  at(rx, fz){ const A = this.anchor, y = A.yaw; return {x: A.x + Math.cos(y)*rx - Math.sin(y)*fz, z: A.z - Math.sin(y)*rx - Math.cos(y)*fz}; },
+  wgroup(){ const L = Lounge, w = L.worlds[L.worldId]; return w ? w.group : L.scene; },
   /* ---------- the stuff on the table: mugs, bottles, stools, and the glowing shot ---------- */
   buildProps(){
-    const T = THREE, L = Lounge, g = L.worlds.club && L.worlds.club.group; if (!g) return; const prevW = L.buildingWorld; L.buildingWorld = "club"; try{ this.buildProps2(T, L, g); } finally { L.buildingWorld = prevW; } },
+    const T = THREE, L = Lounge, g = this.wgroup(); if (!g) return; const prevW = L.buildingWorld; L.buildingWorld = L.worldId; try{ this.buildProps2(T, L, g); } finally { L.buildingWorld = prevW; } },
   buildProps2(T, L, g){
-    this.root = new T.Group(); g.add(this.root); this.props = [this.root]; this.throwables = [];
-    const table = new T.Group(); table.position.set(1.05, 0, -3.25); this.root.add(table);
+    this.root = new T.Group(); g.add(this.root); g.updateMatrixWorld(true); const A = this.anchor; this.root.position.copy(g.worldToLocal(new T.Vector3(A.x, A.y, A.z))); this.root.rotation.y = A.yaw; this.root.updateMatrixWorld(true); this.props = [this.root]; this.throwables = [];
+    const table = new T.Group(); table.position.set(1.05, 0, .15); this.root.add(table);
     const top = new T.Mesh(new T.CylinderGeometry(.34, .34, .035, 24), new T.MeshStandardMaterial({color: 0x3a2414, roughness: .55})); top.position.y = 1.02; table.add(top);
     const leg = new T.Mesh(new T.CylinderGeometry(.04, .04, 1.0, 10), new T.MeshStandardMaterial({color: 0x1a1a1a, metalness: .7, roughness: .3})); leg.position.y = .51; table.add(leg);
     const foot = new T.Mesh(new T.CylinderGeometry(.22, .25, .03, 20), leg.material); foot.position.y = .015; table.add(foot);
     try{ L.surface(top); }catch(e){}
-    const add = (o, kind, x, y, z) => { o.position.set(x, y, z); o.userData.brawl = {kind, home: new T.Vector3(x, y, z), homeQ: o.quaternion.clone(), gone: 0}; this.root.add(o); L.grabbable(o, {world: "club", bounce: kind === "stool" ? .15 : .35}); this.throwables.push(o); return o; };
+    const add = (o, kind, x, y, z) => { o.position.set(x, y, z); o.userData.brawl = {kind, home: new T.Vector3(x, y, z), homeQ: o.quaternion.clone(), gone: 0}; this.root.add(o); L.grabbable(o, {world: L.worldId, bounce: kind === "stool" ? .15 : .35}); this.throwables.push(o); return o; };
     const glassM = new T.MeshPhysicalMaterial({color: 0xe8f0e0, roughness: .08, transparent: true, opacity: .45, clearcoat: 1});
     const beerM = new T.MeshStandardMaterial({color: 0xe0a020, roughness: .3, transparent: true, opacity: .9}), foamM = new T.MeshStandardMaterial({color: 0xfff8e6, roughness: .9});
     const mug = () => { const o = new T.Group(); const b = new T.Mesh(new T.CylinderGeometry(.045, .042, .14, 14, 1, true), glassM); b.position.y = .07; o.add(b);
@@ -12235,21 +12283,22 @@ Mogul.GAMES.brawl = {
       const seat = new T.Mesh(new T.CylinderGeometry(.19, .19, .05, 18), wood); seat.position.y = .74; o.add(seat);
       for (let i = 0; i < 3; i++){ const a = i/3*Math.PI*2, l = new T.Mesh(new T.CylinderGeometry(.018, .018, .76, 6), metal); l.position.set(Math.cos(a)*.13, .37, Math.sin(a)*.13); l.rotation.set(Math.sin(a)*.12, 0, -Math.cos(a)*.12); o.add(l); }
       const ring = new T.Mesh(new T.TorusGeometry(.13, .01, 6, 18), metal); ring.rotation.x = Math.PI/2; ring.position.y = .3; o.add(ring); return o; };
-    add(mug(), "mug", .9, 1.04, -3.15); add(mug(), "mug", 1.13, 1.04, -3.1); add(mug(), "mug", 1.0, 1.04, -3.42);
-    add(bottle(), "bottle", 1.2, 1.04, -3.33); add(bottle(), "bottle", .82, 1.04, -3.37);
-    add(stool(), "stool", -.95, 0, -3.0); add(stool(), "stool", 1.7, 0, -2.7);
+    add(mug(), "mug", .9, 1.04, .25); add(mug(), "mug", 1.13, 1.04, .3); add(mug(), "mug", 1.0, 1.04, -.02);
+    add(bottle(), "bottle", 1.2, 1.04, .07); add(bottle(), "bottle", .82, 1.04, .03);
+    add(stool(), "stool", -.95, 0, .4); add(stool(), "stool", 1.7, 0, .7);
     // liquid courage: a shot glass that glows
     const shot = new T.Group(); const sg = new T.Mesh(new T.CylinderGeometry(.024, .02, .055, 12, 1, true), glassM); sg.position.y = .028; shot.add(sg);
     const liq = new T.Mesh(new T.CylinderGeometry(.021, .018, .04, 12), new T.MeshBasicMaterial({color: 0xffb020, toneMapped: false})); liq.position.y = .022; shot.add(liq);
     const glow = new T.Sprite(new T.SpriteMaterial({map: L.glowT, color: 0xffa020, transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: .8})); glow.scale.setScalar(.22); glow.position.y = .03; shot.add(glow);
-    shot.position.set(1.05, 1.04, -3.25); shot.userData.brawl = {kind: "shot", home: shot.position.clone(), homeQ: shot.quaternion.clone(), gone: 0}; this.root.add(shot); L.grabbable(shot, {world: "club"}); this.shot = shot; this.shotGlow = glow;
+    shot.position.set(1.05, 1.04, .15); shot.userData.brawl = {kind: "shot", home: shot.position.clone(), homeQ: shot.quaternion.clone(), gone: 0}; this.root.add(shot); L.grabbable(shot, {world: L.worldId}); this.shot = shot; this.shotGlow = glow;
   },
-  resetProp(o){ const b = o.userData.brawl, gd = o.userData.grab; if (gd.held) return; o.visible = true; o.position.copy(b.home); o.quaternion.copy(b.homeQ); gd.vel.set(0, 0, 0); gd.spin.set(0, 0, 0); gd.resting = true; b.gone = 0; b.flying = false; },
+  resetProp(o){ const b = o.userData.brawl, gd = o.userData.grab; if (gd.held) return; if (o.parent !== this.root) this.root.add(o); o.visible = true; o.position.copy(b.home); o.quaternion.copy(b.homeQ); gd.vel.set(0, 0, 0); gd.spin.set(0, 0, 0); gd.resting = true; b.gone = 0; b.flying = false; },
   /* ---------- the troublemakers ---------- */
   spawnFoe(){ const m = this.m, T = THREE, joining = this.foes.length > 0;
-    const sl = m.spawn((Math.random() - .5)*3, -7.2, 0, "idle", {gender: Math.random() < .7 ? "m" : "f"}); if (!sl) return; this.spawned++;
+    const L = Lounge, wp0 = this.at((Math.random() - .5)*3, 3.8), g = this.wgroup(), lp = g.worldToLocal(new T.Vector3(wp0.x, 0, wp0.z)), sl = m.spawn(lp.x, lp.z, 0, "idle", {gender: Math.random() < .7 ? "m" : "f"}); if (!sl) return; this.spawned++;
+    const fy = L.floorAt(wp0.x, wp0.z, this.anchor.y + 2); sl.p.position.y = (fy != null ? fy : this.anchor.y) - g.getWorldPosition(new T.Vector3()).y;
     const lines = joining ? ["🍻 Hey! That's my buddy!", "😤 Nobody touches my boy!", "🤪 I wanna fight too!"] : ["😠 You lookin' at me?", "🤬 Who spilled my drink?!", "🥴 You wanna go, pal?", "😤 Outside, now!"];
-    const f = {sl, hp: m.shift.train ? 5 : 3 + Math.floor(m.shift.lv/4), st: "walk", t: 0, cd: 1.2, home: null, ang: 0, sway: Math.random()*6};
+    const f = {sl, baseY: sl.p.position.y, hp: m.shift.train ? 5 : 3 + Math.floor(m.shift.lv/4), st: "walk", t: 0, cd: 1.2, home: null, ang: 0, sway: Math.random()*6};
     m.bubble(sl, lines[Math.floor(Math.random()*lines.length)], "#ff5a4a"); if (joining) m.say("🍻 His buddy just jumped in!", true);
     f.ring = new T.Mesh(new T.RingGeometry(.35, .5, 32).rotateX(-Math.PI/2), new T.MeshBasicMaterial({color: 0xff3030, transparent: true, opacity: 0, toneMapped: false, depthWrite: false})); sl.p.add(f.ring); f.ring.position.y = .03;
     this.foes.push(f); this.spreadFoes(); },
@@ -12313,7 +12362,7 @@ Mogul.GAMES.brawl = {
         m.say(b.kind === "stool" ? "🪑 STOOL TO THE FACE!" : b.kind === "bottle" ? "🍾 SMASH!" : "🍺 Direct hit!"); try{ L.xrCtls.forEach(c => L.haptic(c, .5, 40)); }catch(e){} break; } } }
     // knocked-out folks topple over with stars around their heads
     for (const f of this.foes) if (f.down){ f.t += dt; const k = Math.min(1, f.t/.55), e = k < 1 ? k*k : 1 + Math.sin((f.t - .55)*14)*Math.exp(-(f.t - .55)*6)*.08;
-      f.sl.p.quaternion.copy(f.fall.q0).premultiply(new T.Quaternion().setFromAxisAngle(f.fall.ax, -e*Math.PI/2*.96)); f.sl.p.position.y = .08*Math.min(1, k*2);
+      f.sl.p.quaternion.copy(f.fall.q0).premultiply(new T.Quaternion().setFromAxisAngle(f.fall.ax, -e*Math.PI/2*.96)); f.sl.p.position.y = f.baseY + .08*Math.min(1, k*2);
       if (f.t > .6 && f.sl.mixer) f.sl.mixer.timeScale = 0;
       if (f.stars){ const h = m.headOf(f.sl); f.stars.children.forEach((s, i) => { const a = f.t*5 + i/4*Math.PI*2; s.position.set(h.x + Math.cos(a)*.22, h.y + .18 + Math.sin(f.t*7 + i)*.03, h.z + Math.sin(a)*.22); }); }
       if (f.t > 3 && !f.gone){ f.gone = true; if (f.stars) Lounge.scene.remove(f.stars); m.despawn(f.sl); } }
@@ -12322,7 +12371,7 @@ Mogul.GAMES.brawl = {
     // more of them
     this.spawnT -= dt; if (this.spawnT <= 0 && (this.spawned < this.total || (m.shift.train && (this.ti || 0) < this.steps.length)) && live.length < this.maxAt){ this.spawnFoe(); this.spawnT = this.m.shift.train ? 4 : 5 - Math.min(2.5, this.m.shift.lv*.3); }
     // the crowd reacts
-    this.crowdT -= dt; if (this.crowdT <= 0 && live.length){ this.crowdT = 1.5 + Math.random()*2; const ss = (L.slots || []).filter(s => s.world === "club" && s.real && !s.mogul && s.p.position.distanceTo(new T.Vector3(0, 0, -4)) < 6); const s = ss[Math.floor(Math.random()*ss.length)]; if (s) m.emoji(["😱", "🍿", "📸", "😂", "🙈", "🔥"][Math.floor(Math.random()*6)], m.headOf(s).add(new T.Vector3(0, .3, 0))); }
+    this.crowdT -= dt; if (this.crowdT <= 0 && live.length){ this.crowdT = 1.5 + Math.random()*2; const ss = (L.slots || []).filter(s => s.real && !s.mogul && s.world === L.worldId && s.p.getWorldPosition(new T.Vector3()).distanceTo((c => new T.Vector3(c.x, this.anchor.y, c.z))(this.at(0, .6))) < 7); const s = ss[Math.floor(Math.random()*ss.length)]; if (s) m.emoji(["😱", "🍿", "📸", "😂", "🙈", "🔥"][Math.floor(Math.random()*6)], m.headOf(s).add(new T.Vector3(0, .3, 0))); }
     const busy = live.some(f => f.st === "wind" || f.st === "strike");
     const slow = m.shift.train ? 1.6 : Math.max(.6, 1.1 - m.shift.lv*.05);
     for (const f of live){
@@ -12603,6 +12652,158 @@ Object.assign(Mogul, {
   }
 });
 
+/* ================= 🔍 View: zoom, "watch up close", and how-to-move help for every device ================= */
+const View = {
+  zoom: 1, zt: 1, base: 70, w: null, near: null,
+  init(){
+    if (this.ready) return; this.ready = true;
+    const cv = $("#loungeCv");
+    // mouse wheel / trackpad pinch zooms the camera
+    cv.addEventListener("wheel", e => { if (!Lounge.running || Lounge.renderer.xr.isPresenting) return; e.preventDefault(); this.set(this.zt*Math.exp(-e.deltaY*(e.ctrlKey ? .01 : .0015))); }, {passive: false});
+    addEventListener("keydown", e => {
+      if (!Lounge.running || /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || "") || document.querySelector("dialog[open]") || $("#stage").hidden) return;
+      const k = e.key.toLowerCase();
+      if (k === "+" || k === "=") this.set(this.zt*1.25); else if (k === "-" || k === "_") this.set(this.zt/1.25); else if (k === "0") this.set(1);
+      else if (k === "f" && !(typeof Mogul !== "undefined" && Mogul.on && Mogul.game)) this.w ? this.unwatch() : this.watchNearest();
+      else if (k === "escape" && this.w) this.unwatch();
+      else if (k === "h" || k === "?") this.help();
+      else return;
+      e.preventDefault();
+    });
+    // the little zoom pill on the right
+    const z = document.createElement("div"); z.className = "zoomctl"; z.id = "zoomCtl";
+    z.innerHTML = `<button type="button" data-z="in" title="Zoom in (+ key, scroll, or pinch)" aria-label="Zoom in">＋</button><span id="zoomLv" aria-live="polite">1×</span><button type="button" data-z="out" title="Zoom out (− key)" aria-label="Zoom out">－</button><button type="button" data-z="watch" title="Watch the nearest screen up close (F key)" aria-label="Watch a screen up close">📺</button><button type="button" data-z="help" title="How to move (H key)" aria-label="How to move">🧭</button>`;
+    $("#stage").appendChild(z);
+    z.addEventListener("click", e => { const b = e.target.closest("[data-z]"); if (!b) return; const a = b.dataset.z;
+      if (a === "in") this.set(this.zt*1.4); else if (a === "out") this.set(this.zt/1.4); else if (a === "watch") this.w ? this.unwatch() : this.watchNearest(); else if (a === "help") this.help(); });
+    z.querySelector("#zoomLv").addEventListener("click", () => this.set(1));
+    const bar = document.createElement("div"); bar.className = "watchbar"; bar.id = "watchBar"; bar.hidden = true;
+    bar.innerHTML = `<span>📺 Up close</span><span class="hint" id="watchHint">Scroll or pinch to zoom more</span><button type="button" class="primary tiny" id="watchExit">✕ Back to the room</button>`;
+    $("#stage").appendChild(bar); bar.querySelector("#watchExit").addEventListener("click", () => this.unwatch());
+    this.bindHelp();
+    // first visit on each kind of device: show how to move (once)
+    setInterval(() => { try{ if (!Lounge.running || $("#stage").hidden || $("#loungeCv").hidden || Lounge.renderer.xr.isPresenting || document.querySelector("dialog[open]")) return;
+      const dev = this.device(); if (store.get("navSeen:" + dev, false)) return; this.help(dev); store.set("navSeen:" + dev, true); }catch(e){} }, 2500);
+  },
+  device(){ const ua = navigator.userAgent || ""; if (/OculusBrowser|Quest|Pico|Wolvic/i.test(ua)) return "vr"; if (matchMedia("(pointer: coarse)").matches) return "touch"; return "computer"; },
+  set(z){ this.zt = Math.max(1, Math.min(6, z)); const lv = $("#zoomLv"); if (lv) lv.textContent = (Math.round(this.zt*10)/10) + "×"; },
+  update(dt){
+    const L = Lounge, cam = L.camera; if (!cam) return;
+    if (!this.based){ this.based = true; this.base = cam.fov || 70; }
+    const xr = L.renderer.xr.isPresenting, ctl = $("#zoomCtl"); if (ctl) ctl.hidden = xr || !L.running || L.mode === "ar";
+    if (!xr){ const old = this.zoom; this.zoom += (this.zt - this.zoom)*Math.min(1, dt*10); if (Math.abs(this.zoom - this.zt) < .002) this.zoom = this.zt;
+      if (old !== this.zoom || Math.abs(cam.fov - this.base/this.zoom) > .01){ cam.fov = this.base/this.zoom; cam.updateProjectionMatrix(); } }
+    // gliding into / out of watch mode
+    const A = this.anim; if (A && !xr){ const now = performance.now(); A.t = Math.min(1, A.t + Math.min(.25, (now - (A.last || now))/1000)*2.2); A.last = now; const e = A.t*A.t*(3 - 2*A.t);
+      L.rig.position.lerpVectors(A.from, A.to, e); let dy = A.ty - A.fy; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); L.yaw = A.fy + dy*e; L.pitch = A.fp + (A.tp - A.fp)*e; L.userLooked = true;
+      if (A.t === 1){ this.anim = null; if (A.done) A.done(); } }
+    if (this.w && !xr && L.keys && L.keys.size && !this.anim) this.unwatch();
+    if (this.w && xr) this.unwatch(true);
+    // VR: point at a screen and click a thumbstick to bring it up close
+    if (xr && L.mode === "vr" && L.session){ for (const ctl of L.xrCtls || []){ const src = ctl.userData.source, gp = src && src.gamepad; if (!gp) continue;
+        const p = !!(gp.buttons[3] && gp.buttons[3].pressed); if (p && !ctl.userData.stickP){ const s = this.screenAt(ctl); if (s) this.vrNear(s); else if (this.near) this.closeNear(); } ctl.userData.stickP = p; } }
+    if (this.near) this.updateNear(dt);
+    if (this.card) this.updateCard(dt);
+  },
+  /* ---------- the screens you can watch ---------- */
+  screens(){ const L = Lounge, out = [];
+    const vp = L.videoPlane && L.videoPlane.visible ? L.videoPlane : L.mainScreen; if (vp && L.isShown(vp)) out.push(vp);
+    if (typeof Screens !== "undefined") for (const s of Screens.list){ if (s.id === "main" || !s.group.parent || s.world !== L.worldId) continue; if (L.isShown(s.plane)) out.push(s.plane); }
+    for (const m of L.extraScreens || []) if (L.isShown(m)) out.push(m);
+    return out; },
+  cssFor(mesh){ if (typeof Screens === "undefined") return null; return Screens.list.find(s => s.cssObj && (s.plane === mesh || (s.id === "main" && (mesh === Lounge.videoPlane || mesh === Lounge.mainScreen)))) || null; },
+  watchNearest(){ const L = Lounge, list = this.screens(); if (!list.length){ toast("There's no screen nearby to watch."); return; }
+    const cam = L.camera.getWorldPosition(new THREE.Vector3()), fwd = new THREE.Vector3(); L.camera.getWorldDirection(fwd);
+    let best = null, bs = -Infinity; for (const m of list){ const c = m.getWorldPosition(new THREE.Vector3()), to = c.sub(cam), d = to.length(); const sc = to.normalize().dot(fwd)*2 - d*.08; if (sc > bs){ bs = sc; best = m; } }
+    this.watch(best); },
+  size(mesh){ const g = mesh.geometry && mesh.geometry.parameters || {width: 1.6, height: .9}, sc = new THREE.Vector3(); mesh.getWorldScale(sc); return {w: (g.width || 1.6)*Math.abs(sc.x), h: (g.height || .9)*Math.abs(sc.y)}; },
+  watch(mesh){
+    const L = Lounge, T = THREE; if (!mesh) return; if (L.renderer.xr.isPresenting){ this.vrNear(mesh); return; }
+    if (this.w) this.unwatch(true);
+    mesh.updateMatrixWorld(true); const {w, h} = this.size(mesh), c = mesh.getWorldPosition(new T.Vector3()), n = new T.Vector3(0, 0, 1).transformDirection(mesh.matrixWorld);
+    const head = L.headPos(); if (head.clone().sub(c).dot(n) < 0) n.negate();   // you're looking at its back: come round the front
+    this.set(1); this.zoom = 1; L.camera.fov = this.base; L.camera.updateProjectionMatrix();
+    const t = Math.tan(this.base*Math.PI/360), asp = L.camera.aspect || 1.6, d = Math.max((h/2)/t, (w/2)/(t*asp))*1.08;
+    const eye = c.clone().addScaledVector(n, Math.max(.45, d)), dir = n.clone().negate();
+    this.w = {mesh, rig: L.rig.position.clone(), yaw: L.yaw, pitch: L.pitch, standing: L.standing, camY: L.camera.position.y, css: this.cssFor(mesh)};
+    L.glide = null; L.standing = true; L.camera.position.y = 1.6; L.camera.updateMatrixWorld(true);
+    const nowHead = L.headPos(), to = L.rig.position.clone().add(eye.clone().sub(nowHead));
+    this.anim = {from: L.rig.position.clone(), to, fy: L.yaw, ty: Math.atan2(-dir.x, -dir.z), fp: L.pitch, tp: Math.asin(Math.max(-1, Math.min(1, dir.y))), t: 0};
+    $("#stage").classList.add("watching"); $("#watchBar").hidden = false;
+    $("#watchHint").textContent = this.w.css ? "Tap the page to use it · Esc or ✕ to go back" : "Scroll or pinch to zoom more · Esc or ✕ to go back";
+    $("#loungeCv").style.pointerEvents = this.w.css ? "none" : "";   // web pages and YouTube get your taps directly
+  },
+  unwatch(instant){
+    const L = Lounge, W = this.w; if (!W) return; this.w = null;
+    $("#stage").classList.remove("watching"); $("#watchBar").hidden = true; $("#loungeCv").style.pointerEvents = "";
+    this.set(1);
+    if (instant || L.renderer.xr.isPresenting){ this.anim = null; L.rig.position.copy(W.rig); L.yaw = W.yaw; L.pitch = W.pitch; L.standing = W.standing; return; }
+    this.anim = {from: L.rig.position.clone(), to: W.rig, fy: L.yaw, ty: W.yaw, fp: L.pitch, tp: W.pitch, t: 0, done: () => { L.standing = W.standing; }};
+  },
+  /* ---------- VR: a personal copy of the screen, right in front of you ---------- */
+  screenAt(ctl){ const T = THREE, rc = this._rc || (this._rc = new T.Raycaster()), o = new T.Vector3().setFromMatrixPosition(ctl.matrixWorld), d = new T.Vector3(0, 0, -1).transformDirection(ctl.matrixWorld);
+    rc.set(o, d); rc.far = 40; const list = this.screens(); if (this.near) list.push(this.near.plane); const hit = rc.intersectObjects(list, false)[0]; if (!hit) return null; return hit.object === (this.near && this.near.plane) ? "near" : hit.object; },
+  vrNear(src){
+    const L = Lounge, T = THREE; if (src === "near"){ this.closeNear(); return; } if (this.near && this.near.src === src){ this.closeNear(); return; } this.closeNear();
+    const {w, h} = this.size(src), a = w/h, W = 1.9, H = W/a;
+    const g = new T.Group(), plane = new T.Mesh(new T.PlaneGeometry(W, H), new T.MeshBasicMaterial({color: 0xffffff, toneMapped: false}));
+    const back = new T.Mesh(new T.PlaneGeometry(W + .06, H + .06), new T.MeshBasicMaterial({color: 0x0b0b10})); back.position.z = -.005; g.add(back); g.add(plane);
+    const [c, x] = Tex.canvas(256, 96); x.fillStyle = "rgba(20,13,10,.9)"; x.beginPath(); x.roundRect ? x.roundRect(4, 4, 248, 88, 40) : x.rect(4, 4, 248, 88); x.fill(); x.strokeStyle = "#ffc21a"; x.lineWidth = 5; x.stroke(); x.fillStyle = "#ffc21a"; x.font = '700 42px "Hanken Grotesk", sans-serif'; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText("✕ Close", 128, 50);
+    const close = new T.Mesh(new T.PlaneGeometry(.36, .135), new T.MeshBasicMaterial({map: Tex.make(c), transparent: true, toneMapped: false})); close.position.set(0, -H/2 - .12, .01); g.add(close);
+    L.addClickable(close, () => this.closeNear()); L.addClickable(plane, () => { try{ const s = typeof Screens !== "undefined" && Screens.list.find(s => s.plane === src || (s.id === "main" && src === L.videoPlane)); if (s) Screens.tapScreen(s); else togglePlay(); }catch(e){} });
+    L.scene.add(g); this.near = {g, plane, close, src, yaw: L.headYaw(), placed: false}; this.placeNear(true);
+    toast("📺 Up close. Trigger on ✕ (or click the thumbstick) to put it back.");
+  },
+  placeNear(force){ const L = Lounge, N = this.near, h = L.headPos(), yaw = L.headYaw(); let dy = yaw - N.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
+    if (force || Math.abs(dy) > .9){ N.yaw = yaw; N.target = new THREE.Vector3(h.x - Math.sin(yaw)*1.7, h.y - .05, h.z - Math.cos(yaw)*1.7); if (force){ N.g.position.copy(N.target); N.g.rotation.set(0, yaw, 0); } } },
+  updateNear(dt){ const N = this.near, src = N.src, m = N.plane.material, sm = src.material;
+    if (!Lounge.renderer.xr.isPresenting || !src.parent){ this.closeNear(); return; }
+    if (m.map !== sm.map){ m.map = sm.map || null; m.needsUpdate = true; } m.color.copy(sm.color || new THREE.Color(0xffffff));
+    this.placeNear(false); if (N.target){ N.g.position.lerp(N.target, Math.min(1, dt*3)); let d = N.yaw - N.g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); N.g.rotation.y += d*Math.min(1, dt*3); } },
+  closeNear(){ const N = this.near; if (!N) return; this.near = null; N.g.parent && N.g.parent.remove(N.g); Lounge.clickables = (Lounge.clickables || []).filter(o => o !== N.close && o !== N.plane);
+    N.plane.geometry.dispose(); N.plane.material.dispose(); N.close.material.map && N.close.material.map.dispose(); },
+  /* ---------- how to move: a help sheet for each kind of device ---------- */
+  HELP: {
+    touch: {name: "📱 Phone & tablet", rows: [
+      ["Look around", "Drag one finger across the screen."], ["Walk", "Tap the floor where you want to go. You'll glide there."],
+      ["Zoom in or out", "Pinch with two fingers, or tap ＋ / － on the right. Tap the number to reset."], ["Watch a screen up close", "Tap 📺 on the right, or the 🔍 button under a screen. Tap ✕ Back to the room to return."],
+      ["Use things", "Tap screens, buttons, people and objects. Tap a bottle or mug to pick it up, then tap again to toss it."],
+      ["See more of the room", "Tap ▾ on the bottom panel to shrink it, and turn your phone sideways for a wider view."]]},
+    computer: {name: "💻 Computer", rows: [
+      ["Look around", "Click and drag with the mouse (or one finger on a trackpad)."], ["Walk", "W A S D, or the arrow keys. ← → turn. Or click the floor to glide there."],
+      ["Zoom in or out", "Scroll the mouse wheel or pinch the trackpad. Or press + and −. Press 0 to reset."], ["Watch a screen up close", "Press F (or click 📺 or the 🔍 under a screen). Press Esc to go back."],
+      ["Use things", "Click screens, buttons, people and objects. Click an object to pick it up, then click again to toss it."],
+      ["This help", "Press H any time, or click 🧭 on the right."]]},
+    vr: {name: "🥽 VR headset", rows: [
+      ["Walk", "Push the LEFT thumbstick. Or point at the floor (a gold ring appears) and pull the trigger to jump there."], ["Turn", "Flick the RIGHT thumbstick left or right (30° steps, so you don't get dizzy)."],
+      ["Menu", "Press B or Y, or tap ☰ on your left wrist. Point and pull the trigger to choose."], ["Grab and throw", "Hold the GRIP button to pick things up. Let go while moving your hand to throw."],
+      ["Watch a screen up close", "Point at a screen and click a thumbstick down (or trigger on the 🔍 under it). A big copy floats in front of you. Click again or trigger on ✕ to close."],
+      ["Touch people", "Reach out with your hand. Moderators can hold the grip on someone to walk them out."], ["Feeling sick?", "Stand still, use snap turning, and take breaks. Sit down if you need to."]]}
+  },
+  bindHelp(){
+    const d = document.createElement("dialog"); d.className = "navdlg"; d.id = "navDlg";
+    d.innerHTML = `<form method="dialog"><h3>🧭 How to move around</h3><div class="navtabs" role="tablist"></div><div class="navbody"></div><p class="hint">Open this any time with 🧭 (or the H key). In VR, it's in the menu under Party → 🧭 Controls.</p><div class="row end"><button class="primary" value="ok">Got it</button></div></form>`;
+    document.body.appendChild(d);
+    d.querySelector(".navtabs").addEventListener("click", e => { const b = e.target.closest("[data-dev]"); if (b){ e.preventDefault(); this.helpShow(b.dataset.dev); } });
+  },
+  helpShow(dev){ const d = $("#navDlg"), H = this.HELP;
+    d.querySelector(".navtabs").innerHTML = Object.entries(H).map(([k, v]) => `<button type="button" role="tab" aria-selected="${k === dev}" class="${k === dev ? "on" : ""}" data-dev="${k}">${v.name}${k === this.device() ? " · you" : ""}</button>`).join("");
+    d.querySelector(".navbody").innerHTML = `<table class="navtable">${H[dev].rows.map(([a, b]) => `<tr><th>${esc(a)}</th><td>${esc(b)}</td></tr>`).join("")}</table>`; },
+  help(dev){ const L = Lounge; if (L.renderer && L.renderer.xr.isPresenting){ this.vrCard(); return; } dev = dev || this.device(); this.helpShow(dev); const d = $("#navDlg"); if (!d.open) d.showModal(); },
+  /* in the headset: a floating card with the controls */
+  vrCard(){ const L = Lounge, T = THREE; this.closeCard();
+    const W = 1024, Hh = 720, [c, x] = Tex.canvas(W, Hh); x.fillStyle = "rgba(16,10,8,.95)"; x.beginPath(); x.roundRect ? x.roundRect(0, 0, W, Hh, 40) : x.rect(0, 0, W, Hh); x.fill(); x.strokeStyle = "#ffc21a"; x.lineWidth = 6; x.stroke();
+    x.fillStyle = "#ffc21a"; x.font = '800 52px "Hanken Grotesk", sans-serif'; x.textBaseline = "middle"; x.fillText("🧭 How to move in VR", 48, 70);
+    let y = 150; for (const [a, b] of this.HELP.vr.rows){ x.fillStyle = "#ffd87a"; x.font = '700 30px "Hanken Grotesk", sans-serif'; x.fillText(a, 48, y); x.fillStyle = "#fff"; x.font = '500 26px "Hanken Grotesk", sans-serif';
+      const words = b.split(" "); let line = "", ly = y; for (const w of words){ if (x.measureText(line + w).width > 640){ x.fillText(line, 336, ly); line = ""; ly += 32; } line += w + " "; } x.fillText(line, 336, ly); y = Math.max(y + 74, ly + 46); }
+    x.fillStyle = "rgba(255,255,255,.6)"; x.font = '500 24px "Hanken Grotesk", sans-serif'; x.fillText("Pull the trigger on this card to close it.", 48, Hh - 40);
+    const m = new T.Mesh(new T.PlaneGeometry(1.4, 1.4*Hh/W), new T.MeshBasicMaterial({map: Tex.make(c), transparent: true, toneMapped: false, depthTest: false})); m.renderOrder = 50;
+    const h = L.headPos(), yaw = L.headYaw(); m.position.set(h.x - Math.sin(yaw)*1.5, h.y - .1, h.z - Math.cos(yaw)*1.5); m.rotation.set(0, yaw, 0); L.scene.add(m); L.addClickable(m, () => this.closeCard());
+    this.card = {m, t: 0}; },
+  updateCard(dt){ const C = this.card; C.t += dt; if (C.t > 40 || !Lounge.renderer.xr.isPresenting) this.closeCard(); },
+  closeCard(){ const C = this.card; if (!C) return; this.card = null; C.m.parent && C.m.parent.remove(C.m); Lounge.clickables = (Lounge.clickables || []).filter(o => o !== C.m); C.m.material.map.dispose(); C.m.material.dispose(); C.m.geometry.dispose(); }
+};
+
 /* ================= Outfits: re-dress any avatar =================
    The clothes are re-printed on the avatar's own texture: skin is found by matching the colour of the
    face, everything else is clothing and gets the new fabric, keeping the original folds and shading. */
@@ -12774,7 +12975,7 @@ const Screens = {
     const btn = (label, x, fn) => { const [c, cx2] = Tex.canvas(128, 128); cx2.fillStyle = "rgba(20,13,10,.85)"; cx2.beginPath(); cx2.arc(64, 64, 58, 0, Math.PI*2); cx2.fill(); cx2.strokeStyle = "#ffc21a"; cx2.lineWidth = 6; cx2.stroke(); cx2.fillStyle = "#ffc21a"; cx2.font = '700 60px "Hanken Grotesk", sans-serif'; cx2.textAlign = "center"; cx2.textBaseline = "middle"; cx2.fillText(label, 64, 68);
       const m = new T.Mesh(new T.CircleGeometry(.075, 32), new T.MeshBasicMaterial({map: Tex.make(c), transparent: true, toneMapped: false})); m.position.set(x, -h/2 - .13, .01); g.add(m); L.addClickable(m, fn); return m; };
     const s = {id, group: g, plane, w, h, kind: "", page: 0, pages: [], remote: !!opts.remote, owner: opts.owner || "me"};
-    s.btns = [btn("◀", -.25, () => this.step(s, -1)), btn("▶", .25, () => this.step(s, 1)), btn("☰", 0, () => this.open(s))];
+    s.btns = [btn("◀", -.25, () => this.step(s, -1)), btn("▶", .25, () => this.step(s, 1)), btn("☰", 0, () => this.open(s)), btn("🔍", -w/2 + .05, () => View.watch(s.plane))];
     if (!s.remote) s.btns.push(btn("✕", w/2 - .05, () => this.close(s)));
     L.addClickable(plane, () => this.tapScreen(s));
     // place it in front of you, or where the presenter put it
@@ -12806,6 +13007,7 @@ const Screens = {
     if (typeof Theater !== "undefined" && Theater.s === s){ Theater.closePlayer(); $("#ytTheater").hidden = true; Theater.s = null; }
     if (s.video){ try{ s.video.pause(); s.video.removeAttribute("src"); s.video.srcObject = null; s.video.load(); }catch(e){} s.video = null; }
     if (s.cssObj){ this.cssScene && this.cssScene.remove(s.cssObj); s.cssObj.element.remove(); s.cssObj = null; }
+    try{ const t = s.id === "main" ? Lounge.videoPlane : s.plane; if (t) this.punch(t, false); }catch(e){}
     if (s.stream && typeof Party !== "undefined" && Party.room){ try{ Party.room.removeStream(s.stream); }catch(e){} } s.stream = null;
     s.kind = ""; s.pages = []; s.page = 0; s.pdf = null;
     if (s.id !== "main"){ s.plane.material.map = null; s.plane.material.color.setHex(0x0b0b10); s.plane.material.needsUpdate = true; }
@@ -12886,9 +13088,9 @@ const Screens = {
     const el = document.createElement("div"); el.className = "css3d-screen"; el.style.width = "1280px"; el.style.height = "720px"; el.style.position = "relative";
     const host = document.createElement("div"); host.style.cssText = "position:absolute;inset:0"; el.appendChild(host);
     const tools = document.createElement("div"); tools.className = "yt-tools";
-    tools.innerHTML = `<button type="button" data-a="big">⛶ Big view</button><a href="https://www.youtube.com/watch?v=${info.id}" target="_blank" rel="noopener noreferrer">YouTube ↗</a>`;
+    tools.innerHTML = `<button type="button" data-a="big">🔍 Big view</button><a href="https://www.youtube.com/watch?v=${info.id}" target="_blank" rel="noopener noreferrer">YouTube ↗</a>`;
     tools.querySelector("[data-a=big]").addEventListener("click", () => { const t = s.yt ? s.yt.time() : start; if (s.yt){ s.yt.destroy(); s.yt = null; }
-      if (s.cssObj){ this.cssScene.remove(s.cssObj); s.cssObj.element.remove(); s.cssObj = null; } this.placard(s, "▶ Playing in the big view"); Theater.open(info, t, s); });
+      if (s.cssObj){ this.cssScene.remove(s.cssObj); s.cssObj.element.remove(); s.cssObj = null; this.punch(s.id === "main" ? Lounge.videoPlane : s.plane, false); } this.placard(s, "▶ Playing in the big view"); Theater.open(info, t, s); });
     el.appendChild(tools);
     this.attachCSS(s, el);
     s.yt = YTP.mount(host, info, start);
@@ -12922,6 +13124,7 @@ const Screens = {
     const tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding; this.setTex(s, tex, 16/9);
   },
   tapScreen(s){
+    if (s.cssObj && !Lounge.renderer.xr.isPresenting){ View.watch(s.id === "main" ? Lounge.videoMat() : s.plane); return; }
     if (s.video){ if (s.video.paused) s.video.play(); else s.video.pause(); return; }
     if (s.pages.length){ this.step(s, 1); return; }
     if (s.id === "main"){ togglePlay(); return; }
@@ -12932,18 +13135,24 @@ const Screens = {
     if (!this.css) return;
     const L = Lounge, on = !L.renderer.xr.isPresenting && this.list.some(s => s.cssObj);
     this.css.domElement.style.display = on ? "" : "none";
+    if (L.finalPass) L.finalPass.uniforms.holes.value = on ? 1 : 0;
+    for (const s of this.list){ const t = s.id === "main" ? L.videoPlane : s.plane; if (t && (!on || !s.cssObj)) this.punch(t, false); }
     if (!on) return;
     for (const s of this.list){
       if (!s.cssObj) continue;
       const target = s.id === "main" ? L.videoMat() : s.plane;
       target.updateMatrixWorld(); target.matrixWorld.decompose(s.cssObj.position, s.cssObj.quaternion, new THREE.Vector3());
       const ws = new THREE.Vector3(); target.getWorldScale(ws); s.cssObj.scale.setScalar(ws.x*(s.id === "main" ? 3.6 : s.w)/1280);
-      s.cssObj.element.style.visibility = (s.world === L.worldId || s.id === "main") && !this.blocked(s, target) ? "visible" : "hidden";
+      s.cssObj.element.style.visibility = (s.world === L.worldId || s.id === "main") ? "visible" : "hidden";
+      this.punch(target, true);
     }
     const cv = $("#loungeCv"); this.css.setSize(cv.clientWidth, cv.clientHeight);
     this.css.render(this.cssScene, L.camera);
   },
-  /* web pages draw on top of the 3D scene, so hide one when another screen is in front of it */
+  /* web pages sit BEHIND the 3D canvas; the screen becomes a see-through hole, so heads and hands in front of it still show */
+  punch(mesh, on){ const u = mesh.userData; if (on){ if (u.holed) return; u.holed = mesh.material; u.holeRO = mesh.renderOrder; mesh.renderOrder = 999; mesh.material = this.holeMat || (this.holeMat = new THREE.MeshBasicMaterial({color: 0x000000, opacity: 0, transparent: true, depthWrite: true, blending: THREE.NoBlending, toneMapped: false})); }
+    else if (u.holed){ mesh.material = u.holed; mesh.renderOrder = u.holeRO || 0; u.holed = null; } },
+  /* (older) web pages drew on top of the 3D scene, so one was hidden when another screen was in front of it */
   blocked(s, target){
     const others = this.list.filter(x => x !== s && x.id !== "main" && x.group.parent && x.world === Lounge.worldId).map(x => x.group);
     if (!others.length) return false;
@@ -13618,7 +13827,8 @@ const VRMenu = {
     const n = P && inP ? Object.values(P.peers).filter(p => p.hello).length : 0;
     b("people", 9, `👥 People${n ? " (" + n + ")" : ""}`, () => { this.partyView = "people"; this.page = 0; });
     b("mogul", 10, "🍾 Nightclub Mogul", () => { this.toggle(false); Mogul.open(); }, {primary: true});
-    this.text(VIP.can("moderate") ? "🛡 Mods: People → mute/remove." : "Touch someone to say hi.", 684, Y + 3*96 + 43, 19, "rgba(255,255,255,.6)", 500, "left", 310);
+    b("nav", 11, "🧭 Controls", () => { this.toggle(false); View.vrCard(); });
+    b("brawl", 12, "🥊 Brawl mode", () => { this.toggle(false); Mogul.brawlHere(); }, {primary: true});
   },
   /* ---------- pointing ---------- */
   hitFor(ctl){
