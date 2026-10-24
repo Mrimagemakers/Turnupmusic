@@ -5900,11 +5900,85 @@ const Lounge = {
     this.applyMood();
     this.renderer.shadowMap.needsUpdate = true;
     document.querySelectorAll("#worldSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.w === id));
+    try{ this.lightBudget(); }catch(e){}
+    try{ this.keepWorlds(); }catch(e){ console.warn(e); }
     try{ Dash.label(); }catch(e){}
     if (this.rig){ if (typeof Party !== "undefined" && Party.room){ if (Party.kind === "world") Party.worldChanged(); else this.spawnInParty(); } else this.resetRig(); }
   },
+  /* ---------- memory: only a couple of worlds stay loaded ----------
+     Every world is a lot of textures and meshes. A headset or phone runs out of memory after a few,
+     and the browser shuts down. So worlds you've left are released (and rebuilt if you go back). */
+  lowPower(){ return /OculusBrowser|Quest|Pico|Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || (navigator.deviceMemory || 8) <= 4; },
+  keepWorlds(){
+    const keep = this.lowPower() ? 2 : 4, order = this.worldOrder || (this.worldOrder = []);
+    const i = order.indexOf(this.worldId); if (i >= 0) order.splice(i, 1); order.unshift(this.worldId);
+    while (order.length > keep){ const id = order.pop(); if (id !== this.worldId) try{ this.unloadWorld(id); }catch(e){ console.warn(e); } }
+  },
+  unloadWorld(id){
+    const w = this.worlds[id]; if (!w || id === this.worldId) return;
+    const g = w.group;
+    // guests' avatars ride along in the current world; never take them with this one
+    if (typeof Party !== "undefined") for (const p of Object.values(Party.peers || {})) if (p.slot && p.slot.group.parent === g) this.scene.add(p.slot.group);
+    const mine = new Set(); for (const sl of this.slots || []) if (sl.world === id){ try{ sl.mixer && sl.mixer.stopAllAction(); }catch(e){} mine.add(sl); }
+    // every texture a material holds, including ones inside custom shaders
+    const texOf = (m, into) => { if (!m) return; for (const v of Object.values(m)) if (v && v.isTexture) into.add(v); if (m.uniforms) for (const u of Object.values(m.uniforms)) if (u && u.value && u.value.isTexture) into.add(u.value); };
+    const skinTex = new Set();
+    g.traverse(o => {
+      const mats = o.material ? [].concat(o.material) : [];
+      if (o.isSkinnedMesh){ mats.forEach(m => { texOf(m, skinTex); if (m.dispose) m.dispose(); }); try{ o.skeleton && o.skeleton.dispose(); }catch(e){} return; }   // people share textures with other worlds: checked below
+      if (o.geometry && o.geometry.dispose) o.geometry.dispose();
+      for (const m of mats){ const ts = new Set(); texOf(m, ts); for (const t of ts) if (t !== this.glowT && t !== this.envTex) t.dispose(); if (m.dispose) m.dispose(); }
+    });
+    if (g.parent) g.parent.remove(g);
+    delete this.worlds[id];
+    // people's skin, hair and outfit textures are big: free (from the graphics card) the ones nobody still loaded is using
+    { const used = new Set(), scan = root => root && root.traverse(o => { if (o.isSkinnedMesh) for (const m of [].concat(o.material)) texOf(m, used); });
+      for (const sl of this.slots || []) if (!mine.has(sl)) scan(sl.real);
+      if (typeof Party !== "undefined") for (const p of Object.values(Party.peers || {})) if (p.slot) scan(p.slot.group);
+      for (const t of skinTex) if (!used.has(t)) t.dispose(); }
+    this.slots = (this.slots || []).filter(sl => !mine.has(sl));
+    this.grabbables = (this.grabbables || []).filter(o => o.userData.grab.world !== id);
+    if (this.walkables) delete this.walkables[id]; if (this.surfaces) delete this.surfaces[id];
+    if (this.furnCache) delete this.furnCache[id]; if (this.boothSpots) delete this.boothSpots[id];
+    const inG = o => { for (let q = o; q; q = q.parent) if (q === g) return true; return false; };
+    this.clickables = (this.clickables || []).filter(o => !inG(o));
+    if (this.avatarUse) for (const k of Object.keys(this.avatarUse)) if (k.startsWith(id + ":")) delete this.avatarUse[k];
+  },
+  /* ---------- in the headset: black out the view while a world is being built, instead of a frozen, jumpy frame ---------- */
+  vrCurtain(on, text){
+    const T = THREE;
+    if (!this.curtain){
+      const [c, x] = Tex.canvas(512, 128); this.curtainC = c; this.curtainX = x;
+      const cv = this.curtain = new T.Mesh(new T.SphereGeometry(.4, 24, 16), new T.MeshBasicMaterial({color: 0x000000, side: T.BackSide, transparent: true, opacity: 0, depthTest: false, depthWrite: false, fog: false}));
+      cv.renderOrder = 9998; cv.frustumCulled = false;
+      const lbl = this.curtainLbl = new T.Mesh(new T.PlaneGeometry(.32, .08), new T.MeshBasicMaterial({map: Tex.make(c), transparent: true, depthTest: false, depthWrite: false, fog: false, toneMapped: false}));
+      lbl.position.set(0, 0, -.3); lbl.renderOrder = 9999; cv.add(lbl); this.camera.add(cv); cv.visible = false;
+    }
+    if (text !== undefined){ const x = this.curtainX; x.clearRect(0, 0, 512, 128); x.fillStyle = "#ffc21a"; x.font = '700 40px "Hanken Grotesk", sans-serif'; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(text, 256, 64, 490); this.curtainLbl.material.map.needsUpdate = true; }
+    this.curtainTarget = on ? 1 : 0; if (on){ this.curtain.visible = true; this.curtain.material.opacity = 1; this.curtainLbl.material.opacity = 1; }
+  },
+  updateCurtain(dt){
+    const c = this.curtain; if (!c || !c.visible || this.curtainTarget) return;
+    c.material.opacity = Math.max(0, c.material.opacity - dt*2.5); this.curtainLbl.material.opacity = c.material.opacity; if (c.material.opacity <= 0) c.visible = false;
+  },
+  /* switching worlds from inside VR: black out, build, then fade back in */
+  vrGoTo(id){
+    const w = this.WORLDS.find(x => x.id === id), fresh = !this.worlds[id];
+    if (!fresh){ this.setWorld(id); return; }
+    this.vrCurtain(true, `Loading ${w ? w.name : "the world"}…`);
+    setTimeout(() => { try{ this.setWorld(id); }catch(e){ console.warn(e); } setTimeout(() => this.vrCurtain(false), 400); }, 120);
+  },
+  /* the headset has to draw everything twice, so in VR only the strongest few lamps in a world are switched on */
+  lightBudget(){
+    const w = this.world; if (!w) return;
+    const vr = this.renderer.xr.isPresenting, max = vr ? (this.lowPower() ? 4 : 6) : 99, list = [];
+    w.group.traverse(o => { if ((o.isPointLight || o.isSpotLight) && o.parent){ if (o.userData.base0 === undefined) o.userData.base0 = o.intensity*(o.distance || 30); list.push(o); } });
+    list.sort((a, b) => b.userData.base0 - a.userData.base0);
+    list.forEach((l, i) => { const on = i < max; if (on !== l.visible && (l.userData.budgetOff || !on)){ l.visible = on; l.userData.budgetOff = !on; } });
+  },
   /* switching worlds from the buttons: show a message while a new world is built */
   chooseWorld(id){
+    if (this.renderer && this.renderer.xr.isPresenting){ this.vrGoTo(id); return; }
     if (this.worlds && this.worlds[id]){ this.setWorld(id); return; }
     const w = this.WORLDS.find(x => x.id === id), el = $("#loungeLoading");
     el.textContent = `Loading ${w ? w.name : "the world"}…`; el.hidden = false;
@@ -7417,8 +7491,9 @@ const Lounge = {
       try{ await this.renderer.xr.setSession(session); }
       catch(e2){ this.renderer.xr.setReferenceSpaceType("local"); await this.renderer.xr.setSession(session); }
       $("#xrSupport").textContent = "";
-      try{ const bl = session.renderState.baseLayer; if (bl && "fixedFoveation" in bl) bl.fixedFoveation = .4; }catch(e){}
-      session.addEventListener("end", () => { const quick = performance.now() - (this.xrStart || 0) < 4000; this.exitXR();
+      try{ const bl = session.renderState.baseLayer; if (bl && "fixedFoveation" in bl) bl.fixedFoveation = .5; }catch(e){}
+      try{ this.lightBudget(); this.keepWorlds(); }catch(e){}
+      session.addEventListener("end", () => { const quick = performance.now() - (this.xrStart || 0) < 4000; this.exitXR(); try{ this.lightBudget(); }catch(e){}
         if (quick) this.xrFail("VR closed right after it started. Close other browser tabs, then tap Enter VR again. If it keeps happening, restart the Quest Browser."); });
       session.addEventListener("select", e => this.onXRSelect(e));
       if (kind === "ar"){
@@ -8306,7 +8381,7 @@ const Lounge = {
     this.lastBass = bass;
     if (this.btnMeshes){ const xr = this.renderer.xr.isPresenting; for (const id in this.btnMeshes) this.btnMeshes[id].visible = this.mode === "ar"; }
     this.updateMove(dt, xrFrame); this.updateBooths(dt); this.updateGrab(dt); try{ VRMenu.update(dt); }catch(e){ console.warn(e); } this.updateCorks(dt); Party.update(dt); Screens.update();
-    this.updatePeople(dt, bass);
+    this.updatePeople(dt, bass); this.updateCurtain(dt);
     try{ Cam.xrFrame(dt); }catch(e){ console.warn(e); }
     if (this.composer && !this.renderer.xr.isPresenting){ this.finalPass.uniforms.exposure.value = this.renderer.toneMappingExposure; this.composer.render(dt); }
     else this.renderer.render(this.scene, this.camera);
@@ -10752,7 +10827,7 @@ const Outfit = {
       for (let ch=0; ch<3; ch++) d[i+ch] = Math.max(0, Math.min(255, pat[i+ch]*k*(1 - keep) + d[i+ch]*keep));
     }
     x.putImageData(img, 0, 0);
-    const tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding; tex.flipY = false; tex.anisotropy = 4;
+    const tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding; tex.flipY = false; tex.anisotropy = 4; tex.isOutfitTex = true;
     this.cache.set(key, tex);
     if (this.cache.size > 40) this.cache.delete(this.cache.keys().next().value);
     return tex;
@@ -11621,7 +11696,8 @@ const VRMenu = {
     this.list(Y + 140, vids, it => "🎬 " + it.name, it => { Lounge.playVideo(Media.url(it), it.name); this.say("Playing on the big screen"); }, "No videos yet. Add videos in the app under My music & videos (phone or computer), then they appear here.", 4);
   },
   drawWorlds(Y){
-    Lounge.WORLDS.forEach((w, i) => this.btn("w" + i, 24 + (i % 3)*330, Y + Math.floor(i/3)*92, 318, 80, w.name, () => { this.say(`Going to ${w.name}…`); this.draw(); setTimeout(() => { Lounge.setWorld(w.id); this.place(); this.draw(); }, 60); }, {on: Lounge.worldId === w.id, size: 26}));
+    const cols = 4, bw = (this.W - 48 - (cols - 1)*10)/cols, rows = Math.ceil(Lounge.WORLDS.length/cols), bh = Math.min(80, (this.H - 70 - Y)/rows - 8);
+    Lounge.WORLDS.forEach((w, i) => this.btn("w" + i, 24 + (i % cols)*(bw + 10), Y + Math.floor(i/cols)*(bh + 8), bw, bh, w.name, () => { this.toggle(false); Lounge.vrGoTo(w.id); setTimeout(() => this.draw(), 700); }, {on: Lounge.worldId === w.id, size: 21}));
   },
   /* touching someone (or picking them from People) opens their card */
   showGuest(id){
