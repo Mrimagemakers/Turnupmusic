@@ -208,3 +208,27 @@ Open it with the speech-bubble button (it used to be "The Wall").
 | 💎 Pro | $24.99/month | Featured badge on events, moderate your own event parties, top of Find people, PRO badge |
 
 Each plan includes everything in the plans before it. The owner sets each plan's price and payment link under ★ VIP → Owner tools (Stripe payment links add the buyer's member ID automatically). After a payment, the owner gives the plan with **Give membership** (Plus, VIP, Pro or VIP + Moderator). Turning plans on automatically when a payment clears would need a small server connected to Stripe.
+
+## Nightclub Mogul (built-in game, 18+)
+Tap **🍾 Mogul** on the party bar, or go to **Party → 🍾 Nightclub Mogul** in VR. You can also link straight to it with `#mogul`.
+- **Ten jobs**, each with its own step-by-step training: Bartender (VR mixology with real bottle pouring), Bouncer (IDs, dress code, the list, fights), DJ (beatmatching on two synth decks), Barback/Busser, Bottle Service, Promoter, Celebrity, Birthday, Club Owner and Bar Brawl.
+- **Strikes and obstacles**: underage and drunk guests, fake IDs, spills, slip hazards, deadlines and fights.
+- **The empire**: earn cash on shifts, then buy venues, upgrades and staff and run nights. Progress is saved on the device.
+- **Bar Brawl** is our own physics-style bar fight:
+  - block, dodge and counter
+  - throw mugs, bottles and bar stools, for real in VR
+  - Liquid Courage power-ups
+  - gangs that join in during later rounds
+  - slapstick knockouts with circling stars
+  In the headset your view never moves on its own, which keeps it comfortable.
+- **Pro bartending**:
+  - speed tips with 🔥 streak multipliers
+  - flair flips (in VR, toss and catch a real bottle)
+  - bottles that smash if you drop them
+- **Pro DJing**:
+  - color-coded scrolling waveforms
+  - LOW/MID/HI kill switches and an LPF/HPF filter sweep
+  - bass-swap scoring
+  - 🔗 Sync
+  - 🤚 Scratch
+- **🏆 Daily leaderboard** per job: top earners today, reset every day (shared over TUNet).

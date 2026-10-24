@@ -465,6 +465,15 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 .post .acts button.on{color:var(--live);border-color:rgba(255,77,61,.4)}
 .post .replies{display:grid;gap:6px;padding-left:12px;border-left:2px solid var(--line)}
 .post .replies p{font-size:13px}
+.mogul{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));width:min(620px,calc(100vw - 24px));z-index:35;pointer-events:auto}
+.stage .mogul canvas,.mogul canvas{position:relative;inset:auto;display:block;width:100%;height:auto;border-radius:22px;box-shadow:0 16px 50px rgba(0,0,0,.55);touch-action:none;user-select:none;-webkit-user-select:none}
+.mogul.small{height:84px;overflow:hidden;border-radius:22px}
+.mogul-mini{position:absolute;left:12px;top:10px;width:40px;height:36px;border-radius:10px;border:1px solid rgba(255,194,26,.5);background:rgba(16,10,8,.9);color:#ffc21a;font:800 18px var(--f-body);cursor:pointer}
+.mogul.hurt::before{content:"";position:fixed;inset:0;background:radial-gradient(circle,rgba(255,0,0,0) 30%,rgba(255,0,0,.55));animation:mhurt .5s forwards;pointer-events:none;z-index:-1}
+@keyframes mhurt{to{opacity:0}}
+.chipbtn.mogulbtn{background:linear-gradient(135deg,#ffc21a,#ff8a1a);color:#2a1405;font-weight:800;border:0}
+.teen #btnMogul{display:none!important}
+@media (min-width:1100px){.mogul{width:640px}}
 .agedlg{width:min(560px,calc(100% - 24px))}
 .agerow{display:grid;grid-template-columns:1.4fr .8fr 1fr;gap:8px;margin:10px 0}
 .rules{margin:6px 0 10px;padding-left:20px;display:grid;gap:5px;font-size:14px}
@@ -773,7 +782,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
     <button type="button" class="xp-hide" id="xpHide" aria-label="Hide controls">▼ Hide controls</button>
     <div class="seg" id="xpModes"></div>
     <div class="seg" id="worldSeg" hidden></div>
-    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
+    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn mogulbtn" id="btnMogul" type="button">🍾 Nightclub Mogul</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
     <div class="emotes" id="emoteBar" hidden><button type="button" data-e="wave">👋 Wave</button><button type="button" data-e="dance">💃 Dance</button><button type="button" data-e="cheer">🙌 Cheer</button><button type="button" data-e="idle">🧍 Chill</button><button type="button" data-r="🔥">🔥</button><button type="button" data-r="❤️">❤️</button><button type="button" data-r="😂">😂</button><button type="button" data-r="🎉">🎉</button><button type="button" id="btnChat">💬 Chat</button><button type="button" id="btnMic">🎤 Mic off</button><button type="button" id="btnDJ">🎧 Be the DJ</button></div>
     <div class="btnrow">
       <button class="chipbtn" id="btnSnap" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Camera</button>
@@ -7667,6 +7676,7 @@ const Lounge = {
     if (this.rig){ this.rig.updateMatrixWorld(true); m.premultiply(this.rig.matrixWorld); }     // where you've walked or turned to
     const origin = new T.Vector3().setFromMatrixPosition(m);
     const dir = new T.Vector3(0, 0, -1).applyMatrix4(new T.Matrix4().extractRotation(m)).normalize();
+    if (Mogul.pressRay(origin, dir, (this.xrCtls || []).find(c => c.userData.source === e.inputSource))) return;
     if (VRMenu.pressRay(origin, dir, (this.xrCtls || []).find(c => c.userData.source === e.inputSource))) return;
     this.ray.set(origin, dir);
     if (!this.pick() && this.mode === "vr"){
@@ -7786,7 +7796,7 @@ const Lounge = {
     if (!opts.force && this.vipBlocked(x, z)) return;
     const head = this.headPos(), fy = this.floorAt(x, z);
     const to = new THREE.Vector3(this.rig.position.x + (x - head.x), opts.y != null ? opts.y : fy == null ? this.rig.position.y : fy, this.rig.position.z + (z - head.z));
-    if (opts.instant || this.renderer.xr.isPresenting) this.rig.position.copy(to);
+    if (opts.instant || this.renderer.xr.isPresenting){ this.rig.position.copy(to); this.glide = null; this.rig.updateMatrixWorld(true); }
     else this.glide = {from: this.rig.position.clone(), to, t: 0};
     if (!this.renderer.xr.isPresenting) this.standing = true;
     this.moved = true;
@@ -8460,7 +8470,7 @@ const Lounge = {
     const mood = MOODS[this.moodIdx];
 
     if (!this.renderer.xr.isPresenting){
-      this.camera.rotation.set(this.pitch, this.yaw, 0, "YXZ");
+      this.camera.rotation.set(this.pitch, this.yaw, this.camRoll || 0, "YXZ");
       if (!this.drag) this.yaw += Math.sin(t*.1)*.0003;
     }
     if (this.mode === "ar" && xrFrame && this.hitSource && !this.placed){
@@ -8500,7 +8510,7 @@ const Lounge = {
     this.lastBass = bass;
     if (this.btnMeshes){ const xr = this.renderer.xr.isPresenting; for (const id in this.btnMeshes) this.btnMeshes[id].visible = this.mode === "ar"; }
     this.updateMove(dt, xrFrame); this.updateBooths(dt); this.updateGrab(dt); try{ VRMenu.update(dt); }catch(e){ console.warn(e); } this.updateCorks(dt); Party.update(dt); Screens.update();
-    this.updatePeople(dt, bass); this.updateCurtain(dt);
+    this.updatePeople(dt, bass); this.updateCurtain(dt); try{ Mogul.update(dt); }catch(e){ console.warn(e); }
     try{ Cam.xrFrame(dt); }catch(e){ console.warn(e); }
     if (this.composer && !this.renderer.xr.isPresenting){ this.finalPass.uniforms.exposure.value = this.renderer.toneMappingExposure; this.composer.render(dt); }
     else this.renderer.render(this.scene, this.camera);
@@ -8801,6 +8811,7 @@ $("#btnResetYes").addEventListener("click", () => { S.user = []; S.favs.clear();
   setTimeout(() => { if (worldLinks[h]){ store.set("world", worldLinks[h]); openStage("lounge"); }
     else if (h === "lounge") openStage("lounge"); else if (h === "stage") openStage("dancers");
     else if (h === "events") Events.open();
+    else if (h === "mogul") setTimeout(() => Mogul.open(), 600);
     else if (/^user=[0-9a-f]{64}$/.test(h)) Social.openPage(h.slice(5));
     else if (/^event=[\w.%-]{1,120}$/.test(h)){ try{ Events.openLink(decodeURIComponent(h.slice(6))); }catch(e){} }
     else if (/^watch=[\w-]{11}(-\d+)?$/.test(h)){ const [id, t] = h.slice(6).split("-"); Theater.open({svc: "YouTube", kind: "video", id, start: +t || 0, url: `https://youtu.be/${id}`}, +t || 0, null); } }, 0);
@@ -11329,6 +11340,1268 @@ const Safety = {
   }
 };
 Age.bindUI(); Safety.bindUI();
+document.addEventListener("click", e => { if (e.target.closest("#btnMogul")) Mogul.open(); });
+
+/* ================= NIGHTCLUB MOGUL =================
+   A game inside the Nightclub: work the jobs (bartender, bouncer, DJ, barback, bottle service, promoter,
+   celebrity, birthday guest), learn each one in a training run, earn cash, then buy clubs as the owner and build
+   an empire across the worlds. One canvas panel runs everything: tapped on a screen, pointed at in VR.
+   In VR the hands-on parts are real: pour from bottles, drop garnishes, throw and block punches. */
+const Mogul = {
+  W: 1024, H: 700, on: false, view: "menu", regions: [], hover: null, held: null,
+  ROLES: [
+    {id: "bartender", icon: "🍸", name: "Bartender", pay: [110, 320], blurb: "Mix real cocktails to order: the right glass, ice, measured pours, shake or stir, garnish. Check IDs. Fast and accurate means big tips."},
+    {id: "bouncer", icon: "🚪", name: "Bouncer", pay: [120, 300], blurb: "Run the door: check IDs (spot fakes and minors), the dress code, the guest list and capacity. Break up fights the right way."},
+    {id: "dj", icon: "🎧", name: "DJ", pay: [140, 380], blurb: "Beatmatch two decks, drop the next track on the phrase, fade it in and play what the crowd asks for. Keep the dance floor full."},
+    {id: "barback", icon: "🧺", name: "Barback / Busser", pay: [90, 240], blurb: "Keep the club running: clear empty glasses, bring ice, change kegs, mop spills before someone slips."},
+    {id: "bottle", icon: "🍾", name: "Bottle Girl / Bottle Service", pay: [130, 420], blurb: "Take VIP orders, upsell, carry the bottle with a sparkler through the crowd without spilling, pour, and close the tab right."},
+    {id: "promoter", icon: "📣", name: "Promoter", pay: [100, 450], blurb: "Plan the night: the theme, the DJ, the right channels and offers for the right crowd. Pack the club and work the VIP list."},
+    {id: "celebrity", icon: "🌟", name: "Celebrity", pay: [200, 900], blurb: "Make an appearance: hit your marks for the cameras, handle the press, sign for fans and hype the crowd. Avoid scandals."},
+    {id: "birthday", icon: "🎂", name: "Birthday Boy / Girl", pay: [60, 260], blurb: "Throw the best birthday night ever on a budget: friends, cake, the song, the dance-off. Keep the fun meter high."},
+    {id: "owner", icon: "👑", name: "Club Owner", pay: [0, 0], blurb: "Buy clubs, hire staff, buy upgrades and open every night. Grow from one dive bar to a nightlife empire."},
+    {id: "brawl", icon: "🥊", name: "Bar Brawl", pay: [80, 260], blurb: "Arcade mode: rowdy troublemakers come at you. Block, dodge and knock them out. In VR, throw real punches."}
+  ],
+  VENUES: [
+    {id: "basement", world: "divebar", name: "The Basement", price: 2000, cap: 120, cover: 10, drink: 9, rent: 180},
+    {id: "turnup", world: "club", name: "Club Turn Up", price: 8000, cap: 300, cover: 20, drink: 12, rent: 600},
+    {id: "skyline", world: "rooftop", name: "Skyline Rooftop", price: 20000, cap: 260, cover: 30, drink: 15, rent: 1100},
+    {id: "sandbar", world: "beach", name: "Sandbar Beach Club", price: 45000, cap: 500, cover: 35, drink: 14, rent: 2000},
+    {id: "neon", world: "tokyo", name: "Neon District", price: 90000, cap: 650, cover: 40, drink: 16, rent: 3600},
+    {id: "yacht", world: "yacht", name: "The Yacht", price: 180000, cap: 220, cover: 120, drink: 22, rent: 5200},
+    {id: "orbit", world: "space", name: "Club Orbit", price: 500000, cap: 400, cover: 250, drink: 30, rent: 14000}
+  ],
+  UPGRADES: [
+    {id: "sound", name: "Sound system", icon: "🔊", cost: [600, 2400, 7000], fx: "More people stay and dance"},
+    {id: "lights", name: "Lights & lasers", icon: "💡", cost: [500, 2000, 6000], fx: "Better reviews, more word of mouth"},
+    {id: "bar", name: "Bigger bar", icon: "🍹", cost: [800, 3000, 9000], fx: "More drinks sold per guest"},
+    {id: "vip", name: "VIP tables", icon: "🛋", cost: [1000, 4000, 12000], fx: "Bottle service income"},
+    {id: "security", name: "Security", icon: "🛡", cost: [400, 1600, 5000], fx: "Fewer fights and fines"}
+  ],
+  STAFF: [
+    {id: "dj", name: "Resident DJ", icon: "🎧", wage: 250, fx: "+15% crowd"},
+    {id: "bartenders", name: "Bartenders", icon: "🍸", wage: 160, fx: "+12% drinks each", max: 4},
+    {id: "bouncers", name: "Bouncers", icon: "🚪", wage: 150, fx: "Safer nights", max: 3},
+    {id: "promoter", name: "Promoter", icon: "📣", wage: 200, fx: "+20% crowd"},
+    {id: "bottle", name: "Bottle service", icon: "🍾", wage: 140, fx: "VIP sales", max: 3}
+  ],
+  TITLES: [[0, "Rookie"], [1000, "Hustler"], [10000, "Manager"], [50000, "Club Owner"], [250000, "Mogul"], [1000000, "Nightlife Tycoon"]],
+
+  /* ---------- the save: one wallet for every job ---------- */
+  d(){ const d = Object.assign({cash: 300, xp: {}, tut: {}, best: {}, clubs: {}, day: 1, ran: {}, shifts: 0, fame: 0, earned: 0}, store.get("mogul", {})); for (const k of ["xp", "tut", "best", "clubs", "ran"]) d[k] = d[k] || {}; return d; },
+  put(d){ store.set("mogul", d); },
+  level(role, d = this.d()){ const xp = d.xp[role] || 0; return Math.min(10, 1 + Math.floor(Math.sqrt(xp/60))); },
+  worth(d = this.d()){ let w = d.cash; for (const [id, c] of Object.entries(d.clubs)){ const v = this.VENUES.find(x => x.id === id); if (!v) continue; w += v.price*.8; for (const u of this.UPGRADES) for (let i = 0; i < (c.up && c.up[u.id] || 0); i++) w += u.cost[i]*.5; } return Math.round(w); },
+  title(d){ const w = this.worth(d); let t = this.TITLES[0][1]; for (const [n, l] of this.TITLES) if (w >= n) t = l; return t; },
+  money(n){ return (n < 0 ? "-$" : "$") + Math.abs(Math.round(n)).toLocaleString(); },
+
+  /* ---------- the panel: one canvas, shown on screen or floating in VR ---------- */
+  ensure(){
+    if (this.c) return;
+    const c = this.c = document.createElement("canvas"); c.width = this.W; c.height = this.H; this.x = c.getContext("2d");
+    const box = this.box = document.createElement("div"); box.className = "mogul"; box.hidden = true; box.appendChild(c);
+    const mini = this.miniBtn = document.createElement("button"); mini.type = "button"; mini.className = "mogul-mini"; mini.textContent = "▾"; mini.title = "Shrink the panel"; box.appendChild(mini);
+    mini.addEventListener("click", () => { box.classList.toggle("small"); mini.textContent = box.classList.contains("small") ? "▴" : "▾"; });
+    ($("#stage") || document.body).appendChild(box);
+    const at = e => { const r = c.getBoundingClientRect(); return {px: (e.clientX - r.left)/r.width*this.W, py: (e.clientY - r.top)/r.height*this.H}; };
+    const hit = p => this.regions.find(r => p.px >= r.X && p.px <= r.X + r.W && p.py >= r.Y && p.py <= r.Y + r.H);
+    c.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); const p = at(e), r = hit(p); if (!r) return; try{ c.setPointerCapture(e.pointerId); }catch(err){}
+      if (r.hold){ this.held = r; r.hold(true); } else { try{ r.fn(p); }catch(err){ console.warn(err); } } this.draw(); });
+    const up = e => { if (this.held){ const r = this.held; this.held = null; try{ r.hold(false); }catch(err){} this.draw(); } };
+    c.addEventListener("pointerup", up); c.addEventListener("pointercancel", up);
+    c.addEventListener("pointermove", e => { const r = hit(at(e)); const h = r ? r.id : null; if (h !== this.hover){ this.hover = h; this.draw(); } });
+    addEventListener("keydown", e => { if (!this.on || !this.game || !this.game.key || /INPUT|TEXTAREA/.test(document.activeElement?.tagName || "")) return; if (this.game.key(e.key.toLowerCase(), true)) e.preventDefault(); });
+    addEventListener("keyup", e => { if (this.on && this.game && this.game.key) this.game.key(e.key.toLowerCase(), false); });
+  },
+  vrPanel(){
+    const T = THREE, L = Lounge;
+    if (!this.mesh){ this.tex = new T.CanvasTexture(this.c); this.tex.encoding = T.sRGBEncoding; this.tex.anisotropy = 8;
+      this.mesh = new T.Mesh(new T.PlaneGeometry(.95, .95*this.H/this.W), new T.MeshBasicMaterial({map: this.tex, transparent: true, toneMapped: false, depthTest: true}));
+      this.mesh.renderOrder = 11; L.scene.add(this.mesh); this.rc = new T.Raycaster(); }
+    return this.mesh;
+  },
+  placePanel(side = .55){
+    if (!this.mesh) return;
+    const L = Lounge, head = L.headPos(), yaw = L.headYaw() + side, d = .85;
+    this.mesh.position.set(head.x - Math.sin(yaw)*d, head.y - .22, head.z - Math.cos(yaw)*d);
+    this.mesh.rotation.set(-.12, yaw, 0, "YXZ");
+  },
+  pressRay(origin, dir, ctl){
+    if (!this.on || !this.mesh || !this.mesh.visible) return false;
+    this.rc.set(origin, dir); this.rc.far = 5;
+    const h = this.rc.intersectObject(this.mesh, false)[0]; if (!h || !h.uv) return false;
+    const p = {px: h.uv.x*this.W, py: (1 - h.uv.y)*this.H}, r = this.regions.find(r => p.px >= r.X && p.px <= r.X + r.W && p.py >= r.Y && p.py <= r.Y + r.H);
+    if (r){ try{ if (r.hold){ r.toggled = !r.toggled; r.hold(r.toggled); } else r.fn(p); }catch(e){ console.warn(e); } if (ctl) Lounge.haptic(ctl, .5, 30); this.draw(); }
+    return true;
+  },
+  rr(x, X, Y, W, H, r){ return VRMenu.rr.call(this, x, X, Y, W, H, r); },
+  btn(id, X, Y, W, H, label, fn, o = {}){ VRMenu.btn.call(this, id, X, Y, W, H, label, fn, o); if (o.hold) this.regions[this.regions.length - 1].hold = o.hold; },
+  text(t, X, Y, size, col = "#fff", w = 600, align = "left", max){ VRMenu.text.call(this, t, X, Y, size, col, w, align, max); },
+  wrap(t, X, Y, size, maxW, col = "rgba(255,255,255,.85)", lh = 1.3, w = 500){
+    const x = this.x; x.font = `${w} ${size}px "Hanken Grotesk", sans-serif`; let line = "", y = Y;
+    for (const word of String(t).split(/\s+/)){ const test = line ? line + " " + word : word; if (x.measureText(test).width > maxW && line){ this.text(line, X, y, size, col, w); line = word; y += size*lh; } else line = test; }
+    if (line) this.text(line, X, y, size, col, w); return y + size*lh;
+  },
+  bar(X, Y, W, H, v, col = "#ffc21a", bg = "rgba(255,255,255,.1)"){ const x = this.x; this.rr(x, X, Y, W, H, H/2); x.fillStyle = bg; x.fill(); if (v > 0){ this.rr(x, X, Y, Math.max(H, W*Math.min(1, v)), H, H/2); x.fillStyle = col; x.fill(); } },
+  avImg(){ if (!this._av){ this._av = new Image(); this._av.onload = () => this.draw(); this._av.src = AV_SHEET; } return this._av.complete && this._av.naturalWidth ? this._av : null; },
+  face(name, X, Y, w){ const img = this.avImg(), i = Math.max(0, AV_NAMES.indexOf(name)); const h = w*1.5; if (!img){ this.x.fillStyle = "#3a2a20"; this.x.fillRect(X, Y, w, h); return; } const cw = img.naturalWidth/10, ch = cw*1.5, sw = cw*.72; this.x.drawImage(img, (i % 10)*cw + (cw - sw)/2, Math.floor(i/10)*ch, sw, sw*1.5, X, Y, w, h); },
+  draw(){
+    if (!this.x) return;
+    const x = this.x, W = this.W, H = this.H; this.regions = [];
+    x.clearRect(0, 0, W, H);
+    this.rr(x, 4, 4, W - 8, H - 8, 30); x.fillStyle = "rgba(16,10,8,.95)"; x.fill(); x.lineWidth = 3; x.strokeStyle = "rgba(255,194,26,.55)"; x.stroke();
+    const d = this.d();
+    // header: wallet, title, the close button
+    this.text("NIGHTCLUB MOGUL", 92, 40, 24, "#ffc21a", 800);
+    this.text(`${this.money(d.cash)}  ·  ${this.title(d)}  ·  Night ${d.day}`, 345, 40, 21, "rgba(255,255,255,.8)", 600, "left", 480);
+    this.btn("mx", W - 84, 14, 62, 52, "✕", () => this.close(), {size: 28});
+    if (this.view !== "menu") this.btn("mback", W - 236, 14, 140, 52, "◀ Menu", () => this.toMenu(), {size: 22});
+    try{
+      if (this.view === "menu") this.drawMenu();
+      else if (this.view === "role") this.drawRole();
+      else if (this.view === "game" && this.game) this.game.draw(this);
+      else if (this.view === "result") this.drawResult();
+      else if (this.view === "empire") this.drawEmpire();
+    }catch(e){ console.warn(e); this.text("Something went wrong. Tap Menu.", 40, 200, 26, "#ff8a7a"); }
+    if (this.flash && performance.now() - this.flash.t < 2200){ this.rr(x, 24, H - 66, W - 48, 46, 16); x.fillStyle = this.flash.bad ? "rgba(255,77,61,.25)" : "rgba(58,208,122,.22)"; x.fill(); this.text(this.flash.msg, W/2, H - 42, 24, this.flash.bad ? "#ffb0a6" : "#b8ffd4", 700, "center", W - 70); }
+    if (this.tex) this.tex.needsUpdate = true;
+  },
+  say(msg, bad){ this.flash = {msg, bad, t: performance.now()}; this.draw(); if (bad) try{ Lounge.xrCtls && Lounge.xrCtls.forEach(c => Lounge.haptic(c, .6, 80)); }catch(e){} },
+
+  /* ---------- opening and closing ---------- */
+  open(){
+    if (!Age.ok("Nightclub Mogul")) return;
+    this.ensure(); this.on = true; this.view = this.view === "game" && this.game ? "game" : "menu";
+    const go = () => {
+      if (Lounge.worldId !== "club" && !(this.game && this.game.anyWorld)) Lounge.chooseWorld("club");
+      this.box.hidden = Lounge.renderer && Lounge.renderer.xr.isPresenting;
+      if (Lounge.renderer && Lounge.renderer.xr.isPresenting){ this.vrPanel().visible = true; this.placePanel(); }
+      this.draw();
+    };
+    if ($("#stage").hidden || !Lounge.built){ store.set("world", "club"); openStage("lounge"); const w = setInterval(() => { if (Lounge.built){ clearInterval(w); go(); } }, 300); setTimeout(() => clearInterval(w), 60000); }
+    else go();
+  },
+  close(){ if (this.game && this.view === "game") this.quitGame(true); this.on = false; if (this.box) this.box.hidden = true; if (this.mesh) this.mesh.visible = false; },
+  toMenu(){ if (this.game && this.view === "game") this.quitGame(true); this.view = "menu"; this.draw(); },
+  /* ---------- the menu: pick a job ---------- */
+  drawMenu(){
+    const d = this.d(), W = this.W;
+    this.text("Pick a job. Train first, then work real shifts to earn cash and build your empire.", 28, 96, 22, "rgba(255,255,255,.75)", 500, "left", W - 56);
+    const cols = 2, bw = (W - 56 - 12)/cols, bh = 92;
+    this.ROLES.forEach((r, i) => { const X = 28 + (i % cols)*(bw + 12), Y = 122 + Math.floor(i/cols)*(bh + 10), lv = this.level(r.id, d);
+      this.btn("r" + r.id, X, Y, bw, bh, `${r.icon}  ${r.name}`, () => { this.role = r.id; this.view = r.id === "owner" ? "empire" : "role"; this.draw(); },
+        {left: true, size: 26, sub: r.id === "owner" ? `${Object.keys(d.clubs).length} club${Object.keys(d.clubs).length === 1 ? "" : "s"} · worth ${this.money(this.worth(d))}` : `Level ${lv}${d.tut[r.id] ? " · trained ✓" : " · start with training"}${d.best[r.id] ? " · best " + d.best[r.id] + "%" : ""}`}); });
+    this.btn("share", 28, this.H - 74, 300, 54, "📣 Share my empire", () => { try{ this.close(); Social.compose(); $("#postText").value = `I'm a ${this.title(d)} in Nightclub Mogul on Turn Up Music: ${this.money(this.worth(d))} and ${Object.keys(d.clubs).length} club${Object.keys(d.clubs).length === 1 ? "" : "s"}. 🍾`; }catch(e){} }, {size: 21});
+  },
+  drawRole(){
+    const r = this.ROLES.find(x => x.id === this.role), d = this.d(), lv = this.level(r.id, d);
+    this.text(`${r.icon} ${r.name}`, 28, 112, 40, "#fff", 800);
+    this.text(`Level ${lv}  ·  pays about ${this.money(r.pay[0]*(1 + (lv - 1)*.15))}–${this.money(r.pay[1]*(1 + (lv - 1)*.15))} a shift`, 28, 156, 22, "#ffd87a", 600);
+    let y = this.wrap(r.blurb, 28, 200, 24, this.W - 56);
+    const G = this.GAMES[r.id], tips = G && G.howTo || [];
+    this.text("HOW IT WORKS", 28, y + 18, 18, "#ffc21a", 800); y += 50;
+    tips.slice(0, 5).forEach(t => { y = this.wrap("• " + t, 40, y, 21, this.W - 80, "rgba(255,255,255,.8)"); });
+    if (Lounge.renderer && Lounge.renderer.xr.isPresenting && G && G.vrTip) y = this.wrap("🥽 In VR: " + G.vrTip, 40, y + 4, 21, this.W - 80, "#9fe8ff");
+    const by = this.H - 90;
+    this.btn("train", 28, by, 300, 66, d.tut[r.id] ? "🎓 Train again" : "🎓 Start training", () => this.startGame(r.id, true), {primary: !d.tut[r.id], size: 26});
+    this.btn("shift", 344, by, 300, 66, "▶ Work a shift", () => { if (!d.tut[r.id]) this.say("Do the training first. It's quick, and you get $50 for finishing it.", true); else this.startGame(r.id, false); }, {primary: !!d.tut[r.id], size: 26});
+  },
+  /* ---------- running a game ---------- */
+  startGame(role, train){
+    const G = this.GAMES[role]; if (!G) return;
+    const d = this.d(), lv = this.level(role, d);
+    this.shift = {role, train, lv, t: 0, earn: 0, tips: 0, strikes: 0, maxStrikes: train ? 99 : 3, scores: [], log: [], over: false};
+    this.game = Object.create(G); this.game.m = this; this.view = "game";
+    try{ this.game.start(this.shift); }catch(e){ console.warn(e); }
+    if (Lounge.renderer && Lounge.renderer.xr.isPresenting){ this.vrPanel().visible = true; setTimeout(() => this.placePanel(this.game.panelSide ?? .55), 120); }
+    this.draw();
+  },
+  strike(msg){ const s = this.shift; if (!s) return; if (!s.train) s.strikes++; this.say((s.train ? "Practice tip: " : `Strike ${s.strikes}/${s.maxStrikes}: `) + msg, true); if (!s.train && s.strikes >= s.maxStrikes) setTimeout(() => this.endGame("Three strikes. The manager sent you home early."), 900); },
+  score(v, money, msg){ const s = this.shift; s.scores.push(Math.max(0, Math.min(100, v))); if (money) s.earn += money; if (msg) this.say(msg, v < 50); },
+  endGame(why){
+    const s = this.shift, g = this.game; if (!s || s.over) return; s.over = true;
+    try{ g.end && g.end(); }catch(e){}
+    const d = this.d(), avg = s.scores.length ? Math.round(s.scores.reduce((a, b) => a + b, 0)/s.scores.length) : 0;
+    let pay = 0;
+    if (!s.train){ const R = this.ROLES.find(r => r.id === s.role); const base = (R.pay[0] + (R.pay[1] - R.pay[0])*Math.max(0, (avg - 40)/60))*(1 + (s.lv - 1)*.15); pay = Math.round((s.strikes >= s.maxStrikes ? base*.4 : base) + s.earn); }
+    else if (!d.tut[s.role] && avg >= 40){ d.tut[s.role] = true; pay = 50; }
+    else if (!d.tut[s.role]) why = (why ? why + " " : "") + "Score at least 40% to finish training.";
+    d.cash += pay; d.earned += Math.max(0, pay); d.xp[s.role] = (d.xp[s.role] || 0) + Math.round(avg*(s.train ? .3 : 1)); if (!s.train){ d.shifts++; d.day++; d.best[s.role] = Math.max(d.best[s.role] || 0, avg); }
+    if (s.fame) d.fame = (d.fame || 0) + s.fame;
+    this.put(d);
+    this.result = {role: s.role, train: s.train, avg, pay, why, log: s.log.slice(-5), lv: this.level(s.role, d), lvBefore: s.lv};
+    this.game = null; this.view = "result"; this.flash = null; this.draw();
+    if (!s.train){ this.loadBoard(s.role); this.postScore(s.role, pay, avg); }
+  },
+  /* 🏆 daily leaderboard per job: who earned the most today (resets every day, UTC) */
+  today(){ return new Date().toISOString().slice(0, 10); },
+  boardTag(role){ return `tu-mogul:${this.today()}:${role}`; },
+  async postScore(role, pay, avg){
+    try{ if (!window.TUNet || !Age.adult() || pay <= 0) return; const d = this.d(), day = this.today(); if (!d.todayBest || d.todayBest.day !== day) d.todayBest = {day};
+      if ((d.todayBest[role] || 0) >= pay) return; d.todayBest[role] = pay; this.put(d); Events.myKey();
+      const name = (Profile.get().name || "").slice(0, 40) || "Guest";
+      const ev = TUNet.finalizeEvent({kind: 30078, created_at: Math.floor(Date.now()/1000), content: JSON.stringify({pay, avg, n: name, lv: this.level(role, d)}), tags: [["d", this.boardTag(role)], ["t", "turnupmusic"], ["t", "tu-mogul"]]}, Events.sk());
+      await Promise.any(Events.pool().publish(NET.relays, ev)); this.loadBoard(role, true);
+    }catch(e){ console.warn("mogul score", e); } },
+  async loadBoard(role, force){
+    this.boards = this.boards || {}; const B = this.boards[role]; if (!force && B && Date.now() - B.at < 60000) return;
+    this.boards[role] = Object.assign(B || {rows: []}, {at: Date.now(), loading: true});
+    try{ const evs = await Events.pool().querySync(NET.relays, {kinds: [30078], "#d": [this.boardTag(role)], limit: 300}, {maxWait: 4000}); const best = {};
+      for (const e of evs){ try{ if (typeof Safety !== "undefined" && Safety.blocked(e.pubkey)) continue; const c = JSON.parse(e.content); const pay = Math.max(0, Math.min(1e6, +c.pay || 0)); if (!best[e.pubkey] || best[e.pubkey].pay < pay) best[e.pubkey] = {pk: e.pubkey, pay, avg: +c.avg || 0, n: String(c.n || "Guest").slice(0, 40)}; }catch(err){} }
+      this.boards[role].rows = Object.values(best).sort((a, b) => b.pay - a.pay).slice(0, 5); }catch(e){}
+    try{ const d = this.d(), mine = d.todayBest && d.todayBest.day === this.today() && d.todayBest[role], me = Events.myKey(); const rows = this.boards[role].rows;
+      if (mine && !rows.some(x => x.pk === me)){ rows.push({pk: me, pay: mine, n: (Profile.get().name || "You").slice(0, 40)}); rows.sort((a, b) => b.pay - a.pay); this.boards[role].rows = rows.slice(0, 5); } }catch(e){}
+    this.boards[role].loading = false; if (this.on) this.draw(); },
+  drawBoard(role, X, Y, w){ const B = this.boards && this.boards[role], R = this.ROLES.find(r => r.id === role), me = (() => { try{ return Events.myKey(); }catch(e){ return ""; } })();
+    this.text(`🏆 Today's top ${R ? R.name : ""}`, X, Y, 22, "#ffd87a", 800, "left", w); Y += 32;
+    if (!B || (B.loading && !B.rows.length)){ this.text("Loading the rankings…", X, Y, 19, "rgba(255,255,255,.6)", 500, "left", w); return; }
+    if (!B.rows.length){ this.text("Nobody's on the board yet today. Be first!", X, Y, 19, "rgba(255,255,255,.6)", 500, "left", w); return; }
+    B.rows.forEach((row, i) => { this.text(`${["🥇", "🥈", "🥉", "4.", "5."][i]} ${row.n}${row.pk === me ? " (you)" : ""}`, X, Y + i*30, 19, row.pk === me ? "#9fe8ff" : "#fff", 600, "left", w - 110); this.text(this.money(row.pay), X + w, Y + i*30, 19, "#3ad07a", 700, "right"); });
+    this.text("Resets every day. Earn the most to take the top spot.", X, Y + B.rows.length*30 + 6, 16, "rgba(255,255,255,.45)", 500, "left", w); },
+  quitGame(silent){ const s = this.shift; if (s && !s.over){ s.over = true; try{ this.game && this.game.end && this.game.end(); }catch(e){} } this.game = null; if (!silent) this.toMenu(); },
+  drawResult(){
+    const r = this.result, R = this.ROLES.find(x => x.id === r.role), W = this.W; if (!r) return;
+    this.text(`${R.icon} ${r.train ? "Training done" : "Shift over"}`, W/2, 140, 44, "#fff", 800, "center");
+    this.text(`${r.avg}%`, W/2, 230, 90, r.avg >= 75 ? "#3ad07a" : r.avg >= 50 ? "#ffc21a" : "#ff7a6a", 800, "center");
+    this.text(r.avg >= 90 ? "Flawless. The manager wants you every night." : r.avg >= 75 ? "Great work!" : r.avg >= 50 ? "Not bad. Keep practicing." : "Rough night. Train again and try once more.", W/2, 290, 26, "rgba(255,255,255,.85)", 600, "center", W - 80);
+    if (r.pay) this.text(`You earned ${this.money(r.pay)}${r.train ? " for finishing your training" : ""}`, W/2, 340, 30, "#ffd87a", 700, "center");
+    if (r.lv > r.lvBefore) this.text(`⬆ Level ${r.lv} ${R.name}! Harder shifts, better pay.`, W/2, 384, 26, "#9fe8ff", 700, "center");
+    if (r.why) this.wrap(r.why, 60, 420, 22, W - 120, "#ffb0a6");
+    const board = !r.train && this.boards && this.boards[r.role]; let y = 470; for (const l of r.log) { this.text("• " + l, 60, y, 20, "rgba(255,255,255,.7)", 500, "left", board ? W/2 - 90 : W - 120); y += 30; }
+    if (board) this.drawBoard(r.role, W/2 + 10, 440, W/2 - 60);
+    const by = this.H - 92;
+    this.btn("again", 28, by, 300, 64, r.train ? "▶ Work a real shift" : "▶ Another shift", () => this.startGame(r.role, false), {primary: true, size: 24});
+    this.btn("menu2", 344, by, 260, 64, "Pick another job", () => this.toMenu(), {size: 24});
+    this.btn("emp", 620, by, 300, 64, "👑 My empire", () => { this.view = "empire"; this.role = "owner"; this.draw(); }, {size: 24});
+  },
+  /* every frame from the lounge */
+  update(dt){
+    if (!this.on) return;
+    const vr = Lounge.renderer.xr.isPresenting;
+    if (this.box) this.box.hidden = vr;
+    if (this.mesh) this.mesh.visible = vr;
+    if (vr && this.mesh && !this.mesh.userData.placed){ this.mesh.userData.placed = true; this.placePanel(); }
+    if (!vr && this.mesh) this.mesh.userData.placed = false;
+    if (this.view === "game" && this.game && this.shift && !this.shift.over){
+      this.shift.t += dt;
+      try{ this.game.update(dt); }catch(e){ console.warn(e); }
+      this._dt = (this._dt || 0) + dt; if (this._dt > .1){ this._dt = 0; this.draw(); }
+    }
+  },
+  /* the lounge's people: bring someone in for a job, send them off after */
+  spawn(x, z, ry, behavior, opts = {}){
+    const L = Lounge, w = L.worlds[L.worldId]; if (!w) return null;
+    const prev = L.buildingWorld; L.buildingWorld = L.worldId;
+    let p; try{ p = L.person(w.group, x, 0, z, ry, behavior, opts); }finally{ L.buildingWorld = prev; }
+    const slot = p.userData.slot; slot.mogul = true; if (slot.real) try{ L.unstickSlot(slot); }catch(e){}
+    return slot;
+  },
+  despawn(slot){
+    if (!slot) return; const L = Lounge;
+    try{ slot.mixer && slot.mixer.stopAllAction(); }catch(e){}
+    if (slot.real) slot.real.traverse(o => { if (o.isMesh) for (const m of [].concat(o.material)) m && m.dispose && m.dispose(); if (o.isSkinnedMesh && o.skeleton) try{ o.skeleton.dispose(); }catch(e){} });
+    if (slot.p.parent) slot.p.parent.remove(slot.p);
+    L.slots = (L.slots || []).filter(s => s !== slot);
+  },
+  slotPos(slot){ return slot.p.getWorldPosition(new THREE.Vector3()); },
+  headOf(slot){ const B = slot.real && Lounge.npcBones(slot); return B ? B.head.getWorldPosition(new THREE.Vector3()) : this.slotPos(slot).add(new THREE.Vector3(0, 1.7, 0)); },
+  emoji(e, pos){ try{ Party.floatEmoji(e, pos); }catch(err){} },
+  // a speech/order bubble that floats over someone's head
+  bubble(slot, text, color = "#ffc21a"){
+    const T = THREE; if (slot.bub){ slot.p.remove(slot.bub); slot.bub.material.map.dispose(); slot.bub.material.dispose(); slot.bub = null; } if (!text) return;
+    const [c, x] = Tex.canvas(512, 128); x.fillStyle = "rgba(16,10,8,.9)"; this.rr(x, 4, 4, 504, 100, 30); x.fill(); x.lineWidth = 5; x.strokeStyle = color; x.stroke();
+    x.fillStyle = "#fff"; x.font = '700 44px "Hanken Grotesk", sans-serif'; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(text, 256, 56, 480);
+    const s = new T.Sprite(new T.SpriteMaterial({map: Tex.make(c), transparent: true, depthWrite: false, depthTest: false})); s.scale.set(1.1, .275, 1); s.position.y = 2.15; s.renderOrder = 9; slot.p.add(s); slot.bub = s;
+  },
+  moveMe(x, z, yaw){ const L = Lounge; L.moveTo(x, z, {instant: true, force: true}); if (yaw && typeof yaw === "object") yaw = Math.atan2(-(yaw.x - x), -(yaw.z - z)); if (!L.renderer.xr.isPresenting && yaw !== undefined){ L.yaw = yaw; L.pitch = -.12; L.userLooked = true; } },
+  vr(){ return Lounge.renderer && Lounge.renderer.xr.isPresenting; },
+  GAMES: {}
+};
+/* ---------- shared helpers for the games ---------- */
+Object.assign(Mogul, {
+  // a training step banner: what to do now (and how in VR)
+  tutDraw(g, Y = 86){
+    const s = this.shift; if (!s || !s.train || !g.steps) return Y;
+    const st = g.steps[g.ti || 0]; if (!st) return Y;
+    const x = this.x; this.rr(x, 24, Y, this.W - 48, 70, 16); x.fillStyle = "rgba(77,225,255,.14)"; x.fill(); x.strokeStyle = "rgba(77,225,255,.6)"; x.lineWidth = 2; x.stroke();
+    this.text(`STEP ${(g.ti || 0) + 1}/${g.steps.length}`, 40, Y + 26, 16, "#9fe8ff", 800);
+    this.text(this.vr() && st.vr ? st.vr : st.say, 40, Y + 52, 21, "#fff", 600, "left", this.W - (st.ack ? 230 : 80));
+    if (st.ack) this.btn("tack", this.W - 190, Y + 12, 150, 46, "Got it ✓", () => { g.acked = (g.acked || 0) + 1; }, {primary: true, size: 20});
+    return Y + 80;
+  },
+  tutTick(g){
+    const s = this.shift; if (!s || !s.train || !g.steps) return;
+    const st = g.steps[g.ti || 0]; if (!st) return;
+    let ok = false; try{ ok = st.ack ? (g.acked || 0) > (g._ackSeen || 0) : !!st.done(g); }catch(e){}
+    if (ok){ g._ackSeen = g.acked || 0; g.ti = (g.ti || 0) + 1; this.say("✓ " + (st.ok || "Nice!")); if (g.ti >= g.steps.length) setTimeout(() => { if (this.game === g) { this.score(100, 0); this.endGame("You know the basics. Now work a real shift."); } }, 1400); }
+  },
+  near(pos, r = 2.4){ const h = Lounge.headPos(); return Math.hypot(h.x - pos.x, h.z - pos.z) < r; },
+  clickable(mesh, fn, reach = 2.6){ Lounge.addClickable(mesh, () => { if (!this.on || !this.game) return; const wp = mesh.getWorldPosition(new THREE.Vector3()); if (!this.near(wp, reach)){ this.say("Walk closer first.", true); return; } fn(); }); return mesh; },
+  dropProps(list){ const L = Lounge; for (const o of list || []){ if (o.parent) o.parent.remove(o); L.clickables = (L.clickables || []).filter(c => c !== o && !(function inside(q){ for (; q; q = q.parent) if (q === o) return true; return false; })(c)); L.grabbables = (L.grabbables || []).filter(g => g !== o); o.traverse && o.traverse(m => { if (m.geometry) m.geometry.dispose(); }); } },
+  hurtFlash(){
+    if (this.vr()){ const T = THREE, L = Lounge; if (!this.hurt){ this.hurt = new T.Mesh(new T.SphereGeometry(.3, 16, 12), new T.MeshBasicMaterial({color: 0xff2020, side: T.BackSide, transparent: true, opacity: 0, depthTest: false, depthWrite: false, fog: false})); this.hurt.renderOrder = 9997; L.camera.add(this.hurt); } this.hurt.material.opacity = .55; this.hurtT = .5; try{ L.xrCtls.forEach(c => L.haptic(c, 1, 160)); }catch(e){} }
+    else if (this.box){ this.box.classList.remove("hurt"); void this.box.offsetWidth; this.box.classList.add("hurt"); }
+  }
+});
+{ const u0 = Mogul.update.bind(Mogul); Mogul.update = function(dt){ u0(dt); if (this.hurt && this.hurtT > 0){ this.hurtT -= dt; this.hurt.material.opacity = Math.max(0, this.hurtT); } }; }
+
+/* ================= 🍸 Bartender: real recipes, measured pours, VR mixology ================= */
+Mogul.ING = {vodka: ["Vodka", "#e8f0ff", 1], tequila: ["Tequila", "#f2e6b0", 1], rum: ["White rum", "#f4f0e0", 1], gin: ["Gin", "#e6f6ff", 1], bourbon: ["Bourbon", "#b8681e", 1], triple: ["Triple sec", "#ffb347", 1],
+  lime: ["Lime juice", "#c6e86a", 0], cran: ["Cranberry", "#c8102e", 0], oj: ["Orange juice", "#ffa51f", 0], simple: ["Simple syrup", "#f6efd0", 0], grenadine: ["Grenadine", "#b0102a", 0],
+  soda: ["Soda water", "#e8f6ff", 0], tonic: ["Tonic", "#eaf4ff", 0], cola: ["Cola", "#3a1a0a", 0], ginger: ["Ginger beer", "#e8c870", 0]};
+Mogul.GLASS = {rocks: ["Rocks", 8], highball: ["Highball", 12], coupe: ["Coupe", 6], mug: ["Copper mug", 14]};
+Mogul.GARNISH = {lime: "🍋‍🟩 Lime", mint: "🌿 Mint", orange: "🍊 Orange peel", cherry: "🍒 Cherry"};
+Mogul.RECIPES = [
+  {n: "Margarita", glass: "rocks", ice: true, method: "shake", g: "lime", items: {tequila: 2, lime: 1, triple: 1}},
+  {n: "Mojito", glass: "highball", ice: true, method: "muddle", g: "mint", items: {rum: 2, lime: 1, simple: .75, soda: 2}},
+  {n: "Old Fashioned", glass: "rocks", ice: true, method: "stir", g: "orange", items: {bourbon: 2, simple: .25}},
+  {n: "Cosmopolitan", glass: "coupe", ice: false, method: "shake", g: "lime", items: {vodka: 1.5, triple: .5, cran: 1, lime: .5}},
+  {n: "Moscow Mule", glass: "mug", ice: true, method: "build", g: "lime", items: {vodka: 2, lime: .5, ginger: 4}},
+  {n: "Rum & Coke", glass: "highball", ice: true, method: "build", g: "lime", items: {rum: 2, cola: 4}},
+  {n: "Gin & Tonic", glass: "highball", ice: true, method: "build", g: "lime", items: {gin: 2, tonic: 4}},
+  {n: "Tequila Sunrise", glass: "highball", ice: true, method: "build", g: "orange", items: {tequila: 2, oj: 4, grenadine: .5}},
+  {n: "Virgin Mojito", glass: "highball", ice: true, method: "muddle", g: "mint", items: {lime: 1, simple: .75, soda: 4}, na: true},
+  {n: "Shirley Temple", glass: "highball", ice: true, method: "build", g: "cherry", items: {ginger: 5, grenadine: .5}, na: true}
+];
+Mogul.GAMES.bartender = {
+  panelSide: .9,
+  howTo: ["Tap an order to work on it. The recipe card shows the glass, ice, pours, method and garnish.", "Hold a bottle button to pour (about 1 oz a second). Watch the amount: being off by more than ¼ oz costs points.", "Shake, stir or muddle when the recipe says so, add the garnish, then Serve.", "Guests who look young: tap 🪪 Check ID before serving alcohol. Under 21? Refuse.", "Someone slurring and stumbling? Cut them off and offer water."],
+  vrTip: "Grab a bottle (grip), tip it over the glass on the mat to pour, and drop a garnish into the glass. Use the panel for glass, ice, shake and serve.",
+  start(s){
+    const m = this.m, T = THREE, L = Lounge;
+    this.props = []; this.glass = null; this.orders = []; this.sel = 0; this.spawnT = 2; this.served = 0; this.refused = 0; this.cut = 0;
+    m.moveMe(-9.6, -6, -Math.PI/2);
+    const g = L.worlds.club && L.worlds.club.group; this.root = new T.Group(); g.add(this.root); this.props.push(this.root);
+    // the build mat and the glass on it
+    const mat = new T.Mesh(new T.BoxGeometry(.34, .01, .34), new T.MeshStandardMaterial({color: 0x1a1a1a, roughness: .9})); mat.position.set(-8.78, 1.165, -6); this.root.add(mat);
+    this.glassG = new T.Group(); this.glassG.position.set(-8.78, 1.17, -6); this.root.add(this.glassG);
+    // bottles on the bar: spirits on one side, juices and mixers on the other
+    this.bottles = [];
+    const ids = Object.keys(m.ING), spirits = ids.filter(k => m.ING[k][2]), mixers = ids.filter(k => !m.ING[k][2]);
+    const bottle = (id, x, z) => { const [n, col] = m.ING[id], b = new T.Group(); b.position.set(x, 1.165, z);
+      const glassM = new T.MeshPhysicalMaterial({color: new T.Color(col).lerp(new T.Color(0x224422), m.ING[id][2] ? .1 : .4), roughness: .1, metalness: 0, transparent: true, opacity: .8, clearcoat: 1});
+      const body = new T.Mesh(Props.lathe([[0, 0], [.04, 0], [.042, .01], [.042, .19], [.03, .23], [.013, .26], [.013, .31], [0, .31]], 16), glassM); b.add(body);
+      const [lc, lx] = Tex.canvas(128, 96); lx.fillStyle = "#f6efe0"; lx.fillRect(0, 0, 128, 96); lx.fillStyle = col === "#e8f0ff" || col === "#f4f0e0" || col === "#e6f6ff" || col === "#e8f6ff" || col === "#eaf4ff" ? "#2a3a6a" : col; lx.fillRect(0, 0, 128, 18); lx.fillRect(0, 78, 128, 18);
+      lx.fillStyle = "#1a1208"; lx.font = '800 22px "Hanken Grotesk", sans-serif'; lx.textAlign = "center"; lx.textBaseline = "middle"; lx.fillText(n.toUpperCase(), 64, 48, 120);
+      const lab = new T.Mesh(new T.CylinderGeometry(.0425, .0425, .08, 16, 1, true, -Math.PI*.6, Math.PI*1.2), new T.MeshStandardMaterial({map: Tex.make(lc), roughness: .7})); lab.position.y = .11; lab.rotation.y = Math.PI/2; b.add(lab);
+      b.userData.ing = id; this.root.add(b); L.grabbable(b); this.bottles.push(b); return b; };
+    spirits.forEach((id, i) => bottle(id, -9.02, -8.1 + i*.26));
+    mixers.forEach((id, i) => bottle(id, i % 2 ? -8.82 : -9.06, -5.45 + Math.floor(i/2)*.26));
+    // garnish tray: grab one and drop it in the glass
+    this.garn = [];
+    const gm = {lime: [0x6ac43a, () => new T.CylinderGeometry(.03, .03, .012, 12, 1, false, 0, Math.PI)], mint: [0x2e9a3a, () => new T.SphereGeometry(.022, 8, 6)], orange: [0xff8a1a, () => new T.TorusGeometry(.02, .006, 6, 12, 4)], cherry: [0xc8102e, () => new T.SphereGeometry(.016, 10, 8)]};
+    Object.entries(gm).forEach(([id, [c, geo]], i) => { const o = new T.Mesh(geo(), new T.MeshStandardMaterial({color: c, roughness: .5})); o.position.set(-8.62, 1.19, -6.55 + i*.1); o.userData.garnish = id; this.root.add(o); L.grabbable(o); this.garn.push(o); });
+    this.stream = new T.Mesh(new T.CylinderGeometry(.004, .004, 1, 6), new T.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: .8})); this.stream.visible = false; this.root.add(this.stream);
+    // the guests at the bar take the orders
+    this.guests = (L.slots || []).filter(sl => sl.world === "club" && sl.real && !sl.mogul && sl.p.position.x > -8.3 && sl.p.position.x < -6.4 && sl.p.position.z < -3 && sl.p.position.z > -9.5);
+    if (s.train){
+      this.steps = [
+        {say: "A guest ordered a Margarita. Its recipe card is on the right: rocks glass, ice, 2 oz tequila, 1 oz lime, 1 oz triple sec, shaken, lime garnish.", ack: true},
+        {say: "Pick the glass: tap 🥃 Rocks.", done: g => g.glass && g.glass.type === "rocks"},
+        {say: "Add ice: tap 🧊 Ice.", done: g => g.glass && g.glass.ice},
+        {say: "Pour 2 oz tequila: hold the Tequila button until it reads 2.0 oz.", vr: "Pour 2 oz tequila: grab the Tequila bottle and tip it over the glass (or hold its button).", done: g => g.glass && Math.abs((g.glass.items.tequila || 0) - 2) <= .25},
+        {say: "Now 1 oz lime juice and 1 oz triple sec.", done: g => g.glass && Math.abs((g.glass.items.lime || 0) - 1) <= .25 && Math.abs((g.glass.items.triple || 0) - 1) <= .25},
+        {say: "A Margarita is shaken: tap 🔁 Shake.", done: g => g.glass && g.glass.method.shake},
+        {say: "Garnish: tap 🍋‍🟩 Lime.", vr: "Garnish: grab the green lime wedge from the tray and drop it into the glass.", done: g => g.glass && g.glass.garnish === "lime"},
+        {say: "Serve it: tap ✅ Serve.", done: g => g.served >= 1},
+        {say: "This guest looks young and wants a Moscow Mule. Tap 🪪 Check ID first.", done: g => g.orders[g.sel] && g.orders[g.sel].checked},
+        {say: "They're only 19. Tap ⛔ Refuse (and offer a Shirley Temple).", done: g => g.refused >= 1},
+        {say: "This guest is slurring and stumbling and wants another shot. Tap 🚫 Cut off.", done: g => g.cut >= 1}
+      ];
+      this.queue = [{r: 0}, {r: 4, young: true, age: 19}, {r: 5, drunk: true}];
+    }
+    this.newGlass(null);
+  },
+  newOrder(spec){
+    const m = this.m, s = m.shift, lv = s.lv, recipes = m.RECIPES;
+    spec = spec || (() => { const r = Math.floor(Math.random()*Math.min(recipes.length, 4 + lv)); const young = !recipes[r].na && Math.random() < .22, drunk = !young && Math.random() < .1; return {r, young, age: young ? (Math.random() < .5 ? 18 + Math.floor(Math.random()*3) : 21 + Math.floor(Math.random()*4)) : 30, drunk}; })();
+    const guest = this.guests.filter(gs => !this.orders.some(o => o.guest === gs))[0] || null;
+    const o = Object.assign({rec: recipes[spec.r], patience: Math.max(35, 80 - lv*4), t: 0, guest, checked: false}, spec);
+    this.orders.push(o); if (guest){ m.bubble(guest, (o.drunk ? "🥴 " : o.young ? "🧑 " : "🍸 ") + o.rec.n); Lounge.npcReact(guest, Lounge.headPos(), null); }
+  },
+  newGlass(type){ this.glass = type ? {type, ice: false, items: {}, method: {}, garnish: null} : null; this.redrawGlass(); },
+  redrawGlass(){
+    const T = THREE, G = this.glassG; if (!G) return; while (G.children.length) G.remove(G.children[0]);
+    const gl = this.glass; if (!gl) return;
+    const prof = {rocks: [[0, 0], [.045, 0], [.045, .005], [.046, .09], [.044, .09]], highball: [[0, 0], [.034, 0], [.034, .004], [.036, .15], [.034, .15]], coupe: [[0, 0], [.03, 0], [.006, .01], [.005, .09], [.045, .1], [.06, .135], [.058, .135]], mug: [[0, 0], [.042, 0], [.046, .1], [.044, .1]]}[gl.type];
+    const gm = gl.type === "mug" ? new T.MeshStandardMaterial({color: 0xc87a3a, roughness: .3, metalness: .9, side: T.DoubleSide}) : new T.MeshPhysicalMaterial({color: 0xffffff, roughness: .05, transparent: true, opacity: .32, side: T.DoubleSide, clearcoat: 1});
+    G.add(new T.Mesh(Props.lathe(prof, 20), gm));
+    const vol = Object.values(gl.items).reduce((a, b) => a + b, 0), cap = this.m.GLASS[gl.type][1];
+    if (vol > 0){ const col = new T.Color(0, 0, 0); let tot = 0; for (const [k, v] of Object.entries(gl.items)){ col.add(new T.Color(this.m.ING[k][1]).multiplyScalar(v)); tot += v; } col.multiplyScalar(1/tot);
+      const f = Math.min(1, vol/cap), coupe = gl.type === "coupe", h = coupe ? .035*f : (prof[3][1] - .01)*f, r = coupe ? .03 + .025*f : prof[1][0]*.94;
+      const liq = new T.Mesh(coupe ? new T.CylinderGeometry(r, .012, h, 16) : new T.CylinderGeometry(r, r, h, 16), new T.MeshStandardMaterial({color: col, roughness: .1, transparent: true, opacity: .78})); liq.position.y = (coupe ? .1 : .006) + h/2; G.add(liq); }
+    if (gl.ice) for (let i = 0; i < (gl.type === "highball" ? 5 : 3); i++){ const c = new T.Mesh(new T.BoxGeometry(.022, .022, .022), new T.MeshPhysicalMaterial({color: 0xeaf6ff, roughness: .1, transparent: true, opacity: .55})); c.position.set(Math.sin(i*2.1)*.014, .02 + i*.022, Math.cos(i*2.1)*.014); c.rotation.set(i, i*.7, 0); G.add(c); }
+    if (gl.garnish){ const g = new T.Mesh(new T.SphereGeometry(.014, 8, 6), new T.MeshStandardMaterial({color: {lime: 0x6ac43a, mint: 0x2e9a3a, orange: 0xff8a1a, cherry: 0xc8102e}[gl.garnish]})); g.position.set(.03, (prof[prof.length - 1][1]) + .005, 0); G.add(g); }
+  },
+  pourSync(){ if (!this.pourT) return; const want = Math.min(12, (performance.now() - this.pourT)/1000), add = want - (this.poured || 0); if (add > 0){ this.poured = want; this.pour(this.pouring, add); } },
+  pour(id, oz){ const gl = this.glass; if (!gl){ if (!this._ng){ this._ng = 1; this.m.say("Pick a glass first.", true); setTimeout(() => this._ng = 0, 1500); } return; } gl.items[id] = Math.min(12, (gl.items[id] || 0) + oz); this._dirty = true; },
+  // flair: flip a bottle for the crowd. One flip per order, for tips. Drop it and it smashes.
+  startFlair(){ const m = this.m, o = this.orders[this.sel]; if (!o){ m.say("Flair is for an audience: wait for a guest to order.", true); return; } if (o.flaired){ m.say("You already showed off for this guest.", true); return; } this.flair = {t: 0, pos: 0, zc: .25 + Math.random()*.5, sp: .7 + Math.random()*.5}; o.flaired = true; },
+  catchFlair(){ const F = this.flair; if (!F) return; this.flair = null; const ok = Math.abs(F.pos - F.zc) < .09; this.flairHit(ok); },
+  flairHit(ok){ const m = this.m; if (ok){ this.flairCombo = (this.flairCombo || 0) + 1; const tip = 2 + Math.min(6, this.flairCombo*2); m.shift.earn += tip; m.say(`🤹 Flair! The bar goes wild. +${m.money(tip)}`); m.emoji("🤩", new THREE.Vector3(-7.4, 2.2, -6)); }
+    else { this.flairCombo = 0; m.shift.earn = Math.max(0, m.shift.earn - 6); m.say("💥 Smashed a bottle! -$6 from your tips.", true); m.shift.log.push("Broke a bottle doing flair"); try{ Lounge.burst(new THREE.Vector3(-8.9, .1, -6), 10, "foam"); }catch(e){} } },
+  serve(){
+    const m = this.m, o = this.orders[this.sel], gl = this.glass;
+    if (!o){ m.say("No order selected.", true); return; } if (!gl){ m.say("Make the drink first.", true); return; }
+    if (o.drunk && !o.rec.na){ m.strike("You served someone who was already drunk. Cut them off next time."); this.finish(o, 10); return; }
+    if (o.young && !o.rec.na && (!o.checked || o.age < 21)){ m.strike(o.checked ? "That guest is under 21. Never serve them alcohol." : "You didn't check the ID of a guest who looked young."); m.shift.log.push("Served alcohol without a proper ID check"); this.finish(o, 0); return; }
+    const r = o.rec; let sc = 100, notes = [];
+    if (gl.type !== r.glass){ sc -= 25; notes.push("wrong glass"); }
+    if (!!gl.ice !== !!r.ice){ sc -= 10; notes.push(r.ice ? "no ice" : "it shouldn't have ice"); }
+    for (const [k, v] of Object.entries(r.items)){ const d = Math.abs((gl.items[k] || 0) - v); if (d > .26){ sc -= Math.min(30, d*25); notes.push(`${m.ING[k][0]} ${d > v*.5 && !(gl.items[k] > 0) ? "missing" : "off by " + d.toFixed(1) + " oz"}`); } }
+    for (const k of Object.keys(gl.items)) if (!(k in r.items) && gl.items[k] > .1){ sc -= 20; notes.push(`no ${m.ING[k][0]} in this one`); }
+    if (r.method !== "build" && !gl.method[r.method]){ sc -= 15; notes.push(`it should be ${r.method === "shake" ? "shaken" : r.method === "stir" ? "stirred" : "muddled"}`); }
+    if (gl.garnish !== r.g){ sc -= 10; notes.push(gl.garnish ? "wrong garnish" : "no garnish"); }
+    sc = Math.max(0, Math.round(sc)); const speed = Math.max(0, 1 - o.t/o.patience); let tip = Math.round((2 + 6*(sc/100))*(.5 + speed)*(1 + (m.shift.lv - 1)*.1));
+    this.streak = sc >= 85 ? (this.streak || 0) + 1 : 0; const mult = 1 + Math.min(4, Math.max(0, this.streak - 1))*.25; tip = Math.round(tip*mult); this.bestStreak = Math.max(this.bestStreak || 0, this.streak);
+    if (mult > 1) m.shift.log.push(`🔥 ${this.streak} perfect drinks in a row: tips ×${mult}`);
+    m.score(sc, sc >= 40 ? tip : 0, sc >= 90 ? `Perfect ${r.n}! +${m.money(tip)} tip${mult > 1 ? ` (🔥 ×${mult} streak)` : ""}` : sc >= 40 ? `${r.n} served (${sc}%): ${notes.slice(0, 2).join(", ")}. +${m.money(tip)}` : `Sent back: ${notes.slice(0, 3).join(", ")}`);
+    if (sc < 40) m.strike("The guest sent the drink back.");
+    m.shift.log.push(`${r.n}: ${sc}%${notes.length ? " (" + notes.slice(0, 2).join(", ") + ")" : ""}`);
+    this.served++; this.finish(o, sc);
+  },
+  finish(o, sc){ const m = this.m; if (o.guest){ m.bubble(o.guest, null); m.emoji(sc >= 75 ? "😄" : sc >= 40 ? "🙂" : "😠", m.headOf(o.guest).add(new THREE.Vector3(0, .35, 0))); }
+    this.orders = this.orders.filter(x => x !== o); this.sel = 0; this.newGlass(null); },
+  refuse(){ const m = this.m, o = this.orders[this.sel]; if (!o) return;
+    if (o.young && o.checked && o.age < 21 && !o.rec.na){ this.refused++; m.score(100, 4, "Good call. Under 21: no alcohol. You offered a mocktail instead."); }
+    else if (o.drunk){ this.cut++; m.score(100, 3, "Good call. You cut them off and offered water."); }
+    else { m.strike("You refused a guest who was fine to serve."); m.score(20, 0); }
+    this.finish(o, 80); },
+  update(dt){
+    const m = this.m, s = m.shift, L = Lounge, T = THREE;
+    if (!s.train){ if (s.t > 150 + s.lv*10) return m.endGame("Last call! Your shift is over."); this.spawnT -= dt; if (this.spawnT <= 0 && this.orders.length < Math.min(3, 1 + Math.floor(s.lv/3))){ this.newOrder(); this.spawnT = Math.max(8, 18 - s.lv); } }
+    else if (this.queue && this.queue.length && !this.orders.length && (this.ti || 0) >= [0, 8, 10][3 - this.queue.length]) this.newOrder(this.queue.shift());
+    for (const o of this.orders){ o.t += dt; if (!s.train && o.t > o.patience){ m.strike(`${o.rec.n}: the guest got tired of waiting and left.`); this.finish(o, 0); break; } }
+    if (this.pouring) this.pourSync(); else this.pourT = 0;
+    if (this.flair){ const F = this.flair; F.t += dt; F.pos = (Math.sin(F.t*Math.PI*2*F.sp - Math.PI/2) + 1)/2; if (F.t > 4){ this.flair = null; this.flairHit(false); } }
+    // VR flair and breakage: toss a bottle up and catch it again for tips; let one hit the floor and it smashes
+    for (const b of this.bottles){ const gd = b.userData.grab, u = b.userData; if (!gd || !b.visible) continue;
+      if (gd.held){ if (u.toss && performance.now() - u.toss < 2500 && !u.tossLanded){ const o = this.orders[this.sel]; if (o && !o.flaired){ o.flaired = true; this.flairHit(true); } else m.say("🤹 Nice catch!"); } u.toss = 0; u.tossLanded = false; u.wasHeldB = true; continue; }
+      if (u.wasHeldB){ u.wasHeldB = false; if (gd.vel.y > 1.3) u.toss = performance.now(); }
+      if (gd.resting) u.tossLanded = true;
+      if (!gd.resting && b.getWorldPosition(new T.Vector3()).y < .35){ b.visible = false; m.shift.earn = Math.max(0, m.shift.earn - 6); m.say("💥 Bottle smashed on the floor! -$6", true); try{ L.burst(b.getWorldPosition(new T.Vector3()), 10, "foam"); }catch(e){}
+        setTimeout(() => { try{ gd.vel.set(0, 0, 0); gd.spin.set(0, 0, 0); b.position.copy(gd.home); b.quaternion.copy(gd.homeQ); gd.resting = true; b.visible = true; }catch(e){} }, 3000); } }
+    // VR: tip a held bottle over the glass to pour; drop a garnish into the glass
+    this.stream.visible = false;
+    for (const b of this.bottles){ const gd = b.userData.grab; if (!gd || !gd.held || !this.glass) continue;
+      b.updateMatrixWorld(true); const up = new T.Vector3(0, 1, 0).transformDirection(b.matrixWorld);
+      if (up.y < -.25){ const mouth = new T.Vector3(0, .31, 0).applyMatrix4(b.matrixWorld), gp = this.glassG.getWorldPosition(new T.Vector3());
+        if (Math.hypot(mouth.x - gp.x, mouth.z - gp.z) < .09 && mouth.y > gp.y && mouth.y - gp.y < .6){ const rate = Math.min(1.4, (-up.y + .25)*1.2); this.pour(b.userData.ing, dt*rate);
+          this.stream.visible = true; this.stream.material.color.set(m.ING[b.userData.ing][1]); const len = mouth.y - gp.y - .05; this.stream.scale.y = Math.max(.01, len); this.stream.position.set(gp.x + (mouth.x - gp.x)*.5, gp.y + .05 + len/2, gp.z + (mouth.z - gp.z)*.5); this.root.worldToLocal(this.stream.position);
+          if (gd.held) L.haptic(gd.held, .12, 20); } } }
+    for (const o of this.garn){ const gd = o.userData.grab; if (!gd) continue;
+      if (gd.held){ o.userData.wasHeld = true; continue; }
+      if (o.userData.wasHeld){ o.userData.wasHeld = false; const gp = this.glassG.getWorldPosition(new T.Vector3()), op = o.getWorldPosition(new T.Vector3());
+        if (this.glass && Math.hypot(op.x - gp.x, op.z - gp.z) < .12 && op.y < gp.y + .3){ this.glass.garnish = o.userData.garnish; this._dirty = true; m.say("Garnish in ✓"); }
+        setTimeout(() => { try{ L.release(o); o.position.copy(gd.home); o.quaternion.copy(gd.homeQ); gd.vel.set(0, 0, 0); gd.resting = true; }catch(e){} }, 600); } }
+    if (this._dirty){ this._dirty = false; this.redrawGlass(); }
+    m.tutTick(this);
+  },
+  key(k, down){ return false; },
+  draw(m){
+    const x = m.x, W = m.W, s = m.shift; let Y = m.tutDraw(this, 82);
+    if (!s.train) m.text(`⏱ ${Math.max(0, Math.ceil(150 + s.lv*10 - s.t))}s   💵 tips ${m.money(s.earn)}   ❌ ${s.strikes}/${s.maxStrikes}`, 28, Y + 20, 22, "#ffd87a", 700), Y += 36;
+    // order tickets
+    this.orders.forEach((o, i) => { const bw = 230; m.btn("o" + i, 28 + i*(bw + 10), Y, bw, 64, `${o.drunk ? "🥴" : o.young ? "🧑" : "🍸"} ${o.rec.n}`, () => { this.sel = i; }, {on: i === this.sel, size: 21, left: true, sub: s.train ? "" : `waiting ${Math.round(o.t)}s`}); });
+    if (!this.orders.length) m.text("Waiting for an order…", 28, Y + 38, 22, "rgba(255,255,255,.6)");
+    Y += 76;
+    const o = this.orders[this.sel], gl = this.glass, colR = 650;
+    // recipe card
+    if (o){ const r = o.rec; m.rr(x, colR, Y, W - colR - 24, 300, 16); x.fillStyle = "rgba(255,255,255,.05)"; x.fill();
+      m.text(r.n, colR + 16, Y + 32, 26, "#fff", 800, "left", W - colR - 50);
+      let yy = Y + 64; const line = t => { m.text(t, colR + 16, yy, 19, "rgba(255,255,255,.8)", 500, "left", W - colR - 50); yy += 27; };
+      line(`🥃 ${m.GLASS[r.glass][0]} glass${r.ice ? ", ice" : ", no ice"}`); for (const [k, v] of Object.entries(r.items)) line(`• ${v} oz ${m.ING[k][0]}`); line(`↻ ${r.method === "build" ? "Build (pour in the glass)" : r.method === "shake" ? "Shake" : r.method === "stir" ? "Stir" : "Muddle the mint first"}`); line(`✿ ${m.GARNISH[r.g]}`);
+      if (o.young && !r.na) m.btn("id", colR + 14, Y + 238, 150, 50, o.checked ? `🪪 Age ${o.age}` : "🪪 Check ID", () => { o.checked = true; m.say(o.age < 21 ? `ID says ${o.age}. Under 21!` : `ID says ${o.age}. Good to serve.`, o.age < 21); }, {size: 19, on: o.checked});
+      m.btn("ref", colR + 172, Y + 238, W - colR - 210, 50, o.drunk ? "🚫 Cut off" : "⛔ Refuse", () => this.refuse(), {size: 19}); }
+    // glass, ice, method, garnish
+    const gx = 28; m.text("GLASS", gx, Y + 18, 15, "#ffc21a", 800);
+    Object.entries(m.GLASS).forEach(([k, [n]], i) => m.btn("g" + k, gx + i*150, Y + 28, 142, 46, (k === "coupe" ? "🍸 " : k === "mug" ? "🟫 " : "🥃 ") + n, () => this.newGlass(k), {size: 18, on: gl && gl.type === k}));
+    const acts = [["ice", "🧊 Ice", () => { if (gl){ gl.ice = !gl.ice; this._dirty = true; } else m.say("Pick a glass first.", true); }, gl && gl.ice], ["shake", "🔁 Shake", () => { if (gl){ gl.method.shake = true; m.say("Shaken ✓"); } }, gl && gl.method.shake], ["stir", "🥄 Stir", () => { if (gl){ gl.method.stir = true; m.say("Stirred ✓"); } }, gl && gl.method.stir], ["muddle", "🌿 Muddle", () => { if (gl){ gl.method.muddle = true; m.say("Muddled ✓"); } }, gl && gl.method.muddle]];
+    acts.forEach(([id, l, fn, on], i) => m.btn("a" + id, gx + i*150, Y + 82, 142, 46, l, fn, {size: 18, on}));
+    Object.entries(m.GARNISH).forEach(([k, l], i) => m.btn("gr" + k, gx + i*150, Y + 136, 142, 46, l, () => { if (gl){ gl.garnish = k; this._dirty = true; } else m.say("Pick a glass first.", true); }, {size: 17, on: gl && gl.garnish === k}));
+    // bottles: hold to pour
+    m.text("HOLD TO POUR", gx, Y + 206, 15, "#ffc21a", 800);
+    Object.entries(m.ING).forEach(([k, [n]], i) => { const bx = gx + (i % 5)*120, by = Y + 216 + Math.floor(i/5)*52, amt = gl && gl.items[k];
+      m.btn("p" + k, bx, by, 114, 46, amt ? `${n.split(" ")[0]} ${amt.toFixed(1)}` : n.split(" ")[0], () => {}, {size: 16, on: this.pouring === k, hold: on => { if (!on && this.pouring === k) this.pourSync(); this.pouring = on ? k : null; this.pourT = on ? performance.now() : 0; this.poured = 0; }}); });
+    m.btn("dump", gx, Y + 380, 140, 50, "🗑 Dump", () => { if (gl) this.newGlass(gl.type); }, {size: 19});
+    m.btn("serve", gx + 150, Y + 380, 200, 50, "✅ Serve", () => this.serve(), {primary: true, size: 22});
+    if (!m.shift.train) m.btn("flair", gx + 360, Y + 380, 230, 50, this.flair ? "🤚 CATCH!" : "🤹 Flair flip", () => this.flair ? this.catchFlair() : this.startFlair(), {size: 20, primary: !!this.flair});
+    if (gl){ const tot = Object.values(gl.items).reduce((a, b) => a + b, 0); m.text(`In the glass: ${tot.toFixed(1)} oz${gl.ice ? " · ice" : ""}${gl.garnish ? " · " + gl.garnish : ""}${this.streak > 1 ? `   🔥 ${this.streak} streak` : ""}`, gx, Y + 452, 18, "rgba(255,255,255,.7)", 500, "left", 600); }
+    if (this.flair){ const F = this.flair, bx = gx, bw = 590, by = Y + 330; m.rr(x, bx - 8, by - 40, bw + 16, 84, 14); x.fillStyle = "rgba(20,12,6,.94)"; x.fill(); m.text("🤹 Bottle's in the air! Tap CATCH when it's over the green.", bx + 6, by - 22, 17, "#ffd87a", 700, "left", bw); m.bar(bx, by, bw, 28, 0); m.rr(x, bx + bw*(F.zc - .09), by, bw*.18, 28, 8); x.fillStyle = "rgba(58,208,122,.65)"; x.fill();
+      x.save(); x.translate(bx + bw*F.pos, by + 14); x.rotate(F.t*9); x.font = "34px serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText("🍾", 0, 0); x.restore(); }
+  },
+  end(){ const m = this.m; for (const o of this.orders) if (o.guest) m.bubble(o.guest, null); this.pouring = null; m.dropProps(this.bottles.concat(this.garn)); m.dropProps(this.props); }
+};
+
+/* ================= 🎧 DJ: beatmatch, drop on the phrase, crossfade, read the crowd ================= */
+Mogul.TRACKS = {house: ["Midnight Groove", "Velvet Rope", "Afterglow", "Saturday Feeling"], techno: ["Warehouse 9", "Steel Pulse", "Night Shift"], afrobeats: ["Lagos Nights", "Gbese Wave", "Owambe"], amapiano: ["Log Drum Love", "Pretoria Sun", "Yanos"], reggaeton: ["Dembow Dreams", "Perreo Lento", "Calle 8"], hiphop: ["Block Party", "Boom Bap Royalty", "Downtown Cypher"]};
+Mogul.BPM = {house: 124, techno: 128, afrobeats: 108, amapiano: 113, reggaeton: 96, hiphop: 92};
+Mogul.GAMES.dj = {
+  panelSide: .65,
+  howTo: ["Deck A is playing. Load the next song on Deck B from the crate. Pick what the crowd asks for.", "Match the tempo: nudge Deck B's pitch until both BPMs read the same.", "Wait for the phrase counter to come round to 1, then press ▶ Play B.", "If the kicks sound doubled, nudge B ◀ ▶ until the phase light goes green.", "Slide the crossfader over to B before Deck A runs out. Silence on the dance floor is a strike.", "Pro moves score extra: kill Deck B's LOW before you bring it in (a bass swap), and sweep the LPF / HPF filter during the blend. Muddy double bass costs points.", "🔗 Sync locks tempo and beats for you, but mixing by ear pays more. 🤚 Hold Scratch to cut on the beat and hype the crowd."],
+  vrTip: "You're at the booth on stage. Point at the panel and pull the trigger to work the decks.",
+  start(s){
+    const m = this.m;
+    try{ Lounge.goToBooth(); }catch(e){ m.moveMe(0, -12.35, Math.PI); }
+    this.wasPlaying = S.playing || S.loading; if (this.wasPlaying) togglePlay();
+    const ac = this.ac = (Lounge.listener && Lounge.listener.context) || new (window.AudioContext || window.webkitAudioContext)(); try{ ac.resume(); }catch(e){}
+    this.master = ac.createGain(); this.master.gain.value = .8; this.master.connect(ac.destination);
+    const nb = ac.createBuffer(1, ac.sampleRate*.5, ac.sampleRate), d = nb.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1; this.noise = nb;
+    this.decks = [this.deck("house", 124, true), this.deck(null, 0, false)];
+    this.xf = 0; this.energy = .6; this.transitions = 0; this.goal = s.train ? 1 : 3 + Math.floor(s.lv/3);
+    this.request = null; this.crate = []; this.newCrate();
+    this.decks[0].start = ac.currentTime + .1; this.decks[0].playing = true; this.decks[0].next = this.decks[0].start; this.decks[0].step = 0; this.decks[0].left = 90 + (s.train ? 60 : 0);
+    this.timer = setInterval(() => this.schedule(), 25);
+    if (s.train) this.steps = [
+      {say: "Deck A is playing a house song. The crowd wants Afrobeats next: tap the Afrobeats track in the crate to load Deck B.", done: g => g.decks[1].genre},
+      {say: "Match the tempo: tap Pitch − / + on Deck B until its BPM matches Deck A (within 0.2).", done: g => Math.abs(g.eff(1) - g.eff(0)) < .21},
+      {say: "Watch the phrase counter. When it shows 1, tap ▶ Play B.", done: g => g.decks[1].playing},
+      {say: "Phase: if the light is red, tap Nudge ◀ or ▶ until it turns green.", done: g => g.decks[1].playing && Math.abs(g.phaseMs()) < 30},
+      {say: "Bass swap: tap LOW on Deck B to kill its bass, so two kick drums don't fight and turn to mud.", done: g => g.decks[1].kill.lo},
+      {say: "Slide the crossfader to B, a step at a time (tap B ▶ a few times).", done: g => g.transitions >= 1 || g.xf >= .99},
+      {say: "Your new track is on Deck A now with its bass still off. Tap LOW on Deck A to slam the bass back in!", done: g => g.transitions >= 1 && !g.decks[0].kill.lo},
+      {say: "Filter sweep: hold ◀ LPF on Deck A for a second, then tap FILTER to snap it open again.", done: g => g.didSweep && g.decks[0].color === 0}
+    ];
+  },
+  deck(genre, bpm, isA){ const ac = this.ac, g = ac.createGain(); g.gain.value = isA ? 1 : 0; g.connect(this.master);
+    // input -> low / mid / high EQ -> colour filter -> channel fader
+    const inp = ac.createGain(), lo = ac.createBiquadFilter(), mid = ac.createBiquadFilter(), hi = ac.createBiquadFilter(), col = ac.createBiquadFilter();
+    lo.type = "lowshelf"; lo.frequency.value = 220; mid.type = "peaking"; mid.frequency.value = 1100; mid.Q.value = .8; hi.type = "highshelf"; hi.frequency.value = 4200; col.type = "lowpass"; col.frequency.value = 20000; col.Q.value = 1.2;
+    inp.connect(lo); lo.connect(mid); mid.connect(hi); hi.connect(col); col.connect(g);
+    return {genre, base: bpm, pitch: 0, gain: g, inp, eqN: {lo, mid, hi, col}, kill: {lo: false, mid: false, hi: false}, color: 0, playing: false, start: 0, next: 0, step: 0, left: 75, name: genre ? this.m.TRACKS[genre][0] : ""}; },
+  setKill(d, band, on){ d.kill[band] = on; d.eqN[band].gain.setTargetAtTime(on ? -40 : 0, this.ac.currentTime, .015); if (band === "lo" && on && this.decks[1] === d && !this.decks[0].kill.lo) this.usedSwap = true; },
+  setColor(d, v){ d.color = Math.max(-1, Math.min(1, v)); if (Math.abs(d.color) < .04) d.color = 0; const f = d.eqN.col, t = this.ac.currentTime;
+    if (d.color < 0){ f.type = "lowpass"; f.frequency.setTargetAtTime(20000*Math.pow(.008, -d.color), t, .02); } else if (d.color > 0){ f.type = "highpass"; f.frequency.setTargetAtTime(20*Math.pow(120, d.color), t, .02); } else { f.type = "lowpass"; f.frequency.setTargetAtTime(20000, t, .02); }
+    if (Math.abs(d.color) > .35){ this.didSweep = true; if (this.decks[1].playing) this.usedFilter = true; } },
+  resetEQ(d){ for (const b of ["lo", "mid", "hi"]) this.setKill(d, b, false); this.setColor(d, 0); },
+  sync(){ const A = this.decks[0], B = this.decks[1], m = this.m; if (!B.genre){ m.say("Load a track on Deck B first.", true); return; }
+    B.pitch = Math.round((this.eff(0)/B.base - 1)*1000)/10; if (B.playing){ const ms = this.phaseMs(); this.nudge(ms); } this.synced = true; m.say("🔗 Synced. Tempo and beats locked (matching by ear pays more).", false); },
+  scratchHit(time, d){ const ac = this.ac, src = ac.createBufferSource(), bp = ac.createBiquadFilter(), g = ac.createGain(); src.buffer = this.noise; bp.type = "bandpass"; bp.Q.value = 6;
+    const up = (this.scrN = (this.scrN || 0) + 1) % 2; bp.frequency.setValueAtTime(up ? 400 : 2400, time); bp.frequency.exponentialRampToValueAtTime(up ? 2400 : 400, time + .09);
+    g.gain.setValueAtTime(.0001, time); g.gain.exponentialRampToValueAtTime(.55, time + .015); g.gain.exponentialRampToValueAtTime(.001, time + .11); src.connect(bp); bp.connect(g); g.connect(d.inp); src.start(time); src.stop(time + .13); },
+  eff(i){ const d = this.decks[i]; return d.base*(1 + d.pitch/100); },
+  newCrate(){ const m = this.m, cur = this.decks[0].genre, near = Object.keys(m.BPM).filter(k => k !== cur && Math.abs(m.BPM[k] - this.eff(0))/this.eff(0) < .2);
+    this.request = (this.m.shift.train ? "afrobeats" : near[Math.floor(Math.random()*near.length)]) || "house";
+    const pick = [this.request, ...near.filter(k => k !== this.request).sort(() => Math.random() - .5).slice(0, 2)];
+    this.crate = pick.sort(() => Math.random() - .5).map(k => ({genre: k, bpm: Math.round(m.BPM[k] + (Math.random()*6 - 3)), name: m.TRACKS[k][Math.floor(Math.random()*m.TRACKS[k].length)]})); },
+  load(t){ const d = this.decks[1]; if (d.playing){ this.m.say("Deck B is already playing.", true); return; } Object.assign(d, {genre: t.genre, base: t.bpm, pitch: 0, name: t.name, left: 80}); this.picked = t.genre === this.request; },
+  // the beat engine: drums and bass for each deck, scheduled a little ahead
+  hit(time, kind, gainNode, f = 1){
+    const ac = this.ac;
+    if (kind === "kick"){ const o = ac.createOscillator(), g = ac.createGain(); o.frequency.setValueAtTime(150*f, time); o.frequency.exponentialRampToValueAtTime(42, time + .12); g.gain.setValueAtTime(1, time); g.gain.exponentialRampToValueAtTime(.001, time + .32); o.connect(g); g.connect(gainNode); o.start(time); o.stop(time + .35); }
+    else if (kind === "bass" || kind === "log"){ const o = ac.createOscillator(), g = ac.createGain(), lp = ac.createBiquadFilter(); o.type = kind === "log" ? "sine" : "sawtooth"; o.frequency.setValueAtTime(f, time); if (kind === "log") o.frequency.exponentialRampToValueAtTime(f*.7, time + .2); lp.frequency.value = 380; g.gain.setValueAtTime(.32, time); g.gain.exponentialRampToValueAtTime(.001, time + (kind === "log" ? .35 : .18)); o.connect(lp); lp.connect(g); g.connect(gainNode); o.start(time); o.stop(time + .4); }
+    else { const src = ac.createBufferSource(), g = ac.createGain(), flt = ac.createBiquadFilter(); src.buffer = this.noise; flt.type = kind === "hat" ? "highpass" : "bandpass"; flt.frequency.value = kind === "hat" ? 7000 : 1800; const len = kind === "hat" ? .04 : kind === "shaker" ? .03 : .15;
+      g.gain.setValueAtTime(kind === "hat" ? .18 : kind === "shaker" ? .1 : .4, time); g.gain.exponentialRampToValueAtTime(.001, time + len); src.connect(flt); flt.connect(g); g.connect(gainNode); src.start(time); src.stop(time + len + .02); }
+  },
+  PAT: {house: {kick: [0, 4, 8, 12], clap: [4, 12], hat: [2, 6, 10, 14], bass: [2, 6, 10, 14]}, techno: {kick: [0, 4, 8, 12], clap: [4, 12], hat: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], bass: [1, 3, 5, 7, 9, 11, 13, 15]},
+    afrobeats: {kick: [0, 3, 8, 11], clap: [4, 12], shaker: [0, 2, 3, 4, 6, 7, 8, 10, 11, 12, 14, 15], bass: [0, 7, 10]}, amapiano: {kick: [0, 8], clap: [4, 12], shaker: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], log: [0, 3, 6, 10]},
+    reggaeton: {kick: [0, 4, 8, 12], clap: [3, 6, 11, 14], hat: [2, 10], bass: [0, 8]}, hiphop: {kick: [0, 7, 10], clap: [4, 12], hat: [0, 2, 4, 6, 8, 10, 12, 14], bass: [0, 10]}},
+  schedule(){
+    const ac = this.ac; if (!ac) return; const ahead = ac.currentTime + .12;
+    this.decks.forEach((d, i) => { if (!d.playing || !d.genre) return; const P = this.PAT[d.genre], sixteenth = 60/this.eff(i)/4, root = {house: 55, techno: 49, afrobeats: 61.7, amapiano: 46, reggaeton: 58, hiphop: 52}[d.genre];
+      while (d.next < ahead){ const st = d.step % 16; for (const [k, arr] of Object.entries(P)) if (arr.includes(st)) this.hit(d.next, k === "clap" ? "clap" : k, d.inp, k === "bass" || k === "log" ? root*(st > 8 ? 1.5 : 1) : 1); if (this.scratch === d && st % 2 === 0) this.scratchHit(d.next, d); d.step++; d.next += sixteenth; } });
+  },
+  beatPos(i){ const d = this.decks[i]; if (!d.playing) return 0; return (this.ac.currentTime - d.start)/(60/this.eff(i)); },
+  phaseMs(){ if (!this.decks[1].playing) return 999; const a = this.beatPos(0), b = this.beatPos(1), diff = ((b - a) % 1 + 1.5) % 1 - .5; return diff*60000/this.eff(0); },
+  playB(){ const d = this.decks[1], m = this.m; if (!d.genre){ m.say("Load a track on Deck B from the crate first.", true); return; } if (d.playing) return;
+    const now = this.ac.currentTime + .02; d.start = now; d.next = now; d.step = 0; d.playing = true;
+    const a = this.beatPos(0) + .02*this.eff(0)/60, phrase = a % 16; this.dropScore = phrase < .5 || phrase > 15.5 ? 100 : phrase < 1.5 || phrase > 14.5 ? 70 : Math.abs((a % 4) - 0) < .3 || (a % 4) > 3.7 ? 45 : 20;
+    m.say(this.dropScore >= 70 ? "Dropped right on the phrase!" : this.dropScore >= 45 ? "On the bar, but not the phrase. Close!" : "Off the bar. Wait for the counter to hit 1.", this.dropScore < 45); },
+  nudge(ms){ const d = this.decks[1]; if (!d.playing) return; d.start += ms/1000; d.next += ms/1000; },
+  setXF(v){ this.xf = Math.max(0, Math.min(1, v)); this.decks[0].gain.gain.setTargetAtTime(Math.cos(this.xf*Math.PI/2), this.ac.currentTime, .03); this.decks[1].gain.gain.setTargetAtTime(Math.sin(this.xf*Math.PI/2), this.ac.currentTime, .03);
+    if (this.xf >= .99 && this.decks[1].playing) this.completeMix(); },
+  completeMix(){
+    const m = this.m, tempo = Math.max(0, 100 - Math.abs(this.eff(1) - this.eff(0))*40), phase = Math.max(0, 100 - Math.max(0, Math.abs(this.phaseMs()) - 15)*1.2), genre = this.picked ? 100 : 40;
+    let sc = Math.round(tempo*.3 + phase*.3 + (this.dropScore || 20)*.2 + genre*.2); const fx = [];
+    if (this.usedFilter){ sc += 6; fx.push("filter sweep +6"); } if (this.usedSwap && (this.mud || 0) < 2){ sc += 8; fx.push("clean bass swap +8"); } else if ((this.mud || 0) > 5){ sc -= 10; fx.push("muddy bass -10"); } if (this.synced){ sc -= 10; fx.push("used Sync -10"); } sc = Math.max(0, Math.min(100, sc));
+    this.energy = Math.max(.1, Math.min(1, this.energy + (sc - 55)/120));
+    m.score(sc, Math.round(sc/8), sc >= 85 ? "🔥 Seamless mix! The floor is going crazy." : sc >= 60 ? "Smooth transition." : "Rough mix. The crowd noticed.");
+    m.shift.log.push(`Mix ${this.transitions + 1}: ${sc}% (tempo ${Math.round(tempo)}, phase ${Math.round(phase)}, ${this.picked ? "right genre" : "not what they asked for"}${fx.length ? ", " + fx.join(", ") : ""})`); this.usedFilter = false; this.usedSwap = false; this.mud = 0; this.synced = false;
+    if (sc >= 85) try{ Lounge.burst(new THREE.Vector3(0, 2.5, -8), 20); }catch(e){}
+    const A = this.decks[0]; A.playing = false; A.gain.gain.value = 0; this.resetEQ(A); if (this.scratch === A) this.scratch = null;
+    this.decks = [this.decks[1], A]; Object.assign(A, {genre: null, name: "", pitch: 0, base: 0}); this.xf = 0; this.decks[0].gain.gain.setTargetAtTime(1, this.ac.currentTime, .02);
+    this.transitions++; this.decks[0].left = 70 + Math.random()*20;
+    if (this.transitions >= this.goal && !(this.m.shift.train && (this.ti || 0) < this.steps.length)) setTimeout(() => { if (this.m.game === this) this.m.endGame("Your set is done. Great night!"); }, 1500); else this.newCrate();
+  },
+  update(dt){
+    const m = this.m, A = this.decks[0];
+    if (A.playing){ A.left -= dt; if (A.left <= 0 && !m.shift.train){ if (this.xf < .5){ m.strike("Dead air! Deck A ran out before you mixed."); this.energy = Math.max(.1, this.energy - .3); } A.left = 30; } }
+    this.energy = Math.max(.05, this.energy - dt*.004);
+    if (this.sweep){ const d = this.sweep.d; this.setColor(d, d.color + this.sweep.dir*dt*.7); }
+    const B = this.decks[1]; if (A.playing && B.playing && this.xf > .2 && this.xf < .8 && !A.kill.lo && !B.kill.lo) this.mud = (this.mud || 0) + dt;
+    if (this.scratch && this.scratch.playing){ this.scrT = (this.scrT || 0) + dt; if (this.scrT > 1.5){ this.scrT = 0; this.energy = Math.min(1, this.energy + .03); m.emoji("🤚", new THREE.Vector3((Math.random() - .5)*4, 2.4, -7)); } }
+    if (Math.random() < dt*.3*this.energy) m.emoji(["🔥", "🙌", "💃", "🎶"][Math.floor(Math.random()*4)], new THREE.Vector3((Math.random() - .5)*8, 2.4, -6 + (Math.random() - .5)*5));
+    try{ if (Lounge.dj) Lounge.dj.visible = false; }catch(e){}
+    m.tutTick(this);
+  },
+  draw(m){
+    const x = m.x, W = m.W, s = m.shift; let Y = m.tutDraw(this, 82);
+    m.text(`🎚 Mix ${Math.min(this.transitions + 1, this.goal)}/${this.goal}   🙌 crowd`, 28, Y + 20, 22, "#ffd87a", 700); m.bar(330, Y + 8, 220, 18, this.energy, this.energy > .6 ? "#3ad07a" : this.energy > .3 ? "#ffc21a" : "#ff6a5a");
+    if (!s.train) m.text(`❌ ${s.strikes}/${s.maxStrikes}`, 580, Y + 20, 22, "#ffd87a", 700);
+    m.text(`📣 The crowd wants: ${this.request ? this.request.toUpperCase() : "—"}`, 690, Y + 20, 22, "#9fe8ff", 700, "left", 310); Y += 40;
+    const deckBox = (i, X) => { const d = this.decks[i], on = d.playing && Math.floor(this.beatPos(i) % 1*4) === 0;
+      m.rr(x, X, Y, 470, 262, 16); x.fillStyle = "rgba(255,255,255,.05)"; x.fill();
+      m.text(`DECK ${i ? "B" : "A"}${d.playing ? " ▶" : ""}`, X + 16, Y + 30, 20, i ? "#ff8ad8" : "#7ad8ff", 800);
+      x.beginPath(); x.arc(X + 440, Y + 24, 10, 0, 7); x.fillStyle = on ? (i ? "#ff8ad8" : "#7ad8ff") : "rgba(255,255,255,.15)"; x.fill();
+      m.text(d.genre ? `${d.name} · ${d.genre}` : "Empty: load a track below", X + 16, Y + 62, 20, "#fff", 600, "left", 440);
+      m.text(d.genre ? `${this.eff(i).toFixed(1)} BPM` : "", X + 16, Y + 100, 34, "#fff", 800);
+      if (i === 0) m.text(d.playing ? `⏳ ${Math.max(0, Math.ceil(d.left))}s left` : "", X + 260, Y + 100, 22, d.left < 15 ? "#ff8a7a" : "rgba(255,255,255,.7)", 700);
+      if (i === 1 && d.genre){ m.btn("pm", X + 16, Y + 122, 84, 52, "Pitch −", () => { d.pitch = Math.round((d.pitch - .2)*10)/10; }, {size: 17}); m.btn("pp", X + 108, Y + 122, 84, 52, "Pitch +", () => { d.pitch = Math.round((d.pitch + .2)*10)/10; }, {size: 17});
+        m.btn("pm2", X + 200, Y + 122, 60, 52, "−−", () => { d.pitch = Math.round((d.pitch - 1)*10)/10; }, {size: 17}); m.btn("pp2", X + 268, Y + 122, 60, 52, "++", () => { d.pitch = Math.round((d.pitch + 1)*10)/10; }, {size: 17});
+        m.btn("play", X + 340, Y + 122, 114, 52, d.playing ? "Playing" : "▶ Play B", () => this.playB(), {primary: !d.playing, size: 19});
+        if (!s.train || (this.ti || 0) >= this.steps.length) m.btn("sync", X + 340, Y + 74, 114, 40, this.synced ? "🔗 Synced" : "🔗 Sync", () => this.sync(), {size: 17, on: this.synced}); }
+      if (i === 0 && d.playing){ m.btn("scrA", X + 300, Y + 122, 154, 52, "🤚 Scratch", () => {}, {size: 18, on: this.scratch === d, hold: on => { this.scratch = on ? d : null; this.scrT = 0; }}); }
+      // scrolling waveform: kick red, bass orange, snare/clap green, hats blue (a frequency colour map)
+      if (d.genre){ const wx = X + 16, ww = 438, wy = Y + 184, wh = 26, P = this.PAT[d.genre], cur = d.playing ? this.beatPos(i)*4 : 0, per = ww/48;
+        x.save(); m.rr(x, wx, wy, ww, wh, 6); x.fillStyle = "rgba(0,0,0,.35)"; x.fill(); x.clip();
+        for (let k = Math.floor(cur) - 16; k < cur + 32; k++){ if (k < 0) continue; const st = ((k % 16) + 16) % 16, px = wx + ww/3 + (k - cur)*per;
+          if (k % 64 === 0){ x.fillStyle = "rgba(255,255,255,.5)"; x.fillRect(px - 1, wy, 2, wh); } else if (k % 4 === 0){ x.fillStyle = "rgba(255,255,255,.12)"; x.fillRect(px, wy, 1, wh); }
+          const bars = [[P.kick, "#ff4a4a", 1, "lo"], [P.bass || P.log, "#ff9a2a", .72, "lo"], [P.clap, "#3ad07a", .55, "mid"], [P.hat || P.shaker, "#5ab4ff", .3, "hi"]];
+          for (const [arr, c, hgt, band] of bars){ if (!arr || !arr.includes(st)) continue; x.globalAlpha = d.kill[band] ? .15 : (k < cur ? .45 : .95); x.fillStyle = c; const h = wh*hgt*(band === "lo" && d.color > .3 ? 1 - d.color*.8 : band === "hi" && d.color < -.3 ? 1 + d.color*.8 : 1); x.fillRect(px, wy + (wh - h)/2, Math.max(2, per - 2), h); }
+          x.globalAlpha = 1; }
+        x.fillStyle = "#fff"; x.fillRect(wx + ww/3 - 1, wy - 2, 3, wh + 4); x.restore(); }
+      // mixer strip: kill switches for low / mid / high, the colour filter, and its readout
+      [["lo", "LOW"], ["mid", "MID"], ["hi", "HI"]].forEach(([b, l], j) => m.btn(`k${i}${b}`, X + 16 + j*70, Y + 218, 64, 38, d.kill[b] ? "✕ " + l : l, () => this.setKill(d, b, !d.kill[b]), {size: 15, on: d.kill[b], r: 10}));
+      m.btn(`fl${i}`, X + 230, Y + 218, 70, 38, "◀ LPF", () => {}, {size: 15, r: 10, on: d.color < 0, hold: on => { this.sweep = on ? {d, dir: -1} : null; }});
+      m.btn(`fh${i}`, X + 384, Y + 218, 70, 38, "HPF ▶", () => {}, {size: 15, r: 10, on: d.color > 0, hold: on => { this.sweep = on ? {d, dir: 1} : null; }});
+      m.btn(`fc${i}`, X + 306, Y + 218, 72, 38, d.color === 0 ? "FILTER" : `${d.color < 0 ? "LP" : "HP"} ${Math.round(Math.abs(d.color)*100)}`, () => this.setColor(d, 0), {size: 14, r: 10}); };
+    deckBox(0, 28); deckBox(1, 526); Y += 276;
+    // phrase counter and phase meter
+    const beat = this.beatPos(0), ph = Math.floor(beat % 16) + 1;
+    m.text(`PHRASE ${ph}/16`, 28, Y + 24, 22, ph === 1 ? "#3ad07a" : "#fff", 800);
+    for (let i = 0; i < 16; i++){ x.fillStyle = i < ph ? (i === 0 ? "#3ad07a" : "#ffc21a") : "rgba(255,255,255,.12)"; x.fillRect(220 + i*18, Y + 10, 14, 18); }
+    const pm = this.phaseMs();
+    if (this.decks[1].playing){ m.text(`PHASE ${pm > 0 ? "+" : ""}${Math.round(pm)} ms`, 540, Y + 24, 22, Math.abs(pm) < 30 ? "#3ad07a" : "#ff8a7a", 800);
+      m.btn("nl", 760, Y, 110, 44, "◀ Nudge", () => this.nudge(-12), {size: 17}); m.btn("nr", 880, Y, 110, 44, "Nudge ▶", () => this.nudge(12), {size: 17}); }
+    Y += 58;
+    if (this.decks[1].playing){ // crossfader
+    m.text("CROSSFADER", 28, Y + 26, 18, "#ffc21a", 800);
+    m.btn("xa", 190, Y, 90, 50, "◀ A", () => this.setXF(this.xf - .2), {size: 19}); m.bar(296, Y + 16, 420, 18, this.xf, "#ff8ad8", "rgba(122,216,255,.35)"); m.btn("xb", 732, Y, 90, 50, "B ▶", () => this.setXF(this.xf + .2), {size: 19}); Y += 66; }
+    else { // crate
+    m.text("CRATE: load the next track onto Deck B", 28, Y + 20, 18, "#ffc21a", 800); Y += 32;
+    this.crate.forEach((t, i) => m.btn("c" + i, 28 + i*328, Y, 318, 68, `${t.genre === this.request ? "📣 " : ""}${t.name}`, () => this.load(t), {left: true, size: 20, sub: `${t.genre} · ${t.bpm} BPM`, on: this.decks[1].name === t.name})); }
+  },
+  end(){ clearInterval(this.timer); try{ this.master.disconnect(); }catch(e){} if (this.wasPlaying && !S.playing) togglePlay(); try{ if (Lounge.dj) Lounge.dj.visible = true; }catch(e){} }
+};
+/* ---------- mini-game kit: choices, timing, balance, hold-to-pour, quick match, rhythm, camera flashes ---------- */
+Object.assign(Mogul, {
+  kit(g, k){ g.kit = Object.assign({t: 0, r: 0, sc: [], pos: 0, n: 0, v: 0}, k); const K = g.kit;
+    if (K.type === "timing") K.zc = .2 + Math.random()*.6;
+    if (K.type === "rhythm"){ K.notes = []; const beat = 60/(K.bpm || 100); for (let i = 0; i < (K.count || 12); i++) K.notes.push({t: 2 + i*beat*(K.every || 1), lane: Math.floor(Math.random()*4), hit: null}); }
+    if (K.type === "dir") this.kitDir(K);
+    this.draw(); },
+  kitDir(K){ K.dir = ["L", "C", "R"][Math.floor(Math.random()*3)]; K.dt = 0; K.base = Lounge.headYaw();
+    if (this.vr()){ const T = THREE, a = K.base + {L: .9, C: 0, R: -.9}[K.dir], h = Lounge.headPos(); if (!this.flashS){ this.flashS = new T.Sprite(new T.SpriteMaterial({map: Lounge.glowT, color: 0xffffff, transparent: true, depthWrite: false, blending: T.AdditiveBlending})); this.flashS.scale.setScalar(1.6); Lounge.scene.add(this.flashS); }
+      this.flashS.position.set(h.x - Math.sin(a)*3, h.y + .2, h.z - Math.cos(a)*3); this.flashS.visible = true; this.flashS.material.opacity = 1; } },
+  kitEnd(g, score){ const K = g.kit; g.kit = null; if (this.flashS) this.flashS.visible = false; try{ K.done && K.done(score); }catch(e){ console.warn(e); } this.draw(); },
+  kitRound(g, s){ const K = g.kit; K.sc.push(Math.max(0, Math.min(100, s))); K.r++; const n = K.rounds && K.rounds.length || K.count || 3;
+    if (K.r >= n){ const avg = K.sc.reduce((a, b) => a + b, 0)/K.sc.length; setTimeout(() => { if (g.kit === K) this.kitEnd(g, avg); }, K.type === "choice" ? 0 : 450); }
+    else { if (K.type === "timing") K.zc = .2 + Math.random()*.6; if (K.type === "hold") K.v = 0; if (K.type === "dir") this.kitDir(K); K.rt = 0; } },
+  kitUpdate(g, dt){
+    const K = g.kit; if (!K) return; K.t += dt; K.rt = (K.rt || 0) + dt;
+    if (K.type === "timing"){ K.pos = (Math.sin(K.t*Math.PI*2*(K.speed || .6)) + 1)/2; if (K.rt > 6) this.kitRound(g, 0); }
+    else if (K.type === "balance"){ if (Math.random() < dt*(K.bumps || 1.2)) K.v += (Math.random() - .5)*(K.force || 2.2); K.v += (K.push || 0)*dt*3.2 + K.n*dt*.6; K.v *= Math.pow(.25, dt); K.n += K.v*dt;
+      if (Math.abs(K.n) < .35) K.inT = (K.inT || 0) + dt; if (Math.abs(K.n) >= 1){ K.spills = (K.spills || 0) + 1; K.n = 0; K.v = 0; this.say(K.spillMsg || "Whoa! You spilled.", true); }
+      if (K.t >= (K.dur || 10)) this.kitEnd(g, Math.max(0, (K.inT || 0)/(K.dur || 10)*100 - (K.spills || 0)*20)); }
+    else if (K.type === "hold"){ if (K.holding){ const R = K.rounds[K.r]; K.v = Math.min(R.max || R.target*2, K.v + dt*(R.rate || 1)); } }
+    else if (K.type === "match"){ if (K.rt > (K.time || 6)) this.kitRound(g, 0); }
+    else if (K.type === "rhythm"){ for (const nt of K.notes) if (nt.hit === null && K.t > nt.t + .25){ nt.hit = false; } if (K.t > K.notes[K.notes.length - 1].t + .6){ const h = K.notes.filter(n => n.hit).length; this.kitEnd(g, h/K.notes.length*100); } }
+    else if (K.type === "dir"){ K.dt += dt; if (this.flashS && this.flashS.visible) this.flashS.material.opacity = Math.max(0, 1 - K.dt);
+      if (this.vr()){ let d = Lounge.headYaw() - K.base; d = Math.atan2(Math.sin(d), Math.cos(d)); const want = {L: .9, C: 0, R: -.9}[K.dir]; if (Math.abs(d - want) < .35 && K.dt > .15) this.kitRound(g, 100 - K.dt*40); }
+      if (K.dt > (K.window || 1.4)) this.kitRound(g, 0); }
+    else if (K.type === "choice" && K.time && K.picked === undefined && K.t > K.time){ K.picked = -1; this.say("Too slow!", true); setTimeout(() => { if (g.kit === K) this.kitEnd(g, 0); }, 900); }
+  },
+  kitDraw(g, Y){
+    const K = g.kit; if (!K) return Y; const x = this.x, W = this.W;
+    if (K.title) this.text(K.title, 28, Y + 34, 30, "#fff", 800, "left", W - 56);
+    let y = K.text ? this.wrap(K.text, 28, Y + 74, 22, W - 56) : Y + 60;
+    if (K.face) { this.face(K.face, W - 130, Y + 10, 90); }
+    if (K.type === "info"){ this.btn("knext", 28, Math.max(y + 10, this.H - 160), 260, 62, K.btn || "Next ▶", () => this.kitEnd(g, null), {primary: true, size: 24}); }
+    else if (K.type === "choice"){ K.options.forEach((o, i) => { const by = y + 10 + i*74; const picked = K.picked === i;
+        this.btn("k" + i, 28, by, W - 56, 64, o.t, () => { if (K.picked !== undefined) return; K.picked = i; this.say(o.fb || (o.s >= 70 ? "Good call." : "Hmm, not the best move."), o.s < 50); setTimeout(() => { if (g.kit === K) this.kitEnd(g, o.s); }, 1500); }, {left: true, size: 21, on: picked}); });
+      if (K.time && K.picked === undefined) this.bar(28, this.H - 110, W - 56, 14, 1 - K.t/K.time, "#ff8a7a"); }
+    else if (K.type === "timing"){ const bx = 60, bw = W - 120, by = y + 30; this.bar(bx, by, bw, 34, 0); const zx = bx + bw*(K.zc - (K.zw || .16)/2);
+      this.rr(x, zx, by, bw*(K.zw || .16), 34, 10); x.fillStyle = "rgba(58,208,122,.6)"; x.fill(); x.fillStyle = "#fff"; x.fillRect(bx + bw*K.pos - 4, by - 10, 8, 54);
+      this.text(`${K.r + 1}/${K.count || 3}`, W/2, by + 90, 22, "rgba(255,255,255,.6)", 600, "center");
+      this.btn("know", W/2 - 160, by + 110, 320, 80, K.label || "NOW!", () => { const d = Math.abs(K.pos - K.zc), half = (K.zw || .16)/2; this.kitRound(g, d < half ? 100 - d/half*40 : Math.max(0, 50 - (d - half)*300)); this.say(d < half ? "Nice timing!" : "Missed the zone.", d >= half); }, {primary: true, size: 32}); }
+    else if (K.type === "balance"){ const bx = 60, bw = W - 120, by = y + 30; this.bar(bx, by, bw, 34, 0); this.rr(x, bx + bw*.325, by, bw*.35, 34, 10); x.fillStyle = "rgba(58,208,122,.35)"; x.fill();
+      x.fillStyle = Math.abs(K.n) < .35 ? "#3ad07a" : Math.abs(K.n) < .7 ? "#ffc21a" : "#ff5a4a"; x.beginPath(); x.arc(bx + bw*(.5 + K.n/2), by + 17, 22, 0, 7); x.fill();
+      this.text(`⏱ ${Math.max(0, Math.ceil((K.dur || 10) - K.t))}s   ${K.spills ? "💦 spills: " + K.spills : ""}`, W/2, by + 84, 22, "rgba(255,255,255,.75)", 600, "center");
+      this.btn("kl", 60, by + 110, 300, 80, "◀ Lean left", () => {}, {size: 26, hold: on => { K.push = on ? -1 : 0; }}); this.btn("kr", W - 360, by + 110, 300, 80, "Lean right ▶", () => {}, {size: 26, hold: on => { K.push = on ? 1 : 0; }}); }
+    else if (K.type === "hold"){ const R = K.rounds[K.r] || K.rounds[K.rounds.length - 1], bx = 60, bw = W - 120, by = y + 30, max = R.max || R.target*2;
+      this.text(R.label, 60, by - 6, 22, "#ffd87a", 700); this.bar(bx, by + 10, bw, 34, K.v/max, "#ffc21a"); x.fillStyle = "#3ad07a"; x.fillRect(bx + bw*(R.target/max) - 3, by, 6, 54);
+      this.text(`${K.v.toFixed(1)} ${R.unit || ""}  (target ${R.target} ${R.unit || ""})`, W/2, by + 90, 24, "#fff", 700, "center");
+      this.btn("khold", W/2 - 200, by + 110, 400, 80, this.vr() ? (K.holding ? "Tap to stop" : "Tap to start") : (K.holding ? "Pouring…" : "Hold to pour"), () => {}, {primary: true, size: 28, hold: on => { K.holding = on; if (!on && K.v > 0){ const sc = Math.max(0, 100 - Math.abs(K.v - R.target)/R.target*220); this.say(sc > 80 ? "Perfect pour." : sc > 50 ? "Close enough." : "Way off.", sc < 50); this.kitRound(g, sc); } }}); }
+    else if (K.type === "match"){ const R = K.rounds[K.r] || K.rounds[0]; this.text(R.q, 28, y + 20, 28, "#9fe8ff", 800, "left", W - 56);
+      R.options.forEach((o, i) => this.btn("km" + i, 28 + (i % 2)*((W - 66)/2 + 10), y + 50 + Math.floor(i/2)*78, (W - 66)/2, 66, o, () => { const ok = o === R.correct; this.say(ok ? "✓ Right" : "✗ Wrong one", !ok); this.kitRound(g, ok ? 100 - K.rt*10 : 0); }, {size: 22}));
+      this.bar(28, this.H - 100, W - 56, 12, 1 - K.rt/(K.time || 6), "#ff8a7a"); }
+    else if (K.type === "rhythm"){ const lanes = ["◀", "▲", "▼", "▶"], lx = i => W/2 - 300 + i*200, hitY = y + 250;
+      for (let i = 0; i < 4; i++){ x.fillStyle = "rgba(255,255,255,.06)"; x.fillRect(lx(i) - 60, y + 10, 120, 260); }
+      x.fillStyle = "rgba(255,194,26,.6)"; x.fillRect(W/2 - 380, hitY - 3, 760, 6);
+      for (const nt of K.notes){ const dy = (nt.t - K.t)*260; if (dy < -40 || dy > 260 || nt.hit) continue; x.fillStyle = nt.hit === false ? "#ff5a4a" : "#ff8ad8"; x.beginPath(); x.arc(lx(nt.lane), hitY - dy, 26, 0, 7); x.fill(); }
+      lanes.forEach((l, i) => this.btn("kp" + i, lx(i) - 60, hitY + 20, 120, 70, l, () => { const nt = K.notes.find(n => n.hit === null && n.lane === i && Math.abs(n.t - K.t) < .22); if (nt){ nt.hit = true; } else this.say("Off beat", true); }, {size: 34, primary: true})); }
+    else if (K.type === "dir"){ const arrow = {L: "⬅", C: "⬆", R: "➡"}[K.dir];
+      this.text(`📸 FLASH ${arrow}`, W/2, y + 60, 60, "#fff", 800, "center"); this.text(this.vr() ? "Turn and look at the camera!" : "Strike a pose toward the camera!", W/2, y + 110, 24, "rgba(255,255,255,.75)", 600, "center");
+      [["L", "⬅ Left"], ["C", "⬆ Front"], ["R", "Right ➡"]].forEach(([d, l], i) => this.btn("kd" + d, 60 + i*310, y + 150, 290, 80, l, () => { const ok = d === K.dir; this.say(ok ? "📸 Great shot!" : "Wrong way!", !ok); this.kitRound(g, ok ? 100 - K.dt*40 : 0); }, {size: 28})); }
+    return Y + 300;
+  },
+  // a game that's just a sequence of kit stages (bottle service, promoter, celebrity, birthday)
+  scripted(def){ return Object.assign({
+    start(s){ this.stages = this.make(s); this.si = 0; try{ this.setup && this.setup(s); }catch(e){ console.warn(e); } this.next(); },
+    next(){ const m = this.m; if (this.si >= this.stages.length){ return m.endGame(this.outro ? this.outro() : ""); }
+      const st = this.stages[this.si++]; if (st.before) try{ st.before(); }catch(e){}
+      if (st.type === "custom") return st.run(this);
+      m.kit(this, Object.assign({}, st, {done: sc => { if (sc !== null && sc !== undefined){ m.score(sc, st.cash ? Math.round(st.cash*sc/100) : 0); if (st.log) m.shift.log.push(`${st.log}: ${Math.round(sc)}%`); if (sc < 30 && st.strike) m.strike(st.strike); } try{ st.after && st.after(sc); }catch(e){} setTimeout(() => this.next(), 200); }})); },
+    update(dt){ this.m.kitUpdate(this, dt); this.tick && this.tick(dt); },
+    draw(m){ let Y = 82; if (!m.shift.train) { m.text(`Stage ${Math.min(this.si, this.stages.length)}/${this.stages.length}   💵 ${m.money(m.shift.earn)}   ❌ ${m.shift.strikes}/${m.shift.maxStrikes}`, 28, Y + 20, 22, "#ffd87a", 700); Y += 30; }
+      else { m.text(`🎓 Training · stage ${Math.min(this.si, this.stages.length)}/${this.stages.length}`, 28, Y + 20, 22, "#9fe8ff", 700); Y += 30; }
+      if (this.kit) m.kitDraw(this, Y); else if (this.drawExtra) this.drawExtra(m, Y); },
+    key(){ return false; }
+  }, def); }
+});
+
+/* ================= 🚪 Bouncer: IDs, dress code, guest list, capacity, and breaking up fights ================= */
+Mogul.NAMES = [["Keisha", "Marcus", "Jasmine", "Andre", "Maria", "Carlos", "Aaliyah", "Jamal", "Sofia", "DeShawn", "Priya", "Luis", "Imani", "Tyrone", "Mei", "Diego", "Nia", "Malik", "Gabriela", "Kenji", "Tasha", "Rico"], ["Johnson", "Williams", "Brown", "Davis", "Garcia", "Rodriguez", "Lee", "Patel", "Jackson", "Thomas", "Martinez", "Robinson", "Walker", "Lewis", "Young", "Harris"]];
+Mogul.FIRST = {f: ["Keisha", "Jasmine", "Maria", "Aaliyah", "Sofia", "Priya", "Imani", "Mei", "Nia", "Gabriela", "Tasha"], m: ["Marcus", "Andre", "Carlos", "Jamal", "DeShawn", "Luis", "Tyrone", "Diego", "Malik", "Kenji", "Rico"]};
+Mogul.GAMES.bouncer = {
+  panelSide: .7, anyWorld: false,
+  howTo: ["Tonight's rules are on the left: 21 and over, the dress code, capacity and the VIP list.", "Read each ID: is the birthday 21+? Is it expired? Does the photo match the person in front of you?", "Look at them: banned clothes? Slurring and stumbling? Big bag? Check the bag before letting them in.", "When the club is full, only people on the VIP list get in. Check the list when someone says they're on it.", "A fight inside? Talk them down first. Then walk the troublemaker out (in VR, grab them by the arm and walk them to the door)."],
+  vrTip: "Compare the face on the ID with the guest standing in front of you. In a fight, hold the grip on the troublemaker and walk them to the green door marker.",
+  start(s){
+    const m = this.m;
+    m.moveMe(7.6, .1, Math.PI);
+    this.rules = {dress: ["sports jerseys", "flip-flops", "baseball caps"][Math.floor(Math.random()*3)], cap: 80, inside: s.train ? 79 : 62 + s.lv*2};
+    this.loaded = (Lounge.peopleSet && Lounge.peopleSet.list || []).map(a => a.name).filter(n => AV_NAMES.includes(n));
+    if (!this.loaded.length) this.loaded = AV_NAMES.slice(0, 10);
+    this.vipList = Array.from({length: 6}, () => this.name());
+    this.count = 0; this.goal = s.train ? 6 : 10 + s.lv; this.guest = null; this.fight = null;
+    this.script = s.train ? ["ok", "minor", "expired", "fake", "listfull", "dress", "fight"] : null;
+    this.door = new THREE.Mesh(new THREE.RingGeometry(.45, .6, 40).rotateX(-Math.PI/2), new THREE.MeshBasicMaterial({color: 0x3ad07a, transparent: true, opacity: .7, toneMapped: false})); this.door.position.set(7.6, .02, 1.6); Lounge.worlds.club.group.add(this.door);
+    if (s.train) this.steps = [
+      {say: "Read tonight's rules on the left: 21+, the dress code, capacity, and the VIP list.", ack: true},
+      {say: "Guest 1: the ID is valid, they're over 21 and dressed fine. Tap ✅ Let in.", done: g => g.count >= 1},
+      {say: "Guest 2: check the birthday. Under 21 means no entry. Tap ⛔ Deny.", done: g => g.count >= 2},
+      {say: "Guest 3: look at the expiry date. An expired ID isn't valid. Deny.", done: g => g.count >= 3},
+      {say: "Guest 4: compare the ID photo with the person in front of you. Not the same person? Deny: it's a borrowed ID.", done: g => g.count >= 4},
+      {say: "The club is full (80/80). Guest 5 says they're on the list. Tap 📋 Check list, then let them in if they're on it.", done: g => g.count >= 5},
+      {say: "Guest 6 is wearing something tonight's dress code doesn't allow. Deny, politely.", done: g => g.count >= 6},
+      {say: "A fight is starting inside! First, talk them down.", done: g => g.fightDone}
+    ];
+    this.nextGuest();
+  },
+  name(g){ const N = this.m.NAMES, F = this.m.FIRST[g] || N[0]; return F[Math.floor(Math.random()*F.length)] + " " + N[1][Math.floor(Math.random()*N[1].length)]; },
+  genderOf(nm){ const f = nm.split(" ")[0]; return this.m.FIRST.m.includes(f) ? "m" : "f"; },
+  makeGuest(kind){
+    const now = new Date(), age = kind === "minor" ? 18 + Math.floor(Math.random()*3) : 21 + Math.floor(Math.random()*18);
+    const dob = new Date(now.getFullYear() - age, Math.floor(Math.random()*12), 1 + Math.floor(Math.random()*27)); if (kind === "minor" && Math.random() < .4) dob.setFullYear(now.getFullYear() - 21, now.getMonth(), now.getDate() + 3 + Math.floor(Math.random()*20));
+    const want = kind === "listfull" ? this.vipList[Math.floor(Math.random()*this.vipList.length)] : null, wantG = kind === "listfull" ? this.genderOf(want) : kind === "listfake" ? this.genderOf(this.vipList[0]) : null;
+    const pool = wantG ? this.loaded.filter(n => (Lounge.AVATARS[n] || "f") === wantG) : this.loaded, av = (pool.length ? pool : this.loaded)[Math.floor(Math.random()*(pool.length || this.loaded.length))], g = (Lounge.AVATARS[av] || "f");
+    const other = this.loaded.filter(n => n !== av && (Lounge.AVATARS[n] || "f") === g); const idAv = kind === "fake" && other.length ? other[Math.floor(Math.random()*other.length)] : av;
+    const exp = new Date(now); exp.setFullYear(now.getFullYear() + 1 + Math.floor(Math.random()*4)); if (kind === "expired") exp.setFullYear(now.getFullYear() - 1, Math.floor(Math.random()*12));
+    const nm = kind === "listfull" ? want : kind === "listfake" ? this.vipList[0].split(" ")[0] + " " + this.m.NAMES[1][Math.floor(Math.random()*16)] : this.name(g);
+    const wear = kind === "dress" ? {"sports jerseys": "a basketball jersey and shorts", "flip-flops": "jeans, a nice shirt and flip-flops", "baseball caps": "a blazer and a baseball cap"}[this.rules.dress] : ["a sharp going-out outfit", "nice club clothes", "a smart night-out look"][Math.floor(Math.random()*3)];
+    const bag = kind === "weapon" ? "a large backpack" : Math.random() < .2 ? "a large tote bag" : "a small clutch";
+    return {kind, name: nm, av, idAv, age, dob, exp, wear, bag, bagChecked: false, listChecked: false, drunk: kind === "drunk", weapon: kind === "weapon", claims: kind === "listfull" || kind === "listfake"};
+  },
+  nextGuest(){
+    const m = this.m;
+    if (this.guest && this.guest.slot) this.leave(this.guest.slot, this.lastIn);
+    if (this.count >= this.goal && !(this.script && this.script.length)) return m.endGame("Doors closed. Shift over!");
+    let kind; if (this.script) kind = this.script.shift(); else { const r = Math.random(); kind = r < .45 ? "ok" : r < .57 ? "minor" : r < .65 ? "expired" : r < .73 ? "fake" : r < .82 ? "dress" : r < .88 ? "drunk" : r < .93 ? "weapon" : r < .97 ? "listfull" : "listfake"; if (!this.fightDone && this.count === 5 && Math.random() < .7) kind = "fight"; }
+    if (kind === "fight") return this.startFight();
+    if (kind === "listfull" || kind === "listfake") this.rules.inside = this.rules.cap;
+    const gst = this.guest = this.makeGuest(kind);
+    gst.slot = m.spawn(7.6, 1.9, Math.PI, "idle", {avatar: gst.av, gender: Lounge.AVATARS[gst.av] || "f"});
+    if (gst.slot && gst.drunk) m.bubble(gst.slot, "🥴 heyyy… lemme in…", "#ff8a7a"); else if (gst.slot && gst.claims) m.bubble(gst.slot, "I'm on the list!", "#9fe8ff");
+  },
+  walk(slot, x, z, after){ if (!slot) return; slot.walkTo = {x, z, after}; if (slot.clips && slot.clips.walk && slot.mixer){ const a = slot.mixer.clipAction(slot.clips.walk); a.reset().play(); if (slot.action) slot.action.crossFadeTo(a, .3, false); slot.action = a; } },
+  leave(slot, inside){ this.walk(slot, inside ? 5 : 10.2, inside ? -2 : 2.5, () => this.m.despawn(slot)); },
+  decide(admit){
+    const m = this.m, g = this.guest; if (!g || this.fight) return;
+    const full = this.rules.inside >= this.rules.cap, onList = this.vipList.includes(g.name);
+    let wrong = null;
+    const bad = g.age < 21 ? "they're under 21" : g.exp < new Date() ? "the ID is expired" : g.idAv !== g.av ? "the ID photo isn't them" : g.kind === "dress" ? `tonight's dress code says no ${this.rules.dress}` : g.drunk ? "they're too drunk" : g.weapon ? "they had a knife in the bag" : full && !onList ? "the club was at capacity" : null;
+    if (admit && bad) wrong = `You let someone in, but ${bad}.`;
+    if (admit && g.weapon && !g.bagChecked) wrong = "You let in someone with a big bag without checking it. There was a knife inside.";
+    if (!admit && !bad) wrong = onList && full ? "They were on the VIP list. Check the list next time." : "That guest was fine. You turned away a paying customer.";
+    if (wrong){ m.strike(wrong); m.score(0); m.shift.log.push(wrong); }
+    else { m.score(100, 6, admit ? "✓ Right call. Welcome in!" : `✓ Right call: ${bad}.`); if (admit) this.rules.inside = Math.min(this.rules.cap, this.rules.inside + 1); }
+    if (g.slot){ m.bubble(g.slot, admit ? "🙌" : "😤"); }
+    this.lastIn = admit; this.count++;
+    setTimeout(() => { if (this.m.game === this) this.nextGuest(); }, 700);
+  },
+  startFight(){
+    const m = this.m; this.guest = null;
+    const a = this.fight = {a: m.spawn(2.8, -4.4, -1.2, "cheer", {gender: "m"}), b: m.spawn(1.9, -4.9, 1.9, "cheer", {gender: "m"}), stage: "talk", t: 0};
+    if (a.a) m.bubble(a.a, "😡 You spilled my drink!", "#ff5a4a"); if (a.b) m.bubble(a.b, "😠 Back up!", "#ff5a4a");
+    m.moveMe(2.2, -2.6, Math.PI - .1); m.say("FIGHT on the dance floor! Get over there!", true);
+    m.kit(this, {type: "choice", title: "Two guys are squaring up. What do you say?", text: "Stay calm and get between them. The goal is to end it without anyone getting hurt.", time: 12, options: [
+      {t: "“HEY! Knock it off or you're both getting dropped!”", s: 15, fb: "Yelling and threats make it worse. They're getting angrier."},
+      {t: "“Hey, hey, I got you. Let's step away and sort this out. Drinks are on me at the bar.”", s: 100, fb: "Calm voice, a way out, no one loses face. They start to cool down."},
+      {t: "Shove the bigger one away from the other.", s: 5, fb: "Putting hands on someone first escalates it, and it's on you now."}],
+      done: sc => { m.score(sc, sc > 70 ? 10 : 0); m.shift.log.push(`De-escalation: ${sc}%`); this.restrain(sc); }});
+  },
+  restrain(sc){
+    const m = this.m, f = this.fight;
+    if (sc >= 70 && Math.random() < .5){ if (f.b) m.bubble(f.b, "😮‍💨 fine…"); this.finishFight(true, "You talked them down. Now walk the instigator out."); return; }
+    if (m.vr()){ f.stage = "walk"; f.t = 0; m.say("Hold the grip on the guy who started it and walk him to the green door marker.", false); return; }
+    m.kit(this, {type: "timing", title: "Hold him back", text: "He's pushing past you. Tap when the marker is in the green zone to keep control (3 times).", count: 3, speed: .7, zw: .2, done: s2 => { m.score(s2, s2 > 60 ? 8 : 0); this.finishFight(s2 > 50, s2 > 50 ? "You walked him out safely." : "He got loose and threw a punch before your team grabbed him."); }});
+  },
+  finishFight(ok, msg){ const m = this.m, f = this.fight; if (!f) return; if (!ok) m.strike(msg); else m.say("✓ " + msg); m.shift.log.push("Fight: " + msg);
+    if (f.a){ m.bubble(f.a, null); this.leave(f.a, false); } if (f.b){ m.bubble(f.b, null); this.walk(f.b, 4, -1, () => m.despawn(f.b)); }
+    this.fight = null; this.fightDone = true; m.moveMe(7.6, .1, Math.PI); setTimeout(() => { if (this.m.game === this) this.nextGuest(); }, 900); },
+  update(dt){
+    const m = this.m;
+    for (const sl of (Lounge.slots || [])){ const w = sl.walkTo; if (!w || !sl.p.parent) continue; const p = sl.p.position, dx = w.x - p.x, dz = w.z - p.z, d = Math.hypot(dx, dz);
+      if (d < .15){ sl.walkTo = null; w.after && w.after(); continue; } const sp = Math.min(d, dt*1.3); p.x += dx/d*sp; p.z += dz/d*sp; sl.p.rotation.y = Math.atan2(dx, dz); }
+    const f = this.fight;
+    if (f && f.stage === "walk"){ f.t += dt; const s = f.a; if (s && s.p.parent){ const wp = s.p.getWorldPosition(new THREE.Vector3()); if (Math.hypot(wp.x - 7.6, wp.z - 1.6) < 1.1){ m.score(100, 12); f.stage = "done"; this.finishFight(true, "You walked him out the door. Textbook."); } }
+      if (f && f.t > 35){ f.stage = "done"; this.finishFight(false, "It took too long. The fight started again."); } }
+    if (this.door) this.door.material.opacity = .4 + Math.sin(performance.now()/300)*.3;
+    m.kitUpdate(this, dt); m.tutTick(this);
+  },
+  draw(m){
+    const x = m.x, W = m.W, s = m.shift; let Y = m.tutDraw(this, 82);
+    if (!s.train){ m.text(`Guest ${Math.min(this.count + 1, this.goal)}/${this.goal}   💵 ${m.money(s.earn)}   ❌ ${s.strikes}/${s.maxStrikes}`, 28, Y + 20, 22, "#ffd87a", 700); Y += 34; }
+    if (this.kit){ m.kitDraw(this, Y); return; }
+    if (this.fight && this.fight.stage === "walk"){ m.text("🫱 Grab him (hold grip) and walk him to the green marker by the door.", 28, Y + 40, 24, "#fff", 700, "left", W - 56); m.text(`⏱ ${Math.max(0, Math.ceil(35 - this.fight.t))}s`, 28, Y + 80, 22, "#ffd87a", 700); return; }
+    // tonight's rules
+    m.rr(x, 24, Y, 300, 330, 16); x.fillStyle = "rgba(255,255,255,.05)"; x.fill();
+    m.text("TONIGHT'S RULES", 40, Y + 28, 16, "#ffc21a", 800);
+    let ry = Y + 58; for (const l of ["🔞 21 and over only", `👕 No ${this.rules.dress}`, `👥 Capacity: ${this.rules.inside}/${this.rules.cap}`, "⭐ VIP list:"]) { m.text(l, 40, ry, 19, this.rules.inside >= this.rules.cap && l.startsWith("👥") ? "#ff8a7a" : "#fff", 600, "left", 270); ry += 30; }
+    for (const n of this.vipList) { m.text("   " + n, 40, ry, 17, "rgba(255,255,255,.75)", 500, "left", 270); ry += 24; }
+    const g = this.guest; if (!g){ m.text("Next guest coming up…", 350, Y + 40, 22, "rgba(255,255,255,.6)"); return; }
+    // the ID card
+    const cx = 344, cy = Y, cw = 380, ch = 230; m.rr(x, cx, cy, cw, ch, 18); const grd = x.createLinearGradient(cx, cy, cx + cw, cy + ch); grd.addColorStop(0, "#d8e8f0"); grd.addColorStop(1, "#a8c8d8"); x.fillStyle = grd; x.fill();
+    x.fillStyle = "#1a3a5a"; x.fillRect(cx, cy + 10, cw, 34); m.text("GEORGIA · DRIVER LICENSE", cx + cw/2, cy + 33, 17, "#fff", 800, "center");
+    m.face(g.idAv, cx + 16, cy + 56, 100);
+    const f = d => d.toLocaleDateString("en-US", {month: "2-digit", day: "2-digit", year: "numeric"});
+    [["NAME", g.name], ["DOB", f(g.dob)], ["EXPIRES", f(g.exp)], ["ID", "GA" + (1e7 + Math.floor(g.dob.getTime()/1e5) % 9e7)]].forEach(([k, v], i) => { m.text(k, cx + 136, cy + 74 + i*40, 13, "#3a5a7a", 800); m.text(v, cx + 136, cy + 94 + i*40, 20, "#0a1a2a", 700, "left", cw - 150); });
+    // what you can see
+    const ix = 744; m.text("YOU SEE", ix, Y + 24, 16, "#ffc21a", 800); m.face(g.av, ix, Y + 36, 80);
+    let gy = Y + 40; for (const l of [`Wearing ${g.wear}`, g.drunk ? "Slurring, can barely stand" : "Steady, polite", `Carrying ${g.bag}`, g.claims ? "Says: “I'm on the list!”" : ""]) { if (!l) continue; gy = m.wrap(l, ix + 92, gy + 4, 17, W - ix - 116, "rgba(255,255,255,.85)") ; }
+    if (g.bagChecked) m.text(g.weapon ? "🔪 Bag: a pocket knife!" : "🎒 Bag: phone, keys, lip gloss", ix, Y + 200, 18, g.weapon ? "#ff8a7a" : "#b8ffd4", 700, "left", W - ix - 30);
+    if (g.listChecked) m.text(this.vipList.includes(g.name) ? "📋 On the list ✓" : "📋 Not on the list", ix, Y + 226, 18, this.vipList.includes(g.name) ? "#b8ffd4" : "#ff8a7a", 700, "left", W - ix - 30);
+    // decisions
+    const by = Y + 346;
+    m.btn("adm", 24, by, 230, 70, "✅ Let in", () => this.decide(true), {primary: true, size: 26});
+    m.btn("den", 266, by, 230, 70, "⛔ Deny", () => this.decide(false), {size: 26});
+    m.btn("bag", 508, by, 230, 70, "🎒 Check bag", () => { g.bagChecked = true; }, {size: 22, on: g.bagChecked});
+    m.btn("lst", 750, by, 250, 70, "📋 Check list", () => { g.listChecked = true; }, {size: 22, on: g.listChecked});
+  },
+  end(){ const m = this.m; for (const sl of (Lounge.slots || []).filter(x => x.mogul)) m.despawn(sl); if (this.door && this.door.parent) this.door.parent.remove(this.door); }
+};
+
+/* ================= 🥊 Bar Brawl: block, dodge, counter. In VR, real punches ================= */
+Mogul.GAMES.brawl = {
+  panelSide: .9,
+  howTo: ["Troublemakers stagger in from the dance floor. A red ring under one means he's about to swing.", "Hold 🛡 Block when he swings (keyboard: Space), or dodge ◀ ▶ (A / D).", "Right after a swing he flashes blue: that's your opening. Hit 👊 Punch (keyboard: J).", "Grab stuff! Mugs, bottles and bar stools are on the table next to you. Tap 🍺 Throw (keyboard: T), or in VR grab one and really throw it.", "Drink the glowing 🥃 Liquid Courage for double-power punches, but the room starts spinning.", "Later rounds, their buddies jump in. Only one can swing at a time, so keep your eyes moving. You have 5 hearts."],
+  vrTip: "Hands up in front of your face to block, lean to dodge, and throw real punches when one flashes blue. Grab mugs, bottles and stools off the table and throw them for real. Bring the glowing shot to your mouth to drink it.",
+  start(s){
+    const m = this.m, T = THREE, L = Lounge;
+    this.hp = 5; this.kos = 0; this.total = s.train ? 2 : 3 + Math.floor(s.lv/2); this.foes = []; this.spawned = 0;
+    this.blocks = 0; this.hits = 0; this.dodges = 0; this.throwHits = 0; this.drinks = 0; this.courage = 0; this.spawnT = 1.5; this.crowdT = 2;
+    this.maxAt = s.train ? 1 : Math.min(3, 1 + (s.lv >= 2 ? 1 : 0) + (s.lv >= 5 ? 1 : 0));
+    m.moveMe(0, -3.4, m.vr() ? 0 : -.38);   // on a screen, turn a little so the fight sits left of the panel
+    this.buildProps();
+    if (s.train) this.steps = [
+      {say: "Hold 🛡 Block (or Space) to raise your guard.", vr: "Raise both hands in front of your face to guard.", done: g => g.guardT > .8},
+      {say: "Block a punch: when you see the red ring, keep your guard up.", vr: "When the red ring appears, keep your hands up.", done: g => g.blocks >= 1},
+      {say: "Counter: when he flashes blue after swinging, hit 👊 Punch (or J).", vr: "When he flashes blue, throw a real punch at his head or chest.", done: g => g.hits >= 1},
+      {say: "Dodge: tap ◀ or ▶ (A / D) just as he swings.", vr: "Lean to the side just as he swings.", done: g => g.dodges >= 1},
+      {say: "Use the bar! Tap 🍺 Throw (or T) to chuck a mug at him.", vr: "Grab a mug or bottle off the table beside you and throw it at him.", done: g => g.throwHits >= 1},
+      {say: "Tap 🥃 Liquid Courage to knock back the glowing shot: double-power punches for a bit.", vr: "Grab the glowing shot glass and bring it to your mouth.", done: g => g.drinks >= 1},
+      {say: "Finish him: knock him out!", done: g => g.kos >= 1}
+    ];
+  },
+  /* ---------- the stuff on the table: mugs, bottles, stools, and the glowing shot ---------- */
+  buildProps(){
+    const T = THREE, L = Lounge, g = L.worlds.club && L.worlds.club.group; if (!g) return; const prevW = L.buildingWorld; L.buildingWorld = "club"; try{ this.buildProps2(T, L, g); } finally { L.buildingWorld = prevW; } },
+  buildProps2(T, L, g){
+    this.root = new T.Group(); g.add(this.root); this.props = [this.root]; this.throwables = [];
+    const table = new T.Group(); table.position.set(1.05, 0, -3.25); this.root.add(table);
+    const top = new T.Mesh(new T.CylinderGeometry(.34, .34, .035, 24), new T.MeshStandardMaterial({color: 0x3a2414, roughness: .55})); top.position.y = 1.02; table.add(top);
+    const leg = new T.Mesh(new T.CylinderGeometry(.04, .04, 1.0, 10), new T.MeshStandardMaterial({color: 0x1a1a1a, metalness: .7, roughness: .3})); leg.position.y = .51; table.add(leg);
+    const foot = new T.Mesh(new T.CylinderGeometry(.22, .25, .03, 20), leg.material); foot.position.y = .015; table.add(foot);
+    try{ L.surface(top); }catch(e){}
+    const add = (o, kind, x, y, z) => { o.position.set(x, y, z); o.userData.brawl = {kind, home: new T.Vector3(x, y, z), homeQ: o.quaternion.clone(), gone: 0}; this.root.add(o); L.grabbable(o, {world: "club", bounce: kind === "stool" ? .15 : .35}); this.throwables.push(o); return o; };
+    const glassM = new T.MeshPhysicalMaterial({color: 0xe8f0e0, roughness: .08, transparent: true, opacity: .45, clearcoat: 1});
+    const beerM = new T.MeshStandardMaterial({color: 0xe0a020, roughness: .3, transparent: true, opacity: .9}), foamM = new T.MeshStandardMaterial({color: 0xfff8e6, roughness: .9});
+    const mug = () => { const o = new T.Group(); const b = new T.Mesh(new T.CylinderGeometry(.045, .042, .14, 14, 1, true), glassM); b.position.y = .07; o.add(b);
+      const beer = new T.Mesh(new T.CylinderGeometry(.04, .038, .11, 14), beerM); beer.position.y = .058; o.add(beer); const foam = new T.Mesh(new T.CylinderGeometry(.041, .041, .02, 14), foamM); foam.position.y = .122; o.add(foam);
+      const h = new T.Mesh(new T.TorusGeometry(.03, .008, 6, 12, Math.PI), glassM); h.rotation.z = -Math.PI/2; h.position.set(.05, .07, 0); o.add(h); return o; };
+    const bottleM = new T.MeshPhysicalMaterial({color: 0x2a6a2a, roughness: .12, transparent: true, opacity: .85, clearcoat: 1});
+    const bottle = () => { const o = new T.Group(); o.add(new T.Mesh(Props.lathe([[0, 0], [.032, 0], [.033, .01], [.033, .15], [.022, .19], [.011, .21], [.011, .26], [0, .26]], 14), bottleM)); return o; };
+    const stool = () => { const o = new T.Group(), wood = new T.MeshStandardMaterial({color: 0x6a3a1a, roughness: .6}), metal = new T.MeshStandardMaterial({color: 0x222222, metalness: .7, roughness: .35});
+      const seat = new T.Mesh(new T.CylinderGeometry(.19, .19, .05, 18), wood); seat.position.y = .74; o.add(seat);
+      for (let i = 0; i < 3; i++){ const a = i/3*Math.PI*2, l = new T.Mesh(new T.CylinderGeometry(.018, .018, .76, 6), metal); l.position.set(Math.cos(a)*.13, .37, Math.sin(a)*.13); l.rotation.set(Math.sin(a)*.12, 0, -Math.cos(a)*.12); o.add(l); }
+      const ring = new T.Mesh(new T.TorusGeometry(.13, .01, 6, 18), metal); ring.rotation.x = Math.PI/2; ring.position.y = .3; o.add(ring); return o; };
+    add(mug(), "mug", .9, 1.04, -3.15); add(mug(), "mug", 1.13, 1.04, -3.1); add(mug(), "mug", 1.0, 1.04, -3.42);
+    add(bottle(), "bottle", 1.2, 1.04, -3.33); add(bottle(), "bottle", .82, 1.04, -3.37);
+    add(stool(), "stool", -.95, 0, -3.0); add(stool(), "stool", 1.7, 0, -2.7);
+    // liquid courage: a shot glass that glows
+    const shot = new T.Group(); const sg = new T.Mesh(new T.CylinderGeometry(.024, .02, .055, 12, 1, true), glassM); sg.position.y = .028; shot.add(sg);
+    const liq = new T.Mesh(new T.CylinderGeometry(.021, .018, .04, 12), new T.MeshBasicMaterial({color: 0xffb020, toneMapped: false})); liq.position.y = .022; shot.add(liq);
+    const glow = new T.Sprite(new T.SpriteMaterial({map: L.glowT, color: 0xffa020, transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: .8})); glow.scale.setScalar(.22); glow.position.y = .03; shot.add(glow);
+    shot.position.set(1.05, 1.04, -3.25); shot.userData.brawl = {kind: "shot", home: shot.position.clone(), homeQ: shot.quaternion.clone(), gone: 0}; this.root.add(shot); L.grabbable(shot, {world: "club"}); this.shot = shot; this.shotGlow = glow;
+  },
+  resetProp(o){ const b = o.userData.brawl, gd = o.userData.grab; if (gd.held) return; o.visible = true; o.position.copy(b.home); o.quaternion.copy(b.homeQ); gd.vel.set(0, 0, 0); gd.spin.set(0, 0, 0); gd.resting = true; b.gone = 0; b.flying = false; },
+  /* ---------- the troublemakers ---------- */
+  spawnFoe(){ const m = this.m, T = THREE, joining = this.foes.length > 0;
+    const sl = m.spawn((Math.random() - .5)*3, -7.2, 0, "idle", {gender: Math.random() < .7 ? "m" : "f"}); if (!sl) return; this.spawned++;
+    const lines = joining ? ["🍻 Hey! That's my buddy!", "😤 Nobody touches my boy!", "🤪 I wanna fight too!"] : ["😠 You lookin' at me?", "🤬 Who spilled my drink?!", "🥴 You wanna go, pal?", "😤 Outside, now!"];
+    const f = {sl, hp: m.shift.train ? 5 : 3 + Math.floor(m.shift.lv/4), st: "walk", t: 0, cd: 1.2, home: null, ang: 0, sway: Math.random()*6};
+    m.bubble(sl, lines[Math.floor(Math.random()*lines.length)], "#ff5a4a"); if (joining) m.say("🍻 His buddy just jumped in!", true);
+    f.ring = new T.Mesh(new T.RingGeometry(.35, .5, 32).rotateX(-Math.PI/2), new T.MeshBasicMaterial({color: 0xff3030, transparent: true, opacity: 0, toneMapped: false, depthWrite: false})); sl.p.add(f.ring); f.ring.position.y = .03;
+    this.foes.push(f); this.spreadFoes(); },
+  spreadFoes(){ const live = this.foes.filter(f => !f.down), n = live.length; live.forEach((f, i) => { f.ang = n === 1 ? 0 : (i/(n - 1) - .5)*1.5; }); },
+  target(){ const live = this.foes.filter(f => !f.down); if (!live.length) return null; const open = live.filter(f => f.st === "open" || f.st === "stagger"); const pool = open.length ? open : live;
+    const me = Lounge.headPos(); return pool.slice().sort((a, b) => a.sl.p.getWorldPosition(new THREE.Vector3()).distanceTo(me) - b.sl.p.getWorldPosition(new THREE.Vector3()).distanceTo(me))[0]; },
+  guard(){ if (this.m.vr()){ const h = Lounge.headPos(), cs = (Lounge.xrCtls || []).map(c => new THREE.Vector3().setFromMatrixPosition((c.userData.grip || c).matrixWorld)); return cs.length >= 2 && cs.every(p => p.distanceTo(h) < .42 && p.y > h.y - .32); } return !!this.blocking; },
+  damage(f, n, push, how){ const m = this.m;
+    f.hp -= n; m.emoji(["💥", "👊", "💫", "⭐"][Math.floor(Math.random()*4)], m.headOf(f.sl));
+    try{ Lounge.npcReact(f.sl, Lounge.headPos(), push || new THREE.Vector3(0, 0, -.45)); }catch(e){}
+    if (push){ const p = f.sl.p.position; p.x += push.x*.5; p.z += push.z*.5; }
+    f.st = "stagger"; f.t = 0; f.ring.material.opacity = 0;
+    if (f.hp <= 0) this.knockout(f, how); },
+  punch(vel, foe){ const f = foe || this.target(), m = this.m; if (!f) return;
+    if (f.st === "open" || f.st === "stagger"){ this.hits++; const pow = this.courage > 0 ? 2 : 1; try{ Lounge.xrCtls.forEach(c => Lounge.haptic(c, .8, 60)); }catch(e){}
+      this.damage(f, pow, (vel || this.toFoe(f)).clone().setY(0).normalize().multiplyScalar(pow > 1 ? .7 : .45), pow > 1 ? "courage" : "punch"); }
+    else if (f.st === "wind" || f.st === "walk" || f.st === "guard"){ m.say(this.courage > 0 ? "🥴 Whoa, missed! Wait for the blue opening." : "Blocked! Wait for the blue opening.", true); } },
+  toFoe(f){ const me = Lounge.headPos(), wp = f.sl.p.getWorldPosition(new THREE.Vector3()); return wp.sub(me).setY(0).normalize(); },
+  knockout(f, how){ const m = this.m, T = THREE; if (f.down) return; f.down = true; f.st = "down"; f.t = 0; this.kos++;
+    m.score(how === "throw" ? 100 : 95, 18 + (how === "stool" ? 6 : 0)); m.say(how === "stool" ? "🪑 STOOL KNOCKOUT! Classic." : how === "throw" ? "🍺 Bottled 'em! KNOCKOUT!" : "💫 KNOCKOUT!"); m.bubble(f.sl, null);
+    const dir = this.toFoe(f); f.fall = {ax: new T.Vector3(dir.z, 0, -dir.x), q0: f.sl.p.quaternion.clone()};
+    // cartoon stars circling his head
+    const st = f.stars = new T.Group(); for (let i = 0; i < 4; i++){ const s = new T.Sprite(new T.SpriteMaterial({map: this.starTex(), transparent: true, depthWrite: false})); s.scale.setScalar(.16); st.add(s); } Lounge.scene.add(st);
+    try{ this.bonk(); }catch(e){}
+    this.spreadFoes(); this.spawnT = Math.min(this.spawnT, 1.6);
+    if (!m.shift.train && this.kos >= this.total && !this.foes.some(x => !x.down)) setTimeout(() => { if (m.game === this) m.endGame(this.kos >= 5 ? "You cleared the whole bar. Legendary." : "You cleared the bar. Security wants to hire you."); }, 2200); },
+  starTex(){ if (this._starT) return this._starT; const c = document.createElement("canvas"); c.width = c.height = 64; const x = c.getContext("2d"); x.font = "48px serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText("⭐", 32, 34); return this._starT = new THREE.CanvasTexture(c); },
+  bonk(){ const L = Lounge, ac = (L.listener && L.listener.context) || this.ac || (this.ac = new (window.AudioContext || window.webkitAudioContext)()); const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
+    o.type = "triangle"; o.frequency.setValueAtTime(880, t); o.frequency.exponentialRampToValueAtTime(220, t + .35); g.gain.setValueAtTime(.25, t); g.gain.exponentialRampToValueAtTime(.001, t + .5); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + .55);
+    const o2 = ac.createOscillator(), g2 = ac.createGain(); o2.type = "sine"; o2.frequency.setValueAtTime(1760, t + .3); g2.gain.setValueAtTime(.12, t + .3); g2.gain.exponentialRampToValueAtTime(.001, t + 1); o2.connect(g2); g2.connect(ac.destination); o2.start(t + .3); o2.stop(t + 1.05); },
+  /* ---------- 2D: throw the nearest thing at whoever's closest ---------- */
+  throwNext(){ const m = this.m, f = this.target(); if (!f){ m.say("Nobody to throw at… yet.", true); return; }
+    const o = this.throwables.find(o => o.visible && !o.userData.grab.held && o.userData.grab.resting && !o.userData.brawl.gone && o.userData.brawl.kind !== "stool") || this.throwables.find(o => o.visible && !o.userData.grab.held && o.userData.grab.resting && !o.userData.brawl.gone);
+    if (!o){ m.say("Nothing left on the table. Hang on, the barback's bringing more.", true); return; }
+    const T = THREE, gd = o.userData.grab, from = Lounge.headPos().add(new T.Vector3(0, -.25, 0)), to = m.headOf(f.sl).add(new T.Vector3(0, -.35, 0));
+    o.parent.worldToLocal(from); o.position.copy(from); gd.hist = []; Lounge.release(o);
+    const tt = .55, d = to.sub(o.getWorldPosition(new T.Vector3())); gd.vel.set(d.x/tt, d.y/tt + 4.9*tt, d.z/tt); gd.spin.set(8, 2, 4); o.userData.brawl.flying = true; o.userData.brawl.thrown = performance.now(); },
+  drink(){ const m = this.m; if (this.courage > 0){ m.say("You're already full of courage.", true); return; } if (!this.shot.visible){ m.say("The next shot is on its way.", true); return; }
+    this.courage = 12; this.drinks++; this.shot.visible = false; this.shot.userData.brawl.gone = 25; m.say("🥃 LIQUID COURAGE! Double-power punches… but the room's spinning."); try{ Lounge.xrCtls.forEach(c => Lounge.haptic(c, .6, 200)); }catch(e){} },
+  update(dt){
+    const m = this.m, T = THREE, L = Lounge, me = L.headPos();
+    this.guardT = this.guard() ? (this.guardT || 0) + dt : 0;
+    // liquid courage: the room sways on a screen; in a headset we leave your view alone and pulse your hands instead
+    if (this.courage > 0){ this.courage -= dt; const k = Math.min(1, this.courage/2);
+      if (!m.vr()){ L.camRoll = Math.sin(performance.now()/420)*.07*k; L.yaw += Math.sin(performance.now()/700)*dt*.25*k; const cv = L.renderer.domElement; cv.style.filter = `saturate(${1 + .8*k}) hue-rotate(${Math.sin(performance.now()/900)*25*k}deg) blur(${.8*k}px)`; }
+      else if (Math.random() < dt*1.2) try{ L.xrCtls.forEach(c => L.haptic(c, .25, 40)); }catch(e){}
+      if (this.courage <= 0){ this.courage = 0; L.camRoll = 0; L.renderer.domElement.style.filter = ""; m.say("The courage wore off."); } }
+    if (this.shot && !this.shot.visible){ const b = this.shot.userData.brawl; b.gone -= dt; if (b.gone <= 0) this.resetProp(this.shot); }
+    if (this.shotGlow) this.shotGlow.material.opacity = .55 + Math.sin(performance.now()/250)*.3;
+    // VR: bring the shot glass to your mouth to drink it
+    if (this.shot && this.shot.visible && this.shot.userData.grab.held && this.shot.getWorldPosition(new T.Vector3()).distanceTo(me.clone().add(new T.Vector3(0, -.08, 0))) < .16){ L.grabEnd && (L.xrCtls || []).forEach(c => { if (c.userData.holding === this.shot) try{ L.grabEnd(c); }catch(e){} }); this.drink(); this.shot.visible = false; }
+    // thrown things hitting people
+    for (const o of this.throwables || []){ const gd = o.userData.grab, b = o.userData.brawl; if (!o.visible){ b.gone -= dt; if (b.gone <= 0) this.resetProp(o); continue; }
+      if (gd.held){ b.flying = true; continue; }
+      if (gd.resting){ if (b.flying){ b.flying = false; b.rest = 0; } b.rest = (b.rest || 0) + dt; if (b.rest > 6 && o.position.distanceTo(b.home) > .05) this.resetProp(o); continue; }
+      const sp = gd.vel.length(); if (sp < 2.2) continue; const wp = o.getWorldPosition(new T.Vector3());
+      for (const f of this.foes){ if (f.down) continue; if (L.touchDist(f.sl, wp) < (b.kind === "stool" ? .32 : .16)){
+        const pow = b.kind === "stool" ? 2 : 1; this.throwHits++; this.damage(f, pow, gd.vel.clone().setY(0).normalize().multiplyScalar(b.kind === "stool" ? .8 : .5), b.kind === "stool" ? "stool" : "throw");
+        if (b.kind === "bottle" || b.kind === "mug"){ try{ L.burst(wp, 10, "foam"); }catch(e){} m.emoji(b.kind === "bottle" ? "🍾" : "🍺", wp); o.visible = false; b.gone = 5; }
+        else { gd.vel.multiplyScalar(-.25); }
+        m.say(b.kind === "stool" ? "🪑 STOOL TO THE FACE!" : b.kind === "bottle" ? "🍾 SMASH!" : "🍺 Direct hit!"); try{ L.xrCtls.forEach(c => L.haptic(c, .5, 40)); }catch(e){} break; } } }
+    // knocked-out folks topple over with stars around their heads
+    for (const f of this.foes) if (f.down){ f.t += dt; const k = Math.min(1, f.t/.55), e = k < 1 ? k*k : 1 + Math.sin((f.t - .55)*14)*Math.exp(-(f.t - .55)*6)*.08;
+      f.sl.p.quaternion.copy(f.fall.q0).premultiply(new T.Quaternion().setFromAxisAngle(f.fall.ax, -e*Math.PI/2*.96)); f.sl.p.position.y = .08*Math.min(1, k*2);
+      if (f.t > .6 && f.sl.mixer) f.sl.mixer.timeScale = 0;
+      if (f.stars){ const h = m.headOf(f.sl); f.stars.children.forEach((s, i) => { const a = f.t*5 + i/4*Math.PI*2; s.position.set(h.x + Math.cos(a)*.22, h.y + .18 + Math.sin(f.t*7 + i)*.03, h.z + Math.sin(a)*.22); }); }
+      if (f.t > 3 && !f.gone){ f.gone = true; if (f.stars) Lounge.scene.remove(f.stars); m.despawn(f.sl); } }
+    this.foes = this.foes.filter(f => !f.gone);
+    const live = this.foes.filter(f => !f.down);
+    // more of them
+    this.spawnT -= dt; if (this.spawnT <= 0 && (this.spawned < this.total || (m.shift.train && (this.ti || 0) < this.steps.length)) && live.length < this.maxAt){ this.spawnFoe(); this.spawnT = this.m.shift.train ? 4 : 5 - Math.min(2.5, this.m.shift.lv*.3); }
+    // the crowd reacts
+    this.crowdT -= dt; if (this.crowdT <= 0 && live.length){ this.crowdT = 1.5 + Math.random()*2; const ss = (L.slots || []).filter(s => s.world === "club" && s.real && !s.mogul && s.p.position.distanceTo(new T.Vector3(0, 0, -4)) < 6); const s = ss[Math.floor(Math.random()*ss.length)]; if (s) m.emoji(["😱", "🍿", "📸", "😂", "🙈", "🔥"][Math.floor(Math.random()*6)], m.headOf(s).add(new T.Vector3(0, .3, 0))); }
+    const busy = live.some(f => f.st === "wind" || f.st === "strike");
+    const slow = m.shift.train ? 1.6 : Math.max(.6, 1.1 - m.shift.lv*.05);
+    for (const f of live){
+      const p = f.sl.p.position, wp = f.sl.p.getWorldPosition(new T.Vector3()), dx = me.x - wp.x, dz = me.z - wp.z, d = Math.hypot(dx, dz) || 1;
+      f.sl.p.rotation.y = Math.atan2(dx, dz); f.t += dt; f.sway += dt;
+      // where he wants to stand: around you, so a gang spreads out instead of stacking
+      const ux = -dx/d, uz = -dz/d, ca = Math.cos(f.ang), sa = Math.sin(f.ang), sx = me.x + (ux*ca - uz*sa)*1.08, sz = me.z + (ux*sa + uz*ca)*1.08;
+      if (f.st === "walk"){ const tx = sx - wp.x, tz = sz - wp.z, td = Math.hypot(tx, tz); if (td > .08){ const sp = Math.min(td, dt*1.35); p.x += tx/td*sp + Math.sin(f.sway*3)*dt*.25; p.z += tz/td*sp; } else { f.st = "guard"; f.t = Math.random()*.4; f.home = p.clone(); m.bubble(f.sl, null); } }
+      else if (f.st === "guard"){ p.x += Math.sin(f.sway*2.2)*dt*.08; if (d > 1.5){ f.st = "walk"; continue; } if (f.t > f.cd*slow && !busy){ f.st = "wind"; f.t = 0; f.home = p.clone(); } }
+      else if (f.st === "wind"){ f.ring.material.color.set(0xff3030); f.ring.material.opacity = Math.min(1, f.t*2); if (f.t > .85*slow){ f.st = "strike"; f.t = 0; this.dodgeArm = false; } }
+      else if (f.st === "strike"){ const k = Math.sin(Math.min(1, f.t/.25)*Math.PI); if (f.home){ p.x = f.home.x + dx/d*.45*k; p.z = f.home.z + dz/d*.45*k; }
+        if (f.t >= .12 && !f.landed){ f.landed = true;
+          let dodged = this.dodging > 0; if (m.vr()){ const base = this.vrBase || me.clone(); dodged = Math.hypot(me.x - base.x, me.z - base.z) > .22; }
+          if (dodged){ this.dodges++; m.say("Dodged!"); } else if (this.guard()){ this.blocks++; m.say("🛡 Blocked!"); try{ L.xrCtls.forEach(c => L.haptic(c, .4, 50)); }catch(e){} }
+          else { this.hp--; m.hurtFlash(); m.say(`Ouch! ${this.hp} ❤️ left`, true); try{ L.xrCtls.forEach(c => L.haptic(c, 1, 120)); }catch(e){} if (this.hp <= 0){ m.score(Math.round(this.kos/this.total*70)); return m.endGame("You got knocked down. Train some more!"); } } }
+        if (f.t > .3){ f.st = "open"; f.t = 0; f.landed = false; f.ring.material.color.set(0x4ab0ff); f.ring.material.opacity = 1; if (f.home){ p.x = f.home.x; p.z = f.home.z; } } }
+      else if (f.st === "open"){ if (f.t > (m.shift.train ? 1.6 : .9)){ f.st = "guard"; f.t = 0; f.cd = .8 + Math.random()*.8; f.ring.material.opacity = 0; } }
+      else if (f.st === "stagger"){ if (f.t > .7){ f.st = "guard"; f.t = 0; f.cd = .6 + Math.random()*.6; f.ring.material.opacity = 0; } }
+      if (f.st !== "wind" && f.st !== "open") f.ring.material.opacity = Math.max(0, f.ring.material.opacity - dt*3);
+    }
+    if (this.dodging > 0) this.dodging -= dt;
+    if (!live.some(f => f.st === "wind" || f.st === "strike")) this.vrBase = me.clone();
+    // VR: a fast hand near someone's head or chest is a punch
+    if (m.vr() && live.length) for (const c of L.xrCtls || []){ if (c.userData.holding) continue; const hand = c.userData.grip || c, hp = new T.Vector3().setFromMatrixPosition(hand.matrixWorld), last = c.userData.lastPunchP || hp.clone(), v = hp.clone().sub(last).divideScalar(Math.max(dt, .008)); c.userData.lastPunchP = hp.clone();
+      if (v.length() > 2.2 && (!c.userData.punchT || performance.now() - c.userData.punchT > 400)){ const f = live.find(f => L.touchDist(f.sl, hp) < .18); if (f){ c.userData.punchT = performance.now(); this.punch(v, f); } } }
+    m.tutTick(this);
+  },
+  key(k, down){ if (k === " " ){ this.blocking = down; return true; } if (down && (k === "a" || k === "d")){ this.dodging = .35; return true; } if (down && k === "j"){ this.punch(); return true; } if (down && k === "t"){ this.throwNext(); return true; } if (down && k === "q"){ this.drink(); return true; } return false; },
+  draw(m){
+    const x = m.x, W = m.W; let Y = m.tutDraw(this, 82);
+    m.text(`${"❤️".repeat(Math.max(0, this.hp))}${"🖤".repeat(Math.max(0, 5 - this.hp))}   💫 ${this.kos}/${this.total} down${this.courage > 0 ? `   🥃 ${Math.ceil(this.courage)}s` : ""}`, 28, Y + 30, 26, "#fff", 700, "left", W - 56); Y += 56;
+    const live = (this.foes || []).filter(f => !f.down), wind = live.find(f => f.st === "wind"), open = live.find(f => f.st === "open");
+    m.text(!live.length ? (this.kos >= this.total ? "Bar's clear." : "Here comes the next one…") : wind ? "🔴 WINDING UP: BLOCK OR DODGE!" : open ? "🔵 OPENING: PUNCH NOW!" : live.some(f => f.st === "strike") ? "💢" : live.some(f => f.st === "stagger") ? "He's rocked! Hit him again!" : live.length > 1 ? `${live.length} of them. Watch for the red ring.` : "He's sizing you up…", W/2, Y + 34, 30, wind ? "#ff8a7a" : open ? "#7ad8ff" : "#fff", 800, "center", W - 56);
+    Y += 70;
+    m.btn("dl", 28, Y, 200, 84, "◀ Dodge", () => { this.dodging = .35; }, {size: 26});
+    m.btn("blk", 240, Y, 260, 84, this.blocking ? "🛡 Guarding" : "🛡 Block (hold)", () => {}, {size: 26, on: this.blocking, hold: on => { this.blocking = on; }});
+    m.btn("pun", 512, Y, 260, 84, this.courage > 0 ? "👊 Punch ×2" : "👊 Punch", () => this.punch(), {primary: true, size: 30});
+    m.btn("dr", 784, Y, 212, 84, "Dodge ▶", () => { this.dodging = .35; }, {size: 26});
+    Y += 96;
+    const left = (this.throwables || []).filter(o => o.visible && !o.userData.brawl.gone).length;
+    m.btn("thr", 28, Y, 472, 70, `🍺 Throw something (${left})`, () => this.throwNext(), {size: 24});
+    m.btn("drk", 512, Y, 484, 70, this.courage > 0 ? "🥴 Feeling brave…" : this.shot && this.shot.visible ? "🥃 Liquid Courage" : "🥃 Next shot coming…", () => this.drink(), {size: 24, on: this.courage > 0});
+    m.text("Keys: Space block · A / D dodge · J punch · T throw · Q courage", W/2, Y + 100, 18, "rgba(255,255,255,.5)", 500, "center");
+  },
+  end(){ const m = this.m, L = Lounge; for (const f of this.foes || []){ if (f.stars) L.scene.remove(f.stars); if (!f.gone) m.despawn(f.sl); } this.foes = [];
+    L.camRoll = 0; try{ L.renderer.domElement.style.filter = ""; }catch(e){}
+    for (const c of L.xrCtls || []) if (c.userData.holding && this.props && this.props[0] && (function inside(q, r){ for (; q; q = q.parent) if (q === r) return true; return false; })(c.userData.holding, this.props[0])) try{ L.grabEnd(c); }catch(e){}
+    m.dropProps(this.throwables || []); m.dropProps(this.shot ? [this.shot] : []); m.dropProps(this.props || []); }
+};
+/* ================= 🧺 Barback / Busser: glasses, ice, kegs and spills, all over the club ================= */
+Mogul.GAMES.barback = {
+  panelSide: .8,
+  howTo: ["Walk around the club. Empty glasses pile up on tables and the bar: tap them to collect (you can carry 6).", "Drop them at the 🧺 bus tub at the end of the bar.", "When the bar calls for ICE, get a bucket from the ice machine and dump it in the bar's ice well.", "When a keg runs dry, go to the keg cooler and change it.", "Mop ⚠ spills fast. If you walk through one, you'll slip and drop everything."],
+  vrTip: "Point at glasses, the tub, the ice machine, the keg and spills, and pull the trigger. You have to walk close enough first.",
+  start(s){
+    const m = this.m, T = THREE, L = Lounge; this.props = []; this.carry = 0; this.ice = false; this.glasses = []; this.spills = []; this.tasks = []; this.done = 0; this.overT = 0;
+    const root = this.root = new T.Group(); L.worlds.club.group.add(root); this.props.push(root);
+    const box = (w, h, d, c, x, y, z) => { const o = new T.Mesh(new T.BoxGeometry(w, h, d), new T.MeshStandardMaterial({color: c, roughness: .5, metalness: .3})); o.position.set(x, y, z); root.add(o); return o; };
+    // high-top tables to bus
+    this.tables = [[5.2, -3.2], [6.2, -7.4], [-4.6, -1.6], [4.2, -10.2]].map(([tx, tz]) => { const t = new T.Group(); t.position.set(tx, 0, tz); root.add(t);
+      t.add(new T.Mesh(new T.CylinderGeometry(.34, .34, .03, 24), new T.MeshStandardMaterial({color: 0x1a1a22, roughness: .3, metalness: .6}))).position.y = 1.08;
+      t.add(new T.Mesh(new T.CylinderGeometry(.03, .03, 1.08, 10), new T.MeshStandardMaterial({color: 0x888888, metalness: .9, roughness: .3}))).position.y = .54; L.surface(t.children[0]); return {x: tx, y: 1.1, z: tz}; });
+    this.surfaces = this.tables.concat([[-8.4, -9], [-8.4, -7.3], [-8.4, -4.8], [-8.4, -3.2], [0, .2]].map(([x, z]) => ({x, y: x < -8 ? 1.17 : .5, z})));
+    const tub = box(.45, .2, .32, 0x3a4a6a, -8.6, 1.26, -2.1); tub.add(new T.Mesh(new T.PlaneGeometry(.4, .27).rotateX(-Math.PI/2), new T.MeshStandardMaterial({color: 0x9ab8d8}))).position.y = .101;
+    m.clickable(tub, () => { if (!this.carry) return m.say("You're not carrying any glasses."); m.score(100, this.carry*1.5, `🧺 Dropped ${this.carry} glass${this.carry > 1 ? "es" : ""} ✓`); this.done += this.carry; this.carry = 0; });
+    const iceM = box(.7, 1.3, .6, 0xd8dde4, -9.8, .65, -1.2); const ice2 = box(.4, .06, .3, 0x9fe8ff, -9.8, 1.33, -1.2); ice2.material.emissive = new T.Color(0x3aa8ff); ice2.material.emissiveIntensity = .4;
+    m.clickable(iceM, () => { if (this.ice) return m.say("You already have a full bucket."); this.ice = true; m.say("🪣 Bucket full of ice. Take it to the bar's ice well."); });
+    const well = box(.3, .04, .26, 0x9fe8ff, -8.82, 1.18, -5.6); m.clickable(well, () => { const t = this.tasks.find(t => t.kind === "ice"); if (!this.ice) return m.say("Get a bucket from the ice machine first.", true); this.ice = false; if (t){ this.complete(t); } else m.say("Ice topped up.", false); });
+    const keg = new T.Mesh(new T.CylinderGeometry(.22, .22, .6, 20), new T.MeshStandardMaterial({color: 0xb8b8c0, metalness: 1, roughness: .25})); keg.position.set(-9.7, .3, -9.9); root.add(keg);
+    m.clickable(keg, () => { const t = this.tasks.find(t => t.kind === "keg"); if (!t) return m.say("The kegs are fine right now."); m.kit(this, {type: "timing", title: "Change the keg", text: "Twist the coupler off the empty keg and lock it on the new one. Tap when it's lined up (2 times).", count: 2, speed: .8, zw: .18, done: sc => { if (sc > 45) this.complete(t); else m.say("It's leaking. Try the keg again.", true); }}); });
+    this.mkGlass = () => { const sp = this.surfaces[Math.floor(Math.random()*this.surfaces.length)], g = Props.tumbler("water", 0); g.position.set(sp.x + (Math.random() - .5)*.3, sp.y, sp.z + (Math.random() - .5)*.3); g.scale.setScalar(1.2); root.add(g); this.glasses.push(g);
+      m.clickable(g, () => { if (this.carry >= 6) return m.say("Your hands are full (6). Drop them at the 🧺 tub.", true); this.carry++; root.remove(g); this.glasses = this.glasses.filter(x => x !== g); Lounge.clickables = Lounge.clickables.filter(c => c !== g); }); };
+    this.mkSpill = () => { const x = (Math.random() - .5)*10, z = -2 - Math.random()*9, sp = new T.Mesh(new T.CircleGeometry(.45, 24).rotateX(-Math.PI/2), new T.MeshStandardMaterial({color: 0xb8a060, roughness: .05, metalness: .2, transparent: true, opacity: .75})); sp.position.set(x, .012, z); root.add(sp);
+      const w = new T.Sprite(new T.SpriteMaterial({map: Tex.make((() => { const [c, cx] = Tex.canvas(64, 64); cx.font = "48px serif"; cx.textAlign = "center"; cx.textBaseline = "middle"; cx.fillText("⚠️", 32, 34); return c; })()), transparent: true, depthWrite: false})); w.scale.setScalar(.4); w.position.set(x, .6, z); root.add(w);
+      const s = {sp, w, x, z, t: 0}; this.spills.push(s); const task = {kind: "spill", t: 0, limit: 30, s}; this.tasks.push(task);
+      m.clickable(sp, () => { m.kit(this, {type: "hold", title: "Mop it up", text: "Hold to mop until the floor is dry.", rounds: [{label: "Mopping", target: 2, max: 2.6, rate: 1, unit: "s"}], done: sc => { this.complete(task); root.remove(sp); root.remove(w); this.spills = this.spills.filter(x => x !== s); }}); }, 3); };
+    for (let i = 0; i < (s.train ? 3 : 6); i++) this.mkGlass();
+    this.spawnT = s.train ? 999 : 8; m.moveMe(-6.5, -2.4, -Math.PI*.6);
+    if (s.train) this.steps = [
+      {say: "Empty glasses are on the tables and the bar. Walk close and tap them to pick them up.", done: g => g.carry >= 2},
+      {say: "Take them to the 🧺 bus tub at the end of the bar (by the entrance side) and tap it.", done: g => g.done >= 2},
+      {say: "The bartender needs ICE! Tap the ice machine in the corner behind the bar to fill a bucket.", before: g => g.task("ice"), done: g => g.ice || !g.tasks.some(t => t.kind === "ice")},
+      {say: "Now tap the blue ice well on the bar to dump the ice.", done: g => !g.tasks.some(t => t.kind === "ice")},
+      {say: "A spill ⚠ on the dance floor! Go mop it (tap it and hold to mop) before someone slips.", before: g => g.mkSpill(), done: g => !g.spills.length},
+      {say: "Keg's empty! Go to the silver keg behind the far end of the bar and change it.", before: g => g.task("keg"), done: g => !g.tasks.some(t => t.kind === "keg")}
+    ];
+  },
+  task(kind){ if (this.tasks.some(t => t.kind === kind)) return; this.tasks.push({kind, t: 0, limit: kind === "ice" ? 35 : 45}); this.m.say(kind === "ice" ? "🧊 Bartender: “I need ICE!”" : "🍺 Bartender: “The keg's dry!”", true); },
+  complete(t){ this.tasks = this.tasks.filter(x => x !== t); this.m.score(Math.max(40, 100 - t.t*2), 6, "✓ Done: " + (t.kind === "ice" ? "ice delivered" : t.kind === "keg" ? "keg changed" : "spill mopped")); this.done++; },
+  update(dt){
+    const m = this.m, s = m.shift;
+    if (this.steps){ const st = this.steps[this.ti || 0]; if (st && st.before && !st._b){ st._b = true; st.before(this); } }
+    if (!s.train){ if (s.t > 140 + s.lv*8) return m.endGame("Bar's closed. Nice hustle!");
+      this.spawnT -= dt; if (this.spawnT <= 0){ this.spawnT = Math.max(4, 9 - s.lv*.5); const r = Math.random(); if (r < .55) this.mkGlass(); else if (r < .72) this.task("ice"); else if (r < .82) this.task("keg"); else this.mkSpill(); } }
+    for (const t of this.tasks){ t.t += dt; if (!s.train && t.t > t.limit){ m.strike(t.kind === "spill" ? "Someone slipped on a spill you didn't mop." : t.kind === "ice" ? "The bar ran out of ice." : "No beer for 45 seconds: the keg never got changed."); m.score(0); this.tasks = this.tasks.filter(x => x !== t); if (t.s){ this.root.remove(t.s.sp); this.root.remove(t.s.w); this.spills = this.spills.filter(x => x !== t.s); } break; } }
+    if (!s.train && this.glasses.length > 9){ this.overT += dt; if (this.overT > 15){ this.overT = 0; m.strike("The tables are covered in empty glasses."); } } else this.overT = 0;
+    // walking through a spill
+    const h = Lounge.headPos(); for (const sp of this.spills){ if (Math.hypot(h.x - sp.x, h.z - sp.z) < .4){ sp.t += dt; if (sp.t > .35 && !sp.slipped){ sp.slipped = true; if (this.carry){ m.strike(`You slipped and dropped ${this.carry} glasses!`); this.carry = 0; } else m.say("Careful! You almost slipped.", true); } } else { sp.t = 0; sp.slipped = false; } }
+    m.kitUpdate(this, dt); m.tutTick(this);
+  },
+  draw(m){
+    const s = m.shift; let Y = m.tutDraw(this, 82);
+    if (!s.train){ m.text(`⏱ ${Math.max(0, Math.ceil(140 + s.lv*8 - s.t))}s   💵 ${m.money(s.earn)}   ❌ ${s.strikes}/${s.maxStrikes}`, 28, Y + 20, 22, "#ffd87a", 700); Y += 34; }
+    if (this.kit) return m.kitDraw(this, Y);
+    m.text(`🍸 Carrying ${this.carry}/6 glasses${this.ice ? "   🪣 ice bucket" : ""}`, 28, Y + 30, 26, "#fff", 700);
+    m.text(`Glasses waiting: ${this.glasses.length}${this.glasses.length > 7 ? "  ⚠ piling up!" : ""}`, 28, Y + 70, 22, this.glasses.length > 7 ? "#ff8a7a" : "rgba(255,255,255,.75)", 600);
+    let y = Y + 116; m.text("TO DO", 28, y, 16, "#ffc21a", 800); y += 30;
+    if (!this.tasks.length) m.text("All caught up. Keep busing tables!", 28, y, 21, "rgba(255,255,255,.6)");
+    for (const t of this.tasks){ m.text(`${t.kind === "ice" ? "🧊 Bring ice to the bar" : t.kind === "keg" ? "🍺 Change the keg" : "⚠ Mop the spill"}`, 28, y, 22, "#fff", 600); m.bar(420, y - 14, 300, 16, 1 - t.t/t.limit, t.t/t.limit > .7 ? "#ff6a5a" : "#ffc21a"); y += 38; }
+  },
+  end(){ this.m.dropProps(this.glasses); this.m.dropProps(this.props); }
+};
+
+/* ================= 🍾 Bottle service ================= */
+Mogul.BOTTLES = [["Prosecco", 180], ["House vodka", 300], ["Premium tequila", 450], ["Champagne", 550], ["Premium vodka", 650], ["Rosé magnum", 800], ["Vintage champagne", 1400]];
+Mogul.GAMES.bottle = Mogul.scripted({
+  panelSide: .8,
+  howTo: ["Read the table: how many, what they're celebrating, and their budget. Recommend the right bottle.", "Pick the bottle up at the bar, then carry it with the sparkler through the crowd without spilling.", "Show the label to the host before you open it. Pour evenly for the table.", "Close the tab correctly: bottle + 8% tax + 20% service."],
+  vrTip: "When carrying, really hold the bottle (grip) upright and walk it to the VIP booth. Tip it too far and the sparkler drips.",
+  make(s){
+    const tables = [{who: "a birthday crew of 6", budget: 900, best: "Champagne", hint: "It's a birthday, so they want bubbles and a big moment."}, {who: "8 coworkers after a big win", budget: 1000, best: "Premium vodka", hint: "A big group wants something that goes far and mixes with anything."}, {who: "4 friends ready to party", budget: 600, best: "Premium tequila", hint: "They keep asking the DJ for reggaeton and doing shots."}, {who: "a couple on their anniversary", budget: 1600, best: "Vintage champagne", hint: "Something special, and money isn't a problem tonight."}];
+    const t = this.t = s.train ? tables[0] : tables[Math.floor(Math.random()*tables.length)], opts = [t.best, ...this.m.BOTTLES.map(b => b[0]).filter(n => n !== t.best).sort(() => Math.random() - .5).slice(0, 2)].sort(() => Math.random() - .5);
+    const price = n => this.m.BOTTLES.find(b => b[0] === n)[1];
+    this.bottle = t.best;
+    const total = b => Math.round(price(b)*1.28), wrong = [Math.round(price(t.best)*1.2), Math.round(price(t.best)*1.08 + 50), total(t.best) + 100];
+    return [
+      {type: "choice", title: `VIP table: ${t.who}`, text: `Budget about ${this.m.money(t.budget)}. ${t.hint} What do you recommend?`, log: "Recommendation", cash: 25,
+        options: opts.map(n => ({t: `${n} · ${this.m.money(price(n))}`, s: n === t.best ? 100 : price(n) > t.budget ? 10 : 45, fb: n === t.best ? "Perfect pick. The host loves it." : price(n) > t.budget ? "Way over their budget. They look uncomfortable." : "It's fine, but it doesn't fit the occasion."})), after: () => {}},
+      {type: "custom", run: g => g.carry()},
+      {type: "choice", title: "You're at the table", text: "The host is waving you over. What first?", log: "Presentation", cash: 15, options: [{t: "Show the host the label, then open it with the sparkler up", s: 100, fb: "Classic. The table cheers when the cork pops."}, {t: "Pop it right away and start pouring", s: 40, fb: "A little rushed. They wanted to see the bottle."}, {t: "Hand the bottle to a guest to open", s: 5, fb: "Never hand off the bottle. That's your job."}]},
+      {type: "hold", title: "Pour for the table", text: "Pour about 4 oz in each glass (2 glasses shown). Even pours, no overflowing.", log: "Pouring", cash: 20, rounds: [{label: "Glass 1", target: 4, max: 6, rate: 1.6, unit: "oz"}, {label: "Glass 2", target: 4, max: 6, rate: 1.9, unit: "oz"}]},
+      {type: "choice", title: "Close the tab", text: `${t.best} is ${this.m.money(price(t.best))}. Add 8% tax and a 20% service charge (both on the bottle price). What's the total?`, log: "The tab", cash: 30, strike: "You charged the wrong amount.", options: [total(t.best), ...wrong].sort(() => Math.random() - .5).map(v => ({t: this.m.money(v), s: v === total(t.best) ? 100 : 0, fb: v === total(t.best) ? "Spot on." : `Not quite: it's ${this.m.money(total(t.best))}.`}))}
+    ];
+  },
+  setup(s){ this.m.moveMe(-7.7, -2.4, {x: 0, z: .3}); },
+  drawExtra(m, Y){ if (this.vrCarry) { m.text("🍾 Carry the bottle to the VIP booth up front. Keep it upright!", 28, Y + 40, 24, "#fff", 700, "left", m.W - 56); m.text(`⏱ ${Math.max(0, Math.ceil(60 - this.vrCarry.t))}s${this.vrCarry.spills ? "  💦 " + this.vrCarry.spills : ""}`, 28, Y + 80, 22, "#ffd87a", 700); } },
+  carry(){
+    const m = this.m, T = THREE, L = Lounge, vr = m.vr();
+    m.moveMe(-7.7, -2.4, {x: 0, z: .3});
+    const b = this.bob = new T.Group(); b.position.set(-8.45, 1.17, -2.6); L.worlds.club.group.add(b);
+    b.add(new T.Mesh(Props.lathe([[0, 0], [.05, 0], [.052, .02], [.052, .2], [.03, .27], [.016, .3], [.016, .38], [0, .38]], 18), new T.MeshPhysicalMaterial({color: 0x1a3a1a, roughness: .1, clearcoat: 1})));
+    const sp = new T.Sprite(new T.SpriteMaterial({map: L.glowT, color: 0xffe08a, transparent: true, depthWrite: false, blending: T.AdditiveBlending})); sp.scale.setScalar(.35); sp.position.y = .46; b.add(sp); this.spark = sp;
+    if (vr){ L.grabbable(b); m.kit(this, {type: "info", title: "Carry the bottle", text: "Grab the bottle on the bar (hold grip), keep it upright, and walk it to the VIP booth up front. Tipping it spills.", btn: "I'm carrying it"}); this.vrCarry = {t: 0, tilt: 0}; this.kit.done = () => {}; return; }
+    m.kit(this, {type: "info", title: "Pick up the bottle", text: "It's at the end of the bar with a sparkler. Next you'll carry it through the crowd: keep it level!", btn: "Pick it up ▶", done: () => {
+      L.glide = {from: L.rig.position.clone(), to: new T.Vector3(0, L.rig.position.y, 1.6), t: 0}; b.position.set(.3, 1.2, 1.2);
+      m.kit(this, {type: "balance", title: "Through the crowd…", text: "Dancers keep bumping you. Hold ◀ ▶ to keep the bottle level in the green.", dur: 9, force: 2.6, spillMsg: "Someone bumped you! A splash of champagne hit the floor.", done: sc => { m.score(sc, Math.round(sc/5)); m.shift.log.push(`Carry: ${Math.round(sc)}%`); if (sc < 30) m.strike("You spilled most of the bottle."); this.next(); }}); }});
+  },
+  tick(dt){
+    const v = this.vrCarry; if (this.spark) this.spark.material.opacity = .6 + Math.random()*.4;
+    if (!v || !this.bob) return; const m = this.m, b = this.bob, gd = b.userData.grab; v.t += dt;
+    if (gd && gd.held){ b.updateMatrixWorld(true); const up = new THREE.Vector3(0, 1, 0).transformDirection(b.matrixWorld); if (up.y < .8){ v.tilt += dt; if (v.tilt > .6){ v.tilt = 0; v.spills = (v.spills || 0) + 1; m.say("You're tipping it! Champagne everywhere.", true); } }
+      const wp = b.getWorldPosition(new THREE.Vector3()); if (Math.hypot(wp.x, wp.z - .5) < 1.3){ const sc = Math.max(0, 100 - (v.spills || 0)*25 - Math.max(0, v.t - 25)*2); this.vrCarry = null; m.score(sc, Math.round(sc/5)); m.shift.log.push(`Carry: ${Math.round(sc)}%`); this.kit = null; this.next(); } }
+    if (v && v.t > 60){ this.vrCarry = null; this.m.strike("The table waited too long for their bottle."); this.kit = null; this.next(); }
+  },
+  outro(){ if (this.bob){ this.m.dropProps([this.bob]); this.bob = null; } const m = this.m; m.emoji("🍾", new THREE.Vector3(0, 2, .5)); try{ Lounge.burst(new THREE.Vector3(0, 1.6, .5), 16); }catch(e){} return "The VIP table had a great night. 🍾"; },
+  end(){ if (this.bob){ this.m.dropProps([this.bob]); this.bob = null; } }
+});
+
+/* ================= 📣 Promoter ================= */
+Mogul.GAMES.promoter = Mogul.scripted({
+  howTo: ["Look at your audience data and pick the night's theme.", "Book a DJ who fits the theme and the budget.", "Pick the marketing channels that reach that crowd, and an offer that gets them in early.", "Handle the curveball (rain, a rival party), then check VIPs in fast at the door."],
+  make(s){
+    const aud = s.train ? {afro: 45, hiphop: 30, latin: 25} : (() => { const a = Math.random()*60 + 20, b = Math.random()*(100 - a); return {afro: Math.round(a), hiphop: Math.round(b), latin: Math.round(100 - a - b)}; })();
+    const best = Object.entries(aud).sort((a, b) => b[1] - a[1])[0][0], name = {afro: "Afrobeats Friday", hiphop: "Hip-Hop & R&B Night", latin: "Noche Latina"};
+    const djs = {afro: "DJ Tunde (Afrobeats, $400)", hiphop: "DJ Kash (Hip-Hop, $450)", latin: "DJ Luna (Reggaeton, $380)"};
+    const N = this.m.NAMES, vip = Array.from({length: 4}, () => N[0][Math.floor(Math.random()*N[0].length)] + " " + N[1][Math.floor(Math.random()*N[1].length)]);
+    const curve = Math.random() < .5 ? {t: "Rain is in the forecast for Friday night.", o: [["Post: “Free coat check, we're right by the train. Rain or shine, we're dancing.”", 100], ["Postpone the party", 20], ["Ignore it", 40]]} : {t: "A bigger club announced a party the same night.", o: [["Team up: their after-party moves to your club", 100], ["Cut your cover to $0 all night", 45], ["Post something trash-talking them", 5]]};
+    return [
+      {type: "choice", title: "Pick the night's theme", text: `Your followers: ${aud.afro}% love Afrobeats, ${aud.hiphop}% Hip-Hop/R&B, ${aud.latin}% Latin. What's Friday?`, log: "Theme", cash: 40, options: Object.keys(name).map(k => ({t: name[k], s: k === best ? 100 : 40 + aud[k]/2, fb: k === best ? "That's what your crowd wants." : "Some people will come, but not your biggest crowd."}))},
+      {type: "choice", title: "Book the DJ", text: `Budget: $500. The theme is ${name[best]}.`, log: "DJ booking", cash: 40, options: Object.keys(djs).map(k => ({t: djs[k], s: k === best ? 100 : 30, fb: k === best ? "Perfect fit." : "Great DJ, wrong crowd for this theme."}))},
+      {type: "choice", title: "Main channel", text: "Your crowd is 21–30 and lives on their phones. Where do you spend most of the budget?", log: "Marketing", cash: 40, options: [{t: "Instagram & TikTok videos with the DJ", s: 100, fb: "Reach and shares through the roof."}, {t: "Newspaper ad", s: 10, fb: "Not where this crowd looks."}, {t: "Text blast to your regulars", s: 70, fb: "Solid, but it won't reach new people."}]},
+      {type: "choice", title: "The offer", text: "You want people in early so the line looks great by 11.", log: "Offer", cash: 30, options: [{t: "Free entry before 11 with an RSVP", s: 100, fb: "Early crowd, great line, big night."}, {t: "No offer", s: 35, fb: "People show up late and the room feels empty early."}, {t: "Half-price drinks all night", s: 55, fb: "Busy, but the bar loses money."}]},
+      {type: "choice", title: "Curveball!", text: curve.t, log: "Curveball", cash: 30, options: curve.o.map(([t, sc]) => ({t, s: sc}))},
+      {type: "match", title: "Check in your VIPs", text: "Your VIPs are arriving. Tap their names fast so they skip the line.", log: "VIP check-in", cash: 30, time: 6, rounds: vip.map(n => ({q: `Here's ${n}`, correct: n, options: [n, ...vip.filter(v => v !== n).slice(0, 1), n.split(" ")[0] + " " + N[1][Math.floor(Math.random()*16)], N[0][Math.floor(Math.random()*N[0].length)] + " " + n.split(" ")[1]].sort(() => Math.random() - .5)}))}
+    ];
+  },
+  setup(){ this.m.moveMe(6.6, .2, {x: 0, z: -6}); },
+  outro(){ const m = this.m, sc = m.shift.scores.reduce((a, b) => a + b, 0)/Math.max(1, m.shift.scores.length), heads = Math.round(120 + sc*2.2); m.shift.earn += Math.round(heads*.6); m.shift.log.push(`${heads} people came through the door`); return `${heads} people came out on your list. 📣`; }
+});
+
+/* ================= 🌟 Celebrity ================= */
+Mogul.GAMES.celebrity = Mogul.scripted({
+  howTo: ["Red carpet: when a camera flashes, face it (tap the direction, or turn your head in VR).", "Answer the press like a pro. No drama.", "Sign for fans in rhythm, then hype the crowd from the stage on the beat.", "Your fame grows with every great appearance, and so does your fee."],
+  vrTip: "On the red carpet, actually turn your head toward each camera flash.",
+  make(s){
+    return [
+      {type: "dir", title: "Red carpet", text: "Cameras everywhere. Face each flash fast.", count: s.train ? 3 : 6, window: s.train ? 2 : 1.3, log: "Red carpet", cash: 60},
+      {type: "choice", title: "A reporter asks…", text: "“Rumor is you're feuding with another artist. Any comment?”", log: "Press", cash: 50, options: [{t: "“I wish everybody success. Tonight's about the fans.”", s: 100, fb: "Classy. That clip goes viral for the right reasons."}, {t: "“They know what they did.”", s: 10, fb: "Now it's a headline. Your team is not happy."}, {t: "Walk off without answering", s: 50, fb: "It looks a little shady, but no damage done."}]},
+      {type: "timing", title: "Sign for fans", text: "Sign each autograph smoothly. Tap when the pen is in the zone.", count: s.train ? 2 : 4, speed: .7, zw: .2, log: "Autographs", cash: 50},
+      {type: "choice", title: "A fan asks…", text: "A fan wants to come into your VIP section, and they seem young.", log: "VIP section", cash: 40, options: [{t: "“Love you! Security will check IDs; if you're 21+, come say hi.”", s: 100, fb: "Kind and safe. Exactly right."}, {t: "Sneak them in yourself", s: 0, fb: "Never. If they're underage, that's a scandal and worse."}, {t: "Ignore them", s: 40, fb: "Not a great look."}]},
+      {type: "rhythm", title: "Hype the crowd!", text: "On stage: hit each beat as it reaches the line.", bpm: 100, count: s.train ? 8 : 14, log: "Stage hype", cash: 80}
+    ];
+  },
+  setup(){ this.m.moveMe(7.2, .6, {x: 0, z: -6}); },
+  outro(){ const m = this.m, sc = m.shift.scores.reduce((a, b) => a + b, 0)/Math.max(1, m.shift.scores.length); m.shift.fame = Math.round(sc/10); m.emoji("🌟", new THREE.Vector3(0, 2.6, -8)); return `Fame +${m.shift.fame}. Your appearance fee goes up as you get more famous.`; }
+});
+
+/* ================= 🎂 Birthday boy / girl ================= */
+Mogul.GAMES.birthday = Mogul.scripted({
+  howTo: ["You have a budget. Pick friends who bring the fun, and a cake that fits.", "Ask the DJ for the birthday song at the right moment.", "Win the dance-off, and handle the drama (spills, an ex, a lost phone) with grace.", "The more fun the night, the more gifts you get."],
+  make(s){
+    return [
+      {type: "choice", title: "Who's coming?", text: "You can bring one more friend. Who makes the night better?", log: "Guest list", cash: 30, options: [{t: "Jaylen: always first on the dance floor", s: 100, fb: "Instant energy."}, {t: "Riley: complains about the music everywhere", s: 20, fb: "Hmm. You'll hear about the playlist all night."}, {t: "Sam: brings drama with every ex", s: 10, fb: "Risky…"}]},
+      {type: "choice", title: "Pick the cake", text: "Budget left: $120.", log: "Cake", cash: 25, options: [{t: "Gold drip cake with sparklers · $95", s: 100, fb: "A showstopper, and in budget."}, {t: "Five-tier fondant cake · $340", s: 15, fb: "Gorgeous, and way over budget."}, {t: "Gas station cupcakes · $8", s: 35, fb: "Cheap… and it shows."}]},
+      {type: "timing", title: "Cue the birthday song", text: "Tap when the crowd energy peaks so the DJ drops the birthday song at the best moment.", count: 1, speed: .5, zw: .18, log: "Birthday song", cash: 40, before: () => this.cake()},
+      {type: "rhythm", title: "Dance-off!", text: "Someone challenged you. Hit the moves on the beat.", bpm: 110, count: s.train ? 8 : 14, log: "Dance-off", cash: 60},
+      {type: "choice", title: "Uh oh…", text: "Someone bumps into you and spills a drink on your outfit.", log: "Drama", cash: 30, options: [{t: "Laugh it off and grab napkins: it's your night", s: 100, fb: "The vibe stays perfect."}, {t: "Demand they pay for the outfit", s: 30, fb: "The mood dips for a while."}, {t: "Start a fight", s: 0, fb: "Security walks you out on your own birthday."}]}
+    ];
+  },
+  setup(){ this.m.moveMe(.2, 1.4, 0); },
+  cake(){ const T = THREE, g = this.cakeG = new T.Group(); g.position.set(0, .5, -.2); Lounge.worlds.club.group.add(g);
+    g.add(new T.Mesh(new T.CylinderGeometry(.18, .18, .16, 24), new T.MeshStandardMaterial({color: 0xf6e0c8, roughness: .6}))).position.y = .08;
+    g.add(new T.Mesh(new T.CylinderGeometry(.185, .185, .03, 24), new T.MeshStandardMaterial({color: 0xd4a937, metalness: .8, roughness: .3}))).position.y = .16;
+    for (let i = 0; i < 5; i++){ const a = i/5*Math.PI*2, c = new T.Mesh(new T.CylinderGeometry(.006, .006, .06, 6), new T.MeshStandardMaterial({color: 0xff8ad8})); c.position.set(Math.cos(a)*.1, .2, Math.sin(a)*.1); g.add(c);
+      const f = new T.Sprite(new T.SpriteMaterial({map: Lounge.glowT, color: 0xffb040, transparent: true, depthWrite: false, blending: T.AdditiveBlending})); f.scale.setScalar(.06); f.position.set(Math.cos(a)*.1, .245, Math.sin(a)*.1); g.add(f); } },
+  outro(){ const m = this.m; if (this.cakeG){ const g = this.cakeG; setTimeout(() => m.dropProps([g]), 8000); } m.emoji("🎂", new THREE.Vector3(0, 1.4, -.2)); try{ Lounge.burst(new THREE.Vector3(0, 1.5, -.2), 24); }catch(e){} return "Best. Birthday. Ever. Your friends chipped in gifts. 🎁"; },
+  end(){ if (this.cakeG && !this.m.shift.over) this.m.dropProps([this.cakeG]); }
+});
+
+/* ================= 👑 Club owner: the empire ================= */
+Object.assign(Mogul, {
+  drawEmpire(){
+    const d = this.d(), W = this.W, x = this.x; let Y = 84;
+    if (this.vsel){ return this.drawVenue(this.vsel); }
+    this.text(`👑 ${this.title(d)} · worth ${this.money(this.worth(d))}`, 28, Y + 30, 28, "#fff", 800, "left", W - 300);
+    this.btn("sleep", W - 260, Y, 236, 52, "🌙 Next night", () => { d.day++; this.put(d); this.say("A new night. Every club can open again."); }, {size: 20});
+    Y += 64;
+    const owned = this.VENUES.filter(v => d.clubs[v.id]), forSale = this.VENUES.filter(v => !d.clubs[v.id]);
+    if (!owned.length) this.text("You don't own a club yet. Work shifts to save up, then buy The Basement.", 28, Y + 20, 21, "rgba(255,255,255,.75)", 500, "left", W - 56), Y += 40;
+    owned.forEach((v, i) => { const c = d.clubs[v.id], ran = d.ran[v.id] === d.day, by = Y + i*86;
+      this.btn("v" + v.id, 28, by, 620, 76, `${v.name}`, () => { this.vsel = v.id; this.draw(); }, {left: true, size: 24, sub: `⭐ rep ${Math.round(c.rep)} · ${c.lastProfit !== undefined ? "last night " + this.money(c.lastProfit) : "never opened"} · tap to manage`});
+      this.btn("run" + v.id, 664, by, 332, 76, ran ? "✓ Open tonight (done)" : "🎉 Open tonight", () => ran ? this.say("Already opened tonight. Tap 🌙 Next night.") : this.runNight(v.id), {primary: !ran, size: 22}); });
+    Y += owned.length*86 + 10;
+    this.text("FOR SALE", 28, Y + 22, 16, "#ffc21a", 800); Y += 34;
+    forSale.slice(0, 3).forEach((v, i) => { const can = d.cash >= v.price; this.btn("buy" + v.id, 28 + i*328, Y, 318, 88, `${v.name}`, () => { if (!can) return this.say(`You need ${this.money(v.price)}. Work more shifts!`, true); d.cash -= v.price; d.clubs[v.id] = {rep: 30, up: {}, staff: {}}; this.put(d); this.say(`🎉 You bought ${v.name}!`); try{ Lounge.burst(Lounge.headPos().add(new THREE.Vector3(0, .4, -1)), 18); }catch(e){} },
+      {left: true, size: 21, primary: can, sub: `${this.money(v.price)} · ${v.cap} capacity · ${(Lounge.WORLDS.find(w => w.id === v.world) || {}).name || ""}`}); });
+    if (this.night){ const n = this.night; Y += 104; this.rr(x, 24, Y, W - 48, this.H - Y - 30, 16); x.fillStyle = "rgba(255,255,255,.05)"; x.fill();
+      this.text(`Last night at ${n.name}: ${this.money(n.profit)} ${n.profit >= 0 ? "profit" : "loss"}`, 40, Y + 32, 24, n.profit >= 0 ? "#3ad07a" : "#ff8a7a", 800, "left", W - 80);
+      let yy = Y + 64; for (const l of n.lines.slice(0, 6)){ this.text(l, 40, yy, 19, "rgba(255,255,255,.8)", 500, "left", W - 80); yy += 26; } }
+  },
+  drawVenue(id){
+    const d = this.d(), v = this.VENUES.find(x => x.id === id), c = d.clubs[id], W = this.W; if (!c){ this.vsel = null; return this.drawEmpire(); }
+    c.up = c.up || {}; c.staff = c.staff || {};
+    this.btn("vback", 28, 84, 140, 48, "◀ Clubs", () => { this.vsel = null; this.draw(); }, {size: 20});
+    this.text(`${v.name}`, 190, 118, 30, "#fff", 800, "left", 520);
+    this.btn("visit", W - 280, 84, 256, 48, "🚪 Visit this club", () => { Lounge.chooseWorld(v.world); this.say(`Welcome to ${v.name}.`); }, {size: 20});
+    this.text(`⭐ Reputation ${Math.round(c.rep)}/100 · ${v.cap} capacity · $${v.cover} cover · rent ${this.money(v.rent)}/night`, 28, 162, 20, "rgba(255,255,255,.75)", 500, "left", W - 56);
+    this.text("UPGRADES", 28, 200, 16, "#ffc21a", 800);
+    this.UPGRADES.forEach((u, i) => { const lv = c.up[u.id] || 0, cost = u.cost[lv], X = 28 + (i % 2)*490, Y = 212 + Math.floor(i/2)*78;
+      this.btn("u" + u.id, X, Y, 478, 70, `${u.icon} ${u.name} ${"★".repeat(lv)}${"☆".repeat(3 - lv)}`, () => { if (lv >= 3) return this.say("Maxed out."); if (d.cash < cost) return this.say(`Need ${this.money(cost)}.`, true); d.cash -= cost; c.up[u.id] = lv + 1; this.put(d); this.say(`${u.name} upgraded!`); },
+        {left: true, size: 20, sub: lv >= 3 ? "Maxed" : `${this.money(cost)} · ${u.fx}`}); });
+    this.text("STAFF (paid every night you open)", 28, 466, 16, "#ffc21a", 800);
+    this.STAFF.forEach((st, i) => { const n = c.staff[st.id] || 0, X = 28 + (i % 3)*326, Y = 478 + Math.floor(i/3)*76;
+      this.btn("s" + st.id, X, Y, 230, 68, `${st.icon} ${st.name}: ${n}`, () => { if (n >= (st.max || 1)) return this.say("That's the most you need."); c.staff[st.id] = n + 1; this.put(d); this.say(`Hired: ${st.name}.`); }, {left: true, size: 18, sub: `${this.money(st.wage)}/night · ${st.fx}`});
+      this.btn("f" + st.id, X + 238, Y, 80, 68, "Let go", () => { if (!n) return; c.staff[st.id] = n - 1; this.put(d); }, {size: 15}); });
+  },
+  runNight(id){
+    const d = this.d(), v = this.VENUES.find(x => x.id === id), c = d.clubs[id]; c.up = c.up || {}; c.staff = c.staff || {};
+    const U = k => c.up[k] || 0, S = k => c.staff[k] || 0, r = () => .8 + Math.random()*.4, lines = [];
+    let crowd = v.cap*(.3 + c.rep/180)*(1 + .12*U("sound") + .08*U("lights") + (S("dj") ? .15 : 0) + (S("promoter") ? .2 : 0))*r();
+    let mult = 1;
+    const ev = Math.random(), fightOdds = Math.max(.03, .26 - .06*U("security") - .06*S("bouncers"));
+    let fine = 0, repD = 0;
+    if (ev < fightOdds){ fine = 300 + Math.random()*900*(v.price/8000 + 1); repD -= 6; lines.push(`🥊 A fight broke out. Fines and damage: ${this.money(fine)}. More security helps.`); }
+    else if (ev < fightOdds + .07){ mult = 1.35; repD += 8; lines.push("🌟 A celebrity dropped in! Everyone posted about it."); }
+    else if (ev < fightOdds + .13){ repD += 10; lines.push("📱 A video from your club went viral."); }
+    else if (ev < fightOdds + .17 && U("sound") < 2){ mult = .6; lines.push("⚡ The sound system blew out for an hour. A better system would have held up."); }
+    else if (ev < fightOdds + .23 && U("security") < 1){ fine += 500; lines.push("📋 A surprise inspection found problems: $500 fine."); }
+    crowd = Math.min(v.cap*(1 + .1*U("vip")), crowd*mult); crowd = Math.round(crowd);
+    const doorM = crowd*v.cover, barM = crowd*v.drink*(1.3 + .25*U("bar") + .12*S("bartenders"))*(S("bartenders") ? 1 : .55), vipM = U("vip")*3*(S("bottle") ? 1 : .4)*(250 + Math.random()*450)*(v.price/8000 + .5);
+    const wages = this.STAFF.reduce((a, st) => a + st.wage*S(st.id), 0), upkeep = v.rent + Object.values(c.up).reduce((a, b) => a + b, 0)*40;
+    const profit = Math.round(doorM + barM + vipM - wages - upkeep - fine);
+    c.rep = Math.max(0, Math.min(100, (c.rep || 30) + repD + (profit > 0 ? 2 : -3) + U("lights")*.5)); c.lastProfit = profit;
+    d.cash += profit; d.ran[id] = d.day; this.put(d);
+    lines.unshift(`👥 ${crowd} guests · door ${this.money(doorM)} · bar ${this.money(barM)}${vipM > 1 ? " · VIP " + this.money(vipM) : ""}`, `💸 Staff ${this.money(wages)} · rent & upkeep ${this.money(upkeep)}`);
+    if (!S("bartenders")) lines.push("🍸 No bartenders hired: the bar sold half as much.");
+    this.night = {name: v.name, profit, lines}; this.say(profit >= 0 ? `${v.name} made ${this.money(profit)} tonight!` : `${v.name} lost ${this.money(-profit)} tonight.`, profit < 0);
+  }
+});
 
 /* ================= Outfits: re-dress any avatar =================
    The clothes are re-printed on the avatar's own texture: skin is found by matching the colour of the
@@ -12183,7 +13456,7 @@ const VRMenu = {
     x.lineWidth = hov ? 4 : 2; x.strokeStyle = hov || o.on ? "#ffc21a" : "rgba(255,255,255,.16)"; x.stroke();
     x.fillStyle = o.on || o.primary ? "#241404" : "#fff"; x.font = `${o.bold === false ? 500 : 700} ${o.size || 30}px "Hanken Grotesk", sans-serif`;
     x.textAlign = o.left ? "left" : "center"; x.textBaseline = "middle";
-    x.fillText(label, o.left ? X + 22 : X + W/2, Y + H/2 + 1, W - 30);
+    x.fillText(label, o.left ? X + 22 : X + W/2, o.sub ? Y + H*.37 : Y + H/2 + 1, W - 30);
     if (o.sub){ x.font = `500 21px "Hanken Grotesk", sans-serif`; x.fillStyle = o.on ? "#3a2408" : "rgba(255,255,255,.6)"; x.fillText(o.sub, o.left ? X + 22 : X + W/2, Y + H - 16, W - 30); }
     this.regions.push({id, X, Y, W, H, fn});
   },
@@ -12344,7 +13617,8 @@ const VRMenu = {
     b("exit", 8, "🚪 Exit VR", () => { try{ Lounge.session && Lounge.session.end(); }catch(e){} });
     const n = P && inP ? Object.values(P.peers).filter(p => p.hello).length : 0;
     b("people", 9, `👥 People${n ? " (" + n + ")" : ""}`, () => { this.partyView = "people"; this.page = 0; });
-    this.text(VIP.can("moderate") ? "🛡 Moderator: open People, or touch a guest, to mute or remove them." : "Touch someone with your hand to say hi. Hold grip on a person to walk them somewhere.", 354, Y + 3*96 + 43, 21, "rgba(255,255,255,.6)", 500, "left", 640);
+    b("mogul", 10, "🍾 Nightclub Mogul", () => { this.toggle(false); Mogul.open(); }, {primary: true});
+    this.text(VIP.can("moderate") ? "🛡 Mods: People → mute/remove." : "Touch someone to say hi.", 684, Y + 3*96 + 43, 19, "rgba(255,255,255,.6)", 500, "left", 310);
   },
   /* ---------- pointing ---------- */
   hitFor(ctl){
