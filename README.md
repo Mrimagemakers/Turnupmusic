@@ -174,3 +174,15 @@ Open a show to see its episodes, **+ Follow** it to keep it under My podcasts, a
 - In VR the headset shows a black "Loading…" screen while a new world is being built, then fades back in, instead of a frozen, jumpy picture.
 - In VR only the strongest few lamps in each world are switched on, because the headset draws everything twice. They all come back when you take the headset off.
 - The VR world picker now fits every world on the panel (the newest ones used to fall off the bottom).
+
+## Turn Up Social: pages, friends, walls and one account on every device
+Open it with the speech-bubble button (it used to be "The Wall").
+- **Feed:** posts from everyone, or just friends and people you follow. Post text, a photo, a link or the song that's playing. Like, reply and share. Tap anyone's name or picture to open their page.
+- **My page** (in the style of Friendster and MySpace): a colored cover, your avatar, a mood or status line, your city, what you're into, your favorite genre, music links, and a "member since" date. It shows your posts, followers, following, friends and likes. **Top friends** shows up to 8 people you choose, and **Photos** collects your picture posts. Your **Wall** is where you post, and where other people can write to you. Tap **Edit my page** to change the mood, city, interests, cover color and top friends.
+- **Friends:** when you follow someone and they follow you back, you're friends. The Friends tab lists Friends, Following and Followers.
+- **Find people:** search everyone with a page by name, city, genre or interests.
+- **Alerts 🔔:** new followers, likes, replies and wall posts, with a red counter.
+- **In the lounge:** tap a guest and choose **View page**.
+- **Shareable links:** `…/Turnupmusic/#user=<their key>` opens a page. Use **Share page** to get yours.
+- **Same you on every device:** before, a tablet and a Quest were two different guests with two different looks. On **My page**, tap **Use on another device → Make a code for my other device**. On the other device, go to **My page → Use on another device**, type the 8-character code and tap **I have a code** (the code works for 10 minutes). Both devices are then the same account, with the same name, avatar, outfit, friends and VIP pass. A change on one device shows up on the other.
+- **Characters match everywhere:** the Android app used to carry only 16 of the 50 characters, so on a tablet running the app other players often showed up as someone else. Now every device downloads the exact character each player chose, and the app's built-in ones are used only when there's no internet.

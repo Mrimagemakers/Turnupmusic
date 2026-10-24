@@ -465,6 +465,42 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 .post .acts button.on{color:var(--live);border-color:rgba(255,77,61,.4)}
 .post .replies{display:grid;gap:6px;padding-left:12px;border-left:2px solid var(--line)}
 .post .replies p{font-size:13px}
+dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)}
+.soc-top{display:flex;align-items:center;gap:8px}
+.soc-nav{flex-wrap:wrap;margin:6px 0 10px}
+.bellnum{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--live);color:#fff;font-size:11px;font-weight:800}
+.linkbtn{background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer}.linkbtn:hover b{text-decoration:underline}
+.post .who button.av{border:0;cursor:pointer;padding:0}
+.pg{display:grid;gap:10px}
+.pg-cover{height:120px;border-radius:16px;box-shadow:inset 0 -40px 60px rgba(0,0,0,.35)}
+.pg-head{display:flex;gap:14px;align-items:flex-end;margin:-56px 0 0 18px}
+.pg-av{width:104px;height:156px;border-radius:16px;border:4px solid #1e1511;background-color:#2e201a;background-repeat:no-repeat;flex:none;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.pg-id{padding-top:62px;min-width:0}.pg-id h2{margin:0;font-size:24px;overflow-wrap:anywhere}.pg-id p{margin:2px 0}
+.pg-mood{font-style:italic;color:var(--gold)}.pg-meta{font-size:13px;color:var(--muted)}
+.pg-stats{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.pg-stats b{color:var(--chrome);font-size:15px}.pg-stats button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0}
+.pill-live{font-size:12px;font-weight:700;color:#3aff8a;align-self:center}
+.pg-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:14px;align-items:start}
+.pg-side{display:grid;gap:10px}.pg-side section,.pg-edit{padding:12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.pg-side h3,.pg-main h3{margin-top:0}.pg-side p{margin:4px 0;font-size:14px}
+.pg-top{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.pg-top button{display:grid;justify-items:center;gap:3px;background:none;border:0;color:var(--chrome);font:600 11px var(--f-body);cursor:pointer;padding:2px;min-width:0}
+.pg-top button span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pg-top .av,.soc-person .av,.soc-note .av,.pg-pick .av{display:block;width:46px;height:69px;border-radius:9px;background-repeat:no-repeat;background-color:#2e201a;flex:none}
+.pg-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.pg-photos img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.pg-wall{max-height:none}
+.pg-edit{display:grid;gap:10px}
+.pg-covers{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.pg-covers input{position:absolute;opacity:0}
+.pg-covers span{display:block;width:54px;height:30px;border-radius:8px;border:2px solid transparent;cursor:pointer}.pg-covers input:checked + span{border-color:#fff}
+.pg-pick{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.pg-pick label{display:flex;align-items:center;gap:6px;font-size:12px;padding:4px 8px 4px 4px;border-radius:10px;background:rgba(255,255,255,.05);cursor:pointer}
+.pg-pick .av{width:20px;height:30px}
+.soc-people{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.soc-person,.soc-note{display:flex;align-items:center;gap:10px;text-align:left;padding:8px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--chrome);font:14px var(--f-body);cursor:pointer}
+.soc-person .av,.soc-note .av{width:30px;height:45px}.soc-person .pill{margin-left:auto;font-size:11px;color:var(--gold)}
+.soc-notes{display:grid;gap:6px}.soc-note.new{border-color:rgba(255,194,26,.55);background:rgba(255,194,26,.07)}
+.pair-code{font:800 34px var(--f-display);letter-spacing:.18em;color:var(--gold);margin:6px 0}
+#socFindQ{margin-bottom:10px}
+@media (max-width:720px){.pg-grid{grid-template-columns:1fr}.pg-head{margin-left:8px}.pg-av{width:84px;height:126px}}
 .svc{display:inline-flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .svc a{font-size:12px;padding:4px 9px;border-radius:99px;background:rgba(255,255,255,.07);color:var(--chrome);text-decoration:none}
 .chatlog .card{display:inline-block;margin-top:2px;padding:3px 8px;border-radius:8px;background:rgba(255,194,26,.12);color:var(--gold);font-weight:600;cursor:pointer;border:0}
@@ -983,15 +1019,22 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
   <div class="btnrow end"><button class="ghost" id="linkClose" type="button">Close</button></div>
 </dialog>
 
-<dialog id="socialDlg" class="wide">
-  <h2>The Wall</h2>
-  <div class="seg" id="socTabs"><button type="button" data-t="all" aria-pressed="true">Everyone</button><button type="button" data-t="following" aria-pressed="false">Following</button><button type="button" data-t="mine" aria-pressed="false">My posts</button></div>
+<dialog id="socialDlg" class="wide socdlg">
+  <div class="soc-top"><h2>Turn Up Social</h2><span class="grow"></span><button class="iconbtn" id="socX" type="button" aria-label="Close">✕</button></div>
+  <div class="seg soc-nav" id="socNav"><button type="button" data-v="feed" aria-pressed="true">🏠 Feed</button><button type="button" data-v="me" aria-pressed="false">👤 My page</button><button type="button" data-v="friends" aria-pressed="false">👥 Friends</button><button type="button" data-v="find" aria-pressed="false">🔎 Find people</button><button type="button" data-v="notes" aria-pressed="false">🔔 Alerts <span class="socBell bellnum" hidden></span></button></div>
+  <div id="socFeedView">
+  <div class="seg" id="socTabs"><button type="button" data-t="all" aria-pressed="true">Everyone</button><button type="button" data-t="following" aria-pressed="false">Friends &amp; following</button><button type="button" data-t="mine" aria-pressed="false">My posts</button></div>
   <form id="postForm" class="postform">
     <textarea class="field" id="postText" maxlength="280" rows="2" placeholder="What's the vibe?"></textarea>
     <div class="btnrow"><label class="ghost filebtn tiny">📷 Photo<input type="file" id="postImg" accept="image/*" hidden></label><button class="ghost tiny" type="button" id="postSong">🎵 Add the song that's on</button><input class="field tiny" id="postLink" maxlength="300" placeholder="Link (Spotify, YouTube…)"><span class="grow"></span><button class="primary" type="submit" id="postGo">Post</button></div>
     <div id="postPreview" class="postpreview"></div>
   </form>
   <div id="feed" class="feed"></div>
+  </div>
+  <div id="socPageView" hidden></div>
+  <div id="socFriendsView" hidden></div>
+  <div id="socFindView" hidden></div>
+  <div id="socNotesView" hidden></div>
   <div class="btnrow end"><button class="ghost" id="socRefresh" type="button">Refresh</button><button class="ghost" id="socClose" type="button">Close</button></div>
 </dialog>
 
@@ -6831,14 +6874,18 @@ const Lounge = {
   },
   loadAvatar(name){
     if (this.avatarCache[name]) return this.avatarCache[name];
-    const src = this.embedded ? (this.embedded.avatars[name] ? this.parseGLB(this.embedded.avatars[name]) : Promise.reject(new Error("none")))
-                              : this.loadGLB(this.PEOPLE_HOSTS.map(h => h + name + ".glb"));
+    const net = () => this.loadGLB(this.PEOPLE_HOSTS.map(h => h + name + ".glb"));
+    // online, everyone loads the same full character from the same place (so tablets, phones and headsets match);
+    // the app's built-in characters are only the fallback when there's no internet
+    const src = this.embedded ? (navigator.onLine !== false ? net().catch(() => this.embedded.avatars[name] ? this.parseGLB(this.embedded.avatars[name]) : Promise.reject(new Error("none")))
+                                                         : this.embedded.avatars[name] ? this.parseGLB(this.embedded.avatars[name]) : net())
+                              : net();
     return this.avatarCache[name] = src.then(gl => {
       const root = gl.scene;
       root.traverse(o => { if (o.isMesh){ o.frustumCulled = false; o.castShadow = false; o.receiveShadow = false; if (o.material && o.material.map) o.material.map.anisotropy = 4; } });
       const g = this.AVATARS[name] || "f", A = {name, root, g, clips: this.realClips[g]};
       this.peopleSet.list.push(A); return A;
-    }).catch(() => null);
+    }).catch(() => { delete this.avatarCache[name]; return null; });     // try again next time instead of giving up for good
   },
   /* Download a world's cast, then bring that world's people in */
   loadCast(world){
@@ -8682,6 +8729,7 @@ $("#btnResetYes").addEventListener("click", () => { S.user = []; S.favs.clear();
   setTimeout(() => { if (worldLinks[h]){ store.set("world", worldLinks[h]); openStage("lounge"); }
     else if (h === "lounge") openStage("lounge"); else if (h === "stage") openStage("dancers");
     else if (h === "events") Events.open();
+    else if (/^user=[0-9a-f]{64}$/.test(h)) Social.openPage(h.slice(5));
     else if (/^event=[\w.%-]{1,120}$/.test(h)){ try{ Events.openLink(decodeURIComponent(h.slice(6))); }catch(e){} }
     else if (/^watch=[\w-]{11}(-\d+)?$/.test(h)){ const [id, t] = h.slice(6).split("-"); Theater.open({svc: "YouTube", kind: "video", id, start: +t || 0, url: `https://youtu.be/${id}`}, +t || 0, null); } }, 0);
 })();
@@ -9011,7 +9059,11 @@ const Party = {
     const L = Lounge; if (!L.peopleSet) return null;
     if (L.peopleSet.mode === "real"){
       let A = await L.loadAvatar(name);
-      if (!A){ const g = (L.AVATARS[name] || "f"); A = L.peopleSet.list.find(a => a.g === g) || L.peopleSet.list[0]; }
+      if (!A){
+        // couldn't get their character right now: stand in someone similar, and swap the real one in as soon as it arrives
+        const g = (L.AVATARS[name] || "f"); A = L.peopleSet.list.find(a => a.g === g) || L.peopleSet.list[0];
+        clearTimeout(this.avRetry && this.avRetry[name]); (this.avRetry || (this.avRetry = {}))[name] = setTimeout(async () => { const B = await L.loadAvatar(name); if (B) for (const p of Object.values(this.peers)) if (p.profile.avatar === name && p.slot){ p.slot = (this.removeSlot(p), null); this.buildAvatar(p); } }, 12000);
+      }
       return A;
     }
     return L.peopleSet.list[0];
@@ -9450,7 +9502,7 @@ const Party = {
     const svc = [["Spotify", pr.spotify], ["Apple Music", pr.apple], ["TIDAL", pr.tidal], ["YouTube", pr.youtube]].filter(x => x[1]).map(([n, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${n}</a>`).join("");
     const isMod = VIP.can("moderate") && p.role !== "owner";
     $("#peerCard").innerHTML = `<div class="av" style="${avThumbStyle(pr.avatar, 96)}"></div><div><h2>${esc(pr.name)}${pr.dj ? " 🎧" : ""}</h2>${p.role !== "guest" ? `<p><b style="color:var(--gold)">${esc(VIP.badge(p.role))}</b></p>` : ""}${pr.bio ? `<p>${esc(pr.bio)}</p>` : ""}${pr.genre ? `<p>Loves ${esc(pr.genre)}</p>` : ""}${href ? `<p><a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(pr.link)}</a></p>` : ""}${svc ? `<div class="svc">${svc}</div>` : ""}
-      <div class="btnrow" style="margin-top:10px">${pr.pk ? `<button class="ghost tiny" type="button" data-pc="follow">${Social.follows.has(pr.pk) ? "Following" : "Follow"}</button>` : ""}${isMod ? `<button class="ghost tiny" type="button" data-pc="mute">🛡 Mute for everyone</button><button class="ghost tiny" type="button" data-pc="kick">🛡 Remove from party</button>` : ""}</div></div>`;
+      <div class="btnrow" style="margin-top:10px">${pr.pk ? `<button class="primary tiny" type="button" data-pc="page">📄 View page</button><button class="ghost tiny" type="button" data-pc="follow">${Social.follows.has(pr.pk) ? "Following" : "Follow"}</button>` : ""}${isMod ? `<button class="ghost tiny" type="button" data-pc="mute">🛡 Mute for everyone</button><button class="ghost tiny" type="button" data-pc="kick">🛡 Remove from party</button>` : ""}</div></div>`;
     this.cardId = id;
     $("#peerMute").textContent = p.muted ? "Unmute" : "Mute";
     $("#peerDlg").showModal();
@@ -9466,6 +9518,7 @@ const Party = {
     $("#peerClose").addEventListener("click", () => $("#peerDlg").close());
     $("#peerCard").addEventListener("click", e => { const b = e.target.closest("[data-pc]"); if (!b) return; const p = this.peers[this.cardId]; if (!p) return;
       if (b.dataset.pc === "follow"){ Social.follow(p.profile.pk); b.textContent = Social.follows.has(p.profile.pk) ? "Following" : "Follow"; }
+      else if (b.dataset.pc === "page"){ $("#peerDlg").close(); Social.openPage(p.profile.pk); }
       else { this.modAct(this.cardId, b.dataset.pc); $("#peerDlg").close(); } });
     $("#peerMute").addEventListener("click", () => { const p = this.peers[this.cardId]; if (!p) return; p.muted = !p.muted; if (p.audio) p.audio.muted = p.muted; $("#peerMute").textContent = p.muted ? "Unmute" : "Mute"; });
     $("#peerHide").addEventListener("click", () => { const p = this.peers[this.cardId]; if (!p) return; this.hidden.add(this.hideKey(p)); store.set("hiddenGuests", [...this.hidden].slice(-200)); if (p.audio) p.audio.muted = true; $("#peerDlg").close(); toast(`${p.profile.name} is hidden. You won't see their avatar or messages.`); });
@@ -10705,14 +10758,14 @@ const Social = {
   },
   bindUI(){
     $("#socTabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b){ this.tab = b.dataset.t; this.render(); } });
-    $("#socClose").addEventListener("click", () => $("#socialDlg").close());
-    $("#socRefresh").addEventListener("click", () => this.refresh(true));
+    $("#socClose").addEventListener("click", () => $("#socialDlg").close()); $("#socX").addEventListener("click", () => $("#socialDlg").close());
+    $("#socRefresh").addEventListener("click", () => { if (this.view === "page" && this.pageOf) this.openPage(this.pageOf); else if (this.view === "notes") this.loadNotes().then(() => this.renderNotes()); else if (this.view === "find"){ this.foundAll = false; this.renderFind(); } else if (this.view === "friends") this.renderFriends(); else this.refresh(true); });
     $("#postForm").addEventListener("submit", e => { e.preventDefault(); this.post(); });
     $("#postImg").addEventListener("change", e => { const f = e.target.files[0]; if (f) this.attachImage(f); e.target.value = ""; });
     $("#postSong").addEventListener("click", () => { if (!S.current){ toast("Nothing is playing."); return; } this.song = (S.track.title && S.track.artist ? `${S.track.title} — ${S.track.artist}` : S.track.title || S.current.name) + ` (on ${S.current.name})`; this.preview(); });
     $("#feed").addEventListener("click", e => {
       const b = e.target.closest("button[data-act]"), card = e.target.closest(".post"); if (!b || !card) return;
-      const ev = this.posts.find(p => p.id === card.dataset.id); if (!ev) return;
+      const ev = this.find(card.dataset.id); if (!ev) return;
       const act = b.dataset.act;
       if (act === "like") this.like(ev);
       else if (act === "reply"){ this.openReplies = this.openReplies === ev.id ? null : ev.id; this.render(); }
@@ -10731,6 +10784,319 @@ const Social = {
     $("#btnSocial2").addEventListener("click", () => this.open());
   }
 };
+/* ================= Turn Up Social: profile pages, friends, walls, notifications, one account on every device =================
+   Everything is shared on the same public network as the posts and events (no server to run):
+   a profile page is a signed "profile" note, following someone is a signed contact list, and a post on
+   someone's wall is an ordinary post that names them. */
+Object.assign(Social, {
+  view: "feed", pageOf: "", profiles: new Map(), byId: new Map(), notes: [], followsAt: 0,
+  COVERS: {sunset: ["#ff7a3a", "#d81b60", "#4a148c"], ocean: ["#00b4d8", "#0077b6", "#03045e"], gold: ["#ffd36a", "#d4a937", "#5a3d10"], neon: ["#3ef2ff", "#9a5aff", "#ff2e88"], forest: ["#7ad36a", "#2e7d32", "#0b3d1e"], midnight: ["#3a3a6a", "#16163a", "#05050f"], rasta: ["#1b7a3a", "#ffd21a", "#c62828"], blush: ["#ffd1dc", "#ff8fab", "#b5179e"]},
+  extras(){ return Object.assign({mood: "", city: "", interests: "", cover: "sunset", top: [], since: 0}, store.get("socx", {})); },
+  setExtras(x){ store.set("socx", x); this.publishProfileSoon(); },
+  cleanExtras(x){
+    x = x && typeof x === "object" ? x : {}; const s = (v, n) => String(v ?? "").replace(/[\u0000-\u001f]/g, "").slice(0, n);
+    return {mood: s(x.mood, 60), city: s(x.city, 40), interests: s(x.interests, 140), cover: Object.prototype.hasOwnProperty.call(this.COVERS, x.cover) ? x.cover : "sunset",
+      top: (Array.isArray(x.top) ? x.top : []).filter(k => /^[0-9a-f]{64}$/.test(k)).slice(0, 8), since: Math.max(0, +x.since || 0)};
+  },
+  find(id){ return this.byId.get(id) || this.posts.find(p => p.id === id); },
+  keep(evs){ for (const e of evs) this.byId.set(e.id, e); return evs; },
+
+  /* ---------- profiles on the network ---------- */
+  publishProfileSoon(){ clearTimeout(this._pubT); this._pubT = setTimeout(() => this.publishProfile().catch(() => {}), 1500); },
+  async publishProfile(){
+    if (!window.TUNet) return;
+    const p = Profile.clean(Profile.ensure()), x = this.extras(); if (!x.since){ x.since = Math.floor(Date.now()/1000); store.set("socx", x); }
+    delete p.pk; delete p.dj;
+    const at = Math.floor(Date.now()/1000), ev = TUNet.finalizeEvent({kind: 30078, created_at: at, content: JSON.stringify(Object.assign(p, {x})), tags: [["d", "tu-profile"], ["t", "turnupmusic"], ["name", p.name]]}, Events.sk());
+    await Promise.any(Events.pool().publish(NET.relays, ev)); store.set("profileAt", at);
+    this.profiles.set(Events.myKey(), {p, x, at});
+  },
+  parseProfile(ev){
+    try{ if (ev.kind !== 30078 || VIP.tag(ev, "d") !== "tu-profile") return null; const j = JSON.parse(ev.content); return {p: Profile.clean(j), x: this.cleanExtras(j.x), at: ev.created_at}; }catch(e){ return null; }
+  },
+  async loadProfiles(pks){
+    if (!window.TUNet) return;
+    const f = {kinds: [30078], "#d": ["tu-profile"], limit: pks ? pks.length*2 : 400}; if (pks) f.authors = pks.slice(0, 200); else f["#t"] = ["turnupmusic"];
+    try{ const evs = await Events.pool().querySync(NET.relays, f, {maxWait: 4500});
+      for (const ev of evs){ const r = this.parseProfile(ev); if (!r) continue; const cur = this.profiles.get(ev.pubkey); if (!cur || cur.at < r.at) this.profiles.set(ev.pubkey, r); } }catch(e){}
+  },
+  who(pk, ev){
+    // the newest page profile wins; a post's own name/avatar is the fallback
+    let pr = this.profiles.get(pk);
+    if (!pr && pk && pk === Events.myKey()) pr = {p: Profile.clean(Profile.ensure()), x: this.cleanExtras(this.extras())};
+    if (pr) return {name: pr.p.name, avatar: pr.p.avatar, role: VIP.roleOf(pk), p: pr.p, x: pr.x};
+    const a = ev ? this.author(ev) : {name: "Guest", avatar: AV_NAMES[0], role: VIP.roleOf(pk)};
+    return Object.assign(a, {p: null, x: this.cleanExtras({})});
+  },
+  /* the same account (and so the same look) on every device: pull my profile from the network if it's newer */
+  async syncMine(){
+    if (!window.TUNet) return;
+    const me = Events.myKey(); await this.loadProfiles([me]); await this.loadFollows();
+    const pr = this.profiles.get(me), localAt = store.get("profileAt", 0);
+    if (pr && pr.at > localAt){
+      const keep = Profile.get(); store.set("profile", Object.assign(keep, pr.p)); store.set("socx", pr.x); store.set("profileAt", pr.at);
+      try{ Party.profileChanged(); }catch(e){}
+    } else if (!pr || !localAt) this.publishProfileSoon();
+  },
+  /* ---------- following, in public, so people can see their followers ---------- */
+  async loadFollows(){
+    if (!window.TUNet) return;
+    try{ const evs = await Events.pool().querySync(NET.relays, {kinds: [3], authors: [Events.myKey()], limit: 4}, {maxWait: 4000});
+      const ev = evs.sort((a, b) => b.created_at - a.created_at)[0];
+      if (ev && ev.created_at > store.get("followsAt", 0)){ this.follows = new Set(ev.tags.filter(t => t[0] === "p" && /^[0-9a-f]{64}$/.test(t[1])).map(t => t[1])); store.set("follows", [...this.follows]); store.set("followsAt", ev.created_at); } }catch(e){}
+  },
+  async publishFollows(){
+    if (!window.TUNet) return;
+    const at = Math.floor(Date.now()/1000);
+    try{ const ev = TUNet.finalizeEvent({kind: 3, created_at: at, content: "", tags: [["t", "turnupmusic"], ...[...this.follows].slice(0, 900).map(k => ["p", k])]}, Events.sk()); await Promise.any(Events.pool().publish(NET.relays, ev)); store.set("followsAt", at); }catch(e){}
+  },
+  async followersOf(pk){
+    try{ const evs = await Events.pool().querySync(NET.relays, {kinds: [3], "#p": [pk], limit: 500}, {maxWait: 4000});
+      const latest = {}; for (const e of evs) if (!latest[e.pubkey] || latest[e.pubkey].created_at < e.created_at) latest[e.pubkey] = e;
+      return Object.values(latest).filter(e => e.tags.some(t => t[0] === "p" && t[1] === pk)).map(e => e.pubkey); }catch(e){ return []; }
+  },
+  async followingOf(pk){
+    if (pk === Events.myKey()) return [...this.follows];
+    try{ const evs = await Events.pool().querySync(NET.relays, {kinds: [3], authors: [pk], limit: 3}, {maxWait: 4000}); const ev = evs.sort((a, b) => b.created_at - a.created_at)[0];
+      return ev ? ev.tags.filter(t => t[0] === "p").map(t => t[1]).filter(k => /^[0-9a-f]{64}$/.test(k)) : []; }catch(e){ return []; }
+  },
+
+  /* ---------- the dialog: feed, pages, friends, people, notifications ---------- */
+  show(v){
+    this.view = v;
+    document.querySelectorAll("#socNav button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v || (v === "page" && b.dataset.v === "me" && this.pageOf === Events.myKey())));
+    for (const [id, vv] of [["#socFeedView", "feed"], ["#socPageView", "page"], ["#socFriendsView", "friends"], ["#socFindView", "find"], ["#socNotesView", "notes"]]) $(id).hidden = vv !== v;
+    if (v === "feed") this.render(); else if (v === "friends") this.renderFriends(); else if (v === "find") this.renderFind(); else if (v === "notes") this.renderNotes();
+  },
+  async openPage(pk){
+    if (!/^[0-9a-f]{64}$/.test(pk || "")) return;
+    if (!$("#socialDlg").open) $("#socialDlg").showModal();
+    this.pageOf = pk; this.editing = false; this.show("page");
+    const box = $("#socPageView"); box.innerHTML = `<p class="evempty">Loading…</p>`;
+    await VIP.load();
+    const [, posts, wall, followers, following, likes] = await Promise.all([
+      this.profiles.has(pk) ? null : this.loadProfiles([pk]),
+      Events.pool().querySync(NET.relays, {kinds: [1], authors: [pk], "#t": ["turnupmusic"], limit: 60}, {maxWait: 4500}).catch(() => []),
+      Events.pool().querySync(NET.relays, {kinds: [1], "#p": [pk], "#t": ["turnupmusic"], limit: 60}, {maxWait: 4500}).catch(() => []),
+      this.followersOf(pk), this.followingOf(pk),
+      Events.pool().querySync(NET.relays, {kinds: [7], "#p": [pk], limit: 1000}, {maxWait: 3500}).catch(() => [])
+    ]);
+    if (this.pageOf !== pk) return;
+    const mine = posts.filter(e => !e.tags.some(t => t[0] === "e") && !VIP.hides.has(e.id)), toWall = wall.filter(e => e.pubkey !== pk && e.tags.some(t => t[0] === "l" && t[1] === "wall") && !VIP.hides.has(e.id));
+    this.keep(mine); this.keep(toWall);
+    const friendsPk = followers.filter(k => following.includes(k));
+    await this.loadProfiles([...new Set([...friendsPk, ...toWall.map(e => e.pubkey)])].filter(k => !this.profiles.has(k)));
+    this.page = {pk, posts: [...mine, ...toWall].sort((a, b) => b.created_at - a.created_at), followers, following, friends: friendsPk, likes: new Set(likes.map(l => l.pubkey + l.id)).size, photos: mine.filter(e => /^data:image\//.test(this.tag(e, "image") || ""))};
+    await this.loadLikes(this.page.posts.map(e => e.id));
+    this.renderPage();
+  },
+  async loadLikes(ids){
+    if (!ids.length) return;
+    try{ const rx = await Events.pool().querySync(NET.relays, {kinds: [7], "#e": ids.slice(0, 150), limit: 2000}, {maxWait: 3500}); const cnt = {};
+      for (const r of rx){ const e = (r.tags.filter(t => t[0] === "e").pop() || [])[1]; if (e) (cnt[e] || (cnt[e] = new Set())).add(r.pubkey); }
+      for (const [k, v] of Object.entries(cnt)) this.likes[k] = Math.max(this.likes[k] || 0, v.size); }catch(e){}
+  },
+  coverCss(id){ const c = this.COVERS[id] || this.COVERS.sunset; return `background:linear-gradient(135deg,${c[0]},${c[1]} 55%,${c[2]})`; },
+  renderPage(){
+    const P = this.page, box = $("#socPageView"); if (!P || !box) return;
+    const pk = P.pk, me = Events.myKey(), isMe = pk === me, w = this.who(pk), x = w.x || this.cleanExtras({}), pr = w.p || {}, href = Profile.linkHref(pr.link || "");
+    const top = (x.top && x.top.length ? x.top : P.friends).slice(0, 8);
+    const svc = [["Spotify", pr.spotify], ["Apple Music", pr.apple], ["TIDAL", pr.tidal], ["YouTube", pr.youtube]].filter(s => s[1]).map(([n, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${n}</a>`).join("");
+    const since = x.since ? new Date(x.since*1000).toLocaleDateString([], {month: "long", year: "numeric"}) : "";
+    box.innerHTML = `<div class="pg">
+      <div class="pg-cover" style="${this.coverCss(x.cover)}"></div>
+      <div class="pg-head"><div class="pg-av" style="${avThumbStyle(w.avatar, 104)}"></div>
+        <div class="pg-id"><h2>${esc(w.name)} ${w.role !== "guest" ? `<span class="badge${w.role === "mod" ? " mod" : ""}">${esc(VIP.badge(w.role))}</span>` : ""}</h2>
+          ${x.mood ? `<p class="pg-mood">“${esc(x.mood)}”</p>` : ""}
+          <p class="pg-meta">${[x.city ? "📍 " + esc(x.city) : "", pr.genre ? "🎵 Loves " + esc(pr.genre) : "", since ? "Member since " + esc(since) : ""].filter(Boolean).join(" · ")}</p></div></div>
+      <div class="pg-stats"><span><b>${P.posts.filter(e => e.pubkey === pk).length}</b> posts</span><button type="button" data-pa="followers"><b>${P.followers.length}</b> followers</button><button type="button" data-pa="following"><b>${P.following.length}</b> following</button><span><b>${P.friends.length}</b> friends</span><span><b>${P.likes}</b> ❤️</span></div>
+      <div class="btnrow">${isMe ? `<button class="primary tiny" type="button" data-pa="edit">✏️ Edit my page</button><button class="ghost tiny" type="button" data-pa="look">👤 Change my avatar &amp; look</button><button class="ghost tiny" type="button" data-pa="devices">📱 Use on another device</button>`
+        : `<button class="${this.follows.has(pk) ? "ghost" : "primary"} tiny" type="button" data-pa="follow">${this.follows.has(pk) ? (P.following.includes(me) ? "✓ Friends" : "✓ Following") : (P.following.includes(me) ? "Follow back" : "➕ Follow")}</button>`}
+        <button class="ghost tiny" type="button" data-pa="share">↗ Share page</button>${!isMe && typeof Party !== "undefined" && Object.values(Party.peers).some(q => q.profile.pk === pk) ? `<span class="pill-live">● In the lounge with you</span>` : ""}</div>
+      <div id="pgEdit" hidden></div>
+      <div class="pg-grid">
+        <div class="pg-side">
+          <section><h3>About</h3>${pr.bio ? `<p>${esc(pr.bio)}</p>` : `<p class="hint">${isMe ? "Add a bio in Change my avatar & look." : "No bio yet."}</p>`}${x.interests ? `<p><b>Into:</b> ${esc(x.interests)}</p>` : ""}${href ? `<p><a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(pr.link)}</a></p>` : ""}${svc ? `<div class="svc">${svc}</div>` : ""}</section>
+          <section><h3>${x.top && x.top.length ? "Top friends" : "Friends"}</h3>${top.length ? `<div class="pg-top">${top.map(k => { const f = this.who(k); return `<button type="button" data-user="${k}"><span class="av" style="${avThumbStyle(f.avatar, 46)}"></span><span>${esc(f.name)}</span></button>`; }).join("")}</div>` : `<p class="hint">${isMe ? "Follow people who follow you back and they become friends." : "No friends to show yet."}</p>`}</section>
+          ${P.photos.length ? `<section><h3>Photos</h3><div class="pg-photos">${P.photos.slice(0, 9).map(e => `<img src="${this.tag(e, "image")}" alt="" loading="lazy">`).join("")}</div></section>` : ""}
+        </div>
+        <div class="pg-main"><h3>${isMe ? "My wall" : esc(w.name) + "'s wall"}</h3>
+          <form id="wallForm" class="postform"><textarea class="field" id="wallText" maxlength="280" rows="2" placeholder="${isMe ? "What's on your mind?" : "Write something on " + esc(w.name) + "'s wall…"}"></textarea><div class="btnrow"><span class="grow"></span><button class="primary tiny" type="submit">${isMe ? "Post" : "Post on the wall"}</button></div></form>
+          <div class="feed pg-wall">${P.posts.length ? P.posts.map(e => this.postHTML(e, me, pk)).join("") : `<p class="evempty">Nothing on the wall yet.</p>`}</div></div>
+      </div></div>`;
+  },
+  renderEdit(){
+    const x = this.extras(), box = $("#pgEdit"), P = this.page; if (!box) return;
+    const cands = [...new Set([...(P ? P.friends : []), ...this.follows])].slice(0, 40);
+    box.hidden = false;
+    box.innerHTML = `<form id="pgEditForm" class="pg-edit">
+      <div class="row2"><label class="lbl">Mood / status<input class="field" name="mood" maxlength="60" value="${esc(x.mood)}" placeholder="Feeling the bassline 🎶"></label><label class="lbl">City<input class="field" name="city" maxlength="40" value="${esc(x.city)}" placeholder="Atlanta, GA"></label></div>
+      <label class="lbl">Into (music, hobbies, anything)<input class="field" name="interests" maxlength="140" value="${esc(x.interests)}" placeholder="Neo-soul, vinyl, skating, cooking"></label>
+      <div class="lbl">Page cover<div class="pg-covers">${Object.keys(this.COVERS).map(k => `<label><input type="radio" name="cover" value="${k}"${k === x.cover ? " checked" : ""}><span style="${this.coverCss(k)}"></span></label>`).join("")}</div></div>
+      <div class="lbl">Top friends (up to 8)${cands.length ? `<div class="pg-pick">${cands.map(k => { const f = this.who(k); return `<label><input type="checkbox" name="top" value="${k}"${x.top.includes(k) ? " checked" : ""}><span class="av" style="${avThumbStyle(f.avatar, 30)}"></span>${esc(f.name)}</label>`; }).join("")}</div>` : `<span class="hint"> Follow some people first.</span>`}</div>
+      <div class="btnrow end"><button class="ghost tiny" type="button" data-pa="canceledit">Cancel</button><button class="primary tiny" type="submit">Save my page</button></div></form>`;
+  },
+  postHTML(ev, me, wallOf){
+    const a = this.who(ev.pubkey, ev), img = this.tag(ev, "image"), link = this.tag(ev, "r"), li = Links.parse(link || ""), song = this.tag(ev, "song");
+    const reps = (this.replies[ev.id] || []).sort((x, y) => x.created_at - y.created_at);
+    const onWall = ev.tags.find(t => t[0] === "p" && ev.tags.some(l => l[0] === "l" && l[1] === "wall")), wallName = onWall && onWall[1] !== wallOf ? this.who(onWall[1]).name : "";
+    return `<div class="post" data-id="${ev.id}" data-pk="${ev.pubkey}">
+        <div class="who"><button class="av" type="button" data-user="${ev.pubkey}" style="${avThumbStyle(a.avatar, 28)}" aria-label="${esc(a.name)}'s page"></button><span><button class="linkbtn" type="button" data-user="${ev.pubkey}"><b>${esc(a.name)}</b></button>${wallName ? ` ▸ <button class="linkbtn" type="button" data-user="${onWall[1]}"><b>${esc(wallName)}</b></button>` : ""} ${a.role !== "guest" ? `<span class="badge${a.role === "mod" ? " mod" : ""}">${esc(VIP.badge(a.role))}</span>` : ""}<br><span>${this.ago(ev.created_at)}</span></span><span class="grow"></span>${ev.pubkey !== me ? `<button class="ghost tiny" data-act="follow" type="button">${this.follows.has(ev.pubkey) ? "Following" : "Follow"}</button>` : ""}</div>
+        <p>${this.linkify(ev.content.replace(/\n?https:\/\/\S+$/, ""))}</p>
+        ${song ? `<p class="hint">🎵 ${esc(song.slice(0, 120))}</p>` : ""}
+        ${img && /^data:image\/(jpeg|webp|png);base64,[A-Za-z0-9+/=]+$/.test(img) ? `<img class="pic" src="${img}" alt="Photo from ${esc(a.name)}" loading="lazy">` : ""}
+        ${li ? `<button class="ghost tiny" data-act="play" data-link="${esc(li.url)}" type="button">▶ Play on ${esc(li.svc)}</button>` : ""}
+        <div class="acts"><button type="button" data-act="like" class="${this.mineLiked.has(ev.id) ? "on" : ""}">❤️ ${(this.likes[ev.id] || 0)}</button><button type="button" data-act="reply">💬 ${reps.length}</button><button type="button" data-act="share">↗ Share</button>${VIP.can("moderate") ? `<button type="button" data-act="hide">Hide (mod)</button>` : ""}</div>
+        <div class="replies" ${this.openReplies === ev.id ? "" : "hidden"}>${reps.filter(r => !VIP.hides.has(r.id)).map(r => `<p><button class="linkbtn" type="button" data-user="${r.pubkey}"><b>${esc(this.who(r.pubkey, r).name)}</b></button> ${this.linkify(r.content)}</p>`).join("")}<form data-reply="${ev.id}" class="row2"><input class="field tiny" maxlength="200" placeholder="Reply…"><button class="ghost tiny" type="submit">Send</button></form></div>
+      </div>`;
+  },
+  personRow(k, sub){ const f = this.who(k); return `<button type="button" class="soc-person" data-user="${k}"><span class="av" style="${avThumbStyle(f.avatar, 34)}"></span><span><b>${esc(f.name)}</b>${f.x && f.x.mood ? `<br><span class="hint">“${esc(f.x.mood)}”</span>` : sub ? `<br><span class="hint">${esc(sub)}</span>` : ""}</span>${this.follows.has(k) ? `<span class="pill">Following</span>` : ""}</button>`; },
+  async renderFriends(list){
+    const box = $("#socFriendsView"), me = Events.myKey(); box.innerHTML = `<p class="evempty">Loading…</p>`;
+    const followers = await this.followersOf(me), following = [...this.follows], friends = followers.filter(k => this.follows.has(k));
+    await this.loadProfiles([...new Set([...followers, ...following])].filter(k => !this.profiles.has(k)));
+    const sec = (t, ks, empty) => `<section><h3>${t} · ${ks.length}</h3>${ks.length ? `<div class="soc-people">${ks.map(k => this.personRow(k)).join("")}</div>` : `<p class="hint">${empty}</p>`}</section>`;
+    box.innerHTML = sec("Friends", friends, "When someone you follow follows you back, you're friends.") + sec("Following", following, "Follow people from their posts or pages.") + sec("Followers", followers, "Nobody yet. Post on the feed and go to parties to meet people!");
+  },
+  async renderFind(){
+    const box = $("#socFindView");
+    if (!$("#socFindQ")){ box.innerHTML = `<input class="field" id="socFindQ" placeholder="Search people by name, city or what they're into…"><div id="socFindList" class="soc-people"></div>`; $("#socFindQ").addEventListener("input", () => this.renderFind()); }
+    if (!this.foundAll){ $("#socFindList").innerHTML = `<p class="evempty">Loading…</p>`; await this.loadProfiles(); this.foundAll = true; }
+    const q = $("#socFindQ").value.trim().toLowerCase(), me = Events.myKey();
+    const all = [...this.profiles.entries()].filter(([k]) => k !== me).sort((a, b) => b[1].at - a[1].at).filter(([, v]) => !q || [v.p.name, v.x.city, v.x.interests, v.p.genre, v.p.bio].join(" ").toLowerCase().includes(q));
+    $("#socFindList").innerHTML = all.length ? all.slice(0, 80).map(([k, v]) => this.personRow(k, [v.x.city, v.p.genre].filter(Boolean).join(" · "))).join("") : `<p class="evempty">${q ? "Nobody matches that." : "No one has a page yet."}</p>`;
+  },
+  /* ---------- notifications: likes, replies, wall posts and new followers ---------- */
+  async loadNotes(){
+    if (!window.TUNet) return;
+    const me = Events.myKey();
+    try{ const evs = await Events.pool().querySync(NET.relays, {kinds: [1, 7, 3], "#p": [me], since: Math.floor(Date.now()/1000) - 30*86400, limit: 200}, {maxWait: 4500});
+      const out = [], seenF = new Set();
+      for (const e of evs.sort((a, b) => b.created_at - a.created_at)){
+        if (e.pubkey === me || VIP.hides.has(e.id)) continue;
+        if (e.kind === 3){ if (seenF.has(e.pubkey)) continue; seenF.add(e.pubkey); out.push({e, kind: "follow"}); }
+        else if (e.kind === 7) out.push({e, kind: "like", ref: (e.tags.filter(t => t[0] === "e").pop() || [])[1]});
+        else out.push({e, kind: e.tags.some(t => t[0] === "l" && t[1] === "wall") ? "wall" : "reply"}); }
+      this.notes = out.slice(0, 80); this.keep(out.filter(n => n.e.kind === 1).map(n => n.e));
+      await this.loadProfiles([...new Set(out.map(n => n.e.pubkey))].filter(k => !this.profiles.has(k)).slice(0, 100));
+    }catch(e){}
+    this.bell();
+  },
+  bell(){ const seen = store.get("notesSeen", 0), n = this.notes.filter(x => x.e.created_at > seen).length; for (const el of document.querySelectorAll(".socBell")) { el.textContent = n ? (n > 9 ? "9+" : n) : ""; el.hidden = !n; } },
+  renderNotes(){
+    const box = $("#socNotesView"), seen = store.get("notesSeen", 0);
+    box.innerHTML = this.notes.length ? `<div class="soc-notes">${this.notes.map(n => { const w = this.who(n.e.pubkey), txt = n.kind === "follow" ? "started following you" : n.kind === "like" ? "liked your post" : n.kind === "wall" ? "wrote on your wall" : "replied to you";
+      return `<button type="button" class="soc-note${n.e.created_at > seen ? " new" : ""}" data-user="${n.kind === "wall" ? Events.myKey() : n.e.pubkey}"><span class="av" style="${avThumbStyle(w.avatar, 30)}"></span><span><b>${esc(w.name)}</b> ${txt}${n.kind !== "follow" && n.kind !== "like" ? `: “${esc(n.e.content.slice(0, 80))}”` : ""}<br><span class="hint">${this.ago(n.e.created_at)}</span></span></button>`; }).join("")}</div>` : `<p class="evempty">No notifications yet.</p>`;
+    if (this.notes[0]) store.set("notesSeen", this.notes[0].e.created_at); this.bell();
+  },
+  /* ---------- one account on every device ----------
+     A short code moves your account to another device (a tablet, the Quest). The account key is locked with
+     the code and parked on the network for 10 minutes; the other device unlocks it with the same code. */
+  async pairKey(code, salt){
+    const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveKey"]);
+    return crypto.subtle.deriveKey({name: "PBKDF2", salt: new TextEncoder().encode("turnup-pair:" + salt), iterations: 250000, hash: "SHA-256"}, base, {name: "AES-GCM", length: 256}, false, ["encrypt", "decrypt"]);
+  },
+  async pairTag(code){ const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("turnup-pair-id:" + code)); return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 32); },
+  newCode(){ const A = "ABCDEFGHJKMNPQRSTUVWXYZ23456789", b = crypto.getRandomValues(new Uint8Array(8)); const c = [...b].map(v => A[v % A.length]).join(""); return c.slice(0, 4) + "-" + c.slice(4); },
+  async startLink(){
+    const out = $("#socDevOut");
+    if (!window.crypto || !crypto.subtle){ out.innerHTML = `<p class="hint">This browser can't make a link code. Open Turn Up Music in Chrome, Safari or the Quest Browser.</p>`; return; }
+    const code = this.newCode(), raw = code.replace("-", ""), tag = await this.pairTag(raw), key = await this.pairKey(raw, tag), iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = new Uint8Array(await crypto.subtle.encrypt({name: "AES-GCM", iv}, key, new TextEncoder().encode(store.get("hostSecret", ""))));
+    const b64 = u => btoa(String.fromCharCode(...u)), exp = Math.floor(Date.now()/1000) + 600;
+    const ev = TUNet.finalizeEvent({kind: 30078, created_at: Math.floor(Date.now()/1000), content: JSON.stringify({iv: b64(iv), ct: b64(ct)}), tags: [["d", "tu-pair:" + tag], ["t", "turnupmusic"], ["expiration", String(exp)]]}, Events.sk());
+    await this.publishProfile().catch(() => {}); await this.publishFollows();
+    await Promise.any(Events.pool().publish(NET.relays, ev));
+    out.innerHTML = `<p>On your other device (tablet, phone or Quest), open <b>Turn Up Social → My page → Use on another device → I have a code</b> and type:</p><p class="pair-code">${code}</p><p class="hint">Works for 10 minutes. Only use it on your own devices: anyone with this code can sign in as you.</p>`;
+  },
+  async useCode(input){
+    const out = $("#socDevOut"), raw = String(input || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (raw.length !== 8){ out.innerHTML = `<p class="hint">The code has 8 letters and numbers, like K7Q2-M9XD.</p>`; return; }
+    out.innerHTML = `<p class="hint">Checking the code…</p>`;
+    try{
+      const tag = await this.pairTag(raw), evs = await Events.pool().querySync(NET.relays, {kinds: [30078], "#d": ["tu-pair:" + tag], limit: 3}, {maxWait: 6000});
+      const ev = evs.sort((a, b) => b.created_at - a.created_at)[0];
+      if (!ev || +VIP.tag(ev, "expiration") < Date.now()/1000){ out.innerHTML = `<p class="hint">That code didn't work or has run out. Make a new one on your other device.</p>`; return; }
+      const j = JSON.parse(ev.content), ub = s => Uint8Array.from(atob(s), c => c.charCodeAt(0)), key = await this.pairKey(raw, tag);
+      const sk = new TextDecoder().decode(await crypto.subtle.decrypt({name: "AES-GCM", iv: ub(j.iv)}, key, ub(j.ct)));
+      if (!/^[0-9a-f]{64}$/.test(sk) || TUNet.getPublicKey(Uint8Array.from(sk.match(/../g).map(x => parseInt(x, 16)))) !== ev.pubkey){ out.innerHTML = `<p class="hint">That code didn't work. Make a new one.</p>`; return; }
+      store.set("hostSecret", sk); store.set("profileAt", 0); store.set("followsAt", 0);
+      out.innerHTML = `<p>✓ Signed in. Loading your profile…</p>`;
+      setTimeout(() => location.reload(), 900);
+    }catch(e){ out.innerHTML = `<p class="hint">That code didn't work. Check the letters and try again.</p>`; }
+  },
+  showDevices(){
+    const box = $("#pgEdit"); box.hidden = false;
+    box.innerHTML = `<div class="pg-edit"><h3>Use your account on another device</h3>
+      <p class="hint">Sign in on your tablet, phone and Quest with the same account, so you have the same name, avatar, look, friends and VIP pass everywhere.</p>
+      <div class="btnrow"><button class="primary tiny" type="button" data-pa="mkcode">📲 Make a code for my other device</button></div>
+      <p class="hint" style="margin-top:12px">Or, on this device, sign in to the account you use somewhere else:</p>
+      <div class="btnrow"><input class="field" id="socCodeIn" maxlength="9" placeholder="K7Q2-M9XD" autocomplete="off" style="max-width:180px;text-transform:uppercase"><button class="ghost tiny" type="button" data-pa="usecode">I have a code</button></div>
+      <div id="socDevOut"></div></div>`;
+  },
+  async socialAct(b){
+    const a = b.dataset.pa, P = this.page;
+    if (a === "follow"){ this.follow(P.pk); this.renderPage(); }
+    else if (a === "edit"){ this.renderEdit(); }
+    else if (a === "canceledit"){ $("#pgEdit").hidden = true; }
+    else if (a === "look"){ $("#socialDlg").close(); Profile.open(); }
+    else if (a === "devices"){ this.showDevices(); }
+    else if (a === "mkcode"){ b.disabled = true; try{ await this.startLink(); }catch(e){ $("#socDevOut").innerHTML = `<p class="hint">Couldn't make a code right now. Check your connection.</p>`; } b.disabled = false; }
+    else if (a === "usecode"){ this.useCode($("#socCodeIn").value); }
+    else if (a === "share"){ const w = this.who(P.pk); this.shareOut(`${w.name} on Turn Up Music`, Flyer.SITE + "#user=" + P.pk); }
+    else if (a === "followers" || a === "following"){ const box = $("#pgEdit"); box.hidden = false; const ks = P[a]; await this.loadProfiles(ks.filter(k => !this.profiles.has(k)));
+      box.innerHTML = `<div class="pg-edit"><h3>${a === "followers" ? "Followers" : "Following"} · ${ks.length}</h3><div class="soc-people">${ks.map(k => this.personRow(k)).join("") || `<p class="hint">Nobody yet.</p>`}</div></div>`; }
+  }
+});
+// following is now public: publish the list whenever it changes
+{ const f0 = Social.follow.bind(Social); Social.follow = function(pk){ f0(pk); clearTimeout(this._fT); this._fT = setTimeout(() => this.publishFollows(), 1200); }; }
+// the feed uses the shared post layout (with names that open pages)
+Social.render = function(){
+  const box = $("#feed"); if (!box || !$("#socialDlg").open || this.view !== "feed") return;
+  document.querySelectorAll("#socTabs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.t === this.tab));
+  const me = Events.myKey(); this.keep(this.posts);
+  let list = this.posts;
+  if (this.tab === "following") list = list.filter(p => this.follows.has(p.pubkey));
+  if (this.tab === "mine") list = list.filter(p => p.pubkey === me);
+  box.innerHTML = list.length ? list.map(ev => this.postHTML(ev, me)).join("") : `<p class="evempty">${this.tab === "following" ? "Follow people from their posts or pages to see them here." : "No posts yet. Say something!"}</p>`;
+};
+Social.open = function(){ $("#socialDlg").showModal(); this.show("feed"); this.refresh(true).then(() => this.loadProfiles([...new Set(this.posts.map(p => p.pubkey))].filter(k => !this.profiles.has(k))).then(() => this.render())); this.loadNotes(); };
+Social.bindSocial = function(){
+  $("#socNav").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; if (b.dataset.v === "me") this.openPage(Events.myKey()); else this.show(b.dataset.v); });
+  $("#socialDlg").addEventListener("click", e => {
+    const u = e.target.closest("[data-user]"); if (u){ e.preventDefault(); this.openPage(u.dataset.user); return; }
+    const pa = e.target.closest("[data-pa]"); if (pa){ this.socialAct(pa); return; }
+    if (e.target.closest("#feed")) return;      // the feed has its own handler
+    const b = e.target.closest("button[data-act]"), card = e.target.closest(".post"); if (!b || !card) return;
+    const ev = this.find(card.dataset.id); if (!ev) return;
+    const act = b.dataset.act;
+    if (act === "like"){ this.like(ev).then(() => this.renderPage()); this.renderPage(); }
+    else if (act === "reply"){ this.openReplies = this.openReplies === ev.id ? null : ev.id; this.renderPage(); }
+    else if (act === "follow"){ this.follow(ev.pubkey); this.renderPage(); }
+    else if (act === "share") this.shareOut(`${this.who(ev.pubkey, ev).name} on Turn Up Music: ${ev.content.slice(0, 200)}`);
+    else if (act === "play") Links.play(Links.parse(b.dataset.link));
+    else if (act === "hide"){ VIP.hidePost(ev.id).then(() => { this.page.posts = this.page.posts.filter(p => p.id !== ev.id); this.renderPage(); toast("Post hidden for everyone."); }).catch(() => toast("Couldn't hide right now.")); }
+  });
+  $("#socialDlg").addEventListener("submit", async e => {
+    const f = e.target;
+    if (f.id === "wallForm"){ e.preventDefault(); const t = $("#wallText").value.trim(), P = this.page; if (!t || !P) return;
+      const tags = P.pk === Events.myKey() ? [] : [["p", P.pk], ["l", "wall"]];
+      try{ const ev = await this.publish(t, tags); this.keep([ev]); P.posts.unshift(ev); if (!tags.length) this.posts.unshift(ev); this.renderPage(); toast(tags.length ? "Posted on the wall." : "Posted."); }catch(err){ toast("Couldn't post right now."); } return; }
+    if (f.id === "pgEditForm"){ e.preventDefault(); const fd = new FormData(f), x = this.extras();
+      Object.assign(x, {mood: String(fd.get("mood") || "").slice(0, 60), city: String(fd.get("city") || "").slice(0, 40), interests: String(fd.get("interests") || "").slice(0, 140), cover: fd.get("cover") || x.cover, top: fd.getAll("top").slice(0, 8)});
+      this.setExtras(x); this.profiles.set(Events.myKey(), {p: Profile.clean(Profile.ensure()), x: this.cleanExtras(x), at: Math.floor(Date.now()/1000)}); this.renderPage(); toast("Your page is saved."); return; }
+    const r = f.closest && f.closest("form[data-reply]"); if (!r || f.closest("#feed")) return; e.preventDefault();
+    const inp = r.querySelector("input"), t = inp.value.trim(); if (!t) return; const root = this.find(r.dataset.reply); if (!root) return;
+    try{ const ev = await this.publish(t, [["e", root.id, "", "root"], ["p", root.pubkey]]); (this.replies[root.id] || (this.replies[root.id] = [])).push(ev); inp.value = ""; this.renderPage(); }catch(err){ toast("Couldn't send right now."); }
+  });
+  // keep the bell fresh, and the profile in sync with the account's other devices
+  setTimeout(() => { this.syncMine().catch(() => {}); this.loadNotes(); }, 4000);
+  setInterval(() => this.loadNotes(), 180000);
+};
+// publish the page whenever the avatar or profile is saved
+{ const s0 = Profile.save.bind(Profile); Profile.save = function(p){ s0(p); store.set("profileAt", Math.floor(Date.now()/1000)); Social.publishProfileSoon(); }; }
+Social.bindSocial();
+
 /* ================= Outfits: re-dress any avatar =================
    The clothes are re-printed on the avatar's own texture: skin is found by matching the colour of the
    face, everything else is clothing and gets the new fabric, keeping the original folds and shading. */
