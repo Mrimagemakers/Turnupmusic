@@ -552,6 +552,10 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
 .zoomctl button{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:700 20px var(--f-body);cursor:pointer;display:grid;place-items:center}
 .zoomctl button:hover,.zoomctl button:focus-visible{border-color:#ffc21a;outline:none}
 .gfxmenu{position:absolute;right:calc(70px + env(safe-area-inset-right,0px));top:calc(78px + env(safe-area-inset-top,0px));width:min(300px,calc(100vw - 90px));display:grid;gap:6px;padding:12px;border-radius:18px;background:rgba(16,10,8,.95);border:1px solid rgba(255,194,26,.45);color:#fff;z-index:8;font:14px var(--f-body);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.loading.world{position:fixed;z-index:80;background:rgba(10,6,4,.86);color:#fff;letter-spacing:.06em;font-size:17px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.loading.world small{display:block;margin-top:10px;font:500 13px var(--f-body,sans-serif);letter-spacing:0;text-transform:none;opacity:.75}
+.spin{display:inline-block;width:54px;height:54px;border-radius:50%;border:5px solid rgba(255,255,255,.18);border-top-color:#ffc21a;margin-bottom:14px;animation:tuspin .9s linear infinite;will-change:transform}
+@keyframes tuspin{to{transform:rotate(360deg)}}
 .worldpick{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.66);display:grid;place-items:center;padding:16px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .wp-card{width:min(720px,100%);max-height:88vh;overflow:auto;background:rgba(20,13,10,.97);border:1px solid rgba(255,194,26,.45);border-radius:22px;padding:16px}
 .wp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:#ffc21a;font-size:19px}
@@ -6380,8 +6384,10 @@ const Lounge = {
     for (const k in this.worlds) this.worlds[k].group.visible = false;
     if (!this.worlds[id]){
       this.buildingWorld = id;
+      try{ this.makeRoom(); }catch(e){ console.warn(e); }
       const builder = {rooftop:"buildRooftop", club:"buildClub", beach:"buildBeach", nyc:"buildNYC", madrid:"buildMadrid", concert:"buildConcert", rodeo:"buildRodeo", coffee:"buildCoffee", tvshow:"buildTV", jazz:"buildJazz", aquarium:"buildAquarium", wedding:"buildWedding", divebar:"buildDiveBar", aspen:"buildAspen", yacht:"buildYacht", harambee:"buildHarambee", reggae:"buildReggae", tokyo:"buildTokyo", space:"buildSpace", penthouse:"buildPenthouse"}[id];
-      this.worlds[id] = this[builder]();
+      try{ this.worlds[id] = this[builder](); }
+      catch(e){ console.error(e); this.buildingWorld = null; const back = this.worldId && this.worlds[this.worldId] ? this.worldId : null; try{ toast("That world couldn't load on this device. Staying here."); }catch(er){} if (back){ this.worlds[back].group.visible = this.mode !== "ar"; return; } throw e; }
     }
     const w = this.world = this.worlds[id];
     this.decorateWorld(id);
@@ -6412,6 +6418,11 @@ const Lounge = {
      Every world is a lot of textures and meshes. A headset or phone runs out of memory after a few,
      and the browser shuts down. So worlds you've left are released (and rebuilt if you go back). */
   lowPower(){ return /OculusBrowser|Quest|Pico|Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || (navigator.deviceMemory || 8) <= 4; },
+  /* before building a new world, let go of the oldest ones so a phone or headset never holds too many at once */
+  makeRoom(){
+    const keep = this.lowPower() ? 2 : 4, order = this.worldOrder || (this.worldOrder = []);
+    while (order.length >= keep){ const id = order.pop(); if (id === this.worldId){ order.unshift(id); break; } try{ this.unloadWorld(id); }catch(e){ console.warn(e); } }
+  },
   keepWorlds(){
     const keep = this.lowPower() ? 2 : 4, order = this.worldOrder || (this.worldOrder = []);
     const i = order.indexOf(this.worldId); if (i >= 0) order.splice(i, 1); order.unshift(this.worldId);
@@ -6483,9 +6494,11 @@ const Lounge = {
   chooseWorld(id){
     if (this.renderer && this.renderer.xr.isPresenting){ this.vrGoTo(id); return; }
     if (this.worlds && this.worlds[id]){ this.setWorld(id); return; }
+    if (this.switching) return;   // one world at a time: extra taps while it builds would only pile up more work
     const w = this.WORLDS.find(x => x.id === id), el = $("#loungeLoading");
-    el.textContent = `Loading ${w ? w.name : "the world"}…`; el.hidden = false;
-    requestAnimationFrame(() => setTimeout(() => { try{ this.setWorld(id); } finally { el.hidden = true; } }, 30));
+    this.switching = true; el.className = "loading world";
+    el.innerHTML = `<div><span class="spin"></span><br>Loading ${(w ? w.name : "the world").replace(/[<>&]/g, "")}…<small>Big worlds can take a little while on a phone. Please wait, no need to tap.</small></div>`; el.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => { try{ this.setWorld(id); } catch(e){ console.error(e); } finally { el.hidden = true; el.className = "loading"; this.switching = false; } }, 60)));
   },
   nextWorld(){
     const i = this.WORLDS.findIndex(w => w.id === this.worldId);
