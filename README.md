@@ -240,3 +240,20 @@ Tap **🍾 Mogul** on the party bar, or go to **Party → 🍾 Nightclub Mogul**
 - **Videos no longer cover people's heads.** Web and YouTube screens now sit behind the 3D scene, and the screen is a see-through window, so anyone standing in front of it shows in front.
 - **How to move around**: a help sheet for each device (phone or tablet, computer, VR headset). It opens the first time on each device and any time with 🧭 or H. In VR there's a floating controls card (Menu → Party → 🧭 Controls).
 - **🥊 Brawl mode** button: start a bar fight right where you stand, in any world.
+
+## Graphics quality (✨ in the lounge controls)
+- **💎 Ultra**:
+  - higher render resolution (supersampling on 1× screens)
+  - 4× multisampled anti-aliasing through the glow pipeline
+  - a soft overhead shadow light that follows you, so every person and object casts a live shadow
+  - 2048 px shadow maps
+  - maximum texture sharpness (anisotropic filtering)
+  - a cinematic color grade with vignette and fine grain
+
+  It's on by default on strong computers, and steps down to Standard by itself if the frame rate drops.
+- **⚖️ Standard**: the previous look.
+- **🔋 Battery saver**: 1× resolution and no post effects.
+- VR keeps its comfortable settings. On a PC headset, Ultra raises the VR render scale to 1.3×.
+
+## Seated people fixed
+People on bar stools, chairs, sofas and benches now settle onto the nearest real seat. They're centered on stools, and the floor no longer counts as a seat. Before, some sank into stools, sat on the floor next to a sofa, or perched beside a stool.

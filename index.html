@@ -545,6 +545,13 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
 .zoomctl{position:absolute;right:max(10px,env(safe-area-inset-right,0px));top:calc(78px + env(safe-area-inset-top,0px));display:grid;gap:6px;justify-items:center;padding:6px;border-radius:999px;background:rgba(16,10,8,.72);border:1px solid rgba(255,194,26,.35);backdrop-filter:blur(6px);z-index:6}
 .zoomctl button{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:700 20px var(--f-body);cursor:pointer;display:grid;place-items:center}
 .zoomctl button:hover,.zoomctl button:focus-visible{border-color:#ffc21a;outline:none}
+.gfxmenu{position:absolute;right:calc(70px + env(safe-area-inset-right,0px));top:calc(78px + env(safe-area-inset-top,0px));width:min(300px,calc(100vw - 90px));display:grid;gap:6px;padding:12px;border-radius:18px;background:rgba(16,10,8,.95);border:1px solid rgba(255,194,26,.45);color:#fff;z-index:8;font:14px var(--f-body);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.gfxmenu b{color:#ffc21a;font-size:15px}
+.gfxmenu button{display:grid;gap:2px;text-align:left;padding:9px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:inherit;font:inherit;cursor:pointer}
+.gfxmenu button span{font-weight:700}
+.gfxmenu button small{opacity:.7;line-height:1.35}
+.gfxmenu button.on{border-color:#ffc21a;background:rgba(255,194,26,.16)}
+.gfxmenu .hint{opacity:.55;font-size:12px}
 .zoomctl span{font:800 13px var(--f-body);color:#ffc21a;cursor:pointer;min-width:34px;text-align:center}
 .stage.watching .zoomctl button[data-z="watch"]{background:#ffc21a;color:#241404}
 .watchbar{position:absolute;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:8px 10px 8px 16px;border-radius:999px;background:rgba(16,10,8,.85);border:1px solid rgba(255,194,26,.45);color:#fff;font:700 15px var(--f-body);z-index:7;max-width:calc(100vw - 24px)}
@@ -4564,6 +4571,10 @@ const Lounge = {
     this.person(g, -4.1, .45, SZ + .55, .15, "dance", {gender: "f", avatar: "Female_Deep_02", clip: "dance1", overlay: "guitar", outfit: this.dressed(["leopard", "#111111", "#d4a937", "#ffffff", "shiny"])});
     this.person(g, -2, .45, SZ + .85, 0, "dance", {gender: "f", avatar: "Female_Deep_06", clip: "dance2", overlay: "mic", outfit: this.dressed(["sequins", "#111111", "#c62828", "#ffffff", "shiny"])});
     this.person(g, .2, .45, SZ + .55, -.2, "dance", {gender: "m", avatar: "Male_Deep_02", clip: "dance3", overlay: "bass", outfit: this.dressed(["denim", "#1e3a6a", "#111111"])});
+    { const throne = new T.Group(); throne.position.set(-2.2, .75, SZ - .95); g.add(throne);   // the drummer's stool
+      this.surface(add(new T.Mesh(new T.CylinderGeometry(.19, .17, .09, 20), new T.MeshStandardMaterial({color: 0x161616, roughness: .6})), throne)).position.y = .48;
+      add(new T.Mesh(new T.CylinderGeometry(.025, .03, .44, 8), new T.MeshStandardMaterial({color: 0xbcbcbc, metalness: .9, roughness: .3})), throne).position.y = .22;
+      for (let k = 0; k < 3; k++){ const leg = add(new T.Mesh(new T.CylinderGeometry(.012, .012, .32, 6), new T.MeshStandardMaterial({color: 0xbcbcbc, metalness: .9, roughness: .3})), throne); const a = k/3*Math.PI*2; leg.position.set(Math.cos(a)*.12, .12, Math.sin(a)*.12); leg.rotation.set(Math.sin(a)*.6, 0, -Math.cos(a)*.6); } }
     this.person(g, -2.2, .75, SZ - 1.05, 0, "sit", {gender: "m", overlay: "drum", outfit: this.dressed(["solid", "#111111", "#c62828"])});
     // a crowd up front, fists in the air
     for (let i=0;i<10;i++){ const x = -5.4 + (i % 5)*1.6 + rnd(-.3, .3), z = SZ + 2.6 + Math.floor(i/5)*1.1 + rnd(-.2, .2);
@@ -6032,7 +6043,9 @@ const Lounge = {
     }
     const w = this.world = this.worlds[id];
     this.decorateWorld(id);
-    if (!w.settled){ w.settled = true; if (this.furnCache) delete this.furnCache[id]; for (const sl of this.slots || []) if (sl.world === id && sl.real && sl.behavior !== "sit" && sl.behavior !== "walk") try{ this.unstickSlot(sl); this.groundSlot(sl); }catch(e){} }
+    if (!w.settled){ w.settled = true; if (this.furnCache) delete this.furnCache[id]; for (const sl of this.slots || []) if (sl.world === id && sl.real && sl.behavior !== "sit" && sl.behavior !== "walk") try{ this.unstickSlot(sl); this.groundSlot(sl); }catch(e){}
+      // and once the world is on screen, fit every seated person onto their seat again (their first fit may have happened while it loaded)
+      setTimeout(() => { for (const sl of this.slots || []) if (sl.world === id && sl.real && sl.behavior === "sit" && this.peopleSet && this.peopleSet.mode === "real") try{ this.seatSlot(sl, true); }catch(e){} }, 400); }
     this.dropAll();
     this.worldId = id; store.set("world", id);
     if (this.peopleSet) this.loadCast(id);
@@ -6045,7 +6058,7 @@ const Lounge = {
     if (this.bloom) this.bloom.strength = w.bloom ?? .42;
     if (this.mode !== "ar") this.placeScreen(...w.screen);
     this.applyMood();
-    this.renderer.shadowMap.needsUpdate = true;
+    this.renderer.shadowMap.needsUpdate = true; try{ if (GFX.ready) setTimeout(() => { GFX.lightShadows(GFX.level === "ultra" ? 2048 : 1024); GFX.refresh(); }, 600); }catch(e){}
     document.querySelectorAll("#worldSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.w === id));
     try{ this.lightBudget(); }catch(e){}
     try{ this.keepWorlds(); }catch(e){ console.warn(e); }
@@ -7071,7 +7084,7 @@ const Lounge = {
     // fade in
     m.traverse(o => { if (o.isMesh){ o.material = o.material.clone(); o.material.userData.baseOpacity = o.material.opacity; o.material.transparent = true; o.material.opacity = 0; } });
     Object.assign(slot, {real:m, mixer, action, fade:0, clips: C});
-    if (slot.behavior === "sit" && set.mode === "real") try{ this.seatSlot(slot); }catch(e){}
+    if (slot.behavior === "sit" && set.mode === "real") try{ this.seatSlot(slot, true); }catch(e){}
     else if (slot.behavior !== "walk" && !slot.float && this.worlds && this.worlds[slot.world] && this.worlds[slot.world].decorated) try{ this.unstickSlot(slot); this.groundSlot(slot); }catch(e){}
   },
   /* ================= Performer moves, layered on top of the recorded animation =================
@@ -7232,7 +7245,7 @@ const Lounge = {
     if (slot.float) return;
     const T = THREE, p = slot.p; if (!p.parent) return;
     let root = p; while (root.parent && root.parent.type !== "Scene") root = root.parent;
-    p.updateWorldMatrix(true, false);
+    root.updateMatrixWorld(true); p.updateWorldMatrix(true, false);
     const wp = p.getWorldPosition(new T.Vector3()), rc = this.groundRay || (this.groundRay = new T.Raycaster()); rc.camera = this.camera;
     rc.set(wp.clone().add(new T.Vector3(0, .35, 0)), new T.Vector3(0, -1, 0)); rc.far = .9;
     const hit = rc.intersectObject(root, true).find(h => { const o = h.object; if (!o.isMesh || o.isSkinnedMesh || !this.isShown(o)) return false;
@@ -7243,15 +7256,21 @@ const Lounge = {
     slot.home = p.position.clone();
   },
   /* Settle a seated person onto whatever they're sitting on: hips on the seat, back against the backrest. */
-  seatSlot(slot){
+  seatSlot(slot, force){
+    if (slot.seated && !force) return;
     const T = THREE, p = slot.p, m = slot.real;
+    if (!slot.seatHome) slot.seatHome = p.position.clone(); else p.position.copy(slot.seatHome);   // always fit from where they were placed
+    slot.seated = true;
     slot.mixer.update(0); p.updateWorldMatrix(true, true);
     const bone = re => { let b = null; m.traverse(o => { if (!b && o.isBone && re.test(o.name)) b = o; }); return b; };
     const thighL = bone(/L[ _]Thigh$/), thighR = bone(/R[ _]Thigh$/), spine = bone(/[ _]Spine$/);
     if (!thighL || !thighR || !spine) return;
     let root = p; while (root.parent && root.parent.type !== "Scene") root = root.parent;
+    root.updateMatrixWorld(true);     // a world that hasn't been drawn yet still has every chair at the origin
     const rc = this.seatRay || (this.seatRay = new T.Raycaster()); rc.camera = this.camera;
-    const solid = h => { const o = h.object; if (!o.isMesh || o.isSkinnedMesh || !this.isShown(o)) return false; for (let q = o; q; q = q.parent) if (q.userData && q.userData.slot) return false;
+    // (visibility is checked only inside this world, so seats are found even while the world loads in the background)
+    const shown = o => { for (let q = o; q && q !== root; q = q.parent) if (!q.visible) return false; return true; };
+    const solid = h => { const o = h.object; if (!o.isMesh || o.isSkinnedMesh || !shown(o)) return false; for (let q = o; q; q = q.parent) if (q.userData && q.userData.slot) return false;
       const mt = Array.isArray(o.material) ? o.material[0] : o.material; return !(mt && (mt.blending === T.AdditiveBlending || (mt.transparent && mt.opacity < .5) || mt.depthWrite === false)); };
     const cast = (from, dir, far) => { rc.set(from, dir); rc.far = far; return rc.intersectObject(root, true).find(solid); };
     const scale = new T.Vector3(); m.getWorldScale(scale);
@@ -7260,11 +7279,24 @@ const Lounge = {
     // 1. the seat: look straight down just behind the hips
     // look from well above the hips so tall bar stools are found too, but ignore anything at head height
     // (a table top is not a seat: skip wide surfaces at table height, but keep small high ones like bar stools)
-    const feetY = p.getWorldPosition(new T.Vector3()).y;
-    rc.set(hip.clone().addScaledVector(fwd, -.06).add(new T.Vector3(0, .5, 0)), new T.Vector3(0, -1, 0)); rc.far = 1.5;
-    const down = rc.intersectObject(root, true).find(h => { if (!solid(h)) return false; if (h.point.y - feetY < .6) return true;
-      const bb = new T.Box3().setFromObject(h.object), sz = bb.getSize(new T.Vector3()); return Math.min(sz.x, sz.z) < .55; });
-    if (down){ const dy = (down.point.y + .1*scale.y) - hip.y; if (Math.abs(dy) < .5) p.position.y += dy; }
+    const feetY = p.getWorldPosition(new T.Vector3()).y, DOWN = new T.Vector3(0, -1, 0);
+    const toLocal = v => { const l = v.clone(); if (p.parent) l.applyQuaternion(p.parent.getWorldQuaternion(new T.Quaternion()).invert()); return l; };
+    const slide = (dx, dz) => { p.position.add(toLocal(new T.Vector3(dx, 0, dz))); p.updateWorldMatrix(true, true); hip.x += dx; hip.z += dz; };
+    // what's under a point: a real seat (not the floor), or the floor itself
+    const probe = (pt, seatOnly) => { rc.set(new T.Vector3(pt.x, hip.y + .5, pt.z), DOWN); rc.far = 1.6;
+      return rc.intersectObject(root, true).find(h => { if (!solid(h)) return false; const up = h.point.y - feetY;
+        if (seatOnly && up < .18) return false;                                            // the floor is not a seat
+        if (up < .6) return true; const bb = new T.Box3().setFromObject(h.object), sz = bb.getSize(new T.Vector3()); return Math.min(sz.x, sz.z) < .55; }); };   // tall + small = a bar stool; tall + wide = a table
+    const at = hip.clone().addScaledVector(fwd, -.06);
+    const hip0 = () => thighL.getWorldPosition(new T.Vector3()).add(thighR.getWorldPosition(new T.Vector3())).multiplyScalar(.5).addScaledVector(fwd, -.06);
+    let down = probe(at, true);
+    // 0. not over a seat? look around for the nearest one and slide the hips onto it
+    if (!down){ search: for (const rad of [.12, .24, .36, .5, .65]) for (let k = 0; k < 12; k++){ const a = k/12*Math.PI*2, q = at.clone().add(new T.Vector3(Math.cos(a)*rad, 0, Math.sin(a)*rad)), h = probe(q, true);
+        if (h){ const push = Math.min(.12, rad*.3); slide(Math.cos(a)*(rad + push), Math.sin(a)*(rad + push)); down = probe(hip.clone().addScaledVector(fwd, -.06), true) || h; break search; } } }
+    // a stool: sit right in the middle of it
+    if (down){ const bb = new T.Box3().setFromObject(down.object), sz = bb.getSize(new T.Vector3()); if (Math.max(sz.x, sz.z) < .6){ const c = bb.getCenter(new T.Vector3()); const dx = c.x - hip.x, dz = c.z - hip.z; if (Math.hypot(dx, dz) > .03 && Math.hypot(dx, dz) < .5) slide(dx, dz); } }
+    if (!down) down = probe(at, false);                                                     // nothing to sit on nearby: sit on the floor
+    if (down){ const dy = (down.point.y + .1*scale.y) - hip.y; if (Math.abs(dy) < .7) p.position.y += dy; }
     // 2. the backrest: look backwards from the lower back
     p.updateWorldMatrix(true, true);
     const back = spine.getWorldPosition(new T.Vector3()), hit = cast(back, fwd.clone().negate(), .7);
@@ -7274,12 +7306,14 @@ const Lounge = {
     const calf = bone(/L[ _]Calf$/) || bone(/L[ _]Foot$/);
     if (calf && !(down && down.point.y - feetY > .6)){     // (not on a tall bar stool: feet rest on its ring)
       const seatY = () => { const h = thighL.getWorldPosition(new T.Vector3()); const d = cast(h.clone().add(new T.Vector3(0, .25, 0)), new T.Vector3(0, -1, 0), 1.2); return d ? d.point.y : -99; };
-      const y0 = seatY();
-      for (let i=0;i<12;i++){
+      const y0 = seatY(), seatObj = down && down.object;
+      const onSeat = () => { const h = probe(hip0(), true); return !!h && (h.object === seatObj || Math.abs(h.point.y - (down ? down.point.y : h.point.y)) < .06); };
+      for (let i=0;i<6;i++){                                       // at most 30 cm
         const k = calf.getWorldPosition(new T.Vector3()), under = cast(k.clone().add(new T.Vector3(0, .3, 0)), new T.Vector3(0, -1, 0), .45);
         if (!under || under.point.y < k.y - .12) break;          // knees are clear
+        if (seatObj && under.object !== seatObj) break;          // that's a table or something else in front, not more bench
         nudge(.05);
-        if (seatY() < y0 - .1){ nudge(-.05); break; }           // don't slide off the seat
+        if (seatY() < y0 - .1 || !onSeat()){ nudge(-.05); break; }   // don't slide off the seat
       }
     }
   },
@@ -7430,16 +7464,19 @@ const Lounge = {
       this.bloom = new T.UnrealBloomPass(new T.Vector2(512, 512), .42, .45, .92); c.addPass(this.bloom);
       try{ const bm = this.bloom.materialCopy || this.bloom.blendMaterial; bm.blending = T.CustomBlending; bm.blendEquation = T.AddEquation; bm.blendSrc = T.SrcAlphaFactor; bm.blendDst = T.OneFactor; bm.blendSrcAlpha = T.ZeroFactor; bm.blendDstAlpha = T.OneFactor; bm.needsUpdate = true; }catch(e){}
       this.finalPass = new T.ShaderPass({
-        uniforms:{tDiffuse:{value:null}, exposure:{value:1}, holes:{value:0}},
+        uniforms:{tDiffuse:{value:null}, exposure:{value:1}, holes:{value:0}, grade:{value:0}, time:{value:0}},
         vertexShader:"varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
-        fragmentShader:`uniform sampler2D tDiffuse; uniform float exposure; uniform float holes; varying vec2 vUv;
+        fragmentShader:`uniform sampler2D tDiffuse; uniform float exposure; uniform float holes; uniform float grade; uniform float time; varying vec2 vUv;
           vec3 tuRRT(vec3 v){ vec3 a = v*(v + 0.0245786) - 0.000090537; vec3 b = v*(0.983729*v + 0.4329510) + 0.238081; return a/b; }
           vec3 tuAces(vec3 color){
             const mat3 inM = mat3(vec3(0.59719,0.07600,0.02840), vec3(0.35458,0.90834,0.13383), vec3(0.04823,0.01566,0.83777));
             const mat3 outM = mat3(vec3(1.60475,-0.10208,-0.00327), vec3(-0.53108,1.10813,-0.07276), vec3(-0.07367,-0.00605,1.07602));
             color *= exposure/0.6; color = inM*color; color = tuRRT(color); color = outM*color; return clamp(color, 0.0, 1.0); }
           vec3 tuSRGB(vec3 c){ return mix(pow(c, vec3(0.41666))*1.055 - vec3(0.055), c*12.92, vec3(lessThanEqual(c, vec3(0.0031308)))); }
-          void main(){ vec4 t = texture2D(tDiffuse, vUv); float a = holes > .5 ? step(.02, t.a) : 1.0; gl_FragColor = vec4(tuSRGB(tuAces(t.rgb))*a, a); }`
+          void main(){ vec4 t = texture2D(tDiffuse, vUv); float a = holes > .5 ? step(.02, t.a) : 1.0; vec3 c = tuSRGB(tuAces(t.rgb));
+            if (grade > .5){ float l = dot(c, vec3(.2126, .7152, .0722)); c = mix(vec3(l), c, 1.12); c = (c - .5)*1.06 + .5; c += vec3(.012, .004, -.01)*(1.0 - l);
+              vec2 d = vUv - .5; c *= 1.0 - dot(d, d)*.55; float n = fract(sin(dot(vUv*vec2(1271.3, 3117.7) + time, vec2(12.9898, 78.233)))*43758.5453); c += (n - .5)*.018; c = clamp(c, 0.0, 1.0); }
+            gl_FragColor = vec4(c*a, a); }`
       });
       c.addPass(this.finalPass);
     }catch(e){ this.composer = null; }
@@ -7606,8 +7643,8 @@ const Lounge = {
     if (!this.renderer || this.renderer.xr.isPresenting) return;
     const cv = $("#loungeCv"), w = cv.clientWidth || innerWidth, h = cv.clientHeight || innerHeight;
     this.renderer.setSize(w, h, false);
-    if (this.composer){ this.composer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); this.composer.setSize(w, h); }
-    this.camera.aspect = w/h; this.camera.fov = w < h ? 92 : 70; this.camera.updateProjectionMatrix();
+    if (this.composer){ this.composer.setPixelRatio((typeof GFX !== "undefined" && GFX.pr) || Math.min(devicePixelRatio || 1, 2)); this.composer.setSize(w, h); }
+    this.baseFov = w < h ? 92 : 70; this.camera.aspect = w/h; this.camera.fov = this.baseFov/((typeof View !== "undefined" && View.zoom) || 1); this.camera.updateProjectionMatrix();
     if (!this.userLooked) this.pitch = w < h ? -.02 : -.12;
   },
 
@@ -7648,6 +7685,7 @@ const Lounge = {
         if (!this.renderer){ try{ session.end(); }catch(e){} throw new Error("The lounge took too long to load"); }
       }
       this.renderer.xr.setReferenceSpaceType(kind === "ar" ? "local" : "local-floor");
+      try{ this.renderer.xr.setFramebufferScaleFactor(typeof GFX !== "undefined" && GFX.level === "ultra" && !this.lowPower() ? 1.3 : 1); }catch(e){}
       try{ await this.renderer.xr.setSession(session); }
       catch(e2){ this.renderer.xr.setReferenceSpaceType("local"); await this.renderer.xr.setSession(session); }
       $("#xrSupport").textContent = "";
@@ -8544,7 +8582,8 @@ const Lounge = {
     this.updateMove(dt, xrFrame); this.updateBooths(dt); this.updateGrab(dt); try{ VRMenu.update(dt); }catch(e){ console.warn(e); } this.updateCorks(dt); Party.update(dt); Screens.update();
     this.updatePeople(dt, bass); this.updateCurtain(dt); try{ Mogul.update(dt); }catch(e){ console.warn(e); } try{ View.update(dt); }catch(e){ console.warn(e); }
     try{ Cam.xrFrame(dt); }catch(e){ console.warn(e); }
-    if (this.composer && !this.renderer.xr.isPresenting){ this.finalPass.uniforms.exposure.value = this.renderer.toneMappingExposure; this.composer.render(dt); }
+    try{ if (!GFX.ready) GFX.init(); GFX.tick(dt); }catch(e){ console.warn(e); }
+    if (this.composer && !this.gfxNoPost && !this.renderer.xr.isPresenting){ this.finalPass.uniforms.exposure.value = this.renderer.toneMappingExposure; if (this.finalPass.uniforms.time) this.finalPass.uniforms.time.value = this.clock.elapsedTime; this.composer.render(dt); }
     else this.renderer.render(this.scene, this.camera);
     Cam.afterRender();
   }
@@ -12689,7 +12728,7 @@ const View = {
   set(z){ this.zt = Math.max(1, Math.min(6, z)); const lv = $("#zoomLv"); if (lv) lv.textContent = (Math.round(this.zt*10)/10) + "×"; },
   update(dt){
     const L = Lounge, cam = L.camera; if (!cam) return;
-    if (!this.based){ this.based = true; this.base = cam.fov || 70; }
+    this.base = L.baseFov || 70;
     const xr = L.renderer.xr.isPresenting, ctl = $("#zoomCtl"); if (ctl) ctl.hidden = xr || !L.running || L.mode === "ar";
     if (!xr){ const old = this.zoom; this.zoom += (this.zt - this.zoom)*Math.min(1, dt*10); if (Math.abs(this.zoom - this.zt) < .002) this.zoom = this.zt;
       if (old !== this.zoom || Math.abs(cam.fov - this.base/this.zoom) > .01){ cam.fov = this.base/this.zoom; cam.updateProjectionMatrix(); } }
@@ -12802,6 +12841,69 @@ const View = {
     this.card = {m, t: 0}; },
   updateCard(dt){ const C = this.card; C.t += dt; if (C.t > 40 || !Lounge.renderer.xr.isPresenting) this.closeCard(); },
   closeCard(){ const C = this.card; if (!C) return; this.card = null; C.m.parent && C.m.parent.remove(C.m); Lounge.clickables = (Lounge.clickables || []).filter(o => o !== C.m); C.m.material.map.dispose(); C.m.material.dispose(); C.m.geometry.dispose(); }
+};
+
+/* ================= 💎 Graphics: Battery saver / Standard / Ultra ================= */
+const GFX = {
+  LEVELS: {low: {name: "🔋 Battery saver", tip: "Smoothest on older phones: lower resolution, no glow effects."}, high: {name: "⚖️ Standard", tip: "The usual look."},
+    ultra: {name: "💎 Ultra", tip: "Sharpest picture: extra resolution, smooth edges, live shadows from everyone, crisp textures, cinematic color and glow."}},
+  level: "high", seen: new WeakSet(), fpsT: 0, frames: 0, slow: 0,
+  strong(){ const gl = Lounge.renderer && Lounge.renderer.capabilities; return !Lounge.lowPower() && !!(gl && gl.isWebGL2) && (navigator.hardwareConcurrency || 4) >= 8 && (navigator.deviceMemory || 8) >= 8; },
+  pick(){ const s = store.get("gfx", "auto"); return s === "auto" ? (this.strong() ? "ultra" : Lounge.lowPower() && (navigator.deviceMemory || 8) <= 3 ? "low" : "high") : s; },
+  init(){ if (this.ready || !Lounge.renderer) return; this.ready = true; this.apply(this.pick(), true); this.ui(); },
+  set(lv){ store.set("gfx", lv); this.apply(lv); this.ui(); toast(`${this.LEVELS[lv].name} graphics on. ${this.LEVELS[lv].tip}`); },
+  apply(lv, first){
+    const L = Lounge, r = L.renderer, T = THREE; if (!r) return; this.level = lv; this.slow = 0;
+    const dpr = devicePixelRatio || 1, pr = lv === "low" ? 1 : lv === "ultra" ? Math.min(2.5, Math.max(1.5, dpr*1.25)) : Math.min(dpr, 2);
+    r.setPixelRatio(pr); this.pr = pr;
+    if (L.composer){ if (lv === "ultra") this.msaa(true); else if (this.msaaOn) this.msaa(false); L.composer.setPixelRatio(pr); }
+    L.gfxNoPost = lv === "low";
+    if (L.finalPass && L.finalPass.uniforms.grade) L.finalPass.uniforms.grade.value = lv === "ultra" ? 1 : 0;
+    r.shadowMap.autoUpdate = lv === "ultra"; r.shadowMap.needsUpdate = true;
+    this.lightShadows(lv === "ultra" ? 2048 : 1024); this.key(lv === "ultra" && !L.renderer.xr.isPresenting);
+    this.seen = new WeakSet(); this.refresh();
+    try{ L.resize(); }catch(e){}
+  },
+  /* smooth edges: the glow effects bypass the browser's anti-aliasing, so on Ultra render into a multisampled target */
+  msaa(on){ const L = Lounge, r = L.renderer, T = THREE, c = L.composer; if (!c || !T.WebGLMultisampleRenderTarget || !r.capabilities.isWebGL2) return; if (on === !!this.msaaOn) return;
+    const size = r.getDrawingBufferSize(new T.Vector2()), rt = on ? new T.WebGLMultisampleRenderTarget(size.x, size.y, {format: T.RGBAFormat, encoding: T.LinearEncoding}) : new T.WebGLRenderTarget(size.x, size.y, {minFilter: T.LinearFilter, magFilter: T.LinearFilter, format: T.RGBAFormat});
+    if (on) rt.samples = 4;
+    const passes = c.passes.slice(), n = new T.EffectComposer(r, rt); passes.forEach(p => n.addPass(p)); try{ c.renderTarget1.dispose(); c.renderTarget2.dispose(); }catch(e){}
+    L.composer = n; this.msaaOn = on; },
+  /* Ultra: a soft overhead light that follows you, so people and furniture cast real shadows on the floor around you */
+  key(on){ const L = Lounge, T = THREE;
+    if (!on){ if (this.sun){ L.scene.remove(this.sun); L.scene.remove(this.sun.target); this.sun.shadow.map && this.sun.shadow.map.dispose(); this.sun = null; } return; }
+    if (this.sun) return; const s = this.sun = new T.DirectionalLight(0xfff1e0, .38); s.castShadow = true; s.shadow.mapSize.set(2048, 2048);
+    Object.assign(s.shadow.camera, {left: -9, right: 9, top: 9, bottom: -9, near: .5, far: 40}); s.shadow.bias = -.0004; s.shadow.normalBias = .03; s.shadow.radius = 3;
+    L.scene.add(s); L.scene.add(s.target); },
+  follow(){ const s = this.sun; if (!s) return; const h = Lounge.headPos(); const sn = 1.5; const x = Math.round(h.x/sn)*sn, z = Math.round(h.z/sn)*sn;   // snap so shadows don't shimmer
+    s.target.position.set(x, 0, z); s.position.set(x + 4, 14, z + 3); s.target.updateMatrixWorld(); },
+  lightShadows(sz){ const L = Lounge; L.scene && L.scene.traverse(o => { if (o.isLight && o.castShadow && o.shadow && o.shadow.mapSize.x !== sz){ o.shadow.mapSize.set(sz, sz); if (o.shadow.map){ o.shadow.map.dispose(); o.shadow.map = null; } } }); },
+  /* textures: as sharp as the GPU allows on Ultra; people cast live shadows on Ultra */
+  refresh(){ const L = Lounge, r = L.renderer; if (!L.scene || !r) return; const ultra = this.level === "ultra", an = ultra ? Math.min(16, r.capabilities.getMaxAnisotropy()) : 4;
+    L.scene.traverse(o => { if (!o.isMesh) return;
+      if (o.isSkinnedMesh){ let sl = null; for (let q = o; q && !sl; q = q.parent) sl = q.userData && q.userData.slot; if (sl && !sl.float && o.castShadow !== ultra){ o.castShadow = ultra; } }
+      else if (ultra && !o.receiveShadow && !o.isInstancedMesh){ const m0 = [].concat(o.material)[0]; if (m0 && !m0.transparent && m0.depthWrite !== false && (m0.isMeshStandardMaterial || m0.isMeshPhongMaterial || m0.isMeshLambertMaterial)) o.receiveShadow = true; }
+      for (const m of [].concat(o.material)){ if (!m || this.seen.has(m)) continue; this.seen.add(m);
+        for (const k of ["map", "normalMap", "roughnessMap", "emissiveMap"]){ const t = m[k]; if (t && t.isTexture && !t.isVideoTexture && !t.isCanvasTexture && t.image && t.anisotropy < an){ t.anisotropy = an; t.needsUpdate = true; } } } });
+    r.shadowMap.needsUpdate = true; },
+  /* keep it smooth: if Ultra drops below ~28 fps for a while on this device, step down to Standard once */
+  tick(dt){ if (!this.ready) return; const L = Lounge; if (L.composer && !this.postDone){ this.postDone = true; this.apply(this.level); }
+    const xr = L.renderer.xr.isPresenting; if (xr && this.sun) this.key(false); else if (!xr && !this.sun && this.level === "ultra") this.key(true); if (xr) return;
+    if (this.sun) this.follow();
+    this.fpsT += dt; this.frames++; if (this.fpsT >= 2){ const fps = this.frames/this.fpsT; this.fpsT = 0; this.frames = 0;
+      if (this.level === "ultra" && !document.hidden){ this.slow = fps < 28 ? this.slow + 1 : 0; if (this.slow >= 4 && !this.autoDropped){ this.autoDropped = true; this.apply("high"); this.ui(); toast("Ultra graphics was slowing this device down, so it's back on Standard. You can turn Ultra on again with ✨ (it will stay on)."); if (store.get("gfx", "auto") === "auto") store.set("gfx", "high"); } }
+      this.scan = (this.scan || 0) + 1; if (this.scan % 3 === 0) this.refresh(); } },
+  ui(){ const z = $("#zoomCtl"); if (!z) return; let b = z.querySelector("[data-z='gfx']");
+    if (!b){ b = document.createElement("button"); b.type = "button"; b.dataset.z = "gfx"; b.title = "Graphics quality"; b.setAttribute("aria-label", "Graphics quality"); z.appendChild(b);
+      b.addEventListener("click", e => { e.stopPropagation(); this.menu(); }); }
+    b.textContent = this.level === "ultra" ? "💎" : this.level === "low" ? "🔋" : "✨"; },
+  menu(){ let m = $("#gfxMenu"); if (m){ m.remove(); return; }
+    m = document.createElement("div"); m.id = "gfxMenu"; m.className = "gfxmenu"; m.setAttribute("role", "menu");
+    m.innerHTML = `<b>Graphics</b>${Object.entries(this.LEVELS).map(([k, v]) => `<button type="button" role="menuitemradio" aria-checked="${k === this.level}" class="${k === this.level ? "on" : ""}" data-lv="${k}"><span>${v.name}</span><small>${v.tip}</small></button>`).join("")}<small class="hint">In a VR headset, the picture stays tuned for smooth, comfortable motion.</small>`;
+    $("#stage").appendChild(m);
+    m.addEventListener("click", e => { const b = e.target.closest("[data-lv]"); if (b){ this.set(b.dataset.lv); m.remove(); } });
+    setTimeout(() => document.addEventListener("pointerdown", function off(e){ if (!e.target.closest("#gfxMenu")){ m.remove(); document.removeEventListener("pointerdown", off, true); } }, true), 0); }
 };
 
 /* ================= Outfits: re-dress any avatar =================
