@@ -552,6 +552,13 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
 .zoomctl button{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:700 20px var(--f-body);cursor:pointer;display:grid;place-items:center}
 .zoomctl button:hover,.zoomctl button:focus-visible{border-color:#ffc21a;outline:none}
 .gfxmenu{position:absolute;right:calc(70px + env(safe-area-inset-right,0px));top:calc(78px + env(safe-area-inset-top,0px));width:min(300px,calc(100vw - 90px));display:grid;gap:6px;padding:12px;border-radius:18px;background:rgba(16,10,8,.95);border:1px solid rgba(255,194,26,.45);color:#fff;z-index:8;font:14px var(--f-body);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.worldpick{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.66);display:grid;place-items:center;padding:16px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.wp-card{width:min(720px,100%);max-height:88vh;overflow:auto;background:rgba(20,13,10,.97);border:1px solid rgba(255,194,26,.45);border-radius:22px;padding:16px}
+.wp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:#ffc21a;font-size:19px}
+.wp-x{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font-size:18px}
+.wp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.wp-grid button{min-height:64px;padding:10px;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;font:700 15px var(--f-body,sans-serif)}
+.wp-grid button.on{background:linear-gradient(135deg,#ffc21a,#f08a0c);color:#2a1405;border:0}
 .gfxmenu b{color:#ffc21a;font-size:15px}
 .gfxmenu button{display:grid;gap:2px;text-align:left;padding:9px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:inherit;font:inherit;cursor:pointer}
 .gfxmenu button span{font-weight:700}
@@ -932,7 +939,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
       </div>
     </div>
   </div>
-  <div class="btnrow end"><button class="ghost" id="meCancel" type="button">Cancel</button><button class="primary" id="meSave" type="button">Save</button></div>
+  <div class="btnrow end"><small id="meAuto" style="margin-right:auto;opacity:.65;align-self:center">Changes save automatically</small><button class="ghost" id="meCancel" type="button">Close</button><button class="primary" id="meSave" type="button">Save</button></div>
 </dialog>
 
 <dialog id="partyDlg">
@@ -2301,7 +2308,7 @@ const Dash = {
   bind(){
     $("#miniOpen").addEventListener("click", () => this.set(false, true));
     $("#xpHide").addEventListener("click", () => this.set(true, true));
-    $("#miniWorld").addEventListener("click", () => { this.set(false, true); requestAnimationFrame(() => ($("#worldSeg").hidden ? $("#xpModes") : $("#worldSeg")).scrollIntoView({block: "nearest"})); });
+    $("#miniWorld").addEventListener("click", () => { if (xpMode === "lounge") WorldPick.open(); else { this.set(false, true); requestAnimationFrame(() => $("#xpModes").scrollIntoView({block: "nearest"})); } });
     $("#miniParty").addEventListener("click", () => $("#btnParty").click());
     $("#miniCam").addEventListener("click", () => Cam.open());
     $("#miniVR").addEventListener("click", () => Lounge.enterXR("vr"));
@@ -3363,7 +3370,7 @@ const Lounge = {
 
     this.setWorld(store.get("world", "rooftop"));
     this.setupPost();
-    this.bindPointer(canvas); try{ View.init(); }catch(e){ console.warn(e); } try{ this.furnBtn(); }catch(e){}
+    this.bindPointer(canvas); try{ View.init(); }catch(e){ console.warn(e); } try{ this.furnBtn(); Visuals.ui(); WorldPick.ui(); }catch(e){}
     addEventListener("resize", () => this.resize());
   },
 
@@ -6396,7 +6403,7 @@ const Lounge = {
     this.renderer.shadowMap.needsUpdate = true; try{ if (GFX.ready) setTimeout(() => { GFX.lightShadows(GFX.level === "ultra" ? 2048 : 1024); GFX.refresh(); }, 600); }catch(e){}
     document.querySelectorAll("#worldSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.w === id));
     try{ this.lightBudget(); }catch(e){}
-    try{ this.furnBtn(); }catch(e){}
+    try{ this.furnBtn(); Visuals.ui(); WorldPick.ui(); }catch(e){}
     try{ this.keepWorlds(); }catch(e){ console.warn(e); }
     try{ Dash.label(); }catch(e){}
     if (this.rig){ if (typeof Party !== "undefined" && Party.room){ if (Party.kind === "world") Party.worldChanged(); else this.spawnInParty(); } else this.resetRig(); }
@@ -7906,6 +7913,7 @@ const Lounge = {
     this.lastPlaying = S.playing;
   },
   drawScreen(){
+    try{ if (Visuals.active() && Visuals.draw(this)) return; }catch(e){ console.warn(e); }
     const key = [S.current?.url, S.track.title, S.track.artist, S.track.art, S.playing, this.moodIdx, this.worldId].join("|");
     if (key === this.lastScreenKey) return;
     this.lastScreenKey = key;
@@ -7922,15 +7930,12 @@ const Lounge = {
       x.textAlign = "left"; x.textBaseline = "alphabetic";
       const tx = 510, maxW = 470;
       const fit = (txt, size, weight, fam) => { let s = size; do { x.font = `${weight} ${s}px ${fam}`; s -= 2; } while (x.measureText(txt).width > maxW && s > 18); };
-      x.fillStyle = hexA2(m.a, 1); fit((S.current?.name || "TURN UP MUSIC").toUpperCase(), 28, 700, '"Chakra Petch", sans-serif');
-      x.fillText((S.current?.name || "TURN UP MUSIC").toUpperCase(), tx, 170);
       const title = S.current ? (S.track.title || S.current.name) : "Feel the beat";
-      x.fillStyle = "#fff"; fit(title, 56, 700, '"Chakra Petch", sans-serif'); x.fillText(title, tx, 250);
+      x.fillStyle = "#fff"; fit(title, 60, 700, '"Chakra Petch", sans-serif'); x.fillText(title, tx, 270);
       const artist = S.current ? (S.track.artist || S.current.tag || "Live radio") : "Pick a station, then tap the screen to play";
-      x.fillStyle = "rgba(255,255,255,.75)"; fit(artist, 34, 500, '"Hanken Grotesk", sans-serif'); x.fillText(artist, tx, 305);
-      x.fillStyle = S.playing ? "#ff4d3d" : "rgba(255,255,255,.4)"; x.beginPath(); x.arc(tx + 10, 400, 10, 0, Math.PI*2); x.fill();
-      x.fillStyle = "rgba(255,255,255,.85)"; x.font = '700 26px "Chakra Petch", sans-serif'; x.fillText(S.playing ? "LIVE · TAP SCREEN TO PAUSE" : "TAP SCREEN TO PLAY", tx + 32, 409);
-      x.fillStyle = "rgba(255,255,255,.5)"; x.font = '500 22px "Hanken Grotesk", sans-serif'; x.fillText(`${this.world ? this.world.name : ""} · ${MOODS[this.moodIdx].name}`, tx, 470);
+      x.fillStyle = "rgba(255,255,255,.75)"; fit(artist, 34, 500, '"Hanken Grotesk", sans-serif'); x.fillText(artist, tx, 326);
+      x.fillStyle = S.playing ? "#ff4d3d" : "rgba(255,255,255,.4)"; x.beginPath(); x.arc(tx + 10, 410, 10, 0, Math.PI*2); x.fill();
+      x.fillStyle = "rgba(255,255,255,.85)"; x.font = '700 26px "Chakra Petch", sans-serif'; x.fillText(S.playing ? "PLAYING" : "TAP SCREEN TO PLAY", tx + 32, 419);
       this.screenTex.needsUpdate = true;
     };
     paint(null);
@@ -8936,6 +8941,7 @@ $("#btnVR").addEventListener("click", () => Lounge.enterXR("vr"));
 $("#btnAR").addEventListener("click", () => Lounge.enterXR("ar"));
 $("#btnMood").addEventListener("click", () => { if (Lounge.built) Lounge.nextMood(); });
 try{ Account.init(); }catch(e){ console.warn(e); }
+try{ Visuals.init(); }catch(e){ console.warn(e); }
 $("#worldSeg").innerHTML = Lounge.WORLDS.map(w => `<button type="button" data-w="${w.id}" aria-pressed="${w.id === store.get("world", "rooftop")}">${w.name}</button>`).join("");
 $("#worldSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (Lounge.built) Lounge.chooseWorld(b.dataset.w); else store.set("world", b.dataset.w); document.querySelectorAll("#worldSeg button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
 $("#xrExit").addEventListener("click", () => { try{ Lounge.session?.end(); }catch(e){} });
@@ -9524,6 +9530,8 @@ const Profile = {
         this.draft.outfit = Object.assign({}, this.draft.outfit, {style: "fabric", fabric: url}); this.renderOutfit(); toast("Your fabric is on!");
       }catch(err){ toast("Couldn't read that photo."); }
     });
+    { let tm = 0; const auto = () => { clearTimeout(tm); tm = setTimeout(() => { try{ if (!$("#meDlg").open) return; const d = this.readForm(); d.outfit = Outfit.clean(d.outfit, VIP.can("dj")); this.save(Profile.clean(Object.assign({}, d, {dj: this.get().dj}))); const h = $("#meAuto"); if (h){ h.textContent = "✓ Saved automatically"; } }catch(e){} }, 900); };
+      $("#meDlg").addEventListener("input", auto); $("#meDlg").addEventListener("change", auto); $("#meDlg").addEventListener("click", e => { if (e.target.closest("button:not(#meSave):not(#meCancel)")) auto(); }); }
     $("#meSave").addEventListener("click", () => { const d = this.readForm(); d.outfit = Outfit.clean(d.outfit, VIP.can("dj")); this.save(Profile.clean(Object.assign({}, d, {dj: this.get().dj}))); this.pvRun = false; $("#meDlg").close(); toast("Profile saved"); });
     $("#meCancel").addEventListener("click", () => { this.pvRun = false; $("#meDlg").close(); });
     $("#meDlg").addEventListener("close", () => { this.pvRun = false; });
@@ -13328,6 +13336,177 @@ const View = {
 };
 
 /* ================= 💎 Graphics: Battery saver / Standard / Ultra ================= */
+/* ===== Screen visuals: audio-reactive pictures on the big screen while music plays ===== */
+const Visuals = {
+  MODES: [
+    {id: "auto",    name: "🎲 Surprise me", tip: "Changes by itself every few seconds"},
+    {id: "orbs",    name: "🔮 Orbs",        tip: "Glowing orbs that bounce to the beat"},
+    {id: "meter",   name: "📊 Meter",       tip: "Level bars"},
+    {id: "sil",     name: "🕺 Silhouettes", tip: "Dancers on a lit stage"},
+    {id: "tunnel",  name: "🌀 Tunnel",      tip: "Fly through pulsing rings"},
+    {id: "lasers",  name: "🎇 Lasers",      tip: "Club laser beams"},
+    {id: "waves",   name: "🌊 Waves",       tip: "Flowing sound waves"},
+    {id: "stars",   name: "✨ Starfield",   tip: "Warp-speed stars"},
+    {id: "kaleido", name: "🪩 Kaleidoscope", tip: "Mirrored pattern"},
+    {id: "off",     name: "🎵 Song card",   tip: "Just show the song"}
+  ],
+  RANDOM: ["orbs", "meter", "sil", "tunnel", "lasers", "waves", "stars", "kaleido"],
+  mode: "auto", cur: "orbs", t: 0, lastT: 0, swapT: 0, flash: 0, stars: null, orbs: null, sils: null, bassAvg: 0,
+  init(){ const m = store.get("viz2", "auto"); this.mode = this.MODES.some(x => x.id === m) ? m : "auto"; this.pick(); },
+  pick(){ if (this.mode === "auto"){ const o = this.RANDOM.filter(r => r !== this.cur); this.cur = o[Math.floor(Math.random()*o.length)]; this.flash = 1; } else this.cur = this.mode; this.swapT = 0; },
+  set(id){ this.mode = id; store.set("viz2", id); this.pick(); if (typeof Lounge !== "undefined") Lounge.lastScreenKey = null; },
+  next(){ const i = this.MODES.findIndex(m => m.id === this.mode); this.set(this.MODES[(i + 1) % this.MODES.length].id); return this.MODES.find(m => m.id === this.mode); },
+  label(){ return (this.MODES.find(m => m.id === this.mode) || this.MODES[0]).name; },
+  active(){
+    if (this.mode === "off" || !S.playing || Lounge.videoOn) return false;
+    try{ const s = Screens.main(); if (s && s.kind) return false; }catch(e){}
+    return true;
+  },
+  /* returns true when it painted a frame */
+  draw(L){
+    const now = performance.now(), gap = L.renderer.xr.isPresenting ? 100 : L.lowPower() ? 80 : 40; if (document.hidden) return true;
+    if (now - this.lastT < gap) return true;
+    const dt = Math.min(.1, (now - this.lastT)/1000 || .03); this.lastT = now; this.t += dt; this.swapT += dt;
+    if (this.mode === "auto" && this.swapT > 14) this.pick();
+    const c = L.screenCanvas, x = c.getContext("2d"), W = 1024, H = 576, m = MOODS[L.moodIdx];
+    const A = "#" + m.a.toString(16).padStart(6, "0"), B = "#" + m.b.toString(16).padStart(6, "0"), HZ = "#" + m.horizon.toString(16).padStart(6, "0");
+    const bass = (vals[0] + vals[1] + vals[2] + vals[3])/4, mid = (vals[8] + vals[10] + vals[12] + vals[14])/4, hi = (vals[24] + vals[28] + vals[32] + vals[36])/4;
+    this.bassAvg += (bass - this.bassAvg)*.05; const kick = Math.max(0, bass - this.bassAvg*1.15);
+    x.globalCompositeOperation = "source-over";
+    const bg = x.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, "#05030a"); bg.addColorStop(1, HZ);
+    x.globalAlpha = 1; x.fillStyle = bg; x.fillRect(0, 0, W, H);
+    this["v_" + this.cur](x, W, H, A, B, bass, mid, hi, kick, dt);
+    x.globalCompositeOperation = "source-over";
+    if (this.flash > 0){ x.fillStyle = `rgba(255,255,255,${this.flash*.6})`; x.fillRect(0, 0, W, H); this.flash = Math.max(0, this.flash - dt*3); }
+    /* just the basics: title and artist */
+    const title = S.track.title || (S.current && S.current.name) || "", artist = S.track.artist || (S.current && S.current.tag) || "";
+    if (title){
+      const g = x.createLinearGradient(0, H - 130, 0, H); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(1, "rgba(0,0,0,.72)"); x.fillStyle = g; x.fillRect(0, H - 130, W, 130);
+      x.textAlign = "left"; x.textBaseline = "alphabetic"; x.fillStyle = "#fff"; x.font = '700 40px "Chakra Petch", sans-serif'; x.fillText(title, 40, H - 58, W - 80);
+      if (artist){ x.fillStyle = "rgba(255,255,255,.78)"; x.font = '500 26px "Hanken Grotesk", sans-serif'; x.fillText(artist, 40, H - 22, W - 80); }
+    }
+    L.screenTex.needsUpdate = true; L.lastScreenKey = null; return true;
+  },
+  v_orbs(x, W, H, A, B, bass, mid, hi, kick){
+    if (!this.orbs) this.orbs = Array.from({length: 14}, (_, i) => ({x: Math.random()*W, y: Math.random()*H, vx: (Math.random() - .5)*90, vy: (Math.random() - .5)*90, r: 30 + Math.random()*50, b: i % 20}));
+    x.globalCompositeOperation = "lighter";
+    for (const o of this.orbs){
+      const v = vals[o.b*2 % 40] || 0; o.x += o.vx*.033*(1 + bass*2); o.y += o.vy*.033*(1 + bass*2);
+      if (o.x < 0 || o.x > W) o.vx *= -1; if (o.y < 0 || o.y > H) o.vy *= -1;
+      const r = o.r*(1 + v*1.6 + kick*1.5), g = x.createRadialGradient(o.x, o.y, 0, o.x, o.y, r);
+      g.addColorStop(0, "#fff"); g.addColorStop(.25, o.b % 2 ? A : B); g.addColorStop(1, "rgba(0,0,0,0)");
+      x.globalAlpha = .55 + v*.4; x.fillStyle = g; x.beginPath(); x.arc(o.x, o.y, r, 0, 6.283); x.fill();
+    }
+    x.globalAlpha = 1;
+  },
+  v_meter(x, W, H, A, B){
+    const n = 32, bw = (W - 80)/n;
+    for (let i = 0; i < n; i++){
+      const v = Math.min(1, (vals[Math.floor(i*40/n)] || 0)*1.25), h = 20 + v*(H - 220), px = 40 + i*bw, g = x.createLinearGradient(0, H - 120 - h, 0, H - 120);
+      g.addColorStop(0, A); g.addColorStop(1, B); x.fillStyle = g; x.fillRect(px + 3, H - 120 - h, bw - 6, h);
+      x.fillStyle = "rgba(255,255,255,.35)"; x.fillRect(px + 3, H - 120 + 6, bw - 6, Math.min(40, h*.25));
+    }
+  },
+  v_sil(x, W, H, A, B, bass, mid, hi, kick){
+    const g = x.createRadialGradient(W/2, H*.35, 20, W/2, H*.35, W*.6); g.addColorStop(0, A); g.addColorStop(1, "rgba(0,0,0,0)");
+    x.globalAlpha = .55 + bass*.4; x.fillStyle = g; x.fillRect(0, 0, W, H); x.globalAlpha = 1;
+    if (!this.sils) this.sils = Array.from({length: 7}, (_, i) => ({p: i/6, ph: Math.random()*6.28, s: .8 + Math.random()*.5}));
+    x.fillStyle = "#07040a";
+    for (const s of this.sils){
+      const px = 90 + s.p*(W - 180), bounce = Math.abs(Math.sin(this.t*4 + s.ph))*(18 + bass*70), arm = Math.sin(this.t*5 + s.ph)*(.7 + mid*1.4), sc = 160*s.s, by = H - 130 - bounce;
+      x.save(); x.translate(px, by); x.beginPath(); x.ellipse(0, -sc*1.28, sc*.11, sc*.13, 0, 0, 6.283); x.fill();
+      x.lineCap = "round"; x.strokeStyle = "#07040a"; x.lineWidth = sc*.2; x.beginPath(); x.moveTo(0, -sc*1.1); x.lineTo(0, -sc*.5); x.stroke();
+      x.lineWidth = sc*.1; x.beginPath(); x.moveTo(0, -sc*1.02); x.lineTo(Math.cos(-1.2 + arm)*sc*.45, -sc*1.02 + Math.sin(-1.2 + arm)*sc*.45); x.moveTo(0, -sc*1.02); x.lineTo(-Math.cos(-1.2 - arm)*sc*.45, -sc*1.02 + Math.sin(-1.2 - arm)*sc*.45); x.stroke();
+      x.beginPath(); x.moveTo(0, -sc*.5); x.lineTo(sc*.15 + Math.sin(this.t*4 + s.ph)*sc*.1, 0); x.moveTo(0, -sc*.5); x.lineTo(-sc*.15 - Math.sin(this.t*4 + s.ph)*sc*.1, 0); x.stroke(); x.restore();
+    }
+    x.fillStyle = "rgba(0,0,0,.6)"; x.fillRect(0, H - 130, W, 12);
+  },
+  v_tunnel(x, W, H, A, B, bass){
+    x.save(); x.translate(W/2, H/2 - 30); x.lineWidth = 5; x.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 14; i++){
+      const z = ((i + this.t*1.6) % 14)/14, r = 20 + z*z*W*.7*(1 + bass*.4), rot = this.t*.4 + i*.3;
+      x.strokeStyle = i % 2 ? A : B; x.globalAlpha = Math.min(1, z*1.6)*.9; x.beginPath();
+      for (let k = 0; k <= 6; k++){ const a = rot + k*Math.PI/3; x[k ? "lineTo" : "moveTo"](Math.cos(a)*r, Math.sin(a)*r*.62); }
+      x.stroke();
+    }
+    x.restore(); x.globalAlpha = 1;
+  },
+  v_lasers(x, W, H, A, B, bass, mid){
+    x.globalCompositeOperation = "lighter"; x.lineWidth = 5 + bass*10;
+    for (let i = 0; i < 14; i++){
+      const a = Math.sin(this.t*(.6 + i*.07) + i)*.9, ox = W*(i + .5)/14; x.strokeStyle = i % 2 ? A : B; x.globalAlpha = .45 + (vals[i*2 % 40] || 0)*.5;
+      x.beginPath(); x.moveTo(ox, -10); x.lineTo(ox + Math.tan(a)*H*1.2, H + 10); x.stroke();
+    }
+    x.globalAlpha = 1;
+  },
+  v_waves(x, W, H, A, B, bass, mid, hi){
+    x.globalCompositeOperation = "lighter"; x.lineWidth = 6;
+    for (let w = 0; w < 4; w++){
+      x.strokeStyle = w % 2 ? A : B; x.globalAlpha = .8 - w*.12; x.beginPath();
+      for (let px = 0; px <= W; px += 8){
+        const u = px/W, v = vals[Math.floor(u*38)] || 0, y = H*.45 + Math.sin(u*9 + this.t*(1.5 + w*.5) + w)*(30 + v*150) + (w - 1.5)*40;
+        x[px ? "lineTo" : "moveTo"](px, y);
+      }
+      x.stroke();
+    }
+    x.globalAlpha = 1;
+  },
+  v_stars(x, W, H, A, B, bass, mid, hi, kick, dt){
+    if (!this.stars) this.stars = Array.from({length: 160}, () => ({a: Math.random()*6.283, d: Math.random(), s: .2 + Math.random()*.8}));
+    x.fillStyle = "#fff"; x.globalCompositeOperation = "lighter";
+    for (const s of this.stars){
+      s.d += dt*(.15 + s.s*.5 + bass*1.2); if (s.d > 1){ s.d = 0; s.a = Math.random()*6.283; }
+      const r = s.d*s.d*W*.7, px = W/2 + Math.cos(s.a)*r, py = H/2 + Math.sin(s.a)*r*.65, l = 2 + s.d*14*(1 + bass*2);
+      x.strokeStyle = s.s > .6 ? A : "#fff"; x.lineWidth = 1 + s.d*3; x.globalAlpha = Math.min(1, s.d*2);
+      x.beginPath(); x.moveTo(px, py); x.lineTo(px - Math.cos(s.a)*l, py - Math.sin(s.a)*l*.65); x.stroke();
+    }
+    x.globalAlpha = 1;
+  },
+  v_kaleido(x, W, H, A, B, bass, mid){
+    x.save(); x.translate(W/2, H/2 - 20); x.globalCompositeOperation = "lighter";
+    for (let k = 0; k < 8; k++){
+      x.save(); x.rotate(k*Math.PI/4 + this.t*.15);
+      for (let i = 0; i < 6; i++){
+        const v = vals[i*5] || 0, d = 40 + i*45 + Math.sin(this.t*2 + i)*20, r = 14 + v*60 + bass*20;
+        x.fillStyle = i % 2 ? A : B; x.globalAlpha = .5; x.beginPath(); x.arc(d, Math.sin(this.t + i)*30, r, 0, 6.283); x.fill();
+      }
+      x.restore();
+    }
+    x.restore(); x.globalAlpha = 1;
+  },
+  /* the little pick-a-picture menu (phones, tablets, desktop) */
+  ui(){ const z = $("#zoomCtl"); if (!z) return; let b = z.querySelector("[data-z='viz']");
+    if (!b){ b = document.createElement("button"); b.type = "button"; b.dataset.z = "viz"; b.title = "Screen visuals"; b.setAttribute("aria-label", "Screen visuals"); b.textContent = "🎛"; z.appendChild(b);
+      b.addEventListener("click", e => { e.stopPropagation(); this.menu(); }); } },
+  menu(){ let m = $("#vizMenu"); if (m){ m.remove(); return; }
+    m = document.createElement("div"); m.id = "vizMenu"; m.className = "gfxmenu"; m.setAttribute("role", "menu");
+    m.innerHTML = `<b>Screen visuals</b>${this.MODES.map(v => `<button type="button" role="menuitemradio" aria-checked="${v.id === this.mode}" class="${v.id === this.mode ? "on" : ""}" data-v="${v.id}"><span>${v.name}</span><small>${v.tip}</small></button>`).join("")}<small class="hint">These play on the big screen while music is on.</small>`;
+    $("#stage").appendChild(m);
+    m.addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b){ this.set(b.dataset.v); toast(this.label()); m.remove(); } });
+    setTimeout(() => document.addEventListener("pointerdown", function off(e){ if (!e.target.closest("#vizMenu")){ m.remove(); document.removeEventListener("pointerdown", off, true); } }, true), 0); }
+};
+
+/* ===== Easy world picker: big tappable cards for phone, tablet and desktop ===== */
+const WorldPick = {
+  open(){
+    let d = $("#worldPick"); if (d){ d.remove(); return; }
+    const cur = (typeof Lounge !== "undefined" && Lounge.worldId) || store.get("world", "rooftop");
+    d = document.createElement("div"); d.id = "worldPick"; d.className = "worldpick"; d.setAttribute("role", "dialog"); d.setAttribute("aria-label", "Choose a world");
+    d.innerHTML = `<div class="wp-card"><div class="wp-head"><b>🌍 Choose a world</b><button type="button" class="wp-x" aria-label="Close">✕</button></div><div class="wp-grid">${Lounge.WORLDS.map(w => `<button type="button" data-w="${w.id}" class="${w.id === cur ? "on" : ""}">${w.name}</button>`).join("")}</div></div>`;
+    document.body.appendChild(d);
+    d.addEventListener("click", e => {
+      if (e.target === d || e.target.closest(".wp-x")){ d.remove(); return; }
+      const b = e.target.closest("[data-w]"); if (!b) return; d.remove();
+      if (Lounge.renderer) Lounge.chooseWorld(b.dataset.w); else store.set("world", b.dataset.w);
+      document.querySelectorAll("#worldSeg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.w === b.dataset.w));
+      try{ Dash.label(); }catch(err){}
+    });
+  },
+  ui(){ const z = $("#zoomCtl"); if (!z) return; let b = z.querySelector("[data-z='world']");
+    if (!b){ b = document.createElement("button"); b.type = "button"; b.dataset.z = "world"; b.title = "Change world"; b.setAttribute("aria-label", "Change world"); b.textContent = "🌍"; z.appendChild(b);
+      b.addEventListener("click", e => { e.stopPropagation(); this.open(); }); } }
+};
+
 const GFX = {
   LEVELS: {low: {name: "🔋 Battery saver", tip: "Smoothest on older phones: lower resolution, no glow effects."}, high: {name: "⚖️ Standard", tip: "The usual look."},
     ultra: {name: "💎 Ultra", tip: "Sharpest picture: extra resolution, smooth edges, live shadows from everyone, crisp textures, cinematic color and glow."}},
@@ -13376,6 +13555,7 @@ const GFX = {
     const xr = L.renderer.xr.isPresenting; if (xr && this.sun) this.key(false); else if (!xr && !this.sun && this.level === "ultra") this.key(true); if (xr) return;
     if (this.sun) this.follow();
     this.fpsT += dt; this.frames++; if (this.fpsT >= 2){ const fps = this.frames/this.fpsT; this.fpsT = 0; this.frames = 0;
+      if (!document.hidden && Visuals.active()){ this.vslow = fps < 18 ? (this.vslow || 0) + 1 : 0; if (this.vslow >= 3){ this.vslow = 0; Visuals.set("off"); toast("Screen visuals are off because this device was lagging. Turn them back on with 🎛."); } }
       if (this.level === "ultra" && !document.hidden){ this.slow = fps < 28 ? this.slow + 1 : 0; if (this.slow >= 4 && !this.autoDropped){ this.autoDropped = true; this.apply("high"); this.ui(); toast("Ultra graphics was slowing this device down, so it's back on Standard. You can turn Ultra on again with ✨ (it will stay on)."); if (store.get("gfx", "auto") === "auto") store.set("gfx", "high"); } }
       this.scan = (this.scan || 0) + 1; if (this.scan % 3 === 0) this.refresh(); } },
   ui(){ const z = $("#zoomCtl"); if (!z) return; let b = z.querySelector("[data-z='gfx']");
@@ -14287,7 +14467,7 @@ const VRMenu = {
     else this.text("♫", 94, Y + 72, 70, "#ffc21a", 700, "center");
     const st = S.current, t = S.track || {}, vid = Lounge.videoOn && !S.playing;
     this.text(vid ? "🎬 Video on the big screen" : t.title || (st ? st.name : "Nothing playing"), 184, Y + 30, 34, "#fff", 800, "left", 450);
-    this.text(vid ? "Music is paused while it plays" : st ? [t.artist, st.name].filter(Boolean).join(" · ") : "Pick a station below", 184, Y + 72, 24, "rgba(255,255,255,.7)", 500, "left", 450);
+    this.text(vid ? "Music is paused while it plays" : st ? (t.artist || st.tag || "Live radio") : "Pick a station below", 184, Y + 72, 24, "rgba(255,255,255,.7)", 500, "left", 450);
     this.text(S.loading ? "Loading…" : S.playing ? "● Playing" : "Paused", 184, Y + 110, 22, S.playing ? "#ff6a5a" : "rgba(255,255,255,.5)", 700, "left");
     this.btn("prev", 650, Y + 10, 96, 76, "⏮", () => step(-1), {size: 36});
     this.btn("play", 756, Y + 10, 110, 76, S.playing || S.loading ? "⏸" : "▶", () => togglePlay(), {primary: true, size: 40});
@@ -14415,6 +14595,8 @@ const VRMenu = {
     b("mogul", 10, "🍾 Nightclub Mogul", () => { this.toggle(false); Mogul.open(); }, {primary: true});
     b("nav", 11, "🧭 Controls", () => { this.toggle(false); View.vrCard(); });
     b("brawl", 12, "🥊 Brawl mode", () => { this.toggle(false); Mogul.brawlHere(); }, {primary: true});
+    b("viz", 13, "🎛 " + Visuals.label().replace(/^\S+\s/, ""), () => { Visuals.next(); }, {size: 26});
+    b("nextw", 14, "🌍 Next world", () => { const i = Lounge.WORLDS.findIndex(w => w.id === Lounge.worldId); this.toggle(false); Lounge.vrGoTo(Lounge.WORLDS[(i + 1) % Lounge.WORLDS.length].id); setTimeout(() => this.draw(), 700); });
   },
   /* ---------- pointing ---------- */
   hitFor(ctl){

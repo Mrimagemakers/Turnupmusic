@@ -268,3 +268,9 @@ People on bar stools, chairs, sofas and benches now settle onto the nearest real
 
 - The 👤 button (adults only) opens **Sign in / Create account**. A name and a passcode of 8+ characters turn into two keys: one signs a saved copy and one locks it with AES-GCM. The locked copy sits on the same public relays as the live events. The passcode never leaves the device and cannot be reset.
 - Profile, favorites, stations, settings and game progress save a few seconds after any change, and when the page is hidden or the device comes back online. Signing in on another device restores them and the identity key, so memberships and posts follow the person. Device-only items (graphics level, age gate, secrets) are never saved.
+
+## Screen visuals, easy world picker, simpler song info
+- While music plays, the big screen shows moving pictures that react to the beat: Orbs, Meter, Silhouettes, Tunnel, Lasers, Waves, Starfield and Kaleidoscope. **🎲 Surprise me** (the default) switches between them by itself. Pick one with the **🎛** button in the lounge controls, or **🎛** in the VR menu's Party tab. Choose **🎵 Song card** to go back to the plain song display.
+- The screen only shows the **song title and artist** now. Videos and web screens still take over the screen when you start them.
+- **🌍** in the lounge controls (and the **🌍 World** button on phones and tablets) opens a big list of worlds: tap one to go there. In VR, the Party tab has **🌍 Next world** for a one-tap hop.
+- Your profile saves itself as you edit it. Sign in (Account) to keep it on every device.
