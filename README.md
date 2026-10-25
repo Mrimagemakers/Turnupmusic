@@ -257,3 +257,14 @@ Tap **🍾 Mogul** on the party bar, or go to **Party → 🍾 Nightclub Mogul**
 
 ## Seated people fixed
 People on bar stools, chairs, sofas and benches now settle onto the nearest real seat. They're centered on stools, and the floor no longer counts as a seat. Before, some sank into stools, sat on the floor next to a sofa, or perched beside a stool.
+
+## New world: Luxury Penthouse Loft
+
+- **Luxury Penthouse Loft** (`#penthouse`, `#loft`): a very large two-storey penthouse. The lower floor has a double-height living room with a chandelier, a fireplace under the big screen, a baby grand piano, an LED dance floor and a DJ booth. Under the upper floor are a foyer, a dining table for ten and a kitchen island with a wine wall. A marble staircase leads to the upper floor, which has a lounge, a library wall, a pool table, a bar and a master suite behind glass. Through the glass wall, a terrace has an infinity pool you can wade into, a fire pit and loungers. The city glitters far below.
+- **Move the furniture.** Sofas, chairs, tables, stools, plants, the piano, the pool table, the bed and the small things on them can all be picked up. On a screen, tap a piece to pick it up and tap again to set it down. In VR, grab it with the grip or trigger. People sitting on a piece come along. The 🛋️↺ button puts everything back.
+- Two floors: tap the floor on either level, or walk up the stairs.
+
+## Account: save your progress
+
+- The 👤 button (adults only) opens **Sign in / Create account**. A name and a passcode of 8+ characters turn into two keys: one signs a saved copy and one locks it with AES-GCM. The locked copy sits on the same public relays as the live events. The passcode never leaves the device and cannot be reset.
+- Profile, favorites, stations, settings and game progress save a few seconds after any change, and when the page is hidden or the device comes back online. Signing in on another device restores them and the identity key, so memberships and posts follow the person. Device-only items (graphics level, age gate, secrets) are never saved.
