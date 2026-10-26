@@ -272,7 +272,7 @@ People on bar stools, chairs, sofas and benches now settle onto the nearest real
 
 ## Account: save your progress
 
-- The 👤 button (adults only) opens **Sign in / Create account**. A name and a passcode of 8+ characters turn into two keys: one signs a saved copy and one locks it with AES-GCM. The locked copy sits on the same public relays as the live events. The passcode never leaves the device and cannot be reset.
+- The 👤 button (adults only) opens **Sign in / Create account**. An email address (you also confirm your date of birth, 18+) and a passcode of 8+ characters turn into two keys: one signs a saved copy and one locks it with AES-GCM. The locked copy sits on the same public relays as the live events. The passcode never leaves the device and cannot be reset.
 - Profile, favorites, stations, settings and game progress save a few seconds after any change, and when the page is hidden or the device comes back online. Signing in on another device restores them and the identity key, so memberships and posts follow the person. Device-only items (graphics level, age gate, secrets) are never saved.
 
 ## Screen visuals, easy world picker, simpler song info

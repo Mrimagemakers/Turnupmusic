@@ -10565,14 +10565,21 @@ const Account = {
   },
   async ready(){ for (let n = 0; n < 40 && !window.TUNet; n++) await new Promise(r => setTimeout(r, 250)); return !!window.TUNet; },
   /* ask every save server on its own, so we can tell "no account" apart from "can't connect" */
-  async fetch(pk){
+  warm(){ this.ready().then(ok => { if (ok) for (const u of NET.relays) Events.pool().ensureRelay(u).catch(() => {}); }); },
+  async fetch(pk, early){
     if (!await this.ready()) throw new Error("notunet");
-    const F = {kinds: [this.KIND], authors: [pk], "#d": [this.D], limit: 5}, pool = Events.pool();
-    const res = await Promise.all(NET.relays.map(async u => {
-      try{ await Promise.race([pool.ensureRelay(u), new Promise((_, no) => setTimeout(() => no(new Error("timeout")), 7000))]);
-        return await pool.querySync([u], F, {maxWait: 6000}); }catch(e){ return null; } }));
+    const F = {kinds: [this.KIND], authors: [pk], "#d": [this.D], limit: 5}, pool = Events.pool(), good = e => { try{ return TUNet.verifyEvent(e); }catch(er){ return false; } };
+    let done = 0, found = null;
+    const res = await new Promise(resolve => {
+      const all = [];
+      NET.relays.forEach((u, i) => {
+        (async () => { try{ await Promise.race([pool.ensureRelay(u), new Promise((_, no) => setTimeout(() => no(new Error("timeout")), 4500))]);
+          return await pool.querySync([u], F, {maxWait: 3500}); }catch(e){ return null; } })().then(r => {
+            all[i] = r; done++; if (early && r && r.some(good)){ found = r; resolve(all); } else if (done === NET.relays.length) resolve(all); });
+      });
+    });
     this.net = {reached: res.filter(Boolean).length, total: NET.relays.length};
-    const evs = [].concat(...res.filter(Boolean)).filter(e => { try{ return TUNet.verifyEvent(e); }catch(er){ return false; } }).sort((a, b) => b.created_at - a.created_at);
+    const evs = [].concat(...res.filter(Boolean)).filter(good).sort((a, b) => b.created_at - a.created_at);
     return evs[0] || null;
   },
   async push(note){
@@ -10581,8 +10588,10 @@ const Account = {
     try{
       const data = this.collect(); if (JSON.stringify(data).length > 350000) throw new Error("big");
       const ev = TUNet.finalizeEvent({kind: this.KIND, created_at: data.at, content: await this.lock(data, this.unhex(a.aes)), tags: [["d", this.D], ["alt", "Saved progress (encrypted)"]]}, this.unhex(a.sk));
-      const rs = await Promise.allSettled(Events.pool().publish(NET.relays, ev)), good = rs.filter(r => r.status === "fulfilled").length;
-      this.sent = {good, total: rs.length, why: [...new Set(rs.filter(r => r.status === "rejected").map(r => String((r.reason && r.reason.message) || r.reason).slice(0, 60)))].slice(0, 3).join("; ")};
+      const ps = Events.pool().publish(NET.relays, ev), all = Promise.allSettled(ps);
+      let good = 1; try{ await Promise.any(ps); }catch(e){ good = 0; }
+      const rs = good ? [] : await all; if (good) all.then(r => { this.sent = {good: r.filter(x => x.status === "fulfilled").length, total: r.length, why: ""}; });
+      this.sent = {good, total: NET.relays.length, why: [...new Set(rs.filter(r => r.status === "rejected").map(r => String((r.reason && r.reason.message) || r.reason).slice(0, 60)))].slice(0, 3).join("; ")};
       if (!good) throw new Error("nosave");
       store.set("acctAt", data.at); store.set("acctDirty", false); this.busy = false; this.err = ""; this.badge(); if (note) toast("Saved to your account. ✓"); return true;
     }catch(e){ this.busy = false; this.err = "Couldn't reach the network. It will try again."; store.set("acctDirty", true); this.badge(); if (note) toast("Couldn't save just now. We'll try again."); return false; }
@@ -10603,39 +10612,49 @@ const Account = {
   badge(){ const b = $("#btnAccount"); if (!b) return; const a = this.signedIn(), dirty = store.get("acctDirty", false);
     b.classList.toggle("on", a); b.dataset.s = !a ? "" : this.busy ? "busy" : dirty ? "dirty" : "ok";
     b.title = a ? `Signed in as ${this.state().name}` + (this.busy ? ": saving…" : dirty ? ": changes waiting to save" : ": all saved") : "Sign in to save your progress"; const st = $("#acctStatus"); if (st) this.paint(); },
-  open(){ const d = $("#acctDlg"); if (!d) return; this.tab = this.signedIn() ? "me" : (this.tab || "in"); this.paint(); if (!d.open) d.showModal(); },
+  open(){ const d = $("#acctDlg"); if (!d) return; this.warm(); this.tab = this.signedIn() ? "me" : (this.tab || "in"); this.paint(); if (!d.open) d.showModal(); },
   ago(t){ if (!t) return "never"; const s = Math.max(0, Date.now()/1000 - t); return s < 60 ? "just now" : s < 3600 ? Math.floor(s/60) + " min ago" : s < 86400 ? Math.floor(s/3600) + " h ago" : Math.floor(s/86400) + " days ago"; },
   paint(){
     const d = $("#acctBody"); if (!d) return; const a = this.state();
     if (a){
-      d.innerHTML = `<p id="acctStatus" class="acctok">✅ Signed in as <b>${esc(a.name)}</b><br><small>${this.busy ? "Saving…" : store.get("acctDirty", false) ? "Changes waiting to save" : "All saved · " + this.ago(store.get("acctAt", 0))}${this.err ? " · " + esc(this.err) : ""}</small></p>
+      d.innerHTML = `<p id="acctStatus" class="acctok">✅ Signed in as <b>${esc(a.email || a.name)}</b><br><small>${this.busy ? "Saving…" : store.get("acctDirty", false) ? "Changes waiting to save" : "All saved · " + this.ago(store.get("acctAt", 0))}${this.err ? " · " + esc(this.err) : ""}</small></p>
         <p>Your profile, favorites, stations, settings and game progress save by themselves a few seconds after you change them. Sign in with the same name and passcode on any other device to pick up where you left off.</p>
         <div class="btnrow"><button class="primary" id="acctSave" type="button">Save now</button><button class="ghost" id="acctOut" type="button">Sign out</button></div>
         <details class="acctmore"><summary>More</summary><p>Signing out keeps everything on this device. <b>Erase my saved copy</b> replaces the copy stored online with an empty one.</p><button class="ghost tiny" id="acctErase" type="button">Erase my saved copy</button></details>`;
       return; }
     const create = this.tab === "new";
     d.innerHTML = `<div class="tabs acct-tabs"><button type="button" data-t="in" class="${create ? "" : "on"}">Sign in</button><button type="button" data-t="new" class="${create ? "on" : ""}">Create account</button></div>
-      <form id="acctForm" autocomplete="off"><label>Account name<input id="acctName" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="for example darnell.c" required></label>
-      <label>Passcode<input id="acctPass" type="password" minlength="8" placeholder="at least 8 characters" required></label>
-      ${create ? `<label>Type the passcode again<input id="acctPass2" type="password" minlength="8" required></label>` : ""}
+      <form id="acctForm"><label>${create ? "Email address" : "Email (or your old account name)"}<input id="acctName" type="${create ? "email" : "text"}" maxlength="80" autocapitalize="off" autocomplete="${create ? "email" : "username"}" spellcheck="false" inputmode="email" placeholder="you@example.com" required></label>
+      <label>Passcode<input id="acctPass" type="password" minlength="8" autocomplete="${create ? "new-password" : "current-password"}" placeholder="at least 8 characters" required></label>
       <label class="row"><input type="checkbox" id="acctShow"> Show passcode</label>
-      ${create ? `<p class="warnnote">⚠️ Write your passcode down. Your progress is locked with it, so <b>nobody can reset it for you</b>, including us.</p>` : ""}
-      <p id="acctMsg" class="hint" role="status"></p><div class="btnrow"><button class="primary" id="acctGo" type="submit">${create ? "Create account and save" : "Sign in"}</button></div></form>`;
+      ${create ? (Age.adult() ? `<p class="acctok">✅ Age confirmed: 18 or older</p>` : `<div class="setgroup"><b>Date of birth</b> <span class="hint">(accounts are for adults 18+)</span><div class="agerow"><select class="field" id="acctM" aria-label="Month"></select><select class="field" id="acctD" aria-label="Day"></select><select class="field" id="acctY" aria-label="Year"></select></div></div>`) + `<label class="saf-opt"><input type="checkbox" id="acctAgree"> I am 18 or older and agree to the Community Guidelines</label>
+      <p class="warnnote">⚠️ Write your passcode down. Your progress is locked with it, so <b>nobody can reset it for you</b>, including us.</p>` : ""}
+      <p id="acctMsg" class="hint" role="status"></p><div class="btnrow"><button class="primary" id="acctGo" type="submit">${create ? "Create account" : "Sign in"}</button></div></form>`;
+    if (create && !Age.adult()) Age.fill("#acctM", "#acctD", "#acctY");
+    this.warm();
   },
   msg(t, bad){ const m = $("#acctMsg"); if (m){ m.textContent = t; m.style.color = bad ? "#ff8a80" : ""; } },
   async submit(){
-    const create = this.tab === "new", name = $("#acctName").value.trim(), pass = $("#acctPass").value;
-    if (!/^[A-Za-z0-9._-]{3,24}$/.test(name)) return this.msg("Use 3 to 24 letters, numbers, dots, dashes or underscores for the name.", true);
+    const create = this.tab === "new", name = $("#acctName").value.trim().toLowerCase(), pass = $("#acctPass").value;
+    if (create ? !/^[a-z0-9._%+'-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(name) : !/^[^\s]{3,80}$/.test(name)) return this.msg(create ? "Please enter a valid email address, like you@example.com." : "Enter the email (or account name) you signed up with.", true);
     if (pass.length < 8) return this.msg("The passcode needs at least 8 characters.", true);
-    if (create && pass !== $("#acctPass2").value) return this.msg("The two passcodes don't match.", true);
     if (!window.crypto || !crypto.subtle) return this.msg("This browser can't lock your data safely. Try Chrome or Safari.", true);
-    if (!Age.adult()) return this.msg("Accounts are for adults (18+).", true);
-    $("#acctGo").disabled = true; this.msg("Working… this takes a few seconds on purpose.");
+    if (create){
+      if (!Age.adult()){
+        const age = Age.ageOf($("#acctM").value, +$("#acctD").value, +$("#acctY").value);
+        if (age === null) return this.msg("Please enter your full date of birth.", true);
+        if (age < 18){ Age.setMinor(); $("#acctDlg").close(); return; }
+      }
+      if (!$("#acctAgree").checked) return this.msg("Please confirm you are 18 or older and agree to the Community Guidelines.", true);
+      if (!Age.adult()) Age.setAdult();
+    } else if (!Age.adult() && !Age.minor()) { Age.open(); return this.msg("Please confirm your age first.", true); }
+    else if (!Age.adult()) return this.msg("Accounts are for adults (18+).", true);
+    $("#acctGo").disabled = true; this.msg("Working…");
     try{
       const k = await this.derive(name, pass); let ev = null;
-      try{ ev = await this.fetch(k.pk); }catch(e){ this.msg(e.message === "notunet" ? "The sign-in tools haven't finished loading. Wait a few seconds and try again." : "Couldn't look up your account. Try again.", true); $("#acctGo").disabled = false; return; }
+      try{ ev = await this.fetch(k.pk, !create); }catch(e){ this.msg(e.message === "notunet" ? "The sign-in tools haven't finished loading. Wait a few seconds and try again." : "Couldn't look up your account. Try again.", true); $("#acctGo").disabled = false; return; }
       if (!ev && this.net && this.net.reached === 0){ this.msg(`Couldn't connect to the save servers (0 of ${this.net.total} reachable). Check your internet connection, turn off any VPN or ad-blocker, then try again.`, true); $("#acctGo").disabled = false; return; }
-      const keep = {name, pk: k.pk, sk: this.hex(k.sk), aes: this.hex(k.aes)};
+      const keep = {name, pk: k.pk, sk: this.hex(k.sk), aes: this.hex(k.aes), email: /@/.test(name) ? name : "", adultAt: Date.now()};
       if (create){
         if (ev){ this.msg("That name and passcode already have an account. Tap Sign in, or pick a different name.", true); $("#acctGo").disabled = false; return; }
         if (!await this.ready()){ this.msg("The sign-in tools haven't finished loading. Wait a few seconds and try again.", true); $("#acctGo").disabled = false; return; }
@@ -12289,6 +12308,18 @@ const Age = {
     $("#ageY").innerHTML = `<option value="">Year</option>` + Array.from({length: 100}, (_, i) => `<option>${yr - i}</option>`).join("");
     $("#ageMsg").textContent = ""; d.showModal();
   },
+  fill(m, d, y){
+    const yr = new Date().getFullYear();
+    $(m).innerHTML = `<option value="">Month</option>` + Array.from({length: 12}, (_, i) => `<option value="${i}">${new Date(2000, i, 1).toLocaleDateString([], {month: "long"})}</option>`).join("");
+    $(d).innerHTML = `<option value="">Day</option>` + Array.from({length: 31}, (_, i) => `<option>${i + 1}</option>`).join("");
+    $(y).innerHTML = `<option value="">Year</option>` + Array.from({length: 100}, (_, i) => `<option>${yr - i}</option>`).join("");
+  },
+  ageOf(m, dd, y){
+    if (m === "" || !dd || !y) return null; const b = new Date(y, +m, dd); if (b.getMonth() !== +m) return null;
+    const now = new Date(); let age = now.getFullYear() - y; if (now.getMonth() < +m || (now.getMonth() === +m && now.getDate() < dd)) age--; return age;
+  },
+  setAdult(){ store.set("age", {adult: true, at: Date.now()}); this.apply(); },
+  setMinor(){ store.set("age", {adult: false, at: Date.now()}); document.cookie = "tu_teen=1; max-age=" + 5*365*86400 + "; path=/; SameSite=Lax"; try{ Party.leave(true); }catch(e){} this.apply(); $("#teenDlg").showModal(); },
   submit(){
     const m = $("#ageM").value, dd = +$("#ageD").value, y = +$("#ageY").value;
     if (m === "" || !dd || !y){ $("#ageMsg").textContent = "Please choose your month, day and year of birth."; return; }
