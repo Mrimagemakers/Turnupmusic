@@ -556,6 +556,18 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
 .loading.world small{display:block;margin-top:10px;font:500 13px var(--f-body,sans-serif);letter-spacing:0;text-transform:none;opacity:.75}
 .spin{display:inline-block;width:54px;height:54px;border-radius:50%;border:5px solid rgba(255,255,255,.18);border-top-color:#ffc21a;margin-bottom:14px;animation:tuspin .9s linear infinite;will-change:transform}
 @keyframes tuspin{to{transform:rotate(360deg)}}
+.karaoke{position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:75;width:min(560px,100vw);max-height:72vh;overflow:auto;background:rgba(20,13,10,.97);border:1px solid rgba(255,194,26,.45);border-bottom:0;border-radius:22px 22px 0 0;padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));color:#fff;font:500 14px var(--f-body,sans-serif)}
+.karaoke[hidden]{display:none}
+.k-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ffc21a;font-size:18px}.k-sp{flex:1}
+.karaoke button{min-height:44px;padding:8px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:#fff;font:700 14px var(--f-body,sans-serif)}
+.karaoke button.primary{background:linear-gradient(135deg,#ffc21a,#f08a0c);color:#2a1405;border:0}
+.k-now{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.06);margin-bottom:8px}.k-t{font-size:17px;font-weight:700;color:#ffd87a}
+.k-cheer{display:flex;gap:6px;margin-bottom:8px}.k-cheer button{flex:1;font-size:22px;padding:6px}
+.k-sec{margin:10px 0 6px;color:#ffc21a;font-weight:700}.k-sec small{color:rgba(255,255,255,.6);font-weight:500}
+.k-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.k-grid button{text-align:left}
+.k-own{margin:10px 0}.k-own summary{cursor:pointer;font-weight:700;padding:8px 0}.k-own input[type=text],.k-own textarea{width:100%;margin:6px 0;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);color:#fff;font:inherit}
+.k-q{margin:0;padding-left:20px}.k-q li{margin:4px 0}.k-q button{min-height:30px;padding:2px 8px;margin-left:6px}
+.k-opts{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:10px 0}.k-hint{color:rgba(255,255,255,.65);font-size:12.5px;margin:6px 0}
 .worldpick{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.66);display:grid;place-items:center;padding:16px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .wp-card{width:min(720px,100%);max-height:88vh;overflow:auto;background:rgba(20,13,10,.97);border:1px solid rgba(255,194,26,.45);border-radius:22px;padding:16px}
 .wp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:#ffc21a;font-size:19px}
@@ -624,7 +636,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
 .xp-minibar #miniOpen{background:linear-gradient(135deg,var(--gold),var(--amber));color:#2a1405;border:0}
 .xp-minibar #miniWorld{max-width:46vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .xp-minibar #miniParty,.xp-minibar #miniCam{width:44px;padding:0;font-size:18px}
-@media (max-width:440px){.xp-minibar{gap:6px}.xp-minibar button{padding:0 12px;font-size:13px}.xp-minibar #miniWorld{max-width:38vw}.xp-minibar #miniParty,.xp-minibar #miniCam{width:40px}}
+@media (max-width:440px){.xp-minibar{gap:6px}.xp-minibar button{padding:0 12px;font-size:13px}.xp-minibar #miniWorld{max-width:38vw}.xp-minibar #miniParty,.xp-minibar #miniCam,.xp-minibar #miniKaraoke{width:40px}}
 @media (max-width:1024px),(pointer:coarse){
   .xp-bottom{max-height:58vh;overflow-y:auto;overscroll-behavior:contain;pointer-events:auto;gap:8px;padding-top:12px;background:linear-gradient(rgba(7,4,3,.55),rgba(7,4,3,.92));border-radius:22px 22px 0 0}
   .xp-bottom .seg,.xp-bottom .btnrow,.xp-bottom .partybar,.xp-bottom .emotes{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;pointer-events:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
@@ -821,6 +833,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
       <button type="button" id="miniOpen" aria-label="Show controls">▲ Controls</button>
       <button type="button" id="miniWorld">🌍 World</button>
       <button type="button" id="miniParty" aria-label="Party">👥</button>
+      <button type="button" id="miniKaraoke" aria-label="Karaoke">🎤</button>
       <button type="button" id="miniCam" aria-label="Camera">📷</button>
       <button type="button" id="miniVR">VR</button>
     </div>
@@ -2307,13 +2320,14 @@ const Dash = {
     const id = (typeof Lounge !== "undefined" && Lounge.worldId) || store.get("world", "rooftop");
     const w = typeof Lounge !== "undefined" && Lounge.WORLDS.find(x => x.id === id);
     $("#miniWorld").textContent = lounge ? "🌍 " + (w ? w.name : "Worlds") : "🎨 " + ((XP_MODES.find(m => m.id === xpMode) || {}).label || "Scenes");
-    $("#miniParty").hidden = $("#miniVR").hidden = !lounge;
+    $("#miniParty").hidden = $("#miniVR").hidden = $("#miniKaraoke").hidden = !lounge;
   },
   bind(){
     $("#miniOpen").addEventListener("click", () => this.set(false, true));
     $("#xpHide").addEventListener("click", () => this.set(true, true));
     $("#miniWorld").addEventListener("click", () => { if (xpMode === "lounge") WorldPick.open(); else { this.set(false, true); requestAnimationFrame(() => $("#xpModes").scrollIntoView({block: "nearest"})); } });
     $("#miniParty").addEventListener("click", () => $("#btnParty").click());
+    $("#miniKaraoke").addEventListener("click", () => Karaoke.toggle());
     $("#miniCam").addEventListener("click", () => Cam.open());
     $("#miniVR").addEventListener("click", () => Lounge.enterXR("vr"));
     // swipe the bar up to open, swipe the panel down to close
@@ -3374,7 +3388,7 @@ const Lounge = {
 
     this.setWorld(store.get("world", "rooftop"));
     this.setupPost();
-    this.bindPointer(canvas); try{ View.init(); }catch(e){ console.warn(e); } try{ this.furnBtn(); Visuals.ui(); WorldPick.ui(); }catch(e){}
+    this.bindPointer(canvas); try{ View.init(); }catch(e){ console.warn(e); } try{ this.furnBtn(); Visuals.ui(); WorldPick.ui(); Karaoke.ui(); }catch(e){}
     addEventListener("resize", () => this.resize());
   },
 
@@ -6409,7 +6423,7 @@ const Lounge = {
     this.renderer.shadowMap.needsUpdate = true; try{ if (GFX.ready) setTimeout(() => { GFX.lightShadows(GFX.level === "ultra" ? 2048 : 1024); GFX.refresh(); }, 600); }catch(e){}
     document.querySelectorAll("#worldSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.w === id));
     try{ this.lightBudget(); }catch(e){}
-    try{ this.furnBtn(); Visuals.ui(); WorldPick.ui(); }catch(e){}
+    try{ this.furnBtn(); Visuals.ui(); WorldPick.ui(); Karaoke.ui(); }catch(e){}
     try{ this.keepWorlds(); }catch(e){ console.warn(e); }
     try{ Dash.label(); }catch(e){}
     if (this.rig){ if (typeof Party !== "undefined" && Party.room){ if (Party.kind === "world") Party.worldChanged(); else this.spawnInParty(); } else this.resetRig(); }
@@ -8953,8 +8967,7 @@ const Lounge = {
 $("#btnVR").addEventListener("click", () => Lounge.enterXR("vr"));
 $("#btnAR").addEventListener("click", () => Lounge.enterXR("ar"));
 $("#btnMood").addEventListener("click", () => { if (Lounge.built) Lounge.nextMood(); });
-try{ Account.init(); }catch(e){ console.warn(e); }
-try{ Visuals.init(); }catch(e){ console.warn(e); }
+
 $("#worldSeg").innerHTML = Lounge.WORLDS.map(w => `<button type="button" data-w="${w.id}" aria-pressed="${w.id === store.get("world", "rooftop")}">${w.name}</button>`).join("");
 $("#worldSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (Lounge.built) Lounge.chooseWorld(b.dataset.w); else store.set("world", b.dataset.w); document.querySelectorAll("#worldSeg button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
 $("#xrExit").addEventListener("click", () => { try{ Lounge.session?.end(); }catch(e){} });
@@ -9604,7 +9617,8 @@ const Party = {
     catch(e){ toast("The party couldn't connect right now.", 5000); return; }
     this.room = room; this.roomKey = key; this.kind = kind; this.eventId = kind === "event" ? code : null;
     const A = {};
-    for (const n of ["hello", "pose", "chat", "react", "music", "mod", "link", "screen"]) A[n] = room.makeAction(n);
+    for (const n of ["hello", "pose", "chat", "react", "music", "mod", "link", "screen", "karaoke"]) A[n] = room.makeAction(n);
+    A.karaoke.onMessage = (d, ctx) => { try{ Karaoke.onMsg(ctx.peerId, d); }catch(e){ console.warn(e); } };
     A.screen.onMessage = (d, ctx) => { const p = this.peers[ctx.peerId]; if (p) Screens.onMsg(p, d); };
     A.mod.onMessage = (d, ctx) => this.onMod(ctx.peerId, d);
     A.link.onMessage = (d, ctx) => this.onLink(ctx.peerId, d);
@@ -9621,9 +9635,10 @@ const Party = {
       if (this.djStream) try{ room.addStream(this.djStream, {target: id, metadata: {kind: "dj"}}); }catch(e){}
       if (this.vidStream) try{ room.addStream(this.vidStream, {target: id, metadata: {kind: "video"}}); }catch(e){}
       setTimeout(() => Screens.resend(id), 1500);
+      setTimeout(() => { try{ Karaoke.snapshot(id); }catch(e){} }, 1800);
       this.sysMsg("Someone joined the party");
     };
-    room.onPeerLeave = id => { const p = this.peers[id]; if (p) this.sysMsg(`${p.profile.name} left`); this.dropPeer(id); };
+    room.onPeerLeave = id => { const p = this.peers[id]; if (p) this.sysMsg(`${p.profile.name} left`); this.dropPeer(id); try{ Karaoke.peerLeft(id); }catch(e){} };
     room.onPeerStream = (stream, id, meta) => this.onStream(id, stream, meta);
     A.hello.send(this.myHello());
     if (kind === "event"){ const ev = Events.byId(code); if (ev && ev.pk === Events.myKey()) this.setDJ(true, true); }
@@ -10108,9 +10123,17 @@ const Account = {
     if (/^[0-9a-f]{64}$/.test(data.id || "") && data.id !== store.get("hostSecret", "")){ const old = store.get("hostSecret", ""); if (old) store.set("hostSecretOld", old); store.set("hostSecret", data.id); }
     for (const [k, v] of Object.entries(data.keys)){ if (!this.syncable(k) || typeof v !== "string") continue; try{ JSON.parse(v); localStorage.setItem("tum:" + k, v); }catch(e){} }
   },
+  async ready(){ for (let n = 0; n < 40 && !window.TUNet; n++) await new Promise(r => setTimeout(r, 250)); return !!window.TUNet; },
+  /* ask every save server on its own, so we can tell "no account" apart from "can't connect" */
   async fetch(pk){
-    const evs = await Events.pool().querySync(NET.relays, {kinds: [this.KIND], authors: [pk], "#d": [this.D], limit: 5}, {maxWait: 7000});
-    return evs.filter(e => TUNet.verifyEvent(e)).sort((a, b) => b.created_at - a.created_at)[0] || null;
+    if (!await this.ready()) throw new Error("notunet");
+    const F = {kinds: [this.KIND], authors: [pk], "#d": [this.D], limit: 5}, pool = Events.pool();
+    const res = await Promise.all(NET.relays.map(async u => {
+      try{ await Promise.race([pool.ensureRelay(u), new Promise((_, no) => setTimeout(() => no(new Error("timeout")), 7000))]);
+        return await pool.querySync([u], F, {maxWait: 6000}); }catch(e){ return null; } }));
+    this.net = {reached: res.filter(Boolean).length, total: NET.relays.length};
+    const evs = [].concat(...res.filter(Boolean)).filter(e => { try{ return TUNet.verifyEvent(e); }catch(er){ return false; } }).sort((a, b) => b.created_at - a.created_at);
+    return evs[0] || null;
   },
   async push(note){
     const a = this.state(); if (!a) return false; if (!window.TUNet || !navigator.onLine){ store.set("acctDirty", true); this.badge(); return false; }
@@ -10118,7 +10141,9 @@ const Account = {
     try{
       const data = this.collect(); if (JSON.stringify(data).length > 350000) throw new Error("big");
       const ev = TUNet.finalizeEvent({kind: this.KIND, created_at: data.at, content: await this.lock(data, this.unhex(a.aes)), tags: [["d", this.D], ["alt", "Saved progress (encrypted)"]]}, this.unhex(a.sk));
-      await Promise.any(Events.pool().publish(NET.relays, ev));
+      const rs = await Promise.allSettled(Events.pool().publish(NET.relays, ev)), good = rs.filter(r => r.status === "fulfilled").length;
+      this.sent = {good, total: rs.length, why: [...new Set(rs.filter(r => r.status === "rejected").map(r => String((r.reason && r.reason.message) || r.reason).slice(0, 60)))].slice(0, 3).join("; ")};
+      if (!good) throw new Error("nosave");
       store.set("acctAt", data.at); store.set("acctDirty", false); this.busy = false; this.err = ""; this.badge(); if (note) toast("Saved to your account. ✓"); return true;
     }catch(e){ this.busy = false; this.err = "Couldn't reach the network. It will try again."; store.set("acctDirty", true); this.badge(); if (note) toast("Couldn't save just now. We'll try again."); return false; }
   },
@@ -10167,15 +10192,18 @@ const Account = {
     if (!Age.adult()) return this.msg("Accounts are for adults (18+).", true);
     $("#acctGo").disabled = true; this.msg("Working… this takes a few seconds on purpose.");
     try{
-      const k = await this.derive(name, pass), ev = await this.fetch(k.pk).catch(() => null), keep = {name, pk: k.pk, sk: this.hex(k.sk), aes: this.hex(k.aes)};
+      const k = await this.derive(name, pass); let ev = null;
+      try{ ev = await this.fetch(k.pk); }catch(e){ this.msg(e.message === "notunet" ? "The sign-in tools haven't finished loading. Wait a few seconds and try again." : "Couldn't look up your account. Try again.", true); $("#acctGo").disabled = false; return; }
+      if (!ev && this.net && this.net.reached === 0){ this.msg(`Couldn't connect to the save servers (0 of ${this.net.total} reachable). Check your internet connection, turn off any VPN or ad-blocker, then try again.`, true); $("#acctGo").disabled = false; return; }
+      const keep = {name, pk: k.pk, sk: this.hex(k.sk), aes: this.hex(k.aes)};
       if (create){
         if (ev){ this.msg("That name and passcode already have an account. Tap Sign in, or pick a different name.", true); $("#acctGo").disabled = false; return; }
-        if (!window.TUNet){ this.msg("Couldn't reach the network. Try again in a moment.", true); $("#acctGo").disabled = false; return; }
+        if (!await this.ready()){ this.msg("The sign-in tools haven't finished loading. Wait a few seconds and try again.", true); $("#acctGo").disabled = false; return; }
         store.set("acct", keep); store.set("acctAt", 0); const ok = await this.push(false);
-        if (!ok){ store.set("acct", null); this.msg("Couldn't reach the network to save. Check your connection and try again.", true); $("#acctGo").disabled = false; return; }
+        if (!ok){ store.set("acct", null); const sn = this.sent; this.msg(sn ? `The save servers wouldn't take your account (${sn.good} of ${sn.total} accepted${sn.why ? ": " + sn.why : ""}). Try again in a minute, or on a different connection.` : "Couldn't reach the network to save. Check your connection and try again.", true); $("#acctGo").disabled = false; return; }
         toast("Account created. Your progress now saves by itself. ✓"); this.paint(); this.badge();
       } else {
-        if (!ev){ this.msg("No saved account found for that name and passcode. Check both, or tap Create account. (If you're offline, try again when you're connected.)", true); $("#acctGo").disabled = false; return; }
+        if (!ev){ this.msg(`No saved account found for that name and passcode (reached ${this.net.reached} of ${this.net.total} save servers). Check the spelling and passcode, or tap Create account. If you just created it on another device, wait a minute and try again.`, true); $("#acctGo").disabled = false; return; }
         let data; try{ data = await this.unlock(ev.content, k.aes); }catch(e){ this.msg("That account exists but couldn't be opened. Check the passcode.", true); $("#acctGo").disabled = false; return; }
         this.applying = true; this.apply(data); store.set("acct", keep); store.set("acctAt", ev.created_at); store.set("acctDirty", false); this.applying = false;
         toast("Signed in. Loading your saved progress…"); setTimeout(() => location.reload(), 900);
@@ -10198,6 +10226,8 @@ const Account = {
     if (this.signedIn()) setTimeout(() => { this.pull(true).then(() => { if (store.get("acctDirty", false)) this.push(false); }); }, 6000);
   }
 };
+
+try{ Account.init(); }catch(e){ console.warn(e); }
 
 /* ---------- Live events (shared calendar) ---------- */
 const Events = {
@@ -13371,6 +13401,7 @@ const Visuals = {
   next(){ const i = this.MODES.findIndex(m => m.id === this.mode); this.set(this.MODES[(i + 1) % this.MODES.length].id); return this.MODES.find(m => m.id === this.mode); },
   label(){ return (this.MODES.find(m => m.id === this.mode) || this.MODES[0]).name; },
   active(){
+    if (typeof Karaoke !== "undefined" && Karaoke.on){ try{ const m = Screens.main(); if (m && m.kind) return false; }catch(e){} return !Lounge.videoOn; }
     if (this.mode === "off" || !S.playing || Lounge.videoOn) return false;
     try{ const s = Screens.main(); if (s && s.kind) return false; }catch(e){}
     return true;
@@ -13388,11 +13419,13 @@ const Visuals = {
     x.globalCompositeOperation = "source-over";
     const bg = x.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, "#05030a"); bg.addColorStop(1, HZ);
     x.globalAlpha = 1; x.fillStyle = bg; x.fillRect(0, 0, W, H);
-    this["v_" + this.cur](x, W, H, A, B, bass, mid, hi, kick, dt);
+    (this["v_" + this.cur] || this.v_orbs).call(this, x, W, H, A, B, bass, mid, hi, kick, dt);
     x.globalCompositeOperation = "source-over";
     if (this.flash > 0){ x.fillStyle = `rgba(255,255,255,${this.flash*.6})`; x.fillRect(0, 0, W, H); this.flash = Math.max(0, this.flash - dt*3); }
+    const kar = typeof Karaoke !== "undefined" && Karaoke.on;
+    if (kar) Karaoke.paint(x, W, H);
     /* just the basics: title and artist */
-    const title = S.track.title || (S.current && S.current.name) || "", artist = S.track.artist || (S.current && S.current.tag) || "";
+    const title = kar ? "" : S.track.title || (S.current && S.current.name) || "", artist = S.track.artist || (S.current && S.current.tag) || "";
     if (title){
       const g = x.createLinearGradient(0, H - 130, 0, H); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(1, "rgba(0,0,0,.72)"); x.fillStyle = g; x.fillRect(0, H - 130, W, 130);
       x.textAlign = "left"; x.textBaseline = "alphabetic"; x.fillStyle = "#fff"; x.font = '700 40px "Chakra Petch", sans-serif'; x.fillText(title, 40, H - 58, W - 80);
@@ -13519,6 +13552,275 @@ const WorldPick = {
     if (!b){ b = document.createElement("button"); b.type = "button"; b.dataset.z = "world"; b.title = "Change world"; b.setAttribute("aria-label", "Change world"); b.textContent = "🌍"; z.appendChild(b);
       b.addEventListener("click", e => { e.stopPropagation(); this.open(); }); } }
 };
+
+/* ===== Karaoke: sing live, sing along, and cheer each other on ===== */
+const Karaoke = {
+  COUNT: 4,
+  /* songs that are in the public domain: the words and the tune are free to use */
+  SONGS: [
+    {id: "twinkle", title: "Twinkle, Twinkle, Little Star", bpm: 100, lines: (() => {
+      const a = [["Twin","kle ","twin","kle ","lit","tle ","star"], [[60,1],[60,1],[67,1],[67,1],[69,1],[69,1],[67,2]]],
+            b = [["How ","I ","won","der ","what ","you ","are"], [[65,1],[65,1],[64,1],[64,1],[62,1],[62,1],[60,2]]],
+            c = [["Up ","a","bove ","the ","world ","so ","high"], [[67,1],[67,1],[65,1],[65,1],[64,1],[64,1],[62,2]]],
+            d = [["Like ","a ","dia","mond ","in ","the ","sky"], c[1]];
+      return [a, b, c, d, a, b].map(([syl, notes]) => ({syl, notes: notes.map(n => n.slice())}));
+    })()},
+    {id: "row", title: "Row, Row, Row Your Boat", bpm: 110, lines: (() => {
+      const L = [
+        [["Row, ","row, ","row ","your ","boat"], [[60,1.5],[60,1.5],[60,1],[62,.5],[64,1.5]]],
+        [["Gen","tly ","down ","the ","stream"], [[64,1],[62,.5],[64,1],[65,.5],[67,3]]],
+        [["Mer","ri","ly ","mer","ri","ly ","mer","ri","ly ","mer","ri","ly"], [72,72,72,67,67,67,64,64,64,60,60,60].map(m => [m,.5])],
+        [["Life ","is ","but ","a ","dream"], [[67,1],[65,.5],[64,1],[62,.5],[60,3]]]];
+      return L.concat(L).map(([syl, notes]) => ({syl, notes: notes.map(n => n.slice())}));
+    })()},
+    {id: "birthday", title: "Happy Birthday", bpm: 100, lines: [
+      {syl: ["Hap","py ","birth","day ","to ","you"], notes: [[67,.75],[67,.25],[69,1],[67,1],[72,1],[71,2]]},
+      {syl: ["Hap","py ","birth","day ","to ","you"], notes: [[67,.75],[67,.25],[69,1],[67,1],[74,1],[72,2]]},
+      {syl: ["Hap","py ","birth","day ","dear ","fri","end"], notes: [[67,.75],[67,.25],[79,1],[76,1],[72,1],[71,1],[69,1]]},
+      {syl: ["Hap","py ","birth","day ","to ","you"], notes: [[77,.75],[77,.25],[76,1],[72,1],[74,1],[72,2]]}]},
+    {id: "jingle", title: "Jingle Bells (chorus)", bpm: 120, lines: (() => {
+      const a = [["Jin","gle ","bells, ","jin","gle ","bells, ","jin","gle ","all ","the ","way"], [[64,1],[64,1],[64,2],[64,1],[64,1],[64,2],[64,1],[67,1],[72,1.5],[74,.5],[64,4]]],
+            b = [["Oh ","what ","fun ","it ","is ","to ","ride ","in ","a ","one ","horse ","o","pen ","sleigh, ","hey!"], [[65,1],[65,1],[65,1.5],[65,.5],[65,1],[64,1],[64,1],[64,.5],[64,.5],[64,1],[62,1],[62,1],[64,1],[62,2],[67,2]]];
+      return [a, b, a, b].map(([syl, notes]) => ({syl, notes: notes.map(n => n.slice())}));
+    })()}
+  ],
+  q: [], cur: null, ended: new Set(), board: [], open: false, guide: true, vol: .7, files: {}, reacts: 0, fr: 0, vo: 0, lvl: 0, ver: 0,
+  init(){
+    for (const s of this.SONGS){ const spb = 60/s.bpm; let t = 0;
+      for (const l of s.lines){ l.t0 = t; for (const n of l.notes){ n.t0 = t; n.t1 = t + n[1]*spb; t = n.t1; } l.t1 = t; t += spb*.5; }
+      s.dur = t; s.lead = this.COUNT*spb; }
+    this.guide = store.get("kGuide", true); this.vol = store.get("kVol", .7);
+    this.build();
+  },
+  me(){ return (window.TUNet && TUNet.selfId) || "me"; },
+  inParty(){ return !!(typeof Party !== "undefined" && Party.act && Party.act.karaoke); },
+  send(m){ if (this.inParty()) try{ Party.act.karaoke.send(m); }catch(e){} },
+  get on(){ return !!(this.cur || this.open); },
+  clean(s, n){ return String(s ?? "").replace(/[\u0000-\u001f<>]/g, "").slice(0, n).trim(); },
+  songOf(e){ if (!e) return null; const b = this.SONGS.find(s => s.id === e.sid); if (b) return b; return e.song || null; },
+  /* ---------- the people part: a shared queue that every device keeps in step ---------- */
+  entry(raw, from){
+    const sid = this.clean(raw && raw.sid, 12), built = this.SONGS.find(s => s.id === sid), e = {u: this.clean(raw && raw.u, 24).replace(/[^a-z0-9]/gi, ""), by: from, ts: +raw.ts || Date.now(), sid};
+    if (!e.u) return null;
+    const p = typeof Party !== "undefined" && Party.peers[from];
+    e.name = this.clean(from === this.me() ? (raw.name || "Me") : (p ? p.profile.name : raw.name), 24) || "Guest";
+    if (built) e.title = built.title;
+    else if (sid === "file"){
+      const src = raw.song || {}, lines = (Array.isArray(src.lines) ? src.lines : []).slice(0, 80).map(l => ({t0: Math.max(0, +l.t0 || 0), t1: Math.min(1800, +l.t1 || 0), text: this.clean(l.text, 80)})).filter(l => l.text && l.t1 > l.t0);
+      if (!lines.length) return null; e.title = this.clean(src.title || raw.title, 40) || "My song"; e.song = {title: e.title, lines, dur: Math.min(1800, Math.max(...lines.map(l => l.t1)) + 2), lead: 3, custom: true};
+    } else return null;
+    return e;
+  },
+  apply(m, from){
+    const mine = from === this.me(), p = typeof Party !== "undefined" && Party.peers[from], mod = !!(p && ["mod", "owner"].includes(p.role));
+    if (m.t === "q"){ const e = this.entry(m.e, from); if (e && !this.ended.has(e.u) && !this.q.some(x => x.u === e.u) && !(this.cur && this.cur.u === e.u)){ this.q.push(e); this.sort(); if (!mine) this.say(`${e.name} added "${e.title}" to karaoke.`); } }
+    else if (m.t === "go"){ const u = this.clean(m.u, 24), e = this.q.find(x => x.u === u) || (this.cur && this.cur.u === u ? this.cur : null);
+      if (e && e.by === from && !this.ended.has(u)){ this.q = this.q.filter(x => x.u !== u); this.begin(Object.assign({}, e, {startAt: +m.at || Date.now()})); } }
+    else if (m.t === "end"){ const u = this.clean(m.u, 24), e = this.q.find(x => x.u === u) || (this.cur && this.cur.u === u ? this.cur : null);
+      if (e && (e.by === from || mod)){ this.ended.add(u); this.q = this.q.filter(x => x.u !== u); const sc = m.score === null || m.score === undefined ? null : Math.max(0, Math.min(100, Math.round(+m.score) || 0));
+        if (this.cur && this.cur.u === u){ this.stopAudio(); this.cur = null; }
+        if (sc !== null){ this.board.push({name: e.name, title: e.title, score: sc}); this.board.sort((a, b) => b.score - a.score); this.board = this.board.slice(0, 5); this.say(`🎤 ${e.name} sang "${e.title}" and scored ${sc}!`); toast(`🎤 ${e.name} scored ${sc}!`); }
+        else this.say(`🎤 ${e.name} finished "${e.title}". Great job!`);
+        this.next(); } }
+    else if (m.t === "rm"){ const u = this.clean(m.u, 24), e = this.q.find(x => x.u === u); if (e && (e.by === from || mod)) this.q = this.q.filter(x => x.u !== u); }
+    else if (m.t === "cheer"){ if (this.cur && this.cur.by === this.me() && !mine) this.reacts++; }
+    else if (m.t === "snap" && !mine){
+      for (const u of (Array.isArray(m.ended) ? m.ended : []).slice(0, 60)) this.ended.add(this.clean(u, 24));
+      for (const r of (Array.isArray(m.q) ? m.q : []).slice(0, 20)){ const by = this.clean(r && r.by, 60); const e = by && this.entry(r, by); if (e && !this.ended.has(e.u) && !this.q.some(x => x.u === e.u) && !(this.cur && this.cur.u === e.u)) this.q.push(e); }
+      this.sort();
+      const c = m.cur && this.entry(m.cur, this.clean(m.cur.by, 60)); if (c && !this.cur && !this.ended.has(c.u) && +m.cur.startAt) this.begin(Object.assign({}, c, {startAt: +m.cur.startAt})); }
+    this.render();
+  },
+  sort(){ this.q.sort((a, b) => a.ts - b.ts || (a.u < b.u ? -1 : 1)); },
+  onMsg(id, d){
+    if (!d || typeof d !== "object") return; const p = Party.peer(id); if (Party.hidden.has(Party.hideKey(p)) || !Party.rate(p)) return;
+    this.apply(d, id);
+  },
+  snapshot(id){ if (!this.q.length && !this.cur && !this.ended.size) return; const strip = e => ({u: e.u, by: e.by, ts: e.ts, sid: e.sid, name: e.name, title: e.title, song: e.sid === "file" ? e.song : undefined});
+    try{ Party.act.karaoke.send({t: "snap", q: this.q.map(strip), ended: [...this.ended].slice(-40), cur: this.cur ? Object.assign(strip(this.cur), {startAt: this.cur.startAt}) : null}, {target: id}); }catch(e){} },
+  peerLeft(id){ this.q = this.q.filter(e => e.by !== id); if (this.cur && this.cur.by === id){ this.ended.add(this.cur.u); this.stopAudio(); this.cur = null; this.say("The singer left. Next up!"); this.next(); } this.render(); },
+  say(t){ try{ Party.sysMsg(t); }catch(e){} },
+  /* my actions */
+  add(sid, custom){
+    const e = {u: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), by: this.me(), ts: Date.now(), sid, name: Profile.get().name || "Guest"};
+    const built = this.SONGS.find(s => s.id === sid); if (built) e.title = built.title; else { e.title = custom.title; e.song = custom; }
+    if (typeof Party !== "undefined" && Party.room && !this.inParty()) return toast("Hang on, the party is still connecting.");
+    this.apply({t: "q", e: Object.assign({}, e, {song: e.song})}, this.me()); this.send({t: "q", e: Object.assign({}, e, {song: e.song})});
+    if (!this.cur && this.q[0] && this.q[0].u === e.u) this.startMine(); else toast("Added to the karaoke queue. ✓");
+    this.open = true; this.render();
+  },
+  async startMine(){
+    const e = this.q[0]; if (!e || e.by !== this.me() || this.cur) return;
+    this.ac(); this.ensureMic();
+    const at = Date.now() + 700, m = {t: "go", u: e.u, at};
+    this.apply(m, this.me()); this.send(m);
+  },
+  next(){ const e = this.q[0]; if (!this.cur && e && e.by === this.me()){ toast("🎤 You're up! Open Karaoke and tap Start."); try{ Party.react("🎉"); }catch(er){} } },
+  cheer(emoji){ try{ Party.react(emoji); }catch(e){} this.send({t: "cheer"}); if (this.cur && this.cur.by === this.me()) this.reacts++; },
+  skip(){ const c = this.cur; if (!c) return; const m = {t: "end", u: c.u, score: null}; this.apply(m, this.me()); this.send(m); },
+  remove(u){ const m = {t: "rm", u}; this.apply(m, this.me()); this.send(m); },
+  /* ---------- performing ---------- */
+  ac(){ if (!this.ctx){ this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } if (this.ctx.state === "suspended") this.ctx.resume(); return this.ctx; },
+  async ensureMic(){
+    try{
+      let st = typeof Party !== "undefined" && Party.mic && Party.mic.getTracks().some(t => t.readyState === "live") ? Party.mic : null;
+      if (!st){ if (typeof Party !== "undefined" && Party.room){ await Party.toggleMic(); st = Party.mic; }
+        if (!st) st = this.localMic = await navigator.mediaDevices.getUserMedia({audio: {echoCancellation: true, noiseSuppression: true}}); }
+      if (this.srcStream !== st){ const c = this.ac(), src = c.createMediaStreamSource(st), an = c.createAnalyser(); an.fftSize = 1024; src.connect(an); this.an = an; this.buf = new Float32Array(an.fftSize); this.srcStream = st; }
+      this.render(); return true;
+    }catch(e){ toast("Mic not available. You can still sing, but there won't be a score."); return false; }
+  },
+  level(){ if (!this.an) return 0; this.an.getFloatTimeDomainData(this.buf); let s = 0; for (const v of this.buf) s += v*v; return Math.sqrt(s/this.buf.length); },
+  t(){ const c = this.cur; return c ? (Date.now() - c.startAt)/1000 - c.song.lead : -9; },
+  lineAt(t){ const s = this.cur && this.cur.song; return s ? s.lines.find(l => t >= l.t0 - .2 && t <= l.t1 + .3) : null; },
+  begin(e){
+    const song = this.songOf(e); if (!song) return;
+    this.stopAudio(); this.cur = e; e.song = song; this.reacts = 0; this.fr = 0; this.vo = 0;
+    try{ if (S.playing) togglePlay(); }catch(er){}
+    const mine = e.by === this.me();
+    if (mine){ this.ac(); this.playBacking(e); if (this.open) this.toggle(false); }
+    else if (this.ctx && this.ctx.state === "running") this.playBacking(e);
+    else toast("🎤 Tap the 🎤 button to hear the backing music.");
+    clearInterval(this._tm); this._tm = setInterval(() => this.tick(), 100);
+    this.say(`🎤 ${e.name} is singing "${e.title}". Sing along and cheer them on!`);
+    if (!mine) toast(`🎤 ${e.name} is singing "${e.title}"`);
+  },
+  playBacking(e){
+    const c = this.ac(), song = e.song, now = Date.now(), t0 = c.currentTime + (e.startAt - now)/1000, spb = song.bpm ? 60/song.bpm : 0;
+    if (!spb && !(e.by === this.me() && this.files[e.u])) return;
+    const bus = this.bus = c.createGain(); bus.gain.value = this.vol; bus.connect(c.destination);
+    const gb = this.gbus = c.createGain(); gb.gain.value = this.guide ? 1 : 0; gb.connect(bus);
+    if (spb){
+      const kick = (at, v) => { if (at < c.currentTime - .02) return; const o = c.createOscillator(), g = c.createGain(); o.type = "sine"; o.frequency.setValueAtTime(130, at); o.frequency.exponentialRampToValueAtTime(48, at + .12); g.gain.setValueAtTime(v, at); g.gain.exponentialRampToValueAtTime(.001, at + .16); o.connect(g); g.connect(bus); o.start(at); o.stop(at + .2); };
+      for (let i = 0; i < this.COUNT; i++) kick(t0 + i*spb, .55);
+      const total = Math.ceil(song.dur/spb); for (let i = 0; i < total; i += 2) kick(t0 + song.lead + i*spb, .12);
+      for (const l of song.lines) for (const n of l.notes){ const at = t0 + song.lead + n.t0, dur = n.t1 - n.t0; if (at + dur < c.currentTime) continue;
+        const o = c.createOscillator(), g = c.createGain(); o.type = "triangle"; o.frequency.value = 440*Math.pow(2, (n[0] - 69)/12);
+        const st = Math.max(at, c.currentTime); g.gain.setValueAtTime(0, st); g.gain.linearRampToValueAtTime(.2, st + .02); g.gain.setTargetAtTime(0, st + Math.max(.03, dur*.8), .05);
+        o.connect(g); g.connect(gb); o.start(st); o.stop(at + dur + .3); }
+    } else if (e.by === this.me() && this.files[e.u]){
+      const a = this.aud = new Audio(this.files[e.u]); a.volume = this.vol; const go = () => { try{ a.currentTime = Math.max(0, (Date.now() - e.startAt)/1000 - song.lead); a.play().catch(() => {}); }catch(er){} };
+      setTimeout(go, Math.max(0, e.startAt + song.lead*1000 - Date.now()));
+    }
+  },
+  stopAudio(){
+    clearInterval(this._tm); this._tm = null;
+    try{ if (this.bus){ const b = this.bus, c = this.ctx; b.gain.setTargetAtTime(0, c.currentTime, .05); setTimeout(() => { try{ b.disconnect(); }catch(e){} }, 400); } }catch(e){} this.bus = this.gbus = null;
+    try{ if (this.aud){ this.aud.pause(); this.aud = null; } }catch(e){}
+  },
+  tick(){
+    const c = this.cur; if (!c) return; const t = this.t(), mine = c.by === this.me();
+    if (mine && t >= 0){ this.lvl = this.level(); if (this.lineAt(t)){ this.fr++; if (this.lvl > .012) this.vo++; } }
+    if (!this.inParty() && mine && t > 4 && Math.random() < .035){ this.reacts++; try{ const p = Lounge.screenGroup.getWorldPosition(new THREE.Vector3()); Party.floatEmoji(["👏", "🔥", "🙌", "🎉"][Math.floor(Math.random()*4)], p.add(new THREE.Vector3((Math.random() - .5)*3, -1 + Math.random(), 1))); }catch(e){} }
+    if (mine && t > c.song.dur + 1.2) this.finish(); else if (t > c.song.dur + 25){ this.ended.add(c.u); this.stopAudio(); this.cur = null; }
+    this.render(true);
+  },
+  finish(){
+    const c = this.cur; if (!c) return; let score = null;
+    if (this.an && this.fr > 8){ const pct = this.vo/this.fr; score = Math.min(100, Math.round(Math.min(1, pct*1.15)*70 + Math.min(30, this.reacts*3))); }
+    const m = {t: "end", u: c.u, score}; this.apply(m, this.me()); this.send(m);
+  },
+  /* ---------- the big screen ---------- */
+  paint(x, W, H){
+    x.fillStyle = "rgba(0,0,0,.5)"; x.fillRect(0, 0, W, H); x.textAlign = "center"; x.textBaseline = "middle";
+    const F = '"Chakra Petch","Hanken Grotesk",sans-serif', c = this.cur;
+    if (!c){
+      x.fillStyle = "#ffc21a"; x.font = `700 84px ${F}`; x.fillText("🎤 KARAOKE", W/2, 170);
+      x.fillStyle = "#fff"; x.font = `600 34px ${F}`; x.fillText(this.q.length ? `Up next: ${this.q[0].name} · ${this.q[0].title}`.slice(0, 54) : "Pick a song to start the show", W/2, 280);
+      x.fillStyle = "rgba(255,255,255,.7)"; x.font = `500 26px ${F}`; x.fillText("Sing along, cheer, take a turn.", W/2, 330);
+      if (this.board.length){ x.fillStyle = "#ffd87a"; x.font = `700 26px ${F}`; x.fillText("🏆 Top scores", W/2, 410); x.fillStyle = "#fff"; x.font = `500 24px ${F}`; this.board.slice(0, 3).forEach((b, i) => x.fillText(`${i + 1}. ${b.name}  ${b.score}`, W/2, 450 + i*34)); }
+      return;
+    }
+    const song = c.song, t = this.t(), spb = song.bpm ? 60/song.bpm : 1;
+    x.fillStyle = "#ffc21a"; x.font = `700 28px ${F}`; x.fillText(`🎤 ${c.name} · ${c.title}`.slice(0, 60), W/2, 44);
+    if (t < 0){ const n = Math.ceil(-t/spb); x.fillStyle = "#fff"; x.font = `700 200px ${F}`; x.fillText(String(Math.min(this.COUNT, n)), W/2, H/2 - 10); x.font = `600 34px ${F}`; x.fillStyle = "#ffd87a"; x.fillText("Get ready…", W/2, H/2 + 130); return; }
+    let i = song.lines.findIndex(l => t < l.t1 + .4); if (i < 0) i = song.lines.length - 1; const l = song.lines[i];
+    const text = l.syl ? l.syl.join("") : l.text; let size = 66; do { x.font = `700 ${size}px ${F}`; size -= 2; } while (x.measureText(text).width > W - 70 && size > 26);
+    const full = x.measureText(text).width, x0 = (W - full)/2; x.textAlign = "left";
+    x.fillStyle = "rgba(255,255,255,.55)"; x.fillText(text, x0, H/2 - 20);
+    let prog = 0;
+    if (l.syl){ let k = l.notes.findIndex(n => t < n.t1); if (k < 0) k = l.notes.length; const before = l.syl.slice(0, Math.min(k, l.syl.length)).join(""); const w0 = x.measureText(before).width; let w1 = 0; if (k < l.syl.length){ const n = l.notes[k], f = Math.max(0, Math.min(1, (t - n.t0)/(n.t1 - n.t0))); w1 = x.measureText(l.syl[k]).width*f; } prog = w0 + w1; }
+    else prog = full*Math.max(0, Math.min(1, (t - l.t0)/Math.max(.1, l.t1 - l.t0)));
+    x.save(); x.beginPath(); x.rect(x0 - 4, 0, prog + 4, H); x.clip(); x.fillStyle = "#ffc21a"; x.fillText(text, x0, H/2 - 20); x.restore();
+    const nx = song.lines[i + 1]; if (nx){ const nt = nx.syl ? nx.syl.join("") : nx.text; x.font = `600 36px ${F}`; x.textAlign = "center"; x.fillStyle = "rgba(255,255,255,.5)"; x.fillText(nt, W/2, H/2 + 70, W - 80); }
+    x.textAlign = "center";
+    if (c.by === this.me() && this.an){ x.fillStyle = "rgba(255,255,255,.18)"; x.fillRect(W/2 - 180, H - 60, 360, 14); x.fillStyle = "#ff4d3d"; x.fillRect(W/2 - 180, H - 60, 360*Math.min(1, this.lvl*8), 14); x.fillStyle = "#fff"; x.font = `600 22px ${F}`; x.fillText("🎤 mic", W/2, H - 82); }
+    if (this.reacts){ x.fillStyle = "#ffd87a"; x.font = `700 28px ${F}`; x.textAlign = "right"; x.fillText(`👏 ${this.reacts}`, W - 40, H - 40); }
+  },
+  /* ---------- the panel ---------- */
+  build(){
+    if ($("#karaoke")) return;
+    const d = document.createElement("div"); d.id = "karaoke"; d.className = "karaoke"; d.hidden = true; d.setAttribute("role", "dialog"); d.setAttribute("aria-label", "Karaoke");
+    d.innerHTML = `<div class="k-head"><b>🎤 Karaoke</b><span class="k-sp"></span><button type="button" id="kMic" title="Mic">🎤 Mic</button><button type="button" id="kX" aria-label="Close">✕</button></div><div id="kBody"></div>`;
+    document.body.appendChild(d);
+    d.addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.id === "kX"){ this.toggle(false); return; }
+      if (b.id === "kMic"){ this.ensureMic(); return; }
+      if (b.dataset.song) this.add(b.dataset.song);
+      else if (b.dataset.cheer) this.cheer(b.dataset.cheer);
+      else if (b.dataset.rm) this.remove(b.dataset.rm);
+      else if (b.id === "kStart") this.startMine();
+      else if (b.id === "kSkip") this.skip();
+      else if (b.id === "kAddFile") this.addFile();
+    });
+    d.addEventListener("input", e => { if (e.target.id === "kVol"){ this.vol = +e.target.value/100; store.set("kVol", this.vol); if (this.bus) this.bus.gain.value = this.vol; if (this.aud) this.aud.volume = this.vol; } });
+    d.addEventListener("change", e => { if (e.target.id === "kGuide"){ this.guide = e.target.checked; store.set("kGuide", this.guide); if (this.gbus) this.gbus.gain.value = this.guide ? 1 : 0; } });
+  },
+  toggle(on){ this.open = on === undefined ? !this.open : !!on; $("#karaoke").hidden = !this.open; if (this.open){ this._full = true; this.render(); this.ac().resume().then(() => { if (this.cur && !this.bus && !this.aud) this.playBacking(this.cur); }).catch(() => {}); } else if (!this.cur){ try{ Lounge.lastScreenKey = null; }catch(e){} } },
+  render(light){
+    const d = $("#karaoke"); if (!d || d.hidden) return; const body = $("#kBody"), c = this.cur, me = this.me(), mineNext = !c && this.q[0] && this.q[0].by === me;
+    if (light && !this._full && c){ const el = $("#kNowT"); if (el){ const t = this.t(); el.textContent = t < 0 ? "Get ready…" : `${Math.max(0, Math.floor(t/60))}:${String(Math.floor(Math.max(0, t)%60)).padStart(2, "0")} / ${Math.floor(c.song.dur/60)}:${String(Math.floor(c.song.dur%60)).padStart(2, "0")}`; } const r = $("#kReacts"); if (r) r.textContent = `👏 ${this.reacts}`; return; }
+    this._full = false; const keep = body.querySelector("details") ? body.querySelector("details").open : false;
+    const micOn = !!this.an;
+    $("#kMic").textContent = micOn ? "🎤 Mic ready" : "🎤 Turn on mic";
+    body.innerHTML = `
+      <div class="k-now">${c ? `<div><b>${esc(c.name)}</b> is singing<br><span class="k-t">${esc(c.title)}</span><br><small id="kNowT"></small> <small id="kReacts"></small></div>${c.by === me ? `<button type="button" id="kSkip" class="ghost">⏹ Stop my song</button>` : ""}` : mineNext ? `<div>You're up next: <b>${esc(this.q[0].title)}</b></div><button type="button" id="kStart" class="primary">🎤 Start my turn</button>` : `<div>Nobody is singing right now.<br><small>Pick a song below to go first.</small></div>`}</div>
+      <div class="k-cheer">${["👏", "🔥", "❤️", "🎉", "🙌"].map(e => `<button type="button" data-cheer="${e}" aria-label="Cheer ${e}">${e}</button>`).join("")}</div>
+      <div class="k-sec">Songs <small>(free to sing: public domain)</small></div>
+      <div class="k-grid">${this.SONGS.map(s => `<button type="button" data-song="${s.id}">🎵 ${esc(s.title)}</button>`).join("")}</div>
+      <details class="k-own"><summary>➕ Use my own song</summary>
+        <p class="k-hint">Pick a music file from your device and paste the lyrics (plain lines, or timed lines like [01:23.4] words). Only use music you have the right to use. The room hears your voice; the track plays on your device.</p>
+        <input type="file" id="kFile" accept="audio/*"><input type="text" id="kTitle" maxlength="40" placeholder="Song title"><textarea id="kLyr" rows="5" maxlength="4000" placeholder="Paste lyrics here (optional)"></textarea>
+        <button type="button" id="kAddFile" class="primary">Add my song</button></details>
+      <div class="k-sec">Up next</div>
+      <ol class="k-q">${this.q.length ? this.q.map(e => `<li><b>${esc(e.name)}</b> · ${esc(e.title)} ${e.by === me ? `<button type="button" data-rm="${e.u}" aria-label="Remove">✕</button>` : ""}</li>`).join("") : "<li class='k-hint'>The queue is empty.</li>"}</ol>
+      ${this.board.length ? `<div class="k-sec">🏆 Scores</div><ol class="k-q">${this.board.map(b => `<li><b>${esc(b.name)}</b> · ${esc(b.title)} · ${b.score}</li>`).join("")}</ol>` : ""}
+      <div class="k-opts"><label><input type="checkbox" id="kGuide" ${this.guide ? "checked" : ""}> Guide melody</label><label>Backing <input type="range" id="kVol" min="0" max="100" value="${Math.round(this.vol*100)}"></label></div>
+      <p class="k-hint">${this.inParty() ? "Everyone in the party sees the lyrics and hears the singer's voice." : "Tip: join the party so friends can hear you and cheer. Without it, a virtual crowd cheers you on."}</p>`;
+    if (keep) body.querySelector("details").open = true;
+    if (c){ const t = this.t(), el = $("#kNowT"); if (el) el.textContent = t < 0 ? "Get ready…" : ""; const r = $("#kReacts"); if (r) r.textContent = `👏 ${this.reacts}`; }
+  },
+  async addFile(){
+    const f = $("#kFile").files[0], title = this.clean($("#kTitle").value, 40) || (f ? f.name.replace(/\.[^.]+$/, "").slice(0, 40) : "My song"), text = $("#kLyr").value;
+    if (!f && !text.trim()) return toast("Pick a music file or paste some lyrics first.");
+    let dur = 180, url = null;
+    if (f){ url = URL.createObjectURL(f); dur = await new Promise(res => { const a = new Audio(); a.preload = "metadata"; a.onloadedmetadata = () => res(isFinite(a.duration) ? a.duration : 180); a.onerror = () => res(0); a.src = url; setTimeout(() => res(180), 8000); });
+      if (!dur){ toast("That file couldn't be played. Try an MP3, M4A or WAV."); return; } dur = Math.min(1800, dur); }
+    else dur = Math.max(30, text.split(/\n/).filter(s => s.trim()).length*4 + 4);
+    const lines = this.parseLyrics(text, dur);
+    if (!lines.length){ if (!f) return toast("Add some lyrics so there's something to show."); lines.push({t0: 0, t1: dur, text: "♪ Sing along ♪"}); }
+    const song = {title, lines, dur, lead: 3, custom: true}, u = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    if (url) this.files[u] = url;
+    const e = {u, by: this.me(), ts: Date.now(), sid: "file", name: Profile.get().name || "Guest", title, song};
+    this.apply({t: "q", e}, this.me()); this.send({t: "q", e});
+    if (!this.cur && this.q[0] && this.q[0].u === u) this.startMine(); else toast("Added to the karaoke queue. ✓");
+  },
+  parseLyrics(text, dur){
+    const raw = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean), lrc = [];
+    for (const s of raw){ const m = s.match(/^\[(\d+):(\d+(?:\.\d+)?)\](.*)$/); if (m && m[3].trim()) lrc.push({t0: +m[1]*60 + +m[2], text: m[3].trim()}); }
+    let lines;
+    if (lrc.length >= 2){ lrc.sort((a, b) => a.t0 - b.t0); lines = lrc.map((l, i) => ({t0: l.t0, t1: lrc[i + 1] ? lrc[i + 1].t0 : Math.min(dur, l.t0 + 5), text: l.text})); }
+    else { const ls = raw.map(s => s.replace(/^\[[^\]]*\]/, "").trim()).filter(Boolean), start = 2, span = Math.max(5, dur - start - 1); lines = ls.map((text, i) => ({t0: start + span*i/ls.length, t1: start + span*(i + 1)/ls.length, text})); }
+    return lines.slice(0, 80).map(l => ({t0: +l.t0.toFixed(2), t1: +l.t1.toFixed(2), text: this.clean(l.text, 80)})).filter(l => l.text && l.t1 > l.t0);
+  },
+  /* buttons that open it */
+  ui(){ const z = $("#zoomCtl"); if (!z) return; let b = z.querySelector("[data-z='karaoke']");
+    if (!b){ b = document.createElement("button"); b.type = "button"; b.dataset.z = "karaoke"; b.title = "Karaoke"; b.setAttribute("aria-label", "Karaoke"); b.textContent = "🎤"; z.appendChild(b); b.addEventListener("click", e => { e.stopPropagation(); this.toggle(); }); } }
+};
+
+try{ Visuals.init(); }catch(e){ console.warn(e); }
+try{ Karaoke.init(); }catch(e){ console.warn(e); }
 
 const GFX = {
   LEVELS: {low: {name: "🔋 Battery saver", tip: "Smoothest on older phones: lower resolution, no glow effects."}, high: {name: "⚖️ Standard", tip: "The usual look."},
@@ -14571,6 +14873,16 @@ const VRMenu = {
     this.text(list.length ? `${list.length} ${list.length === 1 ? "person" : "people"} in this party` : "", 250, Y + 28, 26, "rgba(255,255,255,.75)", 600);
     this.list(Y + 70, list, p => `${P.hidden.has(P.hideKey(p)) ? "🙈 " : p.muted ? "🔇 " : p.talk > 0 ? "🔊 " : ""}${p.profile.name}${p.role !== "guest" ? "  ·  " + VIP.badge(p.role) : ""}`, p => this.showGuest(p.id), P.room ? "Nobody else is here yet. Invite friends with the party code." : "Join the party to see who's here.", 4);
   },
+  drawKaraoke(Y){
+    const K = Karaoke, c = K.cur;
+    this.btn("kback", 24, Y, 200, 54, "◀ Back", () => { this.partyView = null; this.page = 0; }, {size: 25});
+    this.text(c ? `🎤 ${c.name}: ${c.title}` : K.q[0] ? `Up next: ${K.q[0].name}` : "Pick a song to sing", 250, Y + 28, 25, "#ffd87a", 700, "left", 470);
+    this.btn("kcheer", 730, Y, 82, 54, "👏", () => K.cheer("👏"), {size: 28});
+    this.btn("kfire", 820, Y, 82, 54, "🔥", () => K.cheer("🔥"), {size: 28});
+    if (c && c.by === K.me()) this.btn("kstop", 910, Y, 90, 54, "⏹", () => K.skip(), {size: 28});
+    else if (!c && K.q[0] && K.q[0].by === K.me()) this.btn("kgo", 910, Y, 90, 54, "▶", () => K.startMine(), {size: 28, primary: true});
+    this.list(Y + 70, K.SONGS, s => "🎵 " + s.title, s => K.add(s.id), "No songs.");
+  },
   drawGuest(Y){
     const P = Party, p = P.peers[this.guestId];
     if (!p){ this.partyView = "people"; return this.drawPeople(Y); }
@@ -14593,7 +14905,8 @@ const VRMenu = {
     const P = typeof Party !== "undefined" ? Party : null, inP = !!(P && P.room);
     if (P && this.partyView === "guest") return this.drawGuest(Y);
     if (P && this.partyView === "people") return this.drawPeople(Y);
-    const b = (id, i, l, fn, o = {}) => this.btn(id, 24 + (i % 3)*330, Y + Math.floor(i/3)*96, 318, 86, l, fn, Object.assign({size: 28}, o));
+    if (this.partyView === "karaoke") return this.drawKaraoke(Y);
+    const b = (id, i, l, fn, o = {}) => this.btn(id, 24 + (i % 4)*249, Y + Math.floor(i/4)*96, 238, 86, l, fn, Object.assign({size: 23}, o));
     b("join", 0, inP ? "Leave the party" : "👥 Join the party", () => { if (inP) P.leave(); else P.join("world"); setTimeout(() => this.draw(), 800); }, {primary: !inP});
     b("dance", 1, "💃 Dance", () => P && P.setEmote(P.emote === "dance" ? "idle" : "dance"), {on: P && P.emote === "dance"});
     b("cheer", 2, "🙌 Cheer", () => P && P.setEmote("cheer"));
@@ -14609,6 +14922,7 @@ const VRMenu = {
     b("nav", 11, "🧭 Controls", () => { this.toggle(false); View.vrCard(); });
     b("brawl", 12, "🥊 Brawl mode", () => { this.toggle(false); Mogul.brawlHere(); }, {primary: true});
     b("viz", 13, "🎛 " + Visuals.label().replace(/^\S+\s/, ""), () => { Visuals.next(); }, {size: 26});
+    b("karaoke", 15, "🎤 Karaoke", () => { this.partyView = "karaoke"; this.page = 0; });
     b("nextw", 14, "🌍 Next world", () => { const i = Lounge.WORLDS.findIndex(w => w.id === Lounge.worldId); this.toggle(false); Lounge.vrGoTo(Lounge.WORLDS[(i + 1) % Lounge.WORLDS.length].id); setTimeout(() => this.draw(), 700); });
   },
   /* ---------- pointing ---------- */

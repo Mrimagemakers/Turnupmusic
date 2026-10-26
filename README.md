@@ -274,3 +274,9 @@ People on bar stools, chairs, sofas and benches now settle onto the nearest real
 - The screen only shows the **song title and artist** now. Videos and web screens still take over the screen when you start them.
 - **🌍** in the lounge controls (and the **🌍 World** button on phones and tablets) opens a big list of worlds: tap one to go there. In VR, the Party tab has **🌍 Next world** for a one-tap hop.
 - Your profile saves itself as you edit it. Sign in (Account) to keep it on every device.
+
+## Karaoke, and the sign-in fix
+- **🎤 Karaoke:** tap 🎤 in the lounge controls (or the 🎤 button on the phone bar, or Party → 🎤 Karaoke in VR). Pick a song, and the words light up on the big screen as the backing plays. Four public-domain songs are built in (Twinkle Twinkle, Row Row Row Your Boat, Happy Birthday, Jingle Bells chorus). **➕ Use my own song** lets you pick a music file from your device and paste lyrics (plain lines or timed [mm:ss.x] lines). Only use music you have the right to use.
+- **With friends:** join the party and everyone shares one queue, sees the lyrics and hears the singer's voice. Cheer with 👏🔥❤️🎉🙌: cheers add to the singer's score. On your own, a virtual crowd cheers for you.
+- **Score:** based on how much you actually sing during the lyrics (needs the mic) plus the cheers.
+- **Sign-in fix:** the account button and sign-in form were not connected in the last version. They are now. If sign-in still can't connect, the message tells you how many save servers it reached.
