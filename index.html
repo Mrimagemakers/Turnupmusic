@@ -935,6 +935,30 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
   <div class="btnrow end"><button class="ghost" id="scrClose" type="button">Close</button></div>
 </dialog>
 
+<dialog id="stDlg" class="wide">
+  <h2>🧬 3D Avatar Studio</h2>
+  <p class="hint">Turn a photo into a 3D character that dances, walks and sits in the lounge. Your photo never leaves this device.</p>
+  <div class="me-grid">
+    <div class="me-preview"><canvas id="stPrev" width="440" height="600"></canvas><p class="hint">Drag to turn · <span id="stHint"></span></p></div>
+    <div class="me-form">
+      <h3>Face</h3>
+      <div class="row2"><label class="ghost filebtn tiny">📷 Choose a photo<input type="file" id="stPhoto" accept="image/*" hidden></label><button class="ghost tiny" id="stNoPhoto" type="button">No photo</button></div>
+      <canvas id="stCrop" width="200" height="200" style="width:200px;height:200px;border-radius:12px;max-width:100%"></canvas>
+      <div class="row2"><label class="lbl">Zoom<input type="range" id="stZoom" min="60" max="220" value="100"></label><label class="lbl">Face depth<input type="range" id="stDepth" min="0" max="100" value="60"></label></div>
+      <div class="row2"><label class="lbl">Left / right<input type="range" id="stX" min="-50" max="50" value="0"></label><label class="lbl">Up / down<input type="range" id="stY" min="-50" max="50" value="0"></label></div>
+      <button class="ghost tiny" id="stAuto" type="button">🎨 Pick skin &amp; hair colors from my photo</button>
+      <h3>Body</h3>
+      <div class="row2"><label class="lbl">Build<select class="field" id="stBody"><option value="slim">Slim</option><option value="average">Average</option><option value="athletic">Athletic</option><option value="broad">Broad</option></select></label><label class="lbl">Height<input type="range" id="stHeight" min="88" max="112" value="100"></label></div>
+      <div class="row2"><label class="lbl">Skin<input type="color" class="field colorf" id="stSkin" value="#c68a5e"></label><label class="lbl">Moves<select class="field" id="stG"><option value="f">Feminine</option><option value="m">Masculine</option></select></label></div>
+      <div class="row2"><label class="lbl">Hair<select class="field" id="stHair"><option value="none">None</option><option value="buzz">Buzz</option><option value="short">Short</option><option value="afro">Afro</option><option value="long">Long</option><option value="bun">Bun</option></select></label><label class="lbl">Hair color<input type="color" class="field colorf" id="stHairC" value="#2a1a10"></label></div>
+      <h3>Clothes</h3>
+      <div class="row2"><label class="lbl">Top<select class="field" id="stTop"><option value="tee">T-shirt</option><option value="hoodie">Hoodie</option><option value="tank">Tank</option></select></label><label class="lbl">Top color<input type="color" class="field colorf" id="stTopC" value="#e53935"></label></div>
+      <div class="row2"><label class="lbl">Bottom<select class="field" id="stBot"><option value="jeans">Pants</option><option value="shorts">Shorts</option></select></label><label class="lbl">Bottom color<input type="color" class="field colorf" id="stBotC" value="#24406e"></label></div>
+      <label class="lbl">Shoes<input type="color" class="field colorf" id="stShoes" value="#f4f4f4"></label>
+    </div>
+  </div>
+  <div class="dlgbtns"><button class="ghost" id="stDl" type="button">⬇ Download .glb</button><button class="ghost" id="stClose" type="button">Close</button><button class="primary" id="stUse" type="button">Use as my avatar</button></div>
+</dialog>
 <dialog id="meDlg" class="wide">
   <h2>My avatar &amp; profile</h2>
   <p class="hint">This is how other guests see you in the lounge.</p>
@@ -947,6 +971,20 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
         <label class="lbl">Favorite genre<select class="field" id="meGenre"></select></label>
         <label class="lbl">Instagram / link<input class="field" id="meLink" maxlength="60" placeholder="@yourname"></label>
       </div>
+      <h3>Bring your own 3D avatar</h3>
+      <p class="hint" id="c3Status">Using a built-in character.</p>
+      <div class="row2">
+        <label class="ghost filebtn tiny">⬆ Upload .glb / .vrm<input type="file" id="c3File" accept=".glb,.vrm,.gltf,model/gltf-binary" hidden></label>
+        <button class="ghost tiny" id="c3Studio" type="button">🧬 3D Studio: photo to 3D</button>
+      </div>
+      <div class="row2"><input class="field" id="c3Link" placeholder="https://… link to a .glb" maxlength="300"><button class="primary" id="c3Go" type="button">Import</button></div>
+      <p class="hint" id="c3Msg"></p>
+      <div class="row2">
+        <label class="lbl">Motion style<select class="field" id="c3G"><option value="f">Feminine moves</option><option value="m">Masculine moves</option></select></label>
+        <label class="lbl">See guests' custom avatars<input type="checkbox" id="c3Show"></label>
+      </div>
+      <button class="ghost tiny" id="c3Remove" type="button" hidden>Remove my 3D avatar</button>
+      <p class="hint">Works with Ready Player Me files you saved before it shut down (Jan 31, 2026), Avaturn, VRoid (.vrm), Mixamo, Blender and any other .glb. Your file stays on your device and is only sent to guests in a party you join (adults only).</p>
       <h3>Look</h3>
       <div class="avgrid" id="meAvatars"></div>
       <div class="row2">
@@ -2401,14 +2439,14 @@ function loadThreeExtras(){
 function bakeRetarget(srcRoot, srcClip, tgtRoot, opts = {}){
   const fps = opts.fps || 30;
   const T = THREE, Q = T.Quaternion, V = T.Vector3;
-  const norm = n => n.replace(/^mixamorig:?/, "");
+  const norm0 = n => n.replace(/^mixamorig:?/, ""), norm = opts.norm ? (n => opts.norm(n) || ("\u0000" + n)) : norm0;
   const sBones = {}, tBones = [];
   srcRoot.traverse(o => { if (o.isBone) sBones[norm(o.name)] = o; });
   tgtRoot.traverse(o => { if (o.isBone) tBones.push(o); });
   // remember source pose to restore afterwards
   const saved = Object.values(sBones).map(b => [b, b.quaternion.clone(), b.position.clone()]);
   srcRoot.updateMatrixWorld(true); tgtRoot.updateMatrixWorld(true);
-  const firstChild = b => b.children.find(c => c.isBone);
+  const firstChild = b => { const kids = b.children.filter(c => c.isBone); if (opts.child){ const k = norm(b.name), want = opts.child[k]; if (want){ const m = kids.find(c => norm(c.name) === want); if (m) return m; } } return kids[0]; };
   const dirOf = b => { const c = firstChild(b); if (!c) return null; return c.getWorldPosition(new V()).sub(b.getWorldPosition(new V())).normalize(); };
   const restS = {}, restT = new Map(), restLocalT = new Map(), corr = new Map();
   for (const n in sBones) restS[n] = sBones[n].getWorldQuaternion(new Q());
@@ -2418,6 +2456,7 @@ function bakeRetarget(srcRoot, srcClip, tgtRoot, opts = {}){
     corr.set(b, dt && ds ? new Q().setFromUnitVectors(dt, ds) : (corr.get(b.parent) || new Q()).clone());
   }
   const hipsT = tBones.find(b => norm(b.name) === "Hips"), hipsS = sBones["Hips"];
+  if (!hipsT || !hipsS) throw new Error("no hips bone");
   const hipsRestS = hipsS.getWorldPosition(new V()), hipsRestT = hipsT.getWorldPosition(new V());
   const ratio = hipsRestT.y / Math.max(1e-4, hipsRestS.y);
   const mixer = new T.AnimationMixer(srcRoot); mixer.clipAction(srcClip).play();
@@ -9454,10 +9493,364 @@ const Gear = {
   }
 };
 
+/* ================= 🧍 Bring your own 3D avatar =================
+   Upload a .glb / .gltf / .vrm (Ready Player Me exports you saved, VRoid, Mixamo, Avaturn, Blender…) or paste a direct
+   link to one. The model is resized to fit, then the lounge's dance / walk / talk / sit moves are re-aimed onto its
+   skeleton, so it moves like everyone else. Models with no skeleton get a gentle idle bob instead. */
+const Custom = {
+  ready: async () => { await loadThree(); await loadThreeExtras(); }, MAXFILE: 40*1024*1024, MAXSHARE: 8*1024*1024, MAXTRIS: 200000, cache: {}, rigs: {},
+  /* ---- bone names from every common rig, mapped to one set of names ---- */
+  canon(name){
+    let n = String(name || "").replace(/^mixamorig[:_]?/i, "").replace(/^Bip0?1[ _]?/i, "").replace(/^J_(Bip|Adj)_/i, "");
+    let side = "";
+    if (/^(left|l)[_.\- ]|^left/i.test(n) || /[_.\- ]l$/i.test(n) || /^c_l_/i.test(n) || /(^|[_.\- ])l([_.\- ]|$)/i.test(n)) side = "L";
+    else if (/^(right|r)[_.\- ]|^right/i.test(n) || /[_.\- ]r$/i.test(n) || /(^|[_.\- ])r([_.\- ]|$)/i.test(n)) side = "R";
+    const s = n.toLowerCase().replace(/^(left|right)/, "").replace(/(^|[_.\- ])[lrc]([_.\- ]|$)/g, "$2").replace(/[_.\- ]+/g, "");
+    if (/end$|top$|twist|roll|helper|jaw|eye|tongue|hair|skirt|cloth|index|middle|ring|pinky|little|thumb|finger|toe0\d|metacarpal/.test(s)) return "";
+    if (!side){ if (/^hips$|^pelvis$|^root$/.test(s)) return s === "root" ? "" : "Hips"; if (/^spine$/.test(s)) return "Spine"; if (/^spine1$|^chest$/.test(s)) return "Spine1"; if (/^spine2$|^upperchest$|^spine3$/.test(s)) return "Spine2"; if (/^neck$/.test(s)) return "Neck"; if (/^head$/.test(s)) return "Head"; return ""; }
+    if (/^(shoulder|clavicle)$/.test(s)) return side + "Shoulder";
+    if (/^(arm|upperarm)$/.test(s)) return side + "Arm";
+    if (/^(forearm|lowerarm)$/.test(s)) return side + "ForeArm";
+    if (/^hand$/.test(s)) return side + "Hand";
+    if (/^(upleg|thigh|upperleg)$/.test(s)) return side + "UpLeg";
+    if (/^(leg|calf|lowerleg|shin)$/.test(s)) return side + "Leg";
+    if (/^foot$/.test(s)) return side + "Foot";
+    if (/^(toebase|toe|toes|ball|toe0)$/.test(s)) return side + "Toe";
+    return "";
+  },
+  CHILD: {Hips: "Spine", Spine: "Spine1", Spine1: "Spine2", Spine2: "Neck", Neck: "Head", LShoulder: "LArm", RShoulder: "RArm", LArm: "LForeArm", RArm: "RForeArm", LForeArm: "LHand", RForeArm: "RHand", LUpLeg: "LLeg", RUpLeg: "RLeg", LLeg: "LFoot", RLeg: "RFoot", LFoot: "LToe", RFoot: "RToe"},
+  /* ---- the "My 3D avatar" file lives in this browser (IndexedDB), never on a server ---- */
+  db(){ return this._db || (this._db = new Promise((ok, no) => { const r = indexedDB.open("tum-avatars", 1); r.onupgradeneeded = () => r.result.createObjectStore("f"); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); })); },
+  async put(k, v){ const d = await this.db(); return new Promise((ok, no) => { const t = d.transaction("f", "readwrite"); t.objectStore("f").put(v, k); t.oncomplete = ok; t.onerror = () => no(t.error); }); },
+  async get_(k){ const d = await this.db(); return new Promise((ok, no) => { const r = d.transaction("f").objectStore("f").get(k); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); }); },
+  async del(k){ const d = await this.db(); return new Promise(ok => { const t = d.transaction("f", "readwrite"); t.objectStore("f").delete(k); t.oncomplete = ok; t.onerror = ok; }); },
+  mine(){ return store.get("av3d", null); },
+  /* ---- reading a model ---- */
+  parse(buf){ return new Promise((ok, no) => { try{ new THREE.GLTFLoader().parse(buf, "", ok, no); }catch(e){ no(e); } }); },
+  async fromBuffer(buf, id, g, limit){
+    if (!window.THREE || !THREE.GLTFLoader) throw new Error("The 3D loader isn't ready yet. Open the VR Lounge once, then try again.");
+    if (buf.byteLength > (limit || this.MAXFILE)) throw new Error("That file is too big (" + Math.round(buf.byteLength/1048576) + " MB).");
+    const gl = await this.parse(buf), info = this.prepare(gl);
+    if (info.tris > (limit ? 150000 : this.MAXTRIS)) throw new Error("That model has too many triangles (" + Math.round(info.tris/1000) + "k). Please use one under " + (limit ? 150 : 200) + "k.");
+    const A = {name: "custom:" + id, custom: true, root: info.root, g: g || "f", scale: 1, clips: null, rigged: info.rigged, tris: info.tris, id};
+    A.clips = info.rigged ? this.lazyClips(A) : this.bobClips(A);
+    return A;
+  },
+  /* resize to a person's height, stand on the floor, face forward, find out whether it has a usable skeleton */
+  prepare(gl){
+    const T = THREE, inner = gl.scene, holder = new T.Group(), wrap = new T.Group(); wrap.add(inner); holder.add(wrap);
+    const ex = gl.parser && gl.parser.json && gl.parser.json.extensions || {};
+    if (ex.VRM && !ex.VRMC_vrm) wrap.rotation.y = Math.PI;          // VRM 0.x models face the other way
+    let tris = 0, skinned = 0; const keys = new Set();
+    inner.traverse(o => {
+      if (o.isBone){ const k = this.canon(o.name); if (k) keys.add(k); }
+      if (o.isMesh){ o.frustumCulled = false; o.castShadow = false; o.receiveShadow = false; if (o.isSkinnedMesh) skinned++; const g = o.geometry; tris += g.index ? g.index.count/3 : (g.attributes.position ? g.attributes.position.count/3 : 0);
+        for (const m of [].concat(o.material)) if (m){ if (m.map) m.map.anisotropy = 4; if (m.opacity === 0) m.visible = false; } }
+    });
+    holder.updateMatrixWorld(true);
+    const box = new T.Box3().setFromObject(holder), size = box.getSize(new T.Vector3()), k = size.y > 1e-4 ? 1.7/size.y : 1, c = box.getCenter(new T.Vector3());
+    wrap.scale.multiplyScalar(k); wrap.position.set(-c.x*k, -box.min.y*k, -c.z*k);
+    // rotating the wrap above moved the model: re-measure so it stands on the floor
+    holder.updateMatrixWorld(true); const b2 = new T.Box3().setFromObject(holder), c2 = b2.getCenter(new T.Vector3()); wrap.position.x -= c2.x; wrap.position.z -= c2.z; wrap.position.y -= b2.min.y;
+    holder.updateMatrixWorld(true);
+    const need = ["Hips", "Spine", "Head", "LArm", "RArm", "LUpLeg", "RUpLeg", "LForeArm", "RForeArm", "LLeg", "RLeg"], rigged = skinned > 0 && need.every(n => keys.has(n));
+    return {root: holder, rigged, tris: Math.round(tris), height: 1.7};
+  },
+  /* ---- moves: re-aim the lounge's recorded moves onto this skeleton (done the first time each one is needed) ---- */
+  sourceRig(g){
+    const L = Lounge; if (this.rigs[g]) return this.rigs[g];
+    const A = (L.peopleSet && L.peopleSet.list || []).find(a => a.g === g && a.root) || (L.peopleSet && L.peopleSet.list[0]);
+    if (!A) return null; const root = THREE.SkeletonUtils.clone(A.root); root.updateMatrixWorld(true); return this.rigs[g] = root;
+  },
+  lazyClips(A){
+    const L = Lounge, g = A.g, packs = L.realClips && L.realClips[g]; const out = {}; if (!packs) return out;
+    for (const k of Object.keys(packs)) Object.defineProperty(out, k, {enumerable: true, configurable: true, get: () => {
+      let c; try{ const src = this.sourceRig(g); c = src ? bakeRetarget(src, packs[k], A.root, {norm: n => this.canon(n), child: this.CHILD, inPlace: false}) : null; }catch(e){ console.warn("retarget", k, e); c = null; }
+      Object.defineProperty(out, k, {value: c, enumerable: true, configurable: true}); return c; }});
+    return out;
+  },
+  bobClips(A){
+    const T = THREE; A.root.name = "avatarRoot" + Math.floor(Math.random()*1e6);
+    const mk = (n, amp, sp) => { const times = [0, .5, 1, 1.5, 2], v = []; for (const t of times) v.push(0, Math.sin(t*Math.PI)*amp, 0);
+      return new T.AnimationClip(n, 2, [new T.VectorKeyframeTrack(A.root.name + ".position", times.map(t => t/sp), v)]); };
+    const idle = mk("idle", .01, 1), dance = mk("dance", .05, 2.2), c = {idle, talk: idle, sit: idle, walk: mk("walk", .03, 1.6), cheer: dance, dance1: dance, dance2: dance, dance3: dance, dance4: dance};
+    return c;
+  },
+  /* ---- getting hold of one ---- */
+  async importFile(file){
+    const ext = (file.name.match(/\.(\w+)$/) || [])[1] || ""; if (!/^(glb|gltf|vrm)$/i.test(ext)) throw new Error("Please choose a .glb, .gltf or .vrm file.");
+    if (/^gltf$/i.test(ext)) throw new Error("A plain .gltf file points to other files. Please export it as a single .glb (in Blender: File > Export > glTF Binary).");
+    return this.install(await file.arrayBuffer(), file.name.replace(/\.\w+$/, ""));
+  },
+  async importUrl(u){
+    u = String(u || "").trim(); if (!/^https:\/\/[^\s"'<>]+$/i.test(u)) throw new Error("Paste a full link that starts with https:// and ends in .glb");
+    if (/models\.readyplayer\.me|readyplayer\.me/i.test(u)) throw new Error("Ready Player Me shut down on Jan 31, 2026, so its links no longer work. If you saved your avatar as a .glb file, upload that file instead.");
+    let r; try{ r = await fetch(u, {mode: "cors"}); }catch(e){ throw new Error("That site doesn't allow downloads from other web pages. Download the .glb and upload the file instead."); }
+    if (!r.ok) throw new Error("Couldn't download it (error " + r.status + ").");
+    const buf = await r.arrayBuffer(); await this.install(buf, u.split("/").pop().replace(/\.\w+(\?.*)?$/, "").slice(0, 30) || "Avatar", u); return u;
+  },
+  async install(buf, name, url){
+    const g = (store.get("av3d", null) || {}).g || "f", A = await this.fromBuffer(buf, "mine", g);
+    await this.put("mine", {buf, name: name || "My avatar", ts: Date.now()});
+    delete this.cache["local"]; this.cache["local"] = Promise.resolve(A);
+    store.set("av3d", {on: true, name: name || "My avatar", g, rigged: A.rigged, tris: A.tris, size: buf.byteLength, url: url || ""});
+    this.afterChange(); return A;
+  },
+  async remove(){ await this.del("mine"); delete this.cache["local"]; store.set("av3d", null); this.afterChange(); },
+  afterChange(){ try{ Profile.refreshCustom(); }catch(e){} try{ Party.profileChanged(); }catch(e){} try{ Party.shareAvatar(); }catch(e){} },
+  /* the avatar for "me" (local file) or for a link someone shared */
+  load(key, g){
+    if (this.cache[key]) return this.cache[key];
+    return this.cache[key] = (async () => {
+      if (key === "local"){ const rec = await this.get_("mine"); if (!rec) return null; return await this.fromBuffer(rec.buf, "mine", g || (this.mine() || {}).g || "f"); }
+      if (/^url:/.test(key)){ const u = key.slice(4), r = await fetch(u, {mode: "cors"}); if (!r.ok) throw new Error("http"); const buf = await r.arrayBuffer(); return await this.fromBuffer(buf, "u" + this.hash(u), g || "f", this.MAXSHARE*2); }
+      return null; })().catch(e => { delete this.cache[key]; console.warn("custom avatar", e); return null; });
+  },
+  hash(s){ let h = 0; for (let i = 0; i < s.length; i++) h = (h*31 + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); },
+  allowed(){ return store.get("showCustomAv", Age.adult()); },
+  /* ---- the controls inside "My avatar" ---- */
+  status(){ const m = this.mine(); const el = $("#c3Status"); if (!el) return;
+    el.textContent = m && m.on ? `✅ Using “${m.name}” · ${m.rigged ? "full skeleton: dances, walks and sits" : "no skeleton found: it will sway gently"} · ${Math.round(m.tris/1000*10)/10}k triangles` : "Using a built-in character.";
+    $("#c3Remove").hidden = !(m && m.on); const u = $("#c3Link"); if (u && m && m.url) u.value = m.url; },
+  bind(){
+    const msg = t => { const e = $("#c3Msg"); if (e) e.textContent = t || ""; };
+    const run = async (label, fn) => { msg(label); try{ await fn(); msg(""); toast("Your 3D avatar is ready"); this.status(); }catch(e){ msg("⚠ " + (e && e.message || e)); } };
+    $("#c3File").addEventListener("change", e => { const f = e.target.files[0]; e.target.value = ""; if (!f) return; run("Reading your model…", async () => { await Custom.ready(); await this.importFile(f); }); });
+    $("#c3Go").addEventListener("click", () => { const u = $("#c3Link").value; run("Downloading…", async () => { await Custom.ready(); await this.importUrl(u); }); });
+    $("#c3Remove").addEventListener("click", async () => { await this.remove(); this.status(); msg(""); toast("Back to a built-in character"); });
+    $("#c3Show").addEventListener("change", e => { store.set("showCustomAv", e.target.checked); toast(e.target.checked ? "You'll see other guests' custom avatars" : "Custom avatars from other guests are hidden"); });
+    $("#c3G").addEventListener("change", async e => { const m = this.mine(); if (m){ m.g = e.target.value; store.set("av3d", m); delete this.cache["local"]; this.afterChange(); } else store.set("av3dg", e.target.value); });
+    $("#c3Studio").addEventListener("click", () => Studio.open());
+  }
+};
+
+/* ================= 🧬 3D Avatar Studio: a photo becomes a 3D character =================
+   Builds a rigged, animated character right in the browser: your photo is wrapped onto a 3D head (with a face
+   shape so it isn't flat), and body, hair, clothes and colours are modelled from the controls. The photo never
+   leaves your device. The result is a normal .glb you can download, and it moves like everyone else in the lounge. */
+const Studio = {
+  S: null, pv: null,
+  DEF: {body: "average", height: 100, skin: "#c68a5e", hair: "short", hairC: "#2a1a10", top: "tee", topC: "#e53935", bottom: "jeans", bottomC: "#24406e", shoes: "#f4f4f4", depth: 60, g: "f", photo: null, zoom: 100, ox: 0, oy: 0},
+  // joints of a T-pose person 1.75 m tall; +x is the character's left. [x, y, z]
+  J: {Hips: [0, .96, 0], Spine: [0, 1.06, 0], Spine1: [0, 1.19, 0], Spine2: [0, 1.32, 0], Neck: [0, 1.49, 0], Head: [0, 1.57, 0],
+      LeftShoulder: [.05, 1.43, 0], LeftArm: [.2, 1.43, 0], LeftForeArm: [.46, 1.43, 0], LeftHand: [.71, 1.43, 0],
+      LeftUpLeg: [.09, .9, 0], LeftLeg: [.09, .5, 0], LeftFoot: [.09, .09, -.01], LeftToeBase: [.09, .03, .1]},
+  PARENT: {Spine: "Hips", Spine1: "Spine", Spine2: "Spine1", Neck: "Spine2", Head: "Neck", Shoulder: "Spine2", Arm: "Shoulder", ForeArm: "Arm", Hand: "ForeArm", UpLeg: "Hips", Leg: "UpLeg", Foot: "Leg", ToeBase: "Foot"},
+  jointPos(name){ const m = /^(Left|Right)(.*)$/.exec(name); if (!m) return this.J[name].slice(); const p = this.J["Left" + m[2]].slice(); if (m[1] === "Right") p[0] = -p[0]; return p; },
+  /* ---------- building the model ---------- */
+  build(S){
+    const T = THREE, V = (a) => new T.Vector3(a[0], a[1], a[2]), grp = new T.Group(); grp.name = "StudioAvatar";
+    const names = ["Hips", "Spine", "Spine1", "Spine2", "Neck", "Head"]; for (const s of ["Left", "Right"]) for (const j of ["Shoulder", "Arm", "ForeArm", "Hand"]) names.push(s + j); for (const s of ["Left", "Right"]) for (const j of ["UpLeg", "Leg", "Foot", "ToeBase"]) names.push(s + j);
+    const bones = {}, list = [];
+    for (const n of names){ const b = new T.Bone(); b.name = n; bones[n] = b; list.push(b); }
+    const pw = {}; for (const n of names) pw[n] = this.jointPos(n);
+    // build is slightly wider for the broad / slim options
+    const bw = {slim: .88, average: 1, athletic: 1.08, broad: 1.2}[S.body] || 1;
+    for (const n of names){ const m = /^(Left|Right)(.*)$/.exec(n), key = m ? m[2] : n, par = this.PARENT[key]; if (!par){ b: { } }
+      const pn = !this.PARENT[key] ? null : (m && ["Arm", "ForeArm", "Hand", "Leg", "Foot", "ToeBase"].includes(key) ? m[1] + this.PARENT[key] : (m && key === "Shoulder" ? "Spine2" : m && key === "UpLeg" ? "Hips" : this.PARENT[key]));
+      if (!pn){ bones[n].position.set(pw[n][0], pw[n][1], pw[n][2]); grp.add(bones[n]); }
+      else { bones[pn].add(bones[n]); bones[n].position.set(pw[n][0] - pw[pn][0], pw[n][1] - pw[pn][1], pw[n][2] - pw[pn][2]); } }
+    grp.updateMatrixWorld(true);
+    const idx = {}; list.forEach((b, i) => idx[b.name] = i);
+    const lin = c => new T.Color(c).convertSRGBToLinear();
+    const skin = lin(S.skin), top = lin(S.topC), bot = lin(S.bottomC), shoe = lin(S.shoes);
+    // ---- a tiny mesh builder ----
+    const G = {pos: [], nor: [], col: [], si: [], sw: [], ind: []};
+    const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a)/(b - a))); return t*t*(3 - 2*t); };
+    const push = (p, c, w) => { G.pos.push(p.x, p.y, p.z); G.col.push(c.r, c.g, c.b); const ws = w.slice(0, 4); while (ws.length < 4) ws.push([0, 0]); G.si.push(ws[0][0], ws[1][0], ws[2][0], ws[3][0]); G.sw.push(ws[0][1], ws[1][1], ws[2][1], ws[3][1]); return G.pos.length/3 - 1; };
+    const basis = (d) => { const u = Math.abs(d.y) < .9 ? new T.Vector3(0, 1, 0) : new T.Vector3(1, 0, 0), a = new T.Vector3().crossVectors(d, u).normalize(), b = new T.Vector3().crossVectors(d, a).normalize(); return [a, b]; };
+    // a tube from p0 to p1; ringFn(t) -> {r (radius) or rx/rz, c (color)}; wFn(t) -> bone weights
+    const tube = (p0, p1, rings, seg, ringFn, wFn) => {
+      const A = V(p0), B = V(p1), d = B.clone().sub(A), len = d.length(); d.normalize(); const [ua, ub] = basis(d), base = G.pos.length/3;
+      for (let i = 0; i <= rings; i++){ const t = i/rings, c = A.clone().addScaledVector(d, len*t), R = ringFn(t), w = wFn(t);
+        for (let j = 0; j < seg; j++){ const a = j/seg*Math.PI*2, p = c.clone().addScaledVector(ua, Math.cos(a)*(R.rx ?? R.r)).addScaledVector(ub, Math.sin(a)*(R.rz ?? R.r)); push(p, R.c, w); } }
+      for (let i = 0; i < rings; i++) for (let j = 0; j < seg; j++){ const a = base + i*seg + j, b = base + i*seg + (j + 1)%seg, c = a + seg, e = b + seg; G.ind.push(a, c, b, b, c, e); }
+    };
+    const ellip = (c, rx, ry, rz, color, w, seg = 14, rings = 8) => {
+      const base = G.pos.length/3; for (let i = 0; i <= rings; i++){ const ph = i/rings*Math.PI, y = Math.cos(ph), r = Math.sin(ph);
+        for (let j = 0; j < seg; j++){ const a = j/seg*Math.PI*2; push(new T.Vector3(c[0] + Math.cos(a)*r*rx, c[1] + y*ry, c[2] + Math.sin(a)*r*rz), color, w); } }
+      for (let i = 0; i < rings; i++) for (let j = 0; j < seg; j++){ const a = base + i*seg + j, b = base + i*seg + (j + 1)%seg, cc = a + seg, e = b + seg; G.ind.push(a, b, cc, b, e, cc); }
+    };
+    const one = n => [[idx[n], 1]], two = (a, b, k) => [[idx[a], 1 - k], [idx[b], k]];
+    const lerp = (a, b, t) => a + (b - a)*t;
+    // ---- torso: a loft up the spine, weights blend between spine bones by height ----
+    const spineY = [[.96, "Hips"], [1.06, "Spine"], [1.19, "Spine1"], [1.32, "Spine2"], [1.49, "Neck"]];
+    const wSpine = y => { for (let i = 0; i < spineY.length - 1; i++){ if (y <= spineY[i + 1][0]){ const k = sm(spineY[i][0], spineY[i + 1][0], y); return two(spineY[i][1], spineY[i + 1][1], k); } } return one("Neck"); };
+    const lofts = [[.88, .165, .105], [.96, .165, .1], [.99, .165, .1], [1.04, .145, .092], [1.14, .14, .09], [1.26, .165, .105], [1.37, .185, .108], [1.43, .18, .095], [1.49, .075, .07]];
+    const topStyle = S.top, pants = S.bottom;
+    const torsoCol = y => (y > .985 ? (topStyle === "tank" ? top : top) : bot);
+    { const base = G.pos.length/3, seg = 22; lofts.forEach(([y, rx, rz], i) => { for (let j = 0; j < seg; j++){ const a = j/seg*Math.PI*2; push(new T.Vector3(Math.cos(a)*rx*bw, y, Math.sin(a)*rz*(.9 + .1*bw) + .005), y > 1.46 ? skin : torsoCol(y), wSpine(y)); } });
+      for (let i = 0; i < lofts.length - 1; i++) for (let j = 0; j < seg; j++){ const a = base + i*seg + j, b = base + i*seg + (j + 1)%seg, c = a + seg, e = b + seg; G.ind.push(a, c, b, b, c, e); } }
+    // pelvis cap + shoulders
+    ellip([0, .88, 0], .165*bw, .08, .105, bot, one("Hips"));
+    ellip([0, 1.49, 0], .08, .03, .07, skin, one("Neck"), 12, 4);
+    // ---- neck ----
+    tube([0, 1.47, 0], [0, 1.6, .005], 3, 12, t => ({r: .05, c: skin}), t => two("Neck", "Head", sm(.5, 1, t)));
+    // ---- arms and legs, both sides ----
+    for (const [s, sg] of [["Left", 1], ["Right", -1]]){
+      const A = s + "Arm", F = s + "ForeArm", H = s + "Hand", U = s + "UpLeg", Lg = s + "Leg", Ft = s + "Foot", Sh = s + "Shoulder", Tb = s + "ToeBase";
+      const sleeve = t => topStyle === "tank" ? false : topStyle === "hoodie" ? true : t < .55;
+      tube(pw[A], pw[F], 5, 12, t => ({r: lerp(.05, .042, t)*Math.sqrt(bw), c: sleeve(t) ? top : skin}), t => t < .75 ? two(Sh, A, sm(0, .2, t)*.0 + .0) .map(([b, w], i) => [b, i ? 0 : 1]) : two(A, F, sm(.75, 1, t)*.5));
+      tube(pw[F], pw[H], 4, 12, t => ({r: lerp(.042, .032, t), c: topStyle === "hoodie" ? top : skin}), t => two(F, H, sm(.7, 1, t)*.5 + (t < .15 ? 0 : 0)));
+      ellip([pw[H][0] + sg*.05, pw[H][1], pw[H][2]], .055, .033, .024, skin, one(H), 10, 6);
+      ellip([pw[A][0], pw[A][1], pw[A][2]], .06*Math.sqrt(bw), .06, .06, top, two(Sh, A, .5), 10, 6);
+      const shorts = pants === "shorts", legC = t => (shorts ? (t < .5 ? bot : skin) : bot);
+      tube(pw[U], pw[Lg], 5, 14, t => ({r: lerp(.092, .066, t)*Math.sqrt(bw), c: legC(t)}), t => two(U, Lg, sm(.6, 1, t)*.5));
+      tube(pw[Lg], pw[Ft], 5, 14, t => ({r: lerp(.065, .045, t), c: shorts ? skin : bot}), t => two(Lg, Ft, sm(.7, 1, t)*.5));
+      ellip([pw[Ft][0], .045, .035], .052, .045, .115, shoe, two(Ft, Tb, .3), 12, 6);
+    }
+    const body = new T.BufferGeometry();
+    const fin = () => { const g = new T.BufferGeometry(); g.setAttribute("position", new T.Float32BufferAttribute(G.pos, 3)); g.setAttribute("color", new T.Float32BufferAttribute(G.col, 3)); g.setAttribute("skinIndex", new T.Uint16BufferAttribute(G.si, 4)); g.setAttribute("skinWeight", new T.Float32BufferAttribute(G.sw, 4)); g.setIndex(G.ind); g.computeVertexNormals(); return g; };
+    const bodyGeo = fin();
+    const skel = new T.Skeleton(list);
+    const mk = (geo, mat) => { const m = new T.SkinnedMesh(geo, mat); m.frustumCulled = false; grp.add(m); return m; };
+    const skinMat = new T.MeshStandardMaterial({vertexColors: true, roughness: .75, metalness: 0});
+    const bm = mk(bodyGeo, skinMat); bm.name = "BodyMesh";
+    // ---- head ----
+    const hc = [0, 1.665, .012], hr = [.097*Math.sqrt(bw)**.3, .12, .11], headMat = new T.MeshStandardMaterial({color: skin.clone(), roughness: .6});
+    const headGeo = new T.SphereGeometry(1, 28, 20); headGeo.scale(hr[0], hr[1], hr[2]); headGeo.translate(hc[0], hc[1], hc[2]);
+    const n = headGeo.attributes.position.count, hsi = new Uint16Array(n*4), hsw = new Float32Array(n*4); for (let i = 0; i < n; i++){ hsi[i*4] = idx.Head; hsw[i*4] = 1; }
+    headGeo.setAttribute("skinIndex", new T.Uint16BufferAttribute(hsi, 4)); headGeo.setAttribute("skinWeight", new T.Float32BufferAttribute(hsw, 4));
+    const hm = mk(headGeo, headMat); hm.name = "HeadMesh";
+    // ---- the face: a patch of the head carrying the photo, with a nose, brow and chin shaped in ----
+    const faceTex = this.faceTexture(S), face = this.facePatch(hc, hr, S, faceTex, idx);
+    const fm = mk(face.geo, face.mat); fm.name = "FaceMesh";
+    // ---- hair ----
+    const hair = this.hairMesh(hc, hr, S, idx); if (hair){ const hmesh = mk(hair, new T.MeshStandardMaterial({color: lin(S.hairC), roughness: .85})); hmesh.name = "HairMesh"; }
+    for (const m of grp.children) if (m.isSkinnedMesh) m.bind(skel, grp.matrixWorld.clone().identity());
+    grp.scale.setScalar((S.height/100)*(1));
+    grp.updateMatrixWorld(true);
+    return grp;
+  },
+  faceTexture(S){
+    const c = document.createElement("canvas"); c.width = c.height = 256; const x = c.getContext("2d");
+    if (S.photo){ const p = S.photo, w = p.width || p.videoWidth, h = p.height || p.videoHeight, k = Math.max(256/w, 256/h)*(S.zoom/100), dw = w*k, dh = h*k;
+      x.fillStyle = S.skin; x.fillRect(0, 0, 256, 256); x.drawImage(p, 128 - dw/2 + S.ox*2.56, 128 - dh/2 + S.oy*2.56, dw, dh); }
+    else { x.fillStyle = S.skin; x.fillRect(0, 0, 256, 256);
+      x.fillStyle = "#2b1b14"; x.beginPath(); x.ellipse(88, 112, 15, 9, 0, 0, 7); x.ellipse(168, 112, 15, 9, 0, 0, 7); x.fill(); x.fillStyle = "#fff"; x.beginPath(); x.ellipse(88, 112, 8, 5, 0, 0, 7); x.ellipse(168, 112, 8, 5, 0, 0, 7); x.fill(); x.fillStyle = "#2b1b14"; x.beginPath(); x.arc(88, 112, 4, 0, 7); x.arc(168, 112, 4, 0, 7); x.fill();
+      x.strokeStyle = "#2b1b14"; x.lineWidth = 6; x.lineCap = "round"; x.beginPath(); x.moveTo(66, 88); x.lineTo(110, 84); x.moveTo(146, 84); x.lineTo(190, 88); x.stroke(); x.strokeStyle = "#a0443c"; x.lineWidth = 7; x.beginPath(); x.moveTo(100, 188); x.quadraticCurveTo(128, 206, 156, 188); x.stroke(); }
+    // feather the edge so the photo blends into the skin colour around it
+    const m = document.createElement("canvas"); m.width = m.height = 256; const mx = m.getContext("2d"), g = mx.createRadialGradient(128, 128, 60, 128, 128, 126); g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(.72, "rgba(0,0,0,1)"); g.addColorStop(1, "rgba(0,0,0,0)"); mx.fillStyle = g; mx.fillRect(0, 0, 256, 256);
+    x.globalCompositeOperation = "destination-in"; x.drawImage(m, 0, 0); x.globalCompositeOperation = "source-over";
+    return c;
+  },
+  facePatch(hc, hr, S, cv, idx){
+    const T = THREE, NU = 36, NV = 36, TH = 1.0, PH = 0.95, pos = [], uv = [], ind = [];
+    const lum = (() => { try{ const t = document.createElement("canvas"); t.width = t.height = 64; const x = t.getContext("2d"); x.drawImage(cv, 0, 0, 64, 64); const d = x.getImageData(0, 0, 64, 64).data; return (u, v) => { const i = ((Math.min(63, Math.max(0, Math.floor((1 - v)*63)))*64) + Math.min(63, Math.max(0, Math.floor(u*63))))*4; return (d[i]*.3 + d[i + 1]*.59 + d[i + 2]*.11)/255; }; }catch(e){ return () => .5; } })();
+    const depth = S.depth/100;
+    for (let i = 0; i <= NV; i++) for (let j = 0; j <= NU; j++){
+      const u = j/NU, v = i/NV, th = (u - .5)*2*TH, ph = (v - .5)*2*PH - .06, // th: around the head (0 = straight ahead), ph: up/down
+        cx = Math.sin(th)*Math.cos(ph), cy = Math.sin(ph), cz = Math.cos(th)*Math.cos(ph);
+      const uu = (u - .5)*2, vv = (v - .5)*2, nose = Math.exp(-((uu/.16)**2 + ((vv + .08)/.26)**2)), brow = Math.exp(-((uu/.6)**2 + ((vv - .32)/.09)**2))*.3, chin = Math.exp(-((uu/.45)**2 + ((vv + .72)/.16)**2))*.35, cheek = Math.exp(-(((Math.abs(uu) - .45)/.2)**2 + ((vv + .15)/.25)**2))*.18;
+      const rel = (lum(u, v) - .5)*.9, d = .004 + depth*(nose*.026 + brow*.008 + chin*.01 + cheek*.008 + rel*.006);
+      pos.push(hc[0] + cx*(hr[0] + d), hc[1] + cy*(hr[1] + d*.8), hc[2] + cz*(hr[2] + d)); uv.push(u, v); }
+    for (let i = 0; i < NV; i++) for (let j = 0; j < NU; j++){ const a = i*(NU + 1) + j, b = a + 1, c = a + NU + 1, e = c + 1; ind.push(a, b, c, b, e, c); }
+    const geo = new T.BufferGeometry(); geo.setAttribute("position", new T.Float32BufferAttribute(pos, 3)); geo.setAttribute("uv", new T.Float32BufferAttribute(uv, 2)); geo.setIndex(ind); geo.computeVertexNormals();
+    const n = pos.length/3, si = new Uint16Array(n*4), sw = new Float32Array(n*4); for (let i = 0; i < n; i++){ si[i*4] = idx.Head; sw[i*4] = 1; }
+    geo.setAttribute("skinIndex", new T.Uint16BufferAttribute(si, 4)); geo.setAttribute("skinWeight", new T.Float32BufferAttribute(sw, 4));
+    const tex = new T.CanvasTexture(cv); tex.encoding = T.sRGBEncoding; tex.flipY = true;
+    const mat = new T.MeshStandardMaterial({map: tex, transparent: true, alphaTest: .03, roughness: .62, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2});
+    return {geo, mat};
+  },
+  hairMesh(hc, hr, S, idx){
+    const T = THREE, style = S.hair; if (style === "none") return null;
+    const scale = {short: 1.07, buzz: 1.025, long: 1.07, bun: 1.07, afro: 1.5}[style] || 1.07, seg = 26, rings = 16, pos = [], ind = [], keep = [];
+    const cy = style === "afro" ? hc[1] + .02 : hc[1] + .005, rx = hr[0]*scale, ry = hr[1]*scale, rz = hr[2]*scale;
+    for (let i = 0; i <= rings; i++){ const ph = i/rings*Math.PI, y = Math.cos(ph), r = Math.sin(ph);
+      for (let j = 0; j < seg; j++){ const a = j/seg*Math.PI*2, x = Math.cos(a)*r, z = Math.sin(a)*r; pos.push(hc[0] + x*rx, cy + y*ry, hc[2] + z*rz);
+        // the hair covers the top, back and sides, and leaves the face open
+        const front = z > .25, lowEnough = y < (front ? .42 : -.25), nearFace = front && Math.abs(x) < .85 && y < .55;
+        keep.push(style === "afro" ? y > -.2 && !(front && y < .35 && Math.abs(x) < .8) : (!lowEnough || (!front && y > -.45)) && !nearFace); } }
+    for (let i = 0; i < rings; i++) for (let j = 0; j < seg; j++){ const a = i*seg + j, b = i*seg + (j + 1)%seg, c = a + seg, e = b + seg; if (keep[a] && keep[b] && keep[c] && keep[e]) ind.push(a, c, b, b, c, e); }
+    const extra = (c, r) => { const g = new T.SphereGeometry(1, 14, 10); g.scale(r[0], r[1], r[2]); g.translate(c[0], c[1], c[2]); return g; };
+    const parts = [new T.BufferGeometry()]; parts[0].setAttribute("position", new T.Float32BufferAttribute(pos, 3)); parts[0].setIndex(ind);
+    if (style === "long") parts.push(extra([0, hc[1] - .2, hc[2] - .075], [.095, .25, .06]));
+    if (style === "bun") parts.push(extra([0, hc[1] + hr[1]*.95, hc[2] - .07], [.04, .04, .04]));
+    // merge
+    let off = 0; const P = [], I = [], NI = []; for (const g of parts){ const gp = g.attributes.position.array; for (let k = 0; k < gp.length; k++) P.push(gp[k]); const gi = g.index ? g.index.array : null; if (gi) for (let k = 0; k < gi.length; k++) I.push(gi[k] + off); off += gp.length/3; }
+    const geo = new T.BufferGeometry(); geo.setAttribute("position", new T.Float32BufferAttribute(P, 3)); geo.setIndex(I); geo.computeVertexNormals();
+    const n = P.length/3, si = new Uint16Array(n*4), sw = new Float32Array(n*4); for (let i = 0; i < n; i++){ si[i*4] = idx.Head; sw[i*4] = 1; }
+    geo.setAttribute("skinIndex", new T.Uint16BufferAttribute(si, 4)); geo.setAttribute("skinWeight", new T.Float32BufferAttribute(sw, 4));
+    return geo;
+  },
+  /* ---------- colours picked from the photo ---------- */
+  autoColors(){
+    const S = this.S, p = S.photo; if (!p) return false; const c = document.createElement("canvas"); c.width = c.height = 64; const x = c.getContext("2d"), w = p.width || p.videoWidth, h = p.height || p.videoHeight, k = Math.max(64/w, 64/h)*(S.zoom/100);
+    x.drawImage(p, 32 - w*k/2 + S.ox*.64, 32 - h*k/2 + S.oy*.64, w*k, h*k); const d = x.getImageData(0, 0, 64, 64).data;
+    const avg = (x0, y0, x1, y1, f) => { let r = 0, g = 0, b = 0, n = 0; for (let y = y0; y < y1; y++) for (let xx = x0; xx < x1; xx++){ const i = (y*64 + xx)*4; if (f && !f(d[i], d[i + 1], d[i + 2])) continue; r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; } return n ? [r/n, g/n, b/n] : null; };
+    const hex = a => "#" + a.map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0")).join("");
+    const skin = avg(24, 28, 40, 44, (r, g, b) => r > 60 && r > b && r >= g*.9) || avg(24, 28, 40, 44), hair = avg(18, 2, 46, 10);
+    if (skin) S.skin = hex(skin); if (hair){ const l = (hair[0] + hair[1] + hair[2])/3; S.hairC = hex(l > 215 ? [60, 40, 28] : hair); }
+    return true;
+  },
+  /* ---------- the window ---------- */
+  open(){
+    this.S = this.S || Object.assign({}, this.DEF, {g: store.get("av3dg", "f")});
+    this.syncForm(); $("#stDlg").showModal(); $("#stHint").textContent = "Loading 3D tools…";
+    Custom.ready().then(() => { return Promise.resolve(); }).then(() => { $("#stHint").textContent = ""; this.start(); }).catch(() => { $("#stHint").textContent = "Couldn't load the 3D tools. Check your connection."; });
+  },
+  syncForm(){ const S = this.S; $("#stBody").value = S.body; $("#stHeight").value = S.height; $("#stSkin").value = S.skin; $("#stHair").value = S.hair; $("#stHairC").value = S.hairC; $("#stTop").value = S.top; $("#stTopC").value = S.topC; $("#stBot").value = S.bottom; $("#stBotC").value = S.bottomC; $("#stShoes").value = S.shoes; $("#stDepth").value = S.depth; $("#stG").value = S.g; $("#stZoom").value = S.zoom; $("#stX").value = S.ox; $("#stY").value = S.oy; this.drawCrop(); },
+  readForm(){ const S = this.S; S.body = $("#stBody").value; S.height = +$("#stHeight").value; S.skin = $("#stSkin").value; S.hair = $("#stHair").value; S.hairC = $("#stHairC").value; S.top = $("#stTop").value; S.topC = $("#stTopC").value; S.bottom = $("#stBot").value; S.bottomC = $("#stBotC").value; S.shoes = $("#stShoes").value; S.depth = +$("#stDepth").value; S.g = $("#stG").value; S.zoom = +$("#stZoom").value; S.ox = +$("#stX").value; S.oy = +$("#stY").value; return S; },
+  drawCrop(){ const cv = $("#stCrop"), x = cv.getContext("2d"), S = this.S; x.fillStyle = "#2e201a"; x.fillRect(0, 0, 200, 200);
+    if (S.photo){ const p = S.photo, w = p.width || p.videoWidth, h = p.height || p.videoHeight, k = Math.max(200/w, 200/h)*(S.zoom/100); x.drawImage(p, 100 - w*k/2 + S.ox*2, 100 - h*k/2 + S.oy*2, w*k, h*k); }
+    x.strokeStyle = "rgba(255,194,26,.9)"; x.lineWidth = 2; x.beginPath(); x.ellipse(100, 100, 58, 76, 0, 0, 7); x.stroke(); x.fillStyle = "rgba(255,255,255,.8)"; x.font = "11px sans-serif"; x.textAlign = "center"; x.fillText(S.photo ? "Line your face up with the oval" : "No photo: a simple face is used", 100, 192); },
+  start(){
+    const T = THREE, cv = $("#stPrev"); if (!this.pv){
+      const r = new T.WebGLRenderer({canvas: cv, antialias: true, alpha: true}); r.outputEncoding = T.sRGBEncoding; r.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+      const sc = new T.Scene(); sc.add(new T.HemisphereLight(0xfff2e0, 0x3a2a20, 1.1)); const k = new T.DirectionalLight(0xffffff, 1.2); k.position.set(1.5, 3, 3); sc.add(k); const rim = new T.DirectionalLight(0xffa040, .6); rim.position.set(-2, 2, -2); sc.add(rim);
+      const cam = new T.PerspectiveCamera(30, cv.width/cv.height, .1, 20); cam.position.set(0, 1.1, 4.2); cam.lookAt(0, .92, 0);
+      this.pv = {r, sc, cam, holder: new T.Group(), model: null, mixer: null, clock: new T.Clock(), ry: .3, drag: null}; sc.add(this.pv.holder);
+      let last = null; cv.addEventListener("pointerdown", e => { last = e.clientX; cv.setPointerCapture(e.pointerId); }); cv.addEventListener("pointermove", e => { if (last !== null){ this.pv.ry += (e.clientX - last)*.012; last = e.clientX; } }); cv.addEventListener("pointerup", () => { last = null; });
+    }
+    this.run = true; this.key = ""; this.rebuild(true);
+    const loop = () => { if (!this.run || !$("#stDlg").open){ this.run = false; return; }
+      const dt = this.pv.clock.getDelta(); if (this.pv.mixer) this.pv.mixer.update(dt); this.pv.holder.rotation.y = this.pv.ry; this.pv.r.render(this.pv.sc, this.pv.cam); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  },
+  rebuild(force){
+    if (!this.pv) return; const S = this.readForm(), key = JSON.stringify(Object.assign({}, S, {photo: !!S.photo})) + (S.photo ? this.photoId : ""); if (!force && key === this.key) return; this.key = key;
+    clearTimeout(this.tm); this.tm = setTimeout(() => { try{
+      if (this.pv.model){ this.pv.holder.remove(this.pv.model); this.pv.model.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material){ if (o.material.map) o.material.map.dispose(); o.material.dispose(); } }); }
+      const m = this.build(S); this.pv.model = m; this.pv.holder.add(m);
+      // dance a little: re-aim a recorded move onto it
+      this.pv.mixer = null; const clip = this.previewClip(m, S); if (clip){ this.pv.mixer = new THREE.AnimationMixer(m); this.pv.mixer.clipAction(clip).play(); }
+    }catch(e){ console.warn("studio", e); $("#stHint").textContent = "Something went wrong building the model."; } }, 60);
+  },
+  previewClip(model, S){
+    try{ const L = Lounge, pack = L.realClips && L.realClips[S.g]; if (!pack || !L.peopleSet) return null; const src = Custom.sourceRig(S.g); if (!src) return null;
+      return bakeRetarget(src, pack.idle || pack.dance1, model, {norm: n => Custom.canon(n), child: Custom.CHILD}); }catch(e){ console.warn("preview clip", e); return null; }
+  },
+  async useIt(){
+    const btn = $("#stUse"); btn.disabled = true; $("#stHint").textContent = "Building your avatar…";
+    try{ await this.loadExporter(); const S = this.readForm(), model = this.build(S); const buf = await this.exportGLB(model);
+      await Custom.install(buf, "Studio avatar"); Profile.refreshCustom(); $("#stHint").textContent = ""; $("#stDlg").close(); toast("✅ Your 3D avatar is saved. Other guests see it if you share it (see My avatar)."); }
+    catch(e){ console.warn(e); $("#stHint").textContent = "⚠ " + (e && e.message || e); } finally { btn.disabled = false; }
+  },
+  async download(){
+    try{ await this.loadExporter(); const buf = await this.exportGLB(this.build(this.readForm())); const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([buf], {type: "model/gltf-binary"})); a.download = "my-avatar.glb"; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000); }
+    catch(e){ $("#stHint").textContent = "⚠ Couldn't make the file."; }
+  },
+  loadExporter(){ if (THREE.GLTFExporter) return Promise.resolve(); return this._ex || (this._ex = addScript(THREE_EX + "exporters/GLTFExporter.js")); },
+  exportGLB(model){ return new Promise((ok, no) => { try{ new THREE.GLTFExporter().parse(model, r => ok(r), {binary: true, onlyVisible: false, embedImages: true}); }catch(e){ no(e); } }); },
+  loadPhoto(file){
+    return new Promise((ok, no) => { const img = new Image(); img.onload = () => { const S = this.S; S.photo = img; this.photoId = Math.random(); S.zoom = 100; S.ox = 0; S.oy = 0; this.autoColors(); this.syncForm(); this.rebuild(true); URL.revokeObjectURL(img.src); ok(); }; img.onerror = () => no(new Error("Couldn't read that photo.")); img.src = URL.createObjectURL(file); });
+  },
+  bind(){
+    $("#stPhoto").addEventListener("change", async e => { const f = e.target.files[0]; e.target.value = ""; if (f) try{ await this.loadPhoto(f); }catch(err){ toast("Couldn't read that photo."); } });
+    $("#stNoPhoto").addEventListener("click", () => { this.S.photo = null; this.photoId = 0; this.drawCrop(); this.rebuild(true); });
+    $("#stAuto").addEventListener("click", () => { this.readForm(); if (!this.autoColors()) toast("Choose a photo first."); this.syncForm(); this.rebuild(true); });
+    const upd = () => { this.readForm(); this.drawCrop(); this.rebuild(); };
+    $("#stDlg").addEventListener("input", upd); $("#stDlg").addEventListener("change", upd);
+    $("#stUse").addEventListener("click", () => this.useIt()); $("#stDl").addEventListener("click", () => this.download());
+    $("#stClose").addEventListener("click", () => $("#stDlg").close()); $("#stDlg").addEventListener("close", () => { this.run = false; });
+  }
+};
+
 /* ---------- Your profile ---------- */
 const Profile = {
   defaults: {name:"", bio:"", genre:"", link:"", avatar:"", hat:"none", eyes:"none", neck:"none", phones:false, aura:"#ffc21a", height:1, outfit:{style:"original"}},
   get(){ return Object.assign({}, this.defaults, store.get("profile", {})); },
+  refreshCustom(){ this.pvKey = ""; this.pvTok = (this.pvTok || 0) + 1; try{ Custom.status(); }catch(e){} },
   save(p){ store.set("profile", p); if (typeof Party !== "undefined") Party.profileChanged(); },
   ensure(){
     const p = this.get(); let changed = false;
@@ -9498,6 +9891,7 @@ const Profile = {
     $("#meHat").innerHTML = opts(Gear.HATS, p.hat); $("#meEyes").innerHTML = opts(Gear.EYES, p.eyes); $("#meNeck").innerHTML = opts(Gear.NECK, p.neck);
     $("#mePhones").value = p.phones ? "1" : ""; $("#meAura").value = p.aura; $("#meHeight").value = Math.round(p.height*100);
     $("#meAvatars").innerHTML = AV_NAMES.map(n => `<button type="button" data-av="${n}" aria-pressed="${n === p.avatar}" aria-label="${n.replace(/_/g, " ")}" style="${avThumbStyle(n)}"></button>`).join("");
+    try{ Custom.status(); $("#c3Show").checked = Custom.allowed(); $("#c3G").value = (Custom.mine() || {}).g || store.get("av3dg", "f"); }catch(e){}
     $("#meDlg").showModal();
     $("#mePrevHint").textContent = this.pv ? "" : "Loading your avatar…";
     requestAnimationFrame(() => setTimeout(() => { if ($("#meDlg").open) this.startPreview(); }, 30));
@@ -9547,13 +9941,15 @@ const Profile = {
   },
   async buildPreview(d){
     const T = THREE, token = (this.pvTok = (this.pvTok || 0) + 1);
-    const A = await Party.avatarFor(d.avatar);
+    const cm = Custom.mine(); let A = null;
+    if (cm && cm.on){ try{ A = await Custom.load("local", cm.g); }catch(e){} }
+    if (!A) A = await Party.avatarFor(d.avatar);
     if (token !== this.pvTok || !A) return;
     if (this.pv.holder) this.pv.sc.remove(this.pv.holder);
     const holder = new T.Group(), m = T.SkeletonUtils.clone(A.root);
     holder.add(m); m.scale.multiplyScalar(d.height);
-    Gear.attach(m, d);
-    await Outfit.apply(m, A.name || d.avatar, d.outfit);
+    try{ Gear.attach(m, d); }catch(e){}
+    if (!A.custom) await Outfit.apply(m, A.name || d.avatar, d.outfit);
     if (token !== this.pvTok) return;
     const glow = new T.Mesh(new T.RingGeometry(.3, .42, 48).rotateX(-Math.PI/2), new T.MeshBasicMaterial({color:new T.Color(d.aura), transparent:true, opacity:.55, toneMapped:false, depthWrite:false})); glow.position.y = .01; holder.add(glow);
     const mixer = new T.AnimationMixer(m), clip = A.clips.dance2 || A.clips.idle; if (clip) mixer.clipAction(clip).play();
@@ -9646,7 +10042,8 @@ const Party = {
     catch(e){ toast("The party couldn't connect right now.", 5000); return; }
     this.room = room; this.roomKey = key; this.kind = kind; this.eventId = kind === "event" ? code : null;
     const A = {};
-    for (const n of ["hello", "pose", "chat", "react", "music", "mod", "link", "screen", "karaoke"]) A[n] = room.makeAction(n);
+    for (const n of ["hello", "pose", "chat", "react", "music", "mod", "link", "screen", "karaoke", "avatar"]) A[n] = room.makeAction(n);
+    A.avatar.onMessage = (d, ctx) => { try{ this.onAvatarBlob(ctx.peerId, d); }catch(e){ console.warn(e); } };
     A.karaoke.onMessage = (d, ctx) => { try{ Karaoke.onMsg(ctx.peerId, d); }catch(e){ console.warn(e); } };
     A.screen.onMessage = (d, ctx) => { const p = this.peers[ctx.peerId]; if (p) Screens.onMsg(p, d); };
     A.mod.onMessage = (d, ctx) => this.onMod(ctx.peerId, d);
@@ -9663,6 +10060,7 @@ const Party = {
       if (this.mic) try{ room.addStream(this.mic, {target: id}); }catch(e){}
       if (this.djStream) try{ room.addStream(this.djStream, {target: id, metadata: {kind: "dj"}}); }catch(e){}
       if (this.vidStream) try{ room.addStream(this.vidStream, {target: id, metadata: {kind: "video"}}); }catch(e){}
+      setTimeout(() => { try{ this.shareAvatar(id); }catch(e){} }, 2200);
       setTimeout(() => Screens.resend(id), 1500);
       setTimeout(() => { try{ Karaoke.snapshot(id); }catch(e){} }, 1800);
       this.sysMsg("Someone joined the party");
@@ -9689,6 +10087,19 @@ const Party = {
     this.ui();
   },
   worldChanged(){ if (this.room && this.kind === "world") this.join("world"); },
+  async shareAvatar(target){
+    const m = Custom.mine(); if (!this.act || !m || !m.on || !Age.adult()) return;
+    const rec = await Custom.get_("mine"); if (!rec || !rec.buf || rec.buf.byteLength > Custom.MAXSHARE || m.tris > 150000) return;
+    this.act.avatar.send({buf: new Uint8Array(rec.buf), g: m.g === "m" ? "m" : "f", n: String(m.name || "").slice(0, 30)}, target ? {target} : undefined);
+  },
+  async onAvatarBlob(id, d){
+    if (!Age.adult() || !Custom.allowed() || !d || !d.buf) return;
+    const p = this.peers[id]; if (!p || !p.hello) return;
+    const u8 = d.buf instanceof Uint8Array ? d.buf : new Uint8Array(d.buf); if (u8.byteLength > Custom.MAXSHARE) return;
+    try{ await Custom.ready(); const A = await Custom.fromBuffer(u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength), "p" + id, d.g === "m" ? "m" : "f", Custom.MAXSHARE);
+      if (!this.peers[id]) return; p.customA = A; if (p.slot) this.removeSlot(p); this.buildAvatar(p);
+    }catch(e){ console.warn("guest avatar", e); }
+  },
   profileChanged(){ if (this.act) this.act.hello.send(this.myHello()); this.ui(); },
 
   /* --- incoming --- */
@@ -9841,14 +10252,14 @@ const Party = {
     try{
       const T = THREE, L = Lounge;
       if (!L.peopleSet){ try{ await L.loadPeople(); }catch(e){} }
-      const A = await this.avatarFor(p.profile.avatar);
+      const A = (p.customA && Custom.allowed() && Age.adult()) ? p.customA : await this.avatarFor(p.profile.avatar);
       if (!A || !this.peers[p.id]) return;
       if (p.slot) this.removeSlot(p);
       const group = new T.Group(), m = T.SkeletonUtils.clone(A.root);
       group.add(m); m.scale.multiplyScalar((A.scale || 1)*p.profile.height);
       m.traverse(o => { if (o.isMesh){ o.frustumCulled = false; } });
-      Gear.attach(m, p.profile);
-      await Outfit.apply(m, A.name || p.profile.avatar, p.profile.outfit);
+      try{ Gear.attach(m, p.profile); }catch(e){}
+      if (!A.custom) await Outfit.apply(m, A.name || p.profile.avatar, p.profile.outfit);
       // glow ring and soft shadow at the feet
       const ring = new T.Mesh(new T.RingGeometry(.28, p.role !== "guest" ? .42 : .36, 40).rotateX(-Math.PI/2), new T.MeshBasicMaterial({color:new T.Color(p.profile.aura), transparent:true, opacity:.5, toneMapped:false, depthWrite:false}));
       ring.position.y = .015; group.add(ring);
@@ -10469,7 +10880,7 @@ const Events = {
     setInterval(() => { this.banner(); if ($("#eventsDlg").open) this.render(); }, 30000);
   }
 };
-Profile.bindUI(); Party.bindUI(); Events.bindUI();
+Profile.bindUI(); Custom.bind(); Studio.bind(); Party.bindUI(); Events.bindUI();
 /* ================= Flyers and invitations =================
    Event hosts design a flyer (to post) or an invitation (to send to someone), pick one of four looks,
    then download it, share it to any app, email it or text it. The design carries the date, time, world,
