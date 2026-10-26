@@ -5341,7 +5341,7 @@ const Lounge = {
     const moonL = new T.DirectionalLight(0xaec4ff, .35); moonL.position.set(-60, 60, -20); g.add(moonL);
     this.pnMood = [this.pnDance, this.pnLed];
     return {id: "penthouse", name: "Luxury Penthouse Loft", movable: true, group: g, floorY: 0, far: 1400, fog: new T.Fog(0x0b1224, 120, 1000), exposure: 1.05, bloom: .5,
-      screen: [0, 4.45, -15.84, 1.5, 0],
+      screen: [0, 4.45, -15.72, 1.5, 0],
       onMood: m => { this.pnDance.color.setHex(m.a); },
       update: (dt, t, A) => {
         const b = A.bass;
@@ -7687,6 +7687,14 @@ const Lounge = {
         if (seatY() < y0 - .1 || !onSeat()){ nudge(-.05); break; }   // don't slide off the seat
       }
     }
+    // 4. a last check: feet never go through the floor (a seat that was found wrong would otherwise bury the person)
+    try{
+      if (this.worldId === slot.world){
+        p.updateWorldMatrix(true, true); m.updateWorldMatrix(true, true);
+        const bb = new T.Box3().setFromObject(m, true), fl = this.floorAt((bb.min.x + bb.max.x)/2, (bb.min.z + bb.max.z)/2, bb.max.y + .3);
+        if (fl !== null && bb.min.y < fl - .05) p.position.y += Math.min(.8, fl - bb.min.y);
+      }
+    }catch(e){}
   },
   updatePeople(dt, bass){
     if (!this.slots) return;
