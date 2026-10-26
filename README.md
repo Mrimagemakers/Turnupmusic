@@ -214,7 +214,11 @@ Tap **🍾 Mogul** on the party bar, or go to **Party → 🍾 Nightclub Mogul**
 - **Ten jobs**, each with its own step-by-step training: Bartender (VR mixology with real bottle pouring), Bouncer (IDs, dress code, the list, fights), DJ (beatmatching on two synth decks), Barback/Busser, Bottle Service, Promoter, Celebrity, Birthday, Club Owner and Bar Brawl.
 - **Strikes and obstacles**: underage and drunk guests, fake IDs, spills, slip hazards, deadlines and fights.
 - **The empire**: earn cash on shifts, then buy venues, upgrades and staff and run nights. Progress is saved on the device.
-- **Bar Brawl** is our own physics-style bar fight:
+- **Bar Brawl** is our own animated bar fight, with full fight scenes:
+  - real jabs, crosses, hooks, uppercuts and roundhouse kicks, and a 💥 Slam that lifts a guy over your head and puts him through the floor
+  - fighters block, weave, stagger, double over and get knocked flat, with comic-book impact words, camera shake and punch sounds
+  - on phones and tablets your fighter is on screen, the camera sits over your shoulder, and thumb buttons sit in the corners; in VR your own hands throw the punches
+  - the bouncer's "two guys squaring up" scene shows them really trading blows until you step in
   - block, dodge and counter
   - throw mugs, bottles and bar stools, for real in VR
   - Liquid Courage power-ups

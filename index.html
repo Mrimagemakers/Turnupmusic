@@ -473,6 +473,24 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 .post .replies p{font-size:13px}
 .mogul{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));width:min(620px,calc(100vw - 24px));z-index:35;pointer-events:auto}
 .stage .mogul canvas,.mogul canvas{position:relative;inset:auto;display:block;width:100%;height:auto;border-radius:22px;box-shadow:0 16px 50px rgba(0,0,0,.55);touch-action:none;user-select:none;-webkit-user-select:none}
+.fpad{position:fixed;inset:0;z-index:36;pointer-events:none;font-family:var(--f-body)}
+.fpad.hurt::before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(255,0,0,0) 35%,rgba(255,0,0,.55));animation:mhurt .5s forwards}
+.fpad .fhud{position:absolute;left:max(12px,env(safe-area-inset-left));top:calc(56px + env(safe-area-inset-top));right:70px;color:#fff;text-shadow:0 1px 5px #000,0 0 2px #000}
+.fpad .fhp{font:800 20px var(--f-body);letter-spacing:1px}
+.fpad .fstat{font:900 17px var(--f-body);margin-top:2px}
+.fpad .fstep{margin-top:6px;display:inline-block;max-width:min(520px,90vw);background:rgba(77,225,255,.18);border:1px solid rgba(77,225,255,.6);border-radius:12px;padding:6px 10px;font:600 14px var(--f-body)}
+.fpad .fmsg{margin-top:6px;font:700 14px var(--f-body);color:#b8ffd4}
+.fpad .fmsg.bad{color:#ffb0a6}
+.fpad button{pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;width:62px;height:62px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(20,12,10,.62);color:#fff;font:800 22px var(--f-body);line-height:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;backdrop-filter:blur(4px)}
+.fpad button small{font:700 10px var(--f-body);opacity:.85}
+.fpad button:active,.fpad button.on{background:rgba(255,194,26,.8);color:#201400}
+.fpad button.big{width:86px;height:86px;font-size:30px;background:linear-gradient(135deg,#ff4a3a,#b0102a);border-color:#fff}
+.fpad button.dim{opacity:.45}
+.fpad .fx{position:absolute;top:calc(8px + env(safe-area-inset-top));right:max(64px,env(safe-area-inset-right));width:44px;height:44px;font-size:18px}
+.fpad .fl{position:absolute;left:max(12px,env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:flex-end}
+.fpad .fr{position:absolute;right:max(12px,env(safe-area-inset-right));bottom:calc(14px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.fpad .frow{display:flex;gap:10px;align-items:flex-end}
+.fighting .xp-top,.fighting .xp-bottom,.fighting .zoomctl{display:none!important}
 .mogul.small{height:84px;overflow:hidden;border-radius:22px}
 .mogul-mini{position:absolute;left:12px;top:10px;width:40px;height:36px;border-radius:10px;border:1px solid rgba(255,194,26,.5);background:rgba(16,10,8,.9);color:#ffc21a;font:800 18px var(--f-body);cursor:pointer}
 .mogul.hurt::before{content:"";position:fixed;inset:0;background:radial-gradient(circle,rgba(255,0,0,0) 30%,rgba(255,0,0,.55));animation:mhurt .5s forwards;pointer-events:none;z-index:-1}
@@ -7697,12 +7715,14 @@ const Lounge = {
     }catch(e){}
   },
   updatePeople(dt, bass){
+    try{ Fight.tick(dt); }catch(e){}
     if (!this.slots) return;
     for (const s of this.slots){
       if (!s.mixer || s.world !== this.worldId) continue;
       if (s.behavior === "dance" || s.behavior === "cheer") s.action.timeScale = .85 + bass*.3;
       else if (s.behavior === "dj") s.action.timeScale = .6 + bass*.2;
       s.mixer.update(dt);
+      if (s.fx && s.fx.on && s.real) try{ Fight.apply(s, dt); }catch(e){ s.fx.on = false; console.warn("Fight", e); }
       // zero-g: drift up and down, slowly tumbling
       if (s.float){ const f = s.float, tt = performance.now()/1000 + s.ph; s.p.position.y = s.home.y + Math.sin(tt*f.sp)*f.amp; s.p.rotation.x = (f.tilt || 0) + Math.sin(tt*f.sp*.7)*.08; s.p.rotation.z = (f.roll || 0) + Math.sin(tt*f.sp*.5 + 1)*.1; if (f.spin && !s.faceT) s.p.rotation.y += f.spin*dt; }
       if (s.overlay && s.real) try{ if (s.belt && !s.beltOn){ s.beltOn = true; this.coinBelt(s, s.belt); } this.ovRun(s, performance.now()/1000); }catch(e){ s.ovErr = String(e && e.stack || e); s.overlay = null; }
@@ -8293,7 +8313,7 @@ const Lounge = {
     // smooth glide after a tap
     if (this.glide){ const g = this.glide; g.t = Math.min(1, g.t + dt*2.4); const e = g.t*g.t*(3 - 2*g.t); this.rig.position.lerpVectors(g.from, g.to, e); if (g.t === 1) this.glide = null; }
     // stand up once you start walking around on a screen
-    if (!this.renderer.xr.isPresenting){ const want = this.standing ? 1.6 : 1.15; this.camera.position.y += (want - this.camera.position.y)*Math.min(1, dt*4); }
+    if (!this.renderer.xr.isPresenting){ const want = (this.standing ? 1.6 : 1.15) + (this.camLift || 0); this.camera.position.y += (want - this.camera.position.y)*Math.min(1, dt*4); }
     // keyboard walking
     if (this.keys && this.keys.size && !this.renderer.xr.isPresenting){
       let f = 0, s = 0;
@@ -8925,6 +8945,7 @@ const Lounge = {
 
     if (!this.renderer.xr.isPresenting){
       this.camera.rotation.set(this.pitch, this.yaw, this.camRoll || 0, "YXZ");
+      if (Fight.shake > .0005){ this.camera.rotation.x += (Math.random() - .5)*Fight.shake; this.camera.rotation.y += (Math.random() - .5)*Fight.shake; Fight.shake = Math.max(0, Fight.shake - dt*.12); }
       if (!this.drag) this.yaw += Math.sin(t*.1)*.0003;
     }
     if (this.mode === "ar" && xrFrame && this.hitSource && !this.placed){
@@ -12200,7 +12221,7 @@ const Mogul = {
   update(dt){
     if (!this.on) return;
     const vr = Lounge.renderer.xr.isPresenting;
-    if (this.box) this.box.hidden = vr;
+    if (this.box) this.box.hidden = vr || !!(this.game && this.game.padEl && this.view === "game");
     if (this.mesh) this.mesh.visible = vr;
     if (vr && this.mesh && !this.mesh.userData.placed){ this.mesh.userData.placed = true; this.placePanel(); }
     if (!vr && this.mesh) this.mesh.userData.placed = false;
@@ -12262,6 +12283,7 @@ Object.assign(Mogul, {
   dropProps(list){ const L = Lounge; for (const o of list || []){ if (o.parent) o.parent.remove(o); L.clickables = (L.clickables || []).filter(c => c !== o && !(function inside(q){ for (; q; q = q.parent) if (q === o) return true; return false; })(c)); L.grabbables = (L.grabbables || []).filter(g => g !== o); o.traverse && o.traverse(m => { if (m.geometry) m.geometry.dispose(); }); } },
   hurtFlash(){
     if (this.vr()){ const T = THREE, L = Lounge; if (!this.hurt){ this.hurt = new T.Mesh(new T.SphereGeometry(.3, 16, 12), new T.MeshBasicMaterial({color: 0xff2020, side: T.BackSide, transparent: true, opacity: 0, depthTest: false, depthWrite: false, fog: false})); this.hurt.renderOrder = 9997; L.camera.add(this.hurt); } this.hurt.material.opacity = .55; this.hurtT = .5; try{ L.xrCtls.forEach(c => L.haptic(c, 1, 160)); }catch(e){} }
+    else if (this.game && this.game.padEl){ const pe = this.game.padEl; pe.classList.remove("hurt"); void pe.offsetWidth; pe.classList.add("hurt"); }
     else if (this.box){ this.box.classList.remove("hurt"); void this.box.offsetWidth; this.box.classList.add("hurt"); }
   }
 });
@@ -12766,10 +12788,11 @@ Mogul.GAMES.bouncer = {
   restrain(sc){
     const m = this.m, f = this.fight;
     if (sc >= 70 && Math.random() < .5){ if (f.b) m.bubble(f.b, "😮‍💨 fine…"); this.finishFight(true, "You talked them down. Now walk the instigator out."); return; }
+    try{ if (f.duel) Fight.stopDuel(f.duel); f.duel = null; if (f.a) Fight.off(f.a); if (f.b) Fight.off(f.b); }catch(e){}
     if (m.vr()){ f.stage = "walk"; f.t = 0; m.say("Hold the grip on the guy who started it and walk him to the green door marker.", false); return; }
     m.kit(this, {type: "timing", title: "Hold him back", text: "He's pushing past you. Tap when the marker is in the green zone to keep control (3 times).", count: 3, speed: .7, zw: .2, done: s2 => { m.score(s2, s2 > 60 ? 8 : 0); this.finishFight(s2 > 50, s2 > 50 ? "You walked him out safely." : "He got loose and threw a punch before your team grabbed him."); }});
   },
-  finishFight(ok, msg){ const m = this.m, f = this.fight; if (!f) return; if (!ok) m.strike(msg); else m.say("✓ " + msg); m.shift.log.push("Fight: " + msg);
+  finishFight(ok, msg){ const m = this.m, f = this.fight; if (!f) return; try{ if (f.duel) Fight.stopDuel(f.duel); f.duel = null; if (f.a) Fight.off(f.a); if (f.b) Fight.off(f.b); }catch(e){} if (!ok) m.strike(msg); else m.say("✓ " + msg); m.shift.log.push("Fight: " + msg);
     if (f.a){ m.bubble(f.a, null); this.leave(f.a, false); } if (f.b){ m.bubble(f.b, null); this.walk(f.b, 4, -1, () => m.despawn(f.b)); }
     this.fight = null; this.fightDone = true; m.moveMe(7.6, .1, Math.PI); setTimeout(() => { if (this.m.game === this) this.nextGuest(); }, 900); },
   update(dt){
@@ -12777,6 +12800,7 @@ Mogul.GAMES.bouncer = {
     for (const sl of (Lounge.slots || [])){ const w = sl.walkTo; if (!w || !sl.p.parent) continue; const p = sl.p.position, dx = w.x - p.x, dz = w.z - p.z, d = Math.hypot(dx, dz);
       if (d < .15){ sl.walkTo = null; w.after && w.after(); continue; } const sp = Math.min(d, dt*1.3); p.x += dx/d*sp; p.z += dz/d*sp; sl.p.rotation.y = Math.atan2(dx, dz); }
     const f = this.fight;
+    if (f && !f.duel && f.stage === "talk" && f.a && f.b && f.a.real && f.b.real) try{ f.duel = Fight.duel(f.a, f.b, {calm: 1.15}); }catch(e){ console.warn(e); }
     if (f && f.stage === "walk"){ f.t += dt; const s = f.a; if (s && s.p.parent){ const wp = s.p.getWorldPosition(new THREE.Vector3()); if (Math.hypot(wp.x - 7.6, wp.z - 1.6) < 1.1){ m.score(100, 12); f.stage = "done"; this.finishFight(true, "You walked him out the door. Textbook."); } }
       if (f && f.t > 35){ f.stage = "done"; this.finishFight(false, "It took too long. The fight started again."); } }
     if (this.door) this.door.material.opacity = .4 + Math.sin(performance.now()/300)*.3;
@@ -12811,13 +12835,249 @@ Mogul.GAMES.bouncer = {
     m.btn("bag", 508, by, 230, 70, "🎒 Check bag", () => { g.bagChecked = true; }, {size: 22, on: g.bagChecked});
     m.btn("lst", 750, by, 250, 70, "📋 Check list", () => { g.listChecked = true; }, {size: 22, on: g.listChecked});
   },
-  end(){ const m = this.m; for (const sl of (Lounge.slots || []).filter(x => x.mogul)) m.despawn(sl); if (this.door && this.door.parent) this.door.parent.remove(this.door); }
+  end(){ const m = this.m; try{ if (this.fight && this.fight.duel) Fight.stopDuel(this.fight.duel); }catch(e){} for (const sl of (Lounge.slots || []).filter(x => x.mogul)) m.despawn(sl); if (this.door && this.door.parent) this.door.parent.remove(this.door); }
+};
+
+/* ================= 🥊 Fight: real punches, kicks, slams, blocks and hit reactions =================
+   Fighters keep their recorded idle/walk underneath. Every frame this bends the hips, torso, head, arms and legs
+   into a fight pose on top of it: guard up, a wind-up, the strike, the recovery, and the reaction when one lands.
+   Moves are described by a "cock" pose and an "extended" pose for the striking limb; timing does the rest. */
+const Fight = {
+  slow: 1, shake: 0, fxs: [], duels: [],
+  E(u, a, b){ const k = Math.max(0, Math.min(1, (u - a)/(b - a))); return k*k*(3 - 2*k); },
+  MIX(a, b, k){ return [a[0] + (b[0] - a[0])*k, a[1] + (b[1] - a[1])*k, a[2] + (b[2] - a[2])*k]; },
+  // arm directions in the fighter's own frame: [outward from the body, up, forward]
+  G: {lead: {ua: [.3, -.62, .45], fa: [-.05, .82, .5]}, rear: {ua: [.2, -.8, .25], fa: [-.25, .85, .4]}},
+  BLK: {ua: [.12, -.45, .72], fa: [-.22, .95, .18]},
+  LOW: {ua: [.2, -.95, .1], fa: [.02, -.55, .8]},
+  FLAIL: {ua: [.8, -.1, -.1], fa: [.55, .1, .1]},
+  MOVES: {
+    jab:   {arm: "lead", dur: .5,  hitU: .42, cock: {ua: [.3, -.55, .45], fa: [-.05, .7, .3]}, ext: {ua: [.05, .12, 1], fa: [-.02, .1, 1]}, tw: [-.12, .28], lunge: [0, .1], word: "POW!", pow: .7, snd: 1},
+    cross: {arm: "rear", dur: .58, hitU: .45, cock: {ua: [.15, -.7, .2], fa: [-.1, .6, .05]}, ext: {ua: [-.08, .08, 1], fa: [-.2, .1, 1]}, tw: [-.15, .55], lunge: [0, .2], word: "WHAM!", pow: 1},
+    hook:  {arm: "lead", dur: .66, hitU: .48, cock: {ua: [.95, .05, -.1], fa: [.5, .25, -.65]}, ext: {ua: [.95, .12, .4], fa: [-.7, .1, .7]}, tw: [-.25, .7], lunge: [0, .14], word: "SMACK!", pow: 1.2},
+    upper: {arm: "rear", dur: .7,  hitU: .5,  cock: {ua: [.15, -.92, .1], fa: [0, -.7, .6]}, ext: {ua: [.1, -.3, .78], fa: [-.1, .95, .4]}, tw: [-.2, .3], crouch: [.14, -.05], lunge: [0, .14], word: "BAM!", pow: 1.4},
+    kick:  {arm: "leg", dur: .85, hitU: .5, lean: [.05, -.32], lunge: [0, .08], word: "THWACK!", pow: 1.5,
+            cock: {th: [-.1, .6, .85], ca: [0, -.92, .3]}, ext: {th: [-.3, .45, .88], ca: [-.45, .15, .9]}, tw: [-.1, .3]},
+    slam:  {arm: "both", dur: 2.0, hitU: .72, word: "SLAM!", pow: 2.2}
+  },
+  // how a body reacts when something lands: head, bow (+ forward, - back), twist, roll, hop, crouch, flail, length, push
+  REACT: {
+    jab:   {hp: -.5,  hy: 0,  bw: -.2,  tw: 0,  rl: 0,  hop: 0,   cr: 0,   fl: .5, dur: .5,  kb: .3},
+    cross: {hp: -.65, hy: .25, bw: -.3, tw: .2, rl: 0,  hop: 0,   cr: 0,   fl: .7, dur: .6,  kb: .55},
+    hook:  {hp: -.25, hy: .9, bw: -.1,  tw: .5, rl: .3, hop: 0,   cr: 0,   fl: .8, dur: .65, kb: .45},
+    upper: {hp: -1,   hy: 0,  bw: -.5,  tw: 0,  rl: 0,  hop: .22, cr: 0,   fl: 1,  dur: .8,  kb: .4},
+    kick:  {hp: -.3,  hy: 0,  bw: .75,  tw: 0,  rl: 0,  hop: 0,   cr: .12, fl: .6, dur: .85, kb: 1.1},
+    throw: {hp: -.55, hy: .5, bw: -.25, tw: .2, rl: 0,  hop: 0,   cr: 0,   fl: .8, dur: .6,  kb: .45},
+    stool: {hp: -.7,  hy: .3, bw: .35,  tw: .3, rl: .2, hop: 0,   cr: .08, fl: 1,  dur: .8,  kb: .8},
+    block: {hp: .1,   hy: 0,  bw: -.08, tw: 0,  rl: 0,  hop: 0,   cr: .02, fl: 0,  dur: .3,  kb: .12},
+    ko:    {hp: -.9,  hy: .4, bw: -.5,  tw: .4, rl: 0,  hop: .1,  cr: 0,   fl: 1,  dur: 1.2, kb: 0}
+  },
+  /* ---------- turning a person into a fighter ---------- */
+  on(s){
+    if (!s || !s.real) return null; const T = THREE;
+    if (!s.fx) s.fx = {t: 0, clock: Math.random()*9, mv: null, rk: null, rt: 0, rdur: 1, blk: 0, exposed: 0, lefty: false, kb: new T.Vector3(), dodge: null, base: s.real.position.clone(), on: false};
+    s.fx.on = true; return s.fx;
+  },
+  off(s){ if (!s || !s.fx) return; s.fx.on = false; s.fx.mv = null; s.fx.rk = null; s.fx.slam = null; try{ if (s.real) s.real.position.copy(s.fx.base); }catch(e){} },
+  busy(s){ return !!(s && s.fx && (s.fx.mv || s.fx.slam)); },
+  clip(s, name, fade = .25){
+    const C = s && s.clips; if (!s || !s.mixer || !C) return; const c = C[name] || C.idle; if (!c || (s.action && s.action.getClip() === c)) return;
+    const a = s.mixer.clipAction(c); a.reset(); a.setLoop(THREE.LoopRepeat, Infinity); a.play(); if (s.action) s.action.crossFadeTo(a, fade, false); s.action = a;
+  },
+  /* ---------- starting a move ---------- */
+  move(s, kind, o = {}){
+    const fx = s && (s.fx || this.on(s)); const M = this.MOVES[kind]; if (!fx || !M) return false;
+    if (fx.mv && !o.force) return false;
+    fx.mv = kind; fx.t = 0; fx.dur = o.dur || M.dur; fx.hitU = o.hitU || M.hitU; fx.hitFired = false; fx.onHit = o.onHit || null; fx.done = o.done || null; fx.tell = !!o.tell;
+    if (M.snd !== 0 && !o.quiet) try{ this.snd("whoosh", fx.hitU*fx.dur - .12); }catch(e){}
+    return true;
+  },
+  cancel(s){ if (s && s.fx){ s.fx.mv = null; s.fx.slam = null; s.fx.onHit = null; s.fx.done = null; } },
+  react(s, kind, o = {}){
+    const fx = s && (s.fx || this.on(s)); const R = this.REACT[kind] || this.REACT.jab; if (!fx) return;
+    fx.rk = kind; fx.rt = 0; fx.rdur = R.dur; fx.rside = o.side || (Math.random() < .5 ? 1 : -1);
+    if (kind !== "block" && fx.mv && !fx.mv.startsWith("slam")){ fx.mv = null; fx.onHit = null; }   // being hit interrupts your own swing
+    if (o.push && s.p){ const wp = s.p.getWorldPosition(new THREE.Vector3()).add(o.push); const lp = s.p.parent ? s.p.parent.worldToLocal(wp).sub(s.p.position) : o.push.clone(); lp.y = 0; fx.kb.add(lp.multiplyScalar(R.kb)); }
+  },
+  dodge(s, dir){ if (s && (s.fx || this.on(s))) s.fx.dodge = {dir: dir || 1, t: 0}; },
+  /* ---------- the per-frame pose, called right after the recorded animation has played ---------- */
+  apply(s, dt){
+    const fx = s.fx, T = THREE, L = Lounge, E = this.E, MIX = this.MIX; if (!fx || !fx.on || !s.real) return;
+    if (!L._ov) L._ov = {a: new T.Vector3(), b: new T.Vector3(), q: new T.Quaternion(), q1: new T.Quaternion(), q2: new T.Quaternion(), q3: new T.Quaternion(), id: new T.Quaternion()};
+    const B = L.ovBones(s); if (!B.Pelvis || !B.L_UpperArm || !B.R_Thigh) return;
+    dt *= this.slow; fx.clock += dt;
+    // advance the move / reaction / dodge / knock-back
+    if (fx.mv){ fx.t += dt; if (!fx.hitFired && fx.t >= fx.hitU*fx.dur){ fx.hitFired = true; const cb = fx.onHit; fx.onHit = null; if (cb) try{ cb(s); }catch(e){ console.warn(e); } }
+      if (fx.mv && fx.t >= fx.dur){ const cb = fx.done; fx.mv = null; fx.done = null; if (cb) try{ cb(s); }catch(e){ console.warn(e); } } }
+    if (fx.rk){ fx.rt += dt; if (fx.rt >= fx.rdur) fx.rk = null; }
+    if (fx.dodge){ fx.dodge.t += dt; if (fx.dodge.t > .55) fx.dodge = null; }
+    if (fx.kb.lengthSq() > 1e-6){ s.p.position.x += fx.kb.x*Math.min(1, dt*7); s.p.position.z += fx.kb.z*Math.min(1, dt*7); fx.kb.multiplyScalar(Math.max(0, 1 - dt*7)); }
+    if (fx.slam) this.slamStep(s, dt);
+    s.real.updateMatrixWorld(true);
+    const q = s.p.getWorldQuaternion(new T.Quaternion()), F = {up: new T.Vector3(0, 1, 0), fwd: new T.Vector3(0, 0, 1).applyQuaternion(q), right: new T.Vector3(1, 0, 0).applyQuaternion(q)};
+    const D = a => new T.Vector3().addScaledVector(F.right, a[0]).addScaledVector(F.up, a[1]).addScaledVector(F.fwd, a[2]).normalize();
+    if (s.ovSide === undefined) s.ovSide = Math.sign(B.L_UpperArm.getWorldPosition(new T.Vector3()).sub(B.Pelvis.getWorldPosition(new T.Vector3())).dot(F.right)) || 1;
+    const sL = s.ovSide, M = fx.mv && this.MOVES[fx.mv], R = fx.rk && this.REACT[fx.rk], u = fx.mv ? fx.t/fx.dur : 0, hu = fx.hitU;
+    // move envelopes: w = winding up, e = snapping out, r = pulling back
+    const w = M ? E(u, 0, Math.max(.05, hu - .1)) : 0, e = M ? E(u, hu - .1, hu) : 0, r = M ? E(u, hu + .08, 1) : 0, amt = w*(1 - r);
+    const ra = R ? (fx.rt/fx.rdur < .12 ? fx.rt/fx.rdur/.12 : Math.exp(-(fx.rt/fx.rdur - .12)*3.2)) : 0, rs = fx.rside || 1;
+    const lead = fx.lefty ? "R" : "L", bob = Math.sin(fx.clock*5.2 + (s.ph || 0)), sway = Math.sin(fx.clock*2.3 + 1);
+    // ----- body numbers -----
+    const strikeId = M && (M.arm === "lead" ? lead : M.arm === "rear" ? (lead === "L" ? "R" : "L") : M.arm === "leg" ? (fx.lefty ? "L" : "R") : null), strikeSd = strikeId ? (strikeId === "L" ? sL : -sL) : 1;
+    let tw = M && M.tw ? strikeSd*amt*(M.tw[0] + (M.tw[1] - M.tw[0])*e) : 0;
+    let bow = 0, lean = 0, crouch = .05 + .012*bob, lunge = M && M.lunge ? amt*(M.lunge[0] + (M.lunge[1] - M.lunge[0])*e) : 0;
+    if (M && M.crouch) crouch += amt*(M.crouch[0] + (M.crouch[1] - M.crouch[0])*e);
+    if (M && M.lean) bow += amt*(M.lean[0] + (M.lean[1] - M.lean[0])*e);
+    let headP = 0, headY = 0, roll = 0, hop = 0, flail = 0;
+    if (fx.mv === "slam"){ const lf = E(u, .22, .5), hl = E(u, .56, hu), bk = E(u, hu + .06, .95); bow += -.3*lf*(1 - hl) + .75*hl*(1 - bk); lunge += .12*hl*(1 - bk); }
+    if (fx.exposed > 0) { bow += .12*fx.exposed; headP += .12*fx.exposed; }
+    if (R){ bow += R.bw*ra; headP += R.hp*ra; headY += R.hy*rs*ra; tw += R.tw*rs*ra; roll += R.rl*rs*ra; hop += R.hop*ra*Math.max(0, 1 - fx.rt*3); crouch += R.cr*ra; flail = R.fl*ra; }
+    if (fx.blk > .01 && !R) bow += .1*fx.blk, headP += .15*fx.blk;
+    let dodgeOff = 0;
+    if (fx.dodge){ const k = Math.sin(Math.min(1, fx.dodge.t/.55)*Math.PI); dodgeOff = fx.dodge.dir*.42*k; roll += fx.dodge.dir*-.5*k; bow += .12*k; crouch += .1*k; }
+    // the whole body: height, lunge, sidestep
+    s.real.position.set(fx.base.x + dodgeOff, fx.base.y - crouch*.8 + hop*.5, fx.base.z + lunge);
+    if (fx.slam && fx.slam.lowerBy) s.real.position.y -= fx.slam.lowerBy;
+    if (fx.ko) { /* lying down: the fall is driven elsewhere */ }
+    // ----- hips and spine (never Spine itself: the thighs hang off it) -----
+    const sp1 = B.Spine1 || B.Spine, sp2 = B.Spine2 || sp1;
+    L.ovRot(B.Pelvis, F.up, -tw*.2 + (fx.stanceTw || 0)); L.ovRot(B.Pelvis, F.fwd, roll*.2);
+    L.ovRot(sp1, F.up, -tw*.4); L.ovRot(sp2, F.up, -tw*.4);
+    L.ovRot(sp1, F.right, bow*.5); L.ovRot(sp2, F.right, bow*.5); L.ovRot(sp1, F.fwd, roll*.5); L.ovRot(sp2, F.fwd, roll*.4);
+    if (B.Neck) L.ovRot(B.Neck, F.right, headP*.3);
+    if (B.Head){ L.ovRot(B.Head, F.right, headP*.7); L.ovRot(B.Head, F.up, headY); }
+    // ----- arms -----
+    const arms = [["L", sL], ["R", -sL]];
+    for (const [id, sd] of arms){
+      const ua = B[id + "_UpperArm"], fa = B[id + "_Forearm"], hd = B[id + "_Hand"]; if (!ua || !fa || !hd) continue;
+      const role = id === lead ? "lead" : "rear";
+      let A = this.G[role].ua, Fo = this.G[role].fa;
+      if (fx.exposed > 0){ A = MIX(A, this.LOW.ua, fx.exposed*.8); Fo = MIX(Fo, this.LOW.fa, fx.exposed*.8); }
+      if (fx.blk > .01){ A = MIX(A, this.BLK.ua, fx.blk); Fo = MIX(Fo, this.BLK.fa, fx.blk); }
+      // idle bounce in the guard
+      A = [A[0], A[1] + .04*bob, A[2]]; Fo = [Fo[0] + .04*sway, Fo[1], Fo[2]];
+      if (M){
+        if (fx.mv === "slam"){ const k = this.slamArms(u, hu); A = MIX(A, k.ua, k.a); Fo = MIX(Fo, k.fa, k.a); }
+        else if (M.arm === role){ A = MIX(A, MIX(M.cock.ua, M.ext.ua, e), amt); Fo = MIX(Fo, MIX(M.cock.fa, M.ext.fa, e), amt); }
+      }
+      if (flail > .01){ A = MIX(A, this.FLAIL.ua, flail*.8); Fo = MIX(Fo, this.FLAIL.fa, flail*.8); }
+      L.ovAim(ua, fa, D([sd*A[0], A[1], A[2]])); L.ovAim(fa, hd, D([sd*Fo[0], Fo[1], Fo[2]]));
+    }
+    // ----- legs: a fighter's stance, and kicks -----
+    const legs = [["L", sL], ["R", -sL]], rearId = fx.lefty ? "L" : "R";
+    for (const [id, sd] of legs){
+      const th = B[id + "_Thigh"], ca = B[id + "_Calf"], ft = B[id + "_Foot"]; if (!th || !ca || !ft) continue;
+      const isLead = id !== rearId; let T1 = isLead ? [.05*sd, -.93, .37] : [-.05*sd, -.95, -.28], C1 = isLead ? [0, -.99, -.12] : [0, -.99, .08];
+      if (M && M.arm === "leg" && !isLead){
+        const k = amt; T1 = MIX(T1, MIX(M.cock.th, M.ext.th, e), k); C1 = MIX(C1, MIX(M.cock.ca, M.ext.ca, e), k);
+        L.ovAim(th, ca, D([sd*T1[0], T1[1], T1[2]])); L.ovAim(ca, ft, D([sd*C1[0], C1[1], C1[2]])); continue; }
+      if (fx.mv === "slam" || fx.ko){ continue; }
+      L.ovAim(th, ca, D([sd*T1[0], T1[1], T1[2]]).lerp(D([0, -1, 0]), .35).normalize()); L.ovAim(ca, ft, D([sd*C1[0], C1[1], C1[2]]));
+    }
+  },
+  // overhead lift and slam: arms reach, press up, hurl down
+  slamArms(u, hu){
+    const E = this.E, reach = E(u, 0, .22), lift = E(u, .22, .5), hurl = E(u, .56, hu), back = E(u, hu + .06, .95);
+    let ua = this.MIX([.15, .1, 1], [.1, 1, .15], lift), fa = this.MIX([0, .1, 1], [0, 1, .1], lift);
+    ua = this.MIX(ua, [.1, -.1, 1], hurl); fa = this.MIX(fa, [0, -.35, 1], hurl);
+    return {ua, fa, a: reach*(1 - back)};
+  },
+  /* ---------- the slam: lift him over your head and put him through the floor ---------- */
+  slam(att, vic, o = {}){
+    // att may be null (VR: your own hands). o.from = world position of the attacker; o.onHit fires on impact.
+    const T = THREE, fx = this.on(vic); if (!fx || fx.slam) return false;
+    const from = o.from ? o.from.clone() : att.p.getWorldPosition(new T.Vector3()), vw = vic.p.getWorldPosition(new T.Vector3());
+    const dir = vw.clone().sub(from).setY(0); if (dir.lengthSq() < .01) dir.set(0, 0, 1); dir.normalize();
+    const par = vic.p.parent, lp0 = vic.p.position.clone();
+    fx.slam = {t: 0, dur: this.MOVES.slam.dur, hitU: this.MOVES.slam.hitU, att, from, dir, lp0, floorW: vw.y, q0: vic.p.quaternion.clone(), hit: false, onHit: o.onHit || null, done: o.done || null, hp: o.hp, lowerBy: 0};
+    fx.mv = null; fx.rk = null; fx.onHit = null;
+    if (att && att.real){ this.on(att); this.move(att, "slam", {force: true, quiet: true, hitU: this.MOVES.slam.hitU, dur: this.MOVES.slam.dur}); }
+    try{ this.snd("whoosh", .5); }catch(e){}
+    return true;
+  },
+  slamStep(s, dt){
+    const T = THREE, fx = s.fx, S = fx.slam; if (!S) return; S.t += dt; const u = S.t/S.dur, E = this.E, par = s.p.parent; if (!par) return;
+    const hu = S.hitU, lift = E(u, .2, .52), hurl = E(u, .58, hu), up = E(u, hu + .12, .98), reach = 1.05, over = -.85;
+    let dist = reach + (over - reach)*lift; dist += (reach*.95 - dist)*hurl;
+    const wp = S.from.clone().addScaledVector(S.dir, dist); wp.y = S.floorW + 1.5*lift*(1 - hurl) + .06*hurl*(1 - up);
+    const lp = par.worldToLocal(wp.clone()); s.p.position.set(lp.x, lp.y, lp.z);
+    // tip over onto his back, head away from the attacker
+    const ax = new T.Vector3(S.dir.z, 0, -S.dir.x), ang = -lift*Math.PI/2*.96*(1 - up), qw = par.getWorldQuaternion(new T.Quaternion()).invert();
+    s.p.quaternion.copy(S.q0).premultiply(new T.Quaternion().setFromAxisAngle(ax.applyQuaternion(qw), ang));
+    // limp arms and legs flap
+    fx.rk = "ko"; fx.rt = Math.min(.15, S.t*.3); fx.rdur = 1.2;
+    if (!S.hit && u >= hu){ S.hit = true; const cb = S.onHit; S.onHit = null; if (cb) try{ cb(s); }catch(e){ console.warn(e); } }
+    if (S.t >= S.dur){ const cb = S.done; fx.slam = null; fx.rk = null; s.p.quaternion.copy(S.q0); if (cb) try{ cb(s); }catch(e){ console.warn(e); } }
+  },
+  /* ---------- sound ---------- */
+  ctx(){ const L = Lounge; return this._ac || (this._ac = (L.listener && L.listener.context) || new (window.AudioContext || window.webkitAudioContext)()); },
+  noise(ac){ if (this._nb) return this._nb; const b = ac.createBuffer(1, ac.sampleRate*.5, ac.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1; return this._nb = b; },
+  snd(kind, delay = 0, pow = 1){
+    const ac = this.ctx(); if (!ac || ac.state === "closed") return; const t = ac.currentTime + Math.max(0, delay), out = ac.destination;
+    if (kind === "whoosh"){ const n = ac.createBufferSource(); n.buffer = this.noise(ac); const f = ac.createBiquadFilter(), g = ac.createGain(); f.type = "bandpass"; f.Q.value = 1.2; f.frequency.setValueAtTime(500, t); f.frequency.exponentialRampToValueAtTime(2600, t + .16);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.16, t + .07); g.gain.exponentialRampToValueAtTime(.0001, t + .22); n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t + .25); return; }
+    if (kind === "hit" || kind === "slam"){
+      const o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.setValueAtTime(kind === "slam" ? 120 : 190, t); o.frequency.exponentialRampToValueAtTime(40, t + .2); g.gain.setValueAtTime(Math.min(.8, .45*pow), t); g.gain.exponentialRampToValueAtTime(.001, t + (kind === "slam" ? .5 : .25)); o.connect(g); g.connect(out); o.start(t); o.stop(t + .55);
+      const n = ac.createBufferSource(); n.buffer = this.noise(ac); const hp = ac.createBiquadFilter(), g2 = ac.createGain(); hp.type = "highpass"; hp.frequency.value = kind === "slam" ? 500 : 1400; g2.gain.setValueAtTime(.3*Math.min(1.4, pow), t); g2.gain.exponentialRampToValueAtTime(.001, t + .1); n.connect(hp); hp.connect(g2); g2.connect(out); n.start(t); n.stop(t + .15); return; }
+    if (kind === "block"){ const o = ac.createOscillator(), g = ac.createGain(); o.type = "triangle"; o.frequency.setValueAtTime(320, t); o.frequency.exponentialRampToValueAtTime(140, t + .08); g.gain.setValueAtTime(.22, t); g.gain.exponentialRampToValueAtTime(.001, t + .12); o.connect(g); g.connect(out); o.start(t); o.stop(t + .15); }
+  },
+  /* ---------- the comic-book impact: star burst, word, ring, shake, a short freeze ---------- */
+  tex(word){
+    this._tx = this._tx || {}; if (this._tx[word]) return this._tx[word]; const c = document.createElement("canvas"), x = c.getContext("2d");
+    if (word === "*"){ c.width = c.height = 128; x.translate(64, 64); x.beginPath(); for (let i = 0; i < 16; i++){ const a = i/16*Math.PI*2, rr = i % 2 ? 26 : 60; x.lineTo(Math.cos(a)*rr, Math.sin(a)*rr); } x.closePath(); x.fillStyle = "#ffe14a"; x.fill(); x.lineWidth = 5; x.strokeStyle = "#ff6a1a"; x.stroke(); }
+    else if (word === "o"){ c.width = c.height = 128; x.strokeStyle = "rgba(255,255,255,.95)"; x.lineWidth = 8; x.beginPath(); x.arc(64, 64, 52, 0, Math.PI*2); x.stroke(); }
+    else { c.width = 256; c.height = 128; x.font = "900 74px Impact, 'Arial Black', sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.lineJoin = "round"; x.lineWidth = 14; x.strokeStyle = "#1a0a0a"; x.strokeText(word, 128, 66); x.lineWidth = 5; x.fillStyle = "#ffe14a"; x.fillText(word, 128, 66); }
+    const t = new THREE.CanvasTexture(c); return this._tx[word] = t;
+  },
+  impact(wp, pow = 1, word, kind = "hit"){
+    const T = THREE, L = Lounge, add = (tex, sc, life, rise, add) => { const sp = new T.Sprite(new T.SpriteMaterial({map: tex, transparent: true, depthWrite: false, depthTest: false, toneMapped: false})); sp.renderOrder = 999; sp.position.copy(wp); sp.scale.setScalar(sc*.3); L.scene.add(sp); this.fxs.push({sp, t: 0, life, sc, rise}); return sp; };
+    add(this.tex("*"), .55 + .25*pow, .26, 0); add(this.tex("o"), .35, .35, 0);
+    if (word){ const sp = add(this.tex(word), .95 + .2*pow, .75, .55); sp.scale.set(.5, .25, 1); sp.userData.word = true; sp.position.x += (Math.random() - .5)*.2; }
+    try{ L.burst(wp, 8 + Math.round(pow*5), "foam"); }catch(e){}
+    try{ this.snd(kind === "slam" ? "slam" : "hit", 0, pow); }catch(e){}
+    if (!(L.renderer && L.renderer.xr.isPresenting)) this.shake = Math.max(this.shake, .012*pow + (kind === "slam" ? .03 : 0));
+    this.hold(60 + 50*pow);
+  },
+  hold(ms){ this.slow = .08; clearTimeout(this._ht); this._ht = setTimeout(() => { this.slow = 1; }, ms); },
+  tick(dt){
+    for (const f of this.fxs){ f.t += dt; const k = f.t/f.life, sp = f.sp; sp.material.opacity = Math.max(0, 1 - k*k); if (sp.userData.word){ const s = Math.min(1, k*8)*f.sc; sp.scale.set(s, s*.5, 1); } else sp.scale.setScalar(f.sc*(.3 + Math.min(1, k*3)*.7)); if (f.rise) sp.position.y += f.rise*dt; }
+    if (this.fxs.length && this.fxs.some(f => f.t >= f.life)){ for (const f of this.fxs) if (f.t >= f.life){ Lounge.scene.remove(f.sp); f.sp.material.dispose(); } this.fxs = this.fxs.filter(f => f.t < f.life); }
+    if (this.duels.length) this.duelTick(dt);
+  },
+  /* ---------- two characters going at it (the bouncer's fight, bar scuffles) ---------- */
+  duel(a, b, o = {}){
+    if (!a || !b || !a.real || !b.real) return null; const d = {a, b, t: 0, next: .6, calm: o.calm || 1, ko: !!o.ko, hpA: o.hp || 8, hpB: o.hp || 8, turn: Math.random() < .5, over: false};
+    for (const s of [a, b]){ this.on(s); s.fx.lefty = Math.random() < .25; this.clip(s, "idle"); }
+    this.duels.push(d); return d;
+  },
+  stopDuel(d){ if (!d) return; d.over = true; for (const s of [d.a, d.b]){ this.off(s); } this.duels = this.duels.filter(x => x !== d); },
+  duelTick(dt){
+    const T = THREE;
+    for (const d of this.duels.slice()){
+      const A = d.a, B = d.b; if (!A.p.parent || !B.p.parent){ this.stopDuel(d); continue; }
+      const wa = A.p.getWorldPosition(new T.Vector3()), wb = B.p.getWorldPosition(new T.Vector3()), dx = wb.x - wa.x, dz = wb.z - wa.z, dist = Math.hypot(dx, dz) || 1;
+      A.p.rotation.y = Math.atan2(dx, dz); B.p.rotation.y = Math.atan2(-dx, -dz);
+      // keep a fighting distance
+      const want = 1.12, push = (dist - want)*Math.min(1, dt*2); for (const [s, sg] of [[A, 1], [B, -1]]){ const lp = s.p.parent.worldToLocal(s.p.getWorldPosition(new T.Vector3()).add(new T.Vector3(dx/dist*push*.5*sg, 0, dz/dist*push*.5*sg))); s.p.position.x = lp.x; s.p.position.z = lp.z; }
+      d.next -= dt; if (d.next > 0 || this.busy(A) || this.busy(B) || A.fx.rk || B.fx.rk) continue;
+      d.turn = !d.turn; const at = d.turn ? A : B, df = d.turn ? B : A, kinds = ["jab", "cross", "hook", "jab", "upper", "kick"], kind = kinds[Math.floor(Math.random()*kinds.length)];
+      d.next = (.55 + Math.random()*.8)*d.calm;
+      this.move(at, kind, {onHit: () => {
+        const r = Math.random(), hp = at.p.getWorldPosition(new T.Vector3()), chest = df.p.getWorldPosition(new T.Vector3()).add(new T.Vector3(0, 1.35, 0));
+        const dirw = df.p.getWorldPosition(new T.Vector3()).sub(hp).setY(0).normalize();
+        if (r < .3){ this.react(df, "block", {push: dirw}); this.impact(chest, .5, null, "block"); try{ this.snd("block"); }catch(e){} }
+        else if (r < .45){ this.dodge(df, Math.random() < .5 ? 1 : -1); try{ this.snd("whoosh"); }catch(e){} }
+        else { this.react(df, kind === "upper" ? "upper" : kind === "kick" ? "kick" : kind === "hook" ? "hook" : kind === "cross" ? "cross" : "jab", {push: dirw}); this.impact(chest.add(new T.Vector3(0, .15, 0)), this.MOVES[kind].pow, this.MOVES[kind].word); if (df === A) d.hpA--; else d.hpB--;
+          if (!d.ko && (d.hpA < 3 || d.hpB < 3)){ d.hpA = d.hpB = 8; } }
+      }});
+    }
+  }
 };
 
 /* ================= 🥊 Bar Brawl: block, dodge, counter. In VR, real punches ================= */
 Mogul.GAMES.brawl = {
   panelSide: .9, anyWorld: true,
-  howTo: ["Tap 🥊 Brawl mode on the party bar to start a fight right where you stand, in any world. In the club it happens on the dance floor.", "Troublemakers stagger in from the dance floor. A red ring under one means he's about to swing.", "Hold 🛡 Block when he swings (keyboard: Space), or dodge ◀ ▶ (A / D).", "Right after a swing he flashes blue: that's your opening. Hit 👊 Punch (keyboard: J).", "Grab stuff! Mugs, bottles and bar stools are on the table next to you. Tap 🍺 Throw (keyboard: T), or in VR grab one and really throw it.", "Drink the glowing 🥃 Liquid Courage for double-power punches, but the room starts spinning.", "Later rounds, their buddies jump in. Only one can swing at a time, so keep your eyes moving. You have 5 hearts."],
+  howTo: ["Tap 🥊 Brawl mode on the party bar to start a fight right where you stand, in any world. In the club it happens on the dance floor.", "Troublemakers walk up and square off. A red ring under one means he's winding up a punch or a kick. Your fighter is on screen; the camera sits behind your shoulder.", "Hold 🛡 Block when he swings (keyboard: Space), or dodge ◀ ▶ (A / D).", "Right after a swing he flashes blue: that's your opening. Tap 👊 Punch for a combo: jab, cross, hook, uppercut. 🦵 Kick (K) hits hard. 💥 Slam (L) lifts him over your head and drives him into the floor.", "Grab stuff! Mugs, bottles and bar stools are on the table next to you. Tap 🍺 Throw (keyboard: T), or in VR grab one and really throw it.", "Drink the glowing 🥃 Liquid Courage for double-power punches, but the room starts spinning.", "Later rounds, their buddies jump in. Only one can swing at a time, so keep your eyes moving. You have 5 hearts."],
   vrTip: "Hands up in front of your face to block, lean to dodge, and throw real punches when one flashes blue. Grab mugs, bottles and stools off the table and throw them for real. Bring the glowing shot to your mouth to drink it.",
   start(s){
     const m = this.m, T = THREE, L = Lounge;
@@ -12829,6 +13089,8 @@ Mogul.GAMES.brawl = {
     else { const h = L.headPos(); ax = h.x; az = h.z; yaw = L.renderer.xr.isPresenting ? L.headYaw() : L.yaw; if (!m.vr()){ L.yaw = yaw - .38; L.pitch = -.12; } }
     const fy = L.floorAt(ax, az, L.headPos().y + .5); this.anchor = {x: ax, z: az, yaw, y: fy != null ? fy : (L.rig.position.y || 0)};
     if (L.worldId !== "club") m.say("🥊 Brawl mode! Trouble's coming from straight ahead.");
+    this.cam3 = !m.vr(); this.comboI = 0; this.comboT = -9; this.queued = null; this.slamCd = 0; this.dead = false; this.pko = null; this.dodgeDir = 1;
+    if (this.cam3){ try{ L.standing = true; }catch(e){} this.makeAvatar(); this.mkPad(); if (m.box) m.box.hidden = true; }
     this.buildProps();
     if (s.train) this.steps = [
       {say: "Hold 🛡 Block (or Space) to raise your guard.", vr: "Raise both hands in front of your face to guard.", done: g => g.guardT > .8},
@@ -12840,6 +13102,55 @@ Mogul.GAMES.brawl = {
       {say: "Finish him: knock him out!", done: g => g.kos >= 1}
     ];
   },
+  /* your body: on a screen the camera hangs behind your shoulder, so "where you are" is the camera minus that offset */
+  bodyPos(v){ const L = Lounge, h = L.headPos(v); if (this.cam3 && L.camera){ h.x -= L.camera.position.x; h.z -= L.camera.position.z; } return h; },
+  makeAvatar(){ const m = this.m, T = THREE, g = this.wgroup(), A = this.anchor; if (!g) return;
+    const lp = g.worldToLocal(new T.Vector3(A.x, A.y, A.z)), sl = m.spawn(lp.x, lp.z, 0, "idle", {gender: Math.random() < .5 ? "m" : "f"}); if (!sl) return;
+    sl.p.position.y = A.y - g.getWorldPosition(new T.Vector3()).y; sl.isMe = true; this.avatar = sl; },
+  /* a fight-game camera: off to the side, so you can see both fighters and every punch land */
+  frameCam(dt){ const L = Lounge, T = THREE, me = this.bodyPos(), pool = this.foes.filter(f => !f.down && f.sl.p.parent), k = Math.min(1, dt*3.5);
+    let tx, tz, n = 0, ax = -Math.sin(L.yaw), az = -Math.cos(L.yaw);
+    if (pool.length){ tx = 0; tz = 0; pool.forEach(f => { const wp = f.sl.p.getWorldPosition(new T.Vector3()); tx += wp.x; tz += wp.z; n++; }); tx /= n; tz /= n; const dx = tx - me.x, dz = tz - me.z, dd = Math.hypot(dx, dz); if (dd > .2){ ax = dx/dd; az = dz/dd; } }
+    else { tx = me.x + ax*1.1; tz = me.z + az*1.1; }
+    const mx = (me.x + tx)/2, mz = (me.z + tz)/2, spread = pool.length ? Math.max(...pool.map(f => { const wp = f.sl.p.getWorldPosition(new T.Vector3()); return Math.hypot(wp.x - me.x, wp.z - me.z); })) : 1.1;
+    const side = 1.9 + spread*.8, behind = .9, px = -az, pz = ax;       // off to your right, a little behind, so both fighters and every punch are in view
+    const cx = mx + px*side - ax*behind, cz = mz + pz*side - az*behind;
+    L.camLift = .65; const want = Math.atan2(-(mx - cx), -(mz - cz)); let d = want - L.yaw; d = Math.atan2(Math.sin(d), Math.cos(d)); L.yaw += d*k;
+    L.pitch += (-.3 - L.pitch)*Math.min(1, dt*2);
+    L.camera.position.x += (cx - me.x - L.camera.position.x)*k; L.camera.position.z += (cz - me.z - L.camera.position.z)*k;
+    // anyone standing between the camera and the fight steps out of the picture
+    const cwx = me.x + L.camera.position.x, cwz = me.z + L.camera.position.z, sx = mx - cwx, sz = mz - cwz, sl2 = sx*sx + sz*sz || 1;
+    for (const s of L.slots || []){ if (s.world !== L.worldId || !s.p || s === this.avatar || s.mogul || !s.real) continue;
+      const wp = s.p.getWorldPosition(new T.Vector3()), t = Math.max(0, Math.min(1, ((wp.x - cwx)*sx + (wp.z - cwz)*sz)/sl2)), qx = cwx + sx*t - wp.x, qz = cwz + sz*t - wp.z, hide = t < .98 && qx*qx + qz*qz < 1.0;
+      if (hide && !s.hidFight){ s.hidFight = true; s.p.visible = false; } else if (!hide && s.hidFight){ s.hidFight = false; s.p.visible = true; } } },
+  /* thumb controls for phones and tablets: the fight stays in view */
+  mkPad(){ if (this.padEl) return; const d = this.padEl = document.createElement("div"); d.className = "fpad";
+    d.innerHTML = '<div class="fhud"><div class="fhp"></div><div class="fstat"></div><div class="fstep" hidden></div><div class="fmsg"></div></div><button class="fx" data-a="quit" aria-label="Leave the fight">✕</button>'
+      + '<div class="fl"><button data-a="dl">◀<small>Dodge</small></button><button data-a="blk">🛡<small>Block</small></button><button data-a="dr">▶<small>Dodge</small></button></div>'
+      + '<div class="fr"><div class="frow"><button data-a="slm">💥<small>Slam</small></button><button data-a="kck">🦵<small>Kick</small></button></div><div class="frow"><button data-a="thr">🍺<small>Throw</small></button><button data-a="drk">🥃<small>Courage</small></button><button data-a="cmb" class="big">👊<small>Combo</small></button></div></div>';
+    document.body.appendChild(d); document.body.classList.add("fighting"); this.pad = {};
+    const act = (a, down) => { const g = this; if (!g.m || g.m.game !== g) return; if (a === "blk"){ g.blocking = down; return; } if (!down) return;
+      if (a === "dl") g.dodgeAnim(1); else if (a === "dr") g.dodgeAnim(-1); else if (a === "cmb") g.punch(); else if (a === "kck") g.kick(); else if (a === "slm") g.slamNow(); else if (a === "thr") g.throwNext(); else if (a === "drk") g.drink(); else if (a === "quit") g.m.close(); };
+    d.querySelectorAll("button").forEach(b => { const a = b.dataset.a; this.pad[a] = b;
+      b.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); try{ b.setPointerCapture(e.pointerId); }catch(_){} act(a, true); });
+      const up = e => { e.preventDefault(); act(a, false); }; b.addEventListener("pointerup", up); b.addEventListener("pointercancel", up); b.addEventListener("lostpointercapture", up); b.addEventListener("contextmenu", e => e.preventDefault()); });
+    this.pTxt = {}; },
+  rmPad(){ document.body.classList.remove("fighting"); if (this.padEl){ this.padEl.remove(); this.padEl = null; this.pad = null; } },
+  padUpdate(){ const d = this.padEl; if (!d) return; const m = this.m, q = s => d.querySelector(s), set = (k, el, t) => { if (this.pTxt[k] !== t){ this.pTxt[k] = t; el.textContent = t; } };
+    set("hp", q(".fhp"), `${"❤️".repeat(Math.max(0, this.hp))}${"🖤".repeat(Math.max(0, 5 - this.hp))}  💫 ${this.kos}/${this.total}${this.courage > 0 ? "  🥃 " + Math.ceil(this.courage) + "s" : ""}`);
+    const live = (this.foes || []).filter(f => !f.down), wind = live.find(f => f.st === "wind"), open = live.find(f => f.st === "open"), st = q(".fstat");
+    set("stat", st, !live.length ? (this.kos >= this.total ? "Bar's clear." : "Here comes the next one…") : wind ? "🔴 WINDING UP: BLOCK OR DODGE!" : open ? "🔵 OPENING: HIT HIM NOW!" : live.some(f => f.st === "stagger") ? "He's rocked! Keep going!" : live.length > 1 ? `${live.length} of them. Watch the red rings.` : "He's sizing you up…");
+    st.style.color = wind ? "#ff8a7a" : open ? "#7ad8ff" : "#fff";
+    const s = m.shift, step = s && s.train && this.steps && this.steps[this.ti || 0], se = q(".fstep"); se.hidden = !step; if (step) set("step", se, `STEP ${(this.ti || 0) + 1}/${this.steps.length}: ${step.say}`);
+    const fm = q(".fmsg"), fl = m.flash && performance.now() - m.flash.t < 2200 ? m.flash : null; set("msg", fm, fl ? fl.msg : ""); fm.className = "fmsg" + (fl && fl.bad ? " bad" : "");
+    this.pad.slm.classList.toggle("dim", this.slamCd > 0 || !live.some(f => f.st === "open" || f.st === "stagger")); this.pad.drk.classList.toggle("on", this.courage > 0); this.pad.blk.classList.toggle("on", !!this.blocking);
+    const sm = this.pad.slm.querySelector("small"); set("slm", sm, this.slamCd > 0 ? Math.ceil(this.slamCd) + "s" : "Slam"); },
+  syncAvatar(dt){ const av = this.avatar, T = THREE; if (!av || !av.p.parent) return;
+    if (av.real && (!av.fx || !av.fx.on)){ Fight.on(av); Fight.clip(av, "idle"); }
+    if (!av.fx) return; const me = this.bodyPos(), tg = this.target(), L = Lounge;
+    const lp = av.p.parent.worldToLocal(new T.Vector3(me.x, 0, me.z)); if (!this.dead){ av.p.position.x = lp.x; av.p.position.z = lp.z; }
+    if (!this.dead && !av.fx.slam){ const wp = tg ? tg.sl.p.getWorldPosition(new T.Vector3()) : null; av.p.rotation.y = wp ? Math.atan2(wp.x - me.x, wp.z - me.z) : L.yaw + Math.PI; }
+    av.fx.blk += ((this.guard() ? 1 : 0) - av.fx.blk)*Math.min(1, dt*10); },
   // a spot relative to where the fight started: rx to your right, fz in front of you
   at(rx, fz){ const A = this.anchor, y = A.yaw; return {x: A.x + Math.cos(y)*rx - Math.sin(y)*fz, z: A.z - Math.sin(y)*rx - Math.cos(y)*fz}; },
   wgroup(){ const L = Lounge, w = L.worlds[L.worldId]; return w ? w.group : L.scene; },
@@ -12883,25 +13194,44 @@ Mogul.GAMES.brawl = {
     const f = {sl, baseY: sl.p.position.y, hp: m.shift.train ? 5 : 3 + Math.floor(m.shift.lv/4), st: "walk", t: 0, cd: 1.2, home: null, ang: 0, sway: Math.random()*6};
     m.bubble(sl, lines[Math.floor(Math.random()*lines.length)], "#ff5a4a"); if (joining) m.say("🍻 His buddy just jumped in!", true);
     f.ring = new T.Mesh(new T.RingGeometry(.35, .5, 32).rotateX(-Math.PI/2), new T.MeshBasicMaterial({color: 0xff3030, transparent: true, opacity: 0, toneMapped: false, depthWrite: false})); sl.p.add(f.ring); f.ring.position.y = .03;
-    this.foes.push(f); this.spreadFoes(); },
+    sl.fx = null; f.kind = "jab"; this.foes.push(f); this.spreadFoes(); },
   spreadFoes(){ const live = this.foes.filter(f => !f.down), n = live.length; live.forEach((f, i) => { f.ang = n === 1 ? 0 : (i/(n - 1) - .5)*1.5; }); },
   target(){ const live = this.foes.filter(f => !f.down); if (!live.length) return null; const open = live.filter(f => f.st === "open" || f.st === "stagger"); const pool = open.length ? open : live;
-    const me = Lounge.headPos(); return pool.slice().sort((a, b) => a.sl.p.getWorldPosition(new THREE.Vector3()).distanceTo(me) - b.sl.p.getWorldPosition(new THREE.Vector3()).distanceTo(me))[0]; },
+    const me = this.bodyPos(); return pool.slice().sort((a, b) => a.sl.p.getWorldPosition(new THREE.Vector3()).distanceTo(me) - b.sl.p.getWorldPosition(new THREE.Vector3()).distanceTo(me))[0]; },
   guard(){ if (this.m.vr()){ const h = Lounge.headPos(), cs = (Lounge.xrCtls || []).map(c => new THREE.Vector3().setFromMatrixPosition((c.userData.grip || c).matrixWorld)); return cs.length >= 2 && cs.every(p => p.distanceTo(h) < .42 && p.y > h.y - .32); } return !!this.blocking; },
-  damage(f, n, push, how){ const m = this.m;
-    f.hp -= n; m.emoji(["💥", "👊", "💫", "⭐"][Math.floor(Math.random()*4)], m.headOf(f.sl));
-    try{ Lounge.npcReact(f.sl, Lounge.headPos(), push || new THREE.Vector3(0, 0, -.45)); }catch(e){}
-    if (push){ const p = f.sl.p.position; p.x += push.x*.5; p.z += push.z*.5; }
-    f.st = "stagger"; f.t = 0; f.ring.material.opacity = 0;
-    if (f.hp <= 0) this.knockout(f, how); },
-  punch(vel, foe){ const f = foe || this.target(), m = this.m; if (!f) return;
-    if (f.st === "open" || f.st === "stagger"){ this.hits++; const pow = this.courage > 0 ? 2 : 1; try{ Lounge.xrCtls.forEach(c => Lounge.haptic(c, .8, 60)); }catch(e){}
-      this.damage(f, pow, (vel || this.toFoe(f)).clone().setY(0).normalize().multiplyScalar(pow > 1 ? .7 : .45), pow > 1 ? "courage" : "punch"); }
-    else if (f.st === "wind" || f.st === "walk" || f.st === "guard"){ m.say(this.courage > 0 ? "🥴 Whoa, missed! Wait for the blue opening." : "Blocked! Wait for the blue opening.", true); } },
-  toFoe(f){ const me = Lounge.headPos(), wp = f.sl.p.getWorldPosition(new THREE.Vector3()); return wp.sub(me).setY(0).normalize(); },
-  knockout(f, how){ const m = this.m, T = THREE; if (f.down) return; f.down = true; f.st = "down"; f.t = 0; this.kos++;
+  WORDS: {jab: "POW!", cross: "WHAM!", hook: "SMACK!", upper: "BAM!", kick: "THWACK!", throw: "CRASH!", stool: "CRUNCH!", slam: "SLAM!", courage: "KA-POW!"},
+  damage(f, n, push, how, kind){ const m = this.m; kind = kind || (how === "courage" ? "cross" : how) || "jab"; f.hp -= n;
+    const dir = (push && push.lengthSq() > .0001 ? push.clone().setY(0).normalize() : this.toFoe(f)), chest = m.headOf(f.sl).add(new THREE.Vector3(0, -.28, 0));
+    if (kind !== "slam"){ Fight.react(f.sl, Fight.REACT[kind] ? kind : "throw", {push: dir.clone().multiplyScalar(n > 1 ? 1.3 : 1)}); f.st = "stagger"; f.t = 0; }
+    else { f.st = "slam"; }
+    f.ring.material.opacity = 0; Fight.impact(chest, Math.min(2.4, .8 + n*.45), this.WORDS[how === "courage" ? "courage" : kind] || "POW!", kind === "slam" ? "slam" : "hit");
+    if (f.hp <= 0) this.knockout(f, how, kind === "slam"); },
+  /* a hit actually lands (or doesn't) at the moment the fist gets there */
+  connect(kind, foe, vel){ const f = foe || this.target(), m = this.m; if (!f || f.down || f.st === "slam") return;
+    const dir = (vel ? vel.clone().setY(0).normalize() : this.toFoe(f));
+    if (f.st === "open" || f.st === "stagger"){ this.hits++; const strong = kind === "upper" || kind === "kick", pow = (strong ? 2 : 1)*(this.courage > 0 ? 2 : 1); try{ Lounge.xrCtls.forEach(c => Lounge.haptic(c, .8, 60)); }catch(e){}
+      this.damage(f, pow, dir, this.courage > 0 ? "courage" : kind, kind); }
+    else if (f.st === "wind" || f.st === "walk" || f.st === "guard"){ Fight.react(f.sl, "block", {push: dir}); Fight.impact(m.headOf(f.sl).add(new THREE.Vector3(0, -.3, 0)), .5, null, "block"); try{ Fight.snd("block"); }catch(e){}
+      m.say(this.courage > 0 ? "🥴 Blocked! Wait for the blue opening." : "Blocked! Wait for the blue opening.", true); } },
+  /* your own moves: on a screen your fighter throws them; in a headset your hands do */
+  attack(kind){ const av = this.avatar, f = this.target(); if (!f || this.dead) { if (!f) this.m.say("Nobody close enough… yet.", true); return; }
+    if (!av || !av.fx || !av.fx.on){ this.connect(kind, f); return; }
+    if (Fight.busy(av)){ this.queued = kind; return; }
+    Fight.move(av, kind, {onHit: () => this.connect(kind), done: () => { const q = this.queued; this.queued = null; if (q && !this.dead && this.m.game === this) this.attack(q); }}); },
+  combo(){ const now = performance.now()/1000; this.comboI = now - this.comboT < 1.2 ? (this.comboI + 1) % 4 : 0; this.comboT = now; this.attack(["jab", "cross", "hook", "upper"][this.comboI]); },
+  punch(vel, foe){ if (vel){ const f = foe || this.target(); if (!f) return; const v = vel.clone(); const kind = v.y > Math.abs(v.x) + Math.abs(v.z) ? "upper" : Math.abs(v.x) > Math.abs(v.z)*1.3 ? "hook" : "cross"; this.connect(kind, f, vel); } else this.combo(); },
+  kick(){ this.attack("kick"); },
+  slamNow(){ const m = this.m, f = this.target(); if (this.dead) return;
+    if (!f || !(f.st === "open" || f.st === "stagger")){ m.say("Slam needs an opening: wait for the blue flash, or when he's rocked.", true); return; }
+    if (this.slamCd > 0){ m.say(`Slam is catching its breath (${Math.ceil(this.slamCd)}s).`, true); return; }
+    const av = this.avatar, from = this.bodyPos(), T = THREE; this.slamCd = 5; this.hits++; f.st = "slam"; f.t = 0; f.ring.material.opacity = 0;
+    const strong = this.courage > 0 ? 2 : 1;
+    Fight.slam(av && av.fx && av.fx.on ? av : null, f.sl, {from, onHit: () => { f.st = "stagger"; this.damage(f, 3*strong, null, this.courage > 0 ? "courage" : "slam", "slam"); try{ Lounge.xrCtls.forEach(c => Lounge.haptic(c, 1, 160)); }catch(e){} },
+      done: () => { if (!f.down){ f.st = "stagger"; f.t = .2; } }}); },
+  toFoe(f){ const me = this.bodyPos(), wp = f.sl.p.getWorldPosition(new THREE.Vector3()); return wp.sub(me).setY(0).normalize(); },
+  knockout(f, how, lying){ const m = this.m, T = THREE; if (f.down) return; f.down = true; f.st = "down"; f.t = 0; this.kos++; const sq = f.sl.fx && f.sl.fx.slam;
     m.score(how === "throw" ? 100 : 95, 18 + (how === "stool" ? 6 : 0)); m.say(how === "stool" ? "🪑 STOOL KNOCKOUT! Classic." : how === "throw" ? "🍺 Bottled 'em! KNOCKOUT!" : "💫 KNOCKOUT!"); m.bubble(f.sl, null);
-    const dir = this.toFoe(f); f.fall = {ax: new T.Vector3(dir.z, 0, -dir.x), q0: f.sl.p.quaternion.clone()};
+    const dir = sq ? sq.dir.clone() : this.toFoe(f); f.fall = {ax: new T.Vector3(dir.z, 0, -dir.x), q0: sq ? sq.q0.clone() : f.sl.p.quaternion.clone()}; if (lying) f.t = .55; Fight.cancel(f.sl); if (f.sl.fx){ f.sl.fx.ko = true; f.sl.fx.exposed = 0; if (!lying) Fight.react(f.sl, "ko"); }
     // cartoon stars circling his head
     const st = f.stars = new T.Group(); for (let i = 0; i < 4; i++){ const s = new T.Sprite(new T.SpriteMaterial({map: this.starTex(), transparent: true, depthWrite: false})); s.scale.setScalar(.16); st.add(s); } Lounge.scene.add(st);
     try{ this.bonk(); }catch(e){}
@@ -12915,13 +13245,16 @@ Mogul.GAMES.brawl = {
   throwNext(){ const m = this.m, f = this.target(); if (!f){ m.say("Nobody to throw at… yet.", true); return; }
     const o = this.throwables.find(o => o.visible && !o.userData.grab.held && o.userData.grab.resting && !o.userData.brawl.gone && o.userData.brawl.kind !== "stool") || this.throwables.find(o => o.visible && !o.userData.grab.held && o.userData.grab.resting && !o.userData.brawl.gone);
     if (!o){ m.say("Nothing left on the table. Hang on, the barback's bringing more.", true); return; }
-    const T = THREE, gd = o.userData.grab, from = Lounge.headPos().add(new T.Vector3(0, -.25, 0)), to = m.headOf(f.sl).add(new T.Vector3(0, -.35, 0));
+    const T = THREE, gd = o.userData.grab, from = this.bodyPos().add(new T.Vector3(0, -.25, 0)), to = m.headOf(f.sl).add(new T.Vector3(0, -.35, 0));
     o.parent.worldToLocal(from); o.position.copy(from); gd.hist = []; Lounge.release(o);
     const tt = .55, d = to.sub(o.getWorldPosition(new T.Vector3())); gd.vel.set(d.x/tt, d.y/tt + 4.9*tt, d.z/tt); gd.spin.set(8, 2, 4); o.userData.brawl.flying = true; o.userData.brawl.thrown = performance.now(); },
   drink(){ const m = this.m; if (this.courage > 0){ m.say("You're already full of courage.", true); return; } if (!this.shot.visible){ m.say("The next shot is on its way.", true); return; }
     this.courage = 12; this.drinks++; this.shot.visible = false; this.shot.userData.brawl.gone = 25; m.say("🥃 LIQUID COURAGE! Double-power punches… but the room's spinning."); try{ Lounge.xrCtls.forEach(c => Lounge.haptic(c, .6, 200)); }catch(e){} },
   update(dt){
-    const m = this.m, T = THREE, L = Lounge, me = L.headPos();
+    const m = this.m, T = THREE, L = Lounge, me = this.bodyPos();
+    if (this.cam3){ this.frameCam(dt); this.syncAvatar(dt); this.padUpdate(); }
+    if (this.slamCd > 0) this.slamCd -= dt;
+    if (this.dead){ this.deadStep(dt); return; }
     this.guardT = this.guard() ? (this.guardT || 0) + dt : 0;
     // liquid courage: the room sways on a screen; in a headset we leave your view alone and pulse your hands instead
     if (this.courage > 0){ this.courage -= dt; const k = Math.min(1, this.courage/2);
@@ -12938,7 +13271,7 @@ Mogul.GAMES.brawl = {
       if (gd.resting){ if (b.flying){ b.flying = false; b.rest = 0; } b.rest = (b.rest || 0) + dt; if (b.rest > 6 && o.position.distanceTo(b.home) > .05) this.resetProp(o); continue; }
       const sp = gd.vel.length(); if (sp < 2.2) continue; const wp = o.getWorldPosition(new T.Vector3());
       for (const f of this.foes){ if (f.down) continue; if (L.touchDist(f.sl, wp) < (b.kind === "stool" ? .32 : .16)){
-        const pow = b.kind === "stool" ? 2 : 1; this.throwHits++; this.damage(f, pow, gd.vel.clone().setY(0).normalize().multiplyScalar(b.kind === "stool" ? .8 : .5), b.kind === "stool" ? "stool" : "throw");
+        const pow = b.kind === "stool" ? 2 : 1; this.throwHits++; this.damage(f, pow, gd.vel.clone().setY(0).normalize(), b.kind === "stool" ? "stool" : "throw", b.kind === "stool" ? "stool" : "throw");
         if (b.kind === "bottle" || b.kind === "mug"){ try{ L.burst(wp, 10, "foam"); }catch(e){} m.emoji(b.kind === "bottle" ? "🍾" : "🍺", wp); o.visible = false; b.gone = 5; }
         else { gd.vel.multiplyScalar(-.25); }
         m.say(b.kind === "stool" ? "🪑 STOOL TO THE FACE!" : b.kind === "bottle" ? "🍾 SMASH!" : "🍺 Direct hit!"); try{ L.xrCtls.forEach(c => L.haptic(c, .5, 40)); }catch(e){} break; } } }
@@ -12957,22 +13290,34 @@ Mogul.GAMES.brawl = {
     const busy = live.some(f => f.st === "wind" || f.st === "strike");
     const slow = m.shift.train ? 1.6 : Math.max(.6, 1.1 - m.shift.lv*.05);
     for (const f of live){
+      if (f.st === "slam") continue;
+      if (f.sl.real && (!f.sl.fx || !f.sl.fx.on)){ Fight.on(f.sl); if (f.sl.fx) f.sl.fx.lefty = !!f.lefty; Fight.clip(f.sl, f.st === "walk" ? "walk" : "idle"); }
       const p = f.sl.p.position, wp = f.sl.p.getWorldPosition(new T.Vector3()), dx = me.x - wp.x, dz = me.z - wp.z, d = Math.hypot(dx, dz) || 1;
       f.sl.p.rotation.y = Math.atan2(dx, dz); f.t += dt; f.sway += dt;
       // where he wants to stand: around you, so a gang spreads out instead of stacking
       const ux = -dx/d, uz = -dz/d, ca = Math.cos(f.ang), sa = Math.sin(f.ang), sx = me.x + (ux*ca - uz*sa)*1.08, sz = me.z + (ux*sa + uz*ca)*1.08;
-      if (f.st === "walk"){ const tx = sx - wp.x, tz = sz - wp.z, td = Math.hypot(tx, tz); if (td > .08){ const sp = Math.min(td, dt*1.35); p.x += tx/td*sp + Math.sin(f.sway*3)*dt*.25; p.z += tz/td*sp; } else { f.st = "guard"; f.t = Math.random()*.4; f.home = p.clone(); m.bubble(f.sl, null); } }
-      else if (f.st === "guard"){ p.x += Math.sin(f.sway*2.2)*dt*.08; if (d > 1.5){ f.st = "walk"; continue; } if (f.t > f.cd*slow && !busy){ f.st = "wind"; f.t = 0; f.home = p.clone(); } }
+      if (f.st === "walk"){ const tx = sx - wp.x, tz = sz - wp.z, td = Math.hypot(tx, tz); if (td > .08){ const sp = Math.min(td, dt*1.35); p.x += tx/td*sp + Math.sin(f.sway*3)*dt*.25; p.z += tz/td*sp; } else { f.st = "guard"; f.t = Math.random()*.4; f.home = p.clone(); m.bubble(f.sl, null); Fight.clip(f.sl, "idle"); } }
+      else if (f.st === "guard"){ p.x += Math.sin(f.sway*2.2)*dt*.08; if (d > 1.5){ f.st = "walk"; Fight.clip(f.sl, "walk"); continue; }
+        if (f.t > f.cd*slow && !busy){ f.st = "wind"; f.t = 0; f.home = p.clone();
+          const lv = m.shift.lv, r = Math.random(); f.kind = r < .3 ? "jab" : r < .55 ? "cross" : r < .75 ? "hook" : (r < .88 && lv >= 2) ? "kick" : lv >= 3 ? "upper" : "cross";
+          const windT = .85*slow, dd = windT + .55; Fight.move(f.sl, f.kind, {dur: dd, hitU: (windT + .12)/dd, tell: true}); } }
       else if (f.st === "wind"){ f.ring.material.color.set(0xff3030); f.ring.material.opacity = Math.min(1, f.t*2); if (f.t > .85*slow){ f.st = "strike"; f.t = 0; this.dodgeArm = false; } }
-      else if (f.st === "strike"){ const k = Math.sin(Math.min(1, f.t/.25)*Math.PI); if (f.home){ p.x = f.home.x + dx/d*.45*k; p.z = f.home.z + dz/d*.45*k; }
+      else if (f.st === "strike"){ const k = Math.sin(Math.min(1, f.t/.25)*Math.PI); if (f.home){ p.x = f.home.x + dx/d*.28*k; p.z = f.home.z + dz/d*.28*k; }
         if (f.t >= .12 && !f.landed){ f.landed = true;
           let dodged = this.dodging > 0; if (m.vr()){ const base = this.vrBase || me.clone(); dodged = Math.hypot(me.x - base.x, me.z - base.z) > .22; }
-          if (dodged){ this.dodges++; m.say("Dodged!"); } else if (this.guard()){ this.blocks++; m.say("🛡 Blocked!"); try{ L.xrCtls.forEach(c => L.haptic(c, .4, 50)); }catch(e){} }
-          else { this.hp--; m.hurtFlash(); m.say(`Ouch! ${this.hp} ❤️ left`, true); try{ L.xrCtls.forEach(c => L.haptic(c, 1, 120)); }catch(e){} if (this.hp <= 0){ m.score(Math.round(this.kos/this.total*70)); return m.endGame("You got knocked down. Train some more!"); } } }
+          const av = this.avatar, dirIn = new T.Vector3(me.x - wp.x, 0, me.z - wp.z).normalize(), hitPos = av && av.real ? m.headOf(av).add(new T.Vector3(0, -.22, 0)) : me.clone().addScaledVector(dirIn, -.4).add(new T.Vector3(0, -.2, 0)), rk = f.kind || "jab";
+          if (dodged){ this.dodges++; m.say("Dodged!"); try{ Fight.snd("whoosh"); }catch(e){} }
+          else if (this.guard()){ this.blocks++; m.say("🛡 Blocked!"); try{ L.xrCtls.forEach(c => L.haptic(c, .4, 50)); }catch(e){} Fight.impact(hitPos, .5, null, "block"); if (av) Fight.react(av, "block", {push: dirIn}); try{ Fight.snd("block"); }catch(e){} }
+          else { this.hp--; m.hurtFlash(); m.say(`Ouch! ${this.hp} ❤️ left`, true); try{ L.xrCtls.forEach(c => L.haptic(c, 1, 120)); }catch(e){}
+            Fight.impact(hitPos, 1.2, this.WORDS[rk], "hit"); if (av) Fight.react(av, rk, {push: dirIn}); Fight.shake = Math.max(Fight.shake, .035);
+            if (this.hp <= 0){ m.score(Math.round(this.kos/this.total*70)); this.dead = true; this.pko = {t: 0, dir: dirIn.clone().multiplyScalar(1)};
+              if (av && av.fx){ Fight.cancel(av); av.fx.ko = true; Fight.react(av, "ko"); this.pko.q0 = av.p.quaternion.clone(); }
+              setTimeout(() => { if (m.game === this) m.endGame("You got knocked down. Train some more!"); }, av ? 1700 : 500); return; } } }
         if (f.t > .3){ f.st = "open"; f.t = 0; f.landed = false; f.ring.material.color.set(0x4ab0ff); f.ring.material.opacity = 1; if (f.home){ p.x = f.home.x; p.z = f.home.z; } } }
       else if (f.st === "open"){ if (f.t > (m.shift.train ? 1.6 : .9)){ f.st = "guard"; f.t = 0; f.cd = .8 + Math.random()*.8; f.ring.material.opacity = 0; } }
       else if (f.st === "stagger"){ if (f.t > .7){ f.st = "guard"; f.t = 0; f.cd = .6 + Math.random()*.6; f.ring.material.opacity = 0; } }
       if (f.st !== "wind" && f.st !== "open") f.ring.material.opacity = Math.max(0, f.ring.material.opacity - dt*3);
+      if (f.sl.fx) f.sl.fx.exposed += ((f.st === "open" ? 1 : 0) - f.sl.fx.exposed)*Math.min(1, dt*10);
     }
     if (this.dodging > 0) this.dodging -= dt;
     if (!live.some(f => f.st === "wind" || f.st === "strike")) this.vrBase = me.clone();
@@ -12981,24 +13326,30 @@ Mogul.GAMES.brawl = {
       if (v.length() > 2.2 && (!c.userData.punchT || performance.now() - c.userData.punchT > 400)){ const f = live.find(f => L.touchDist(f.sl, hp) < .18); if (f){ c.userData.punchT = performance.now(); this.punch(v, f); } } }
     m.tutTick(this);
   },
-  key(k, down){ if (k === " " ){ this.blocking = down; return true; } if (down && (k === "a" || k === "d")){ this.dodging = .35; return true; } if (down && k === "j"){ this.punch(); return true; } if (down && k === "t"){ this.throwNext(); return true; } if (down && k === "q"){ this.drink(); return true; } return false; },
+  deadStep(dt){ const av = this.avatar, P = this.pko; if (!P || !av || !av.p.parent || !P.q0) return; P.t += dt; const e = Math.min(1, P.t/.6); const ax = new THREE.Vector3(P.dir.z, 0, -P.dir.x);
+    av.p.quaternion.copy(P.q0).premultiply(new THREE.Quaternion().setFromAxisAngle(ax, -e*e*Math.PI/2*.96)); },
+  dodgeAnim(dir){ this.dodging = .35; this.dodgeDir = dir; if (this.avatar && this.avatar.fx) Fight.dodge(this.avatar, dir); },
+  key(k, down){ if (k === " " ){ this.blocking = down; return true; } if (down && (k === "a" || k === "d")){ this.dodgeAnim(k === "a" ? 1 : -1); return true; } if (down && k === "j"){ this.punch(); return true; } if (down && k === "k"){ this.kick(); return true; } if (down && k === "l"){ this.slamNow(); return true; } if (down && k === "t"){ this.throwNext(); return true; } if (down && k === "q"){ this.drink(); return true; } return false; },
   draw(m){
     const x = m.x, W = m.W; let Y = m.tutDraw(this, 82);
     m.text(`${"❤️".repeat(Math.max(0, this.hp))}${"🖤".repeat(Math.max(0, 5 - this.hp))}   💫 ${this.kos}/${this.total} down${this.courage > 0 ? `   🥃 ${Math.ceil(this.courage)}s` : ""}`, 28, Y + 30, 26, "#fff", 700, "left", W - 56); Y += 56;
     const live = (this.foes || []).filter(f => !f.down), wind = live.find(f => f.st === "wind"), open = live.find(f => f.st === "open");
     m.text(!live.length ? (this.kos >= this.total ? "Bar's clear." : "Here comes the next one…") : wind ? "🔴 WINDING UP: BLOCK OR DODGE!" : open ? "🔵 OPENING: PUNCH NOW!" : live.some(f => f.st === "strike") ? "💢" : live.some(f => f.st === "stagger") ? "He's rocked! Hit him again!" : live.length > 1 ? `${live.length} of them. Watch for the red ring.` : "He's sizing you up…", W/2, Y + 34, 30, wind ? "#ff8a7a" : open ? "#7ad8ff" : "#fff", 800, "center", W - 56);
     Y += 70;
-    m.btn("dl", 28, Y, 200, 84, "◀ Dodge", () => { this.dodging = .35; }, {size: 26});
+    m.btn("dl", 28, Y, 200, 84, "◀ Dodge", () => this.dodgeAnim(1), {size: 26});
     m.btn("blk", 240, Y, 260, 84, this.blocking ? "🛡 Guarding" : "🛡 Block (hold)", () => {}, {size: 26, on: this.blocking, hold: on => { this.blocking = on; }});
-    m.btn("pun", 512, Y, 260, 84, this.courage > 0 ? "👊 Punch ×2" : "👊 Punch", () => this.punch(), {primary: true, size: 30});
-    m.btn("dr", 784, Y, 212, 84, "Dodge ▶", () => { this.dodging = .35; }, {size: 26});
+    m.btn("pun", 512, Y, 260, 84, this.courage > 0 ? "👊 Combo ×2" : "👊 Combo", () => this.punch(), {primary: true, size: 30});
+    m.btn("dr", 784, Y, 212, 84, "Dodge ▶", () => this.dodgeAnim(-1), {size: 26});
     Y += 96;
-    const left = (this.throwables || []).filter(o => o.visible && !o.userData.brawl.gone).length;
-    m.btn("thr", 28, Y, 472, 70, `🍺 Throw something (${left})`, () => this.throwNext(), {size: 24});
-    m.btn("drk", 512, Y, 484, 70, this.courage > 0 ? "🥴 Feeling brave…" : this.shot && this.shot.visible ? "🥃 Liquid Courage" : "🥃 Next shot coming…", () => this.drink(), {size: 24, on: this.courage > 0});
-    m.text("Keys: Space block · A / D dodge · J punch · T throw · Q courage", W/2, Y + 100, 18, "rgba(255,255,255,.5)", 500, "center");
+    const left = (this.throwables || []).filter(o => o.visible && !o.userData.brawl.gone).length, bw4 = (W - 56 - 36)/4;
+    m.btn("kck", 28, Y, bw4, 70, "🦵 Kick", () => this.kick(), {size: 24});
+    m.btn("slm", 28 + (bw4 + 12), Y, bw4, 70, this.slamCd > 0 ? `💥 ${Math.ceil(this.slamCd)}s` : "💥 Slam", () => this.slamNow(), {size: 24, on: this.slamCd <= 0 && live.some(f => f.st === "open" || f.st === "stagger")});
+    m.btn("thr", 28 + (bw4 + 12)*2, Y, bw4, 70, `🍺 Throw (${left})`, () => this.throwNext(), {size: 22});
+    m.btn("drk", 28 + (bw4 + 12)*3, Y, bw4, 70, this.courage > 0 ? "🥴 Brave…" : this.shot && this.shot.visible ? "🥃 Courage" : "🥃 Next…", () => this.drink(), {size: 22, on: this.courage > 0});
+    m.text("Keys: Space block · A / D dodge · J combo · K kick · L slam · T throw · Q courage", W/2, Y + 100, 18, "rgba(255,255,255,.5)", 500, "center");
   },
-  end(){ const m = this.m, L = Lounge; for (const f of this.foes || []){ if (f.stars) L.scene.remove(f.stars); if (!f.gone) m.despawn(f.sl); } this.foes = [];
+  end(){ const m = this.m, L = Lounge; for (const f of this.foes || []){ if (f.stars) L.scene.remove(f.stars); Fight.off(f.sl); if (!f.gone) m.despawn(f.sl); } this.foes = [];
+    if (this.avatar){ Fight.off(this.avatar); m.despawn(this.avatar); this.avatar = null; } if (this.cam3){ try{ L.camera.position.x = 0; L.camera.position.z = 0; L.standing = false; L.camLift = 0; L.pitch = -.05; for (const sl of L.slots || []) if (sl.hidFight){ sl.hidFight = false; sl.p.visible = true; } }catch(e){} this.cam3 = false; this.rmPad(); if (m.box && !m.vr() && m.on) m.box.hidden = false; }
     L.camRoll = 0; try{ L.renderer.domElement.style.filter = ""; }catch(e){}
     for (const c of L.xrCtls || []) if (c.userData.holding && this.props && this.props[0] && (function inside(q, r){ for (; q; q = q.parent) if (q === r) return true; return false; })(c.userData.holding, this.props[0])) try{ L.grabEnd(c); }catch(e){}
     m.dropProps(this.throwables || []); m.dropProps(this.shot ? [this.shot] : []); m.dropProps(this.props || []); }
@@ -13210,6 +13561,16 @@ Object.assign(Mogul, {
       this.btn("s" + st.id, X, Y, 230, 68, `${st.icon} ${st.name}: ${n}`, () => { if (n >= (st.max || 1)) return this.say("That's the most you need."); c.staff[st.id] = n + 1; this.put(d); this.say(`Hired: ${st.name}.`); }, {left: true, size: 18, sub: `${this.money(st.wage)}/night · ${st.fx}`});
       this.btn("f" + st.id, X + 238, Y, 80, 68, "Let go", () => { if (!n) return; c.staff[st.id] = n - 1; this.put(d); }, {size: 15}); });
   },
+  /* when a night report says "a fight broke out", two guests really do trade blows a few steps in front of you */
+  scuffle(){ const L = Lounge, T = THREE, w = L.worlds && L.worlds[L.worldId]; if (!w || !L.built || (this.scuf && this.scuf.on)) return;
+    const h = L.headPos(), yaw = L.renderer.xr.isPresenting ? L.headYaw() : L.yaw, cx = h.x - Math.sin(yaw)*3.2, cz = h.z - Math.cos(yaw)*3.2, rx = Math.cos(yaw), rz = -Math.sin(yaw), gy = w.group.getWorldPosition(new T.Vector3()).y;
+    const mk = sg => { const wx = cx + rx*.55*sg, wz = cz + rz*.55*sg, lp = w.group.worldToLocal(new T.Vector3(wx, 0, wz)), sl = this.spawn(lp.x, lp.z, 0, "idle", {gender: Math.random() < .8 ? "m" : "f"}); if (!sl) return null;
+      const fy = L.floorAt(wx, wz, h.y + .5); sl.p.position.y = (fy != null ? fy : (L.rig.position.y || 0)) - gy; return sl; };
+    const a = mk(1), b = mk(-1); if (!a || !b){ if (a) this.despawn(a); if (b) this.despawn(b); return; }
+    const S = this.scuf = {on: true, a, b, t: 0, d: null, dt: 0};
+    S.iv = setInterval(() => { S.t += .5; if (!S.d && a.real && b.real) S.d = Fight.duel(a, b, {calm: .75, ko: false});
+      if (S.d) S.dt += .5;
+      if (S.dt >= 10 || S.t > 40){ clearInterval(S.iv); try{ if (S.d) Fight.stopDuel(S.d); }catch(e){} try{ Fight.off(a); Fight.off(b); }catch(e){} this.despawn(a); this.despawn(b); S.on = false; } }, 500); },
   runNight(id){
     const d = this.d(), v = this.VENUES.find(x => x.id === id), c = d.clubs[id]; c.up = c.up || {}; c.staff = c.staff || {};
     const U = k => c.up[k] || 0, S = k => c.staff[k] || 0, r = () => .8 + Math.random()*.4, lines = [];
@@ -13217,7 +13578,7 @@ Object.assign(Mogul, {
     let mult = 1;
     const ev = Math.random(), fightOdds = Math.max(.03, .26 - .06*U("security") - .06*S("bouncers"));
     let fine = 0, repD = 0;
-    if (ev < fightOdds){ fine = 300 + Math.random()*900*(v.price/8000 + 1); repD -= 6; lines.push(`🥊 A fight broke out. Fines and damage: ${this.money(fine)}. More security helps.`); }
+    if (ev < fightOdds){ fine = 300 + Math.random()*900*(v.price/8000 + 1); repD -= 6; lines.push(`🥊 A fight broke out. Fines and damage: ${this.money(fine)}. More security helps.`); try{ this.scuffle(); }catch(e){ console.warn(e); } }
     else if (ev < fightOdds + .07){ mult = 1.35; repD += 8; lines.push("🌟 A celebrity dropped in! Everyone posted about it."); }
     else if (ev < fightOdds + .13){ repD += 10; lines.push("📱 A video from your club went viral."); }
     else if (ev < fightOdds + .17 && U("sound") < 2){ mult = .6; lines.push("⚡ The sound system blew out for an hour. A better system would have held up."); }
