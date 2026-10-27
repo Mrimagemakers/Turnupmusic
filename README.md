@@ -193,7 +193,7 @@ Open it with the speech-bubble button (it used to be "The Wall").
 - **Characters match everywhere:** the Android app used to carry only 16 of the 50 characters, so on a tablet running the app other players often showed up as someone else. Now every device downloads the exact character each player chose, and the app's built-in ones are used only when there's no internet.
 
 ## User guide
-`guide.html` (…/Turnupmusic/guide.html) is the full how-to guide: a 10-step quick start, then a step-by-step outline of everything in the app (getting started, radio and podcasts, your look, VR Lounge controls for phone, computer and Quest, the 19 worlds, parties, events and flyers, Turn Up Social, the DJ booth, memberships, safety, troubleshooting, and owner and moderator tools). Open it from the **?** button at the top of the app or **❓ Guide** in the lounge.
+`guide.html` (…/Turnupmusic/guide.html) is the full how-to guide: a 10-step quick start, then a step-by-step outline of everything in the app (getting started, radio and podcasts, your look, VR Lounge controls for phone, computer and Quest, the 25 worlds, parties, events and flyers, Turn Up Social, the DJ booth, memberships, safety, troubleshooting, and owner and moderator tools). Open it from the **?** button at the top of the app or **❓ Guide** in the lounge.
 
 ## Age protection, safety and advisory
 - **Age check:** the first time the app opens it asks for a date of birth, without saying what the cut-off is. Only "18+ yes/no" is stored, never the birthday. Adults also agree to the Community Guidelines.
@@ -295,3 +295,8 @@ People on bar stools, chairs, sofas and benches now settle onto the nearest real
 - **Edit your page**: on your own page tap Edit to change your name, bio, favorite genre, link, mood, city, interests, cover and top friends.
 - **Accessories**: backpack, angel or devil wings, hero cape, fox tail, halo, bunny or cat ears, little horns (My avatar window).
 - **Pets**: puppy, kitten, bunny, fox, parrot, penguin and baby dragon follow you around the lounge. Name your pet and pick its color. Tap a pet to make it happy. Other guests see your pet too.
+
+## Wellness rooms, activities and My Home
+- **Four new worlds**: Meditation Room, Exercise Room, Dance Class Studio and Escape Room.
+- **Wellness & play** in Nightclub Mogul: Meditation (breathing, stillness, singing bowl), Exercise (warm-up, jumping jacks, squats, plank, boxing pads, stretch), Dance Class (salsa basics) and Escape Room (randomized painting code, lamp pattern, cipher, riddle, lock). No strikes. Each raises a need and pays a little cash.
+- **🏡 My Home** (party bar or world list): a Sims-style house and garden. Build with Mogul cash (36 items: furniture, fun, flowers, vegetables, trees, pond, beehive, bird house, sprinkler…). Plants grow while watered, even offline; tomatoes, apples and honey can be sold. Wildlife (11 species) moves in as biodiversity rises. Needs (Calm, Fitness, Fun, Brain, Social) decay over time and are refilled by furniture, activities, pets and parties. Real-clock day and night sky. Saved on the device (key `home`). VR: wrist menu > 🏡 Home.
