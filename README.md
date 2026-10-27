@@ -289,3 +289,9 @@ People on bar stools, chairs, sofas and benches now settle onto the nearest real
 - **With friends:** join the party and everyone shares one queue, sees the lyrics and hears the singer's voice. Cheer with 👏🔥❤️🎉🙌: cheers add to the singer's score. On your own, a virtual crowd cheers for you.
 - **Score:** based on how much you actually sing during the lyrics (needs the mic) plus the cheers.
 - **Sign-in fix:** the account button and sign-in form were not connected in the last version. They are now. If sign-in still can't connect, the message tells you how many save servers it reached.
+
+
+## Pets, accessories and editing your page
+- **Edit your page**: on your own page tap Edit to change your name, bio, favorite genre, link, mood, city, interests, cover and top friends.
+- **Accessories**: backpack, angel or devil wings, hero cape, fox tail, halo, bunny or cat ears, little horns (My avatar window).
+- **Pets**: puppy, kitten, bunny, fox, parrot, penguin and baby dragon follow you around the lounge. Name your pet and pick its color. Tap a pet to make it happy. Other guests see your pet too.
