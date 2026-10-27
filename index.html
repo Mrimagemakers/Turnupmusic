@@ -316,6 +316,8 @@ dialog.wide{width:min(860px,calc(100% - 24px))}
 #btnAccount.on .acctdot{display:block;background:#3ddc84}#btnAccount[data-s=dirty] .acctdot{background:#ffc21a}#btnAccount[data-s=busy] .acctdot{background:#4da3ff}
 #acctDlg label{display:block;margin:10px 0;font-weight:600;font-size:13px}#acctDlg label.row{display:flex;gap:8px;align-items:center;font-weight:500}
 #acctDlg input:not([type=checkbox]){display:block;width:100%;margin-top:4px;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--chrome);font:500 15px var(--f-body)}
+.hunthud{position:fixed;left:12px;bottom:96px;z-index:45;padding:9px 14px;border-radius:999px;background:rgba(20,13,10,.88);border:1px solid #ffc21a;color:#fff;font:700 14px var(--f-display);box-shadow:0 4px 14px rgba(0,0,0,.4)}.hunthud[hidden]{display:none}
+.hbig{font:800 24px var(--f-display);color:#ffc21a;margin:4px 0}.hlist{display:grid;gap:6px;max-height:42vh;overflow:auto}.hrow{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.06)}.hrow.cur{outline:1px solid #ffc21a}.hrow span:first-child{flex:1}.hrow .hn{font-weight:800;color:#ffc21a}.hrow em{font-size:12px;color:var(--muted)}.hclues{padding-left:20px;margin:4px 0 10px}.hclues li{margin:3px 0}
 .acct-tabs{display:flex;gap:6px;margin-bottom:6px}.acct-tabs button{flex:1;padding:10px;border-radius:10px;font:700 13px var(--f-display);color:var(--muted);border:1px solid var(--line)}.acct-tabs button.on{background:var(--gold);color:#1a1209}
 .acctok{padding:12px;border-radius:12px;background:rgba(61,220,132,.1);border:1px solid rgba(61,220,132,.35);margin:6px 0}.warnnote{font-size:13px;color:#ffd27a}.acctmore{margin-top:12px;font-size:13px}
 dialog h3{margin:14px 0 6px;font:700 12px var(--f-display);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
@@ -858,7 +860,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
     <button type="button" class="xp-hide" id="xpHide" aria-label="Hide controls">▼ Hide controls</button>
     <div class="seg" id="xpModes"></div>
     <div class="seg" id="worldSeg" hidden></div>
-    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn mogulbtn" id="btnMogul" type="button">🍾 Nightclub Mogul</button><button class="chipbtn" id="btnEmpire" type="button" aria-label="Open My Empire, your Nightclub Mogul clubs">👑 My empire</button><button class="chipbtn brawlbtn" id="btnBrawl" type="button" title="Start a bar fight right here, in any world">🥊 Brawl mode</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
+    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn mogulbtn" id="btnMogul" type="button">🍾 Nightclub Mogul</button><button class="chipbtn" id="btnEmpire" type="button" aria-label="Open My Empire, your Nightclub Mogul clubs">👑 My empire</button><button class="chipbtn" id="btnHunt" type="button" aria-label="Open the scavenger hunt">🔎 Scavenger hunt</button><button class="chipbtn brawlbtn" id="btnBrawl" type="button" title="Start a bar fight right here, in any world">🥊 Brawl mode</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
     <div class="emotes" id="emoteBar" hidden><button type="button" data-e="wave">👋 Wave</button><button type="button" data-e="dance">💃 Dance</button><button type="button" data-e="cheer">🙌 Cheer</button><button type="button" data-e="idle">🧍 Chill</button><button type="button" data-r="🔥">🔥</button><button type="button" data-r="❤️">❤️</button><button type="button" data-r="😂">😂</button><button type="button" data-r="🎉">🎉</button><button type="button" id="btnChat">💬 Chat</button><button type="button" id="btnMic">🎤 Mic off</button><button type="button" id="btnDJ">🎧 Be the DJ</button></div>
     <div class="btnrow">
       <button class="chipbtn" id="btnSnap" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Camera</button>
@@ -936,6 +938,11 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
   <div class="btnrow end"><button class="ghost" id="scrClose" type="button">Close</button></div>
 </dialog>
 
+<dialog id="huntDlg" class="wide">
+  <h2>🔎 Scavenger Hunt</h2>
+  <div id="huntBody"></div>
+  <div class="btnrow end"><button class="ghost tiny" id="huntReset" type="button">Start over</button><button class="ghost" id="huntClose" type="button">Close</button></div>
+</dialog>
 <dialog id="stDlg" class="wide">
   <h2>🧬 3D Avatar Studio</h2>
   <p class="hint">Turn a photo into a 3D character that dances, walks and sits in the lounge. Your photo never leaves this device.</p>
@@ -6482,6 +6489,7 @@ const Lounge = {
     document.querySelectorAll("#worldSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.w === id));
     try{ this.lightBudget(); }catch(e){}
     try{ this.furnBtn(); Visuals.ui(); WorldPick.ui(); Karaoke.ui(); }catch(e){}
+    try{ Hunt.onWorld(id); }catch(e){ console.warn("Hunt", e); }
     try{ this.keepWorlds(); }catch(e){ console.warn(e); }
     try{ Dash.label(); }catch(e){}
     if (this.rig){ if (typeof Party !== "undefined" && Party.room){ if (Party.kind === "world") Party.worldChanged(); else this.spawnInParty(); } else this.resetRig(); }
@@ -9029,7 +9037,7 @@ const Lounge = {
     this.lastBass = bass;
     if (this.btnMeshes){ const xr = this.renderer.xr.isPresenting; for (const id in this.btnMeshes) this.btnMeshes[id].visible = this.mode === "ar"; }
     this.updateMove(dt, xrFrame); this.updateBooths(dt); this.updateGrab(dt); try{ VRMenu.update(dt); }catch(e){ console.warn(e); } this.updateCorks(dt); Party.update(dt); Screens.update();
-    this.updatePeople(dt, bass); this.updateCurtain(dt); try{ Mogul.update(dt); }catch(e){ console.warn(e); } try{ View.update(dt); }catch(e){ console.warn(e); }
+    try{ Hunt.update(dt, t); }catch(e){ console.warn("Hunt", e); } this.updatePeople(dt, bass); this.updateCurtain(dt); try{ Mogul.update(dt); }catch(e){ console.warn(e); } try{ View.update(dt); }catch(e){ console.warn(e); }
     try{ Cam.xrFrame(dt); }catch(e){ console.warn(e); }
     try{ if (!GFX.ready) GFX.init(); GFX.tick(dt); }catch(e){ console.warn(e); }
     if (this.composer && !this.gfxNoPost && !this.renderer.xr.isPresenting){ this.finalPass.uniforms.exposure.value = this.renderer.toneMappingExposure; if (this.finalPass.uniforms.time) this.finalPass.uniforms.time.value = this.clock.elapsedTime; this.composer.render(dt); }
@@ -15689,6 +15697,116 @@ const MR = {
   }
 };
 
+/* ================= 🔎 Scavenger hunt: five Golden Records hidden in every world =================
+   Find them by looking around, tapping them, or walking up to them (a pinging "warmer / colder" helper guides you).
+   Every record pays Nightclub Mogul cash, finishing a world pays a bonus, and finding every world makes you a Master Hunter. */
+const Hunt = {
+  PER: 5, GRAB: .85, PAY: 50, WORLD_BONUS: 250, ALL_BONUS: 2500, items: [], t: 0, ping: 0, hudT: 0, spotCache: {},
+  state(){ const h = store.get("hunt", null) || {}; return Object.assign({on: false, found: {}, done: {}, master: false}, h); },
+  save(h){ store.set("hunt", h); },
+  get on(){ return this.state().on; },
+  foundIn(id){ return (this.state().found[id] || []).length; },
+  total(){ const f = this.state().found; return Object.values(f).reduce((a, l) => a + l.length, 0); },
+  worldsDone(){ return Object.keys(this.state().done).length; },
+  /* a repeatable random number generator per world, so the records are in the same places every time */
+  rng(id){ let h = 2166136261; for (const c of id + "|hunt1") h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => { h += 0x6D2B79F5; let t = Math.imul(h ^ h >>> 15, 1 | h); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0)/4294967296; }; },
+  /* five spots on the floor near where you arrive (valid floor, not a roped-off area, spread apart) */
+  spots(id){
+    const L = Lounge; if (this.spotCache[id]) return this.spotCache[id];
+    const b = L.BOUNDS[id] || [-8, 8, -8, 8], sp = L.SPAWN[id] || [-2, 2, -3, 0], cx = (sp[0] + sp[1])/2, cz = (sp[2] + sp[3])/2, R = 13;
+    const box = [Math.max(b[0], cx - R), Math.min(b[1], cx + R), Math.max(b[2], cz - R), Math.min(b[3], cz + R)], r = this.rng(id), out = [];
+    for (let k = 0; k < 900 && out.length < this.PER; k++){
+      const x = box[0] + r()*(box[1] - box[0]), z = box[2] + r()*(box[3] - box[2]);
+      if (Math.hypot(x - cx, z - cz) < 2.2 || out.some(o => Math.hypot(o.x - x, o.z - z) < 2.6)) continue;
+      let y = null; try{ y = L.floorAt(x, z); }catch(e){} if (y === null || y === undefined) continue; if (Math.abs(y) > 8) continue;
+      try{ if (L.vipBlocked && L.vipBlocked(x, z)) continue; }catch(e){}
+      out.push({x, y, z});
+    }
+    return this.spotCache[id] = out;
+  },
+  clue(id, i){
+    const sp = this.spots(id)[i], L = Lounge; if (!sp) return ""; const q = L.SPAWN[id] || [-2, 2, -3, 0], cx = (q[0] + q[1])/2, cz = (q[2] + q[3])/2, dx = sp.x - cx, dz = sp.z - cz, d = Math.round(Math.hypot(dx, dz)/.8);
+    const fb = Math.abs(dz) < 2 ? "" : dz < 0 ? "ahead" : "behind where you start", lr = Math.abs(dx) < 2 ? "" : dx < 0 ? "to the left" : "to the right";
+    return `about ${d} steps ${[fb, lr].filter(Boolean).join(" and ") || "right near where you start"}`.replace("steps ahead and to", "steps ahead and to");
+  },
+  /* ---------- the records in the current world ---------- */
+  onWorld(id){
+    const L = Lounge, w = L.worlds[id]; this.items = []; L.clickables = L.clickables.filter(o => !o.userData.huntProxy || (o.parent && L.isShown && o.parent.parent));
+    if (!w) { this.hud(); return; }
+    if (w.huntG){ w.group.remove(w.huntG); w.huntG.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material){ if (o.material.map && o.material.map !== L.glowT) o.material.map.dispose(); o.material.dispose(); } }); L.clickables = L.clickables.filter(o => !o.userData.huntProxy); w.huntG = null; }
+    this.hud(); if (!this.on) return;
+    const T = THREE, g = w.huntG = new T.Group(), found = this.state().found[id] || [], spots = this.spots(id);
+    const goldM = new T.MeshStandardMaterial({color: 0xffc21a, metalness: .9, roughness: .25, emissive: 0x6a4400, emissiveIntensity: .6}), labelM = new T.MeshStandardMaterial({color: 0xb3171e, roughness: .6});
+    spots.forEach((s, i) => {
+      if (found.includes(i)) return;
+      const it = new T.Group(), disc = new T.Mesh(new T.CylinderGeometry(.17, .17, .014, 32), goldM), lab = new T.Mesh(new T.CylinderGeometry(.06, .06, .016, 20), labelM);
+      disc.rotation.x = Math.PI/2; lab.rotation.x = Math.PI/2; it.add(disc, lab);
+      const glow = new T.Sprite(new T.SpriteMaterial({map: L.glowT, color: 0xffc21a, transparent: true, opacity: .55, depthWrite: false, blending: T.AdditiveBlending, toneMapped: false})); glow.scale.set(.8, .8, 1); it.add(glow);
+      const proxy = new T.Mesh(new T.SphereGeometry(.4, 10, 8), new T.MeshBasicMaterial({transparent: true, opacity: 0, depthWrite: false})); proxy.userData.huntProxy = true; it.add(proxy);
+      L.addClickable(proxy, () => this.collect(id, i));
+      it.position.set(s.x, s.y + .62, s.z); g.add(it); this.items.push({i, g: it, y: s.y + .62, glow, id, got: false});
+    });
+    w.group.add(g);
+  },
+  collect(id, i){
+    const L = Lounge, h = this.state(); if (id !== L.worldId) return; const it = this.items.find(x => x.i === i && !x.got); if (!it) return;
+    it.got = true; (h.found[id] = h.found[id] || []).push(i); it.g.visible = false;
+    const wp = it.g.getWorldPosition(new THREE.Vector3()); try{ L.burst(wp, 16); }catch(e){}
+    this.chime(true); try{ for (const c of L.xrCtls || []) L.haptic(c, .8, 90); }catch(e){}
+    let pay = this.PAY, msg = `🎵 Golden Record ${h.found[id].length} of ${this.PER}! +$${this.PAY}`;
+    if (h.found[id].length >= this.PER && !h.done[id]){ h.done[id] = 1; pay += this.WORLD_BONUS; msg = `🏆 ${(L.WORLDS.find(w => w.id === id) || {}).name || "World"} complete! +$${pay}`; }
+    if (!h.master && Object.keys(h.done).length >= L.WORLDS.length){ h.master = true; pay += this.ALL_BONUS; msg = `👑 MASTER HUNTER! Every world found! +$${pay}`; }
+    this.save(h);
+    try{ const d = Mogul.d(); d.cash += pay; d.earned += pay; Mogul.put(d); if (Mogul.on) Mogul.draw(); }catch(e){}
+    try{ MR.say(msg, 5); }catch(e){} try{ toast(msg, 4500); }catch(e){}
+    this.hud(); this.ui();
+  },
+  /* ---------- every frame ---------- */
+  update(dt, t){
+    const L = Lounge; if (MR.sprite && !MR.active()){ MR.follow(false); if (performance.now() > MR.until){ L.scene.remove(MR.sprite); MR.sprite.material.dispose(); MR.sprite = null; } }
+    if (!this.items.length) return;
+    for (const it of this.items){ if (it.got) continue; it.g.rotation.y += dt*1.8; it.g.position.y = it.y + Math.sin(t*2 + it.i)*.045; }
+    if (L.mode === "ar" || !this.on) return;
+    const h = L.headPos(), p = new THREE.Vector3(); let best = 1e9, bi = null;
+    for (const it of this.items){ if (it.got) continue; it.g.getWorldPosition(p); const d = Math.hypot(h.x - p.x, h.z - p.z), dy = Math.abs(h.y - p.y);
+      if (d < this.GRAB && dy < 2.4){ this.collect(it.id, it.i); return; } if (d < best){ best = d; bi = it; } }
+    if (!bi) return; this.near = best;
+    this.ping -= dt; if (this.ping <= 0 && best < 14){ this.ping = Math.max(.3, Math.min(2.4, best/5)); this.chime(false, best); try{ if (best < 4) for (const c of L.xrCtls || []) L.haptic(c, Math.min(.5, 1.6/best*.2), 25); }catch(e){} }
+    for (const it of this.items) if (it.glow) it.glow.material.opacity = it.got ? 0 : Math.max(.25, Math.min(.9, 1.3 - best/8));
+    this.hudT -= dt; if (this.hudT <= 0){ this.hudT = .3; this.hud(); }
+  },
+  temp(){ const d = this.near; if (d == null) return ""; return d < 2 ? "🔥 Burning hot!" : d < 4 ? "🌶 Hot" : d < 8 ? "☀️ Warm" : d < 14 ? "🌤 Cool" : "❄️ Cold"; },
+  chime(win, d){
+    try{ const a = this.ac || (this.ac = new (window.AudioContext || window.webkitAudioContext)()); if (a.state === "suspended") a.resume(); const t = a.currentTime, g = a.createGain(), o = a.createOscillator();
+      const f = win ? 880 : 520 + Math.max(0, 14 - (d || 14))*45; o.type = win ? "triangle" : "sine"; o.frequency.setValueAtTime(f, t); if (win) o.frequency.exponentialRampToValueAtTime(1760, t + .25);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(win ? .2 : .05, t + .02); g.gain.exponentialRampToValueAtTime(.001, t + (win ? .5 : .14)); o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + .55); }catch(e){}
+  },
+  setOn(v){ const h = this.state(); h.on = !!v; this.save(h); this.near = null; this.onWorld(Lounge.worldId); this.ui(); },
+  /* ---------- the small chip on screen and the window ---------- */
+  hud(){
+    let el = $("#huntHud"); if (!el){ el = document.createElement("button"); el.id = "huntHud"; el.type = "button"; el.className = "hunthud"; el.addEventListener("click", () => this.open()); document.body.appendChild(el); }
+    const L = Lounge, show = this.on && L.worldId && !$("#stage").hidden && L.mode !== "vr" && L.mode !== "ar";
+    el.hidden = !show; if (!show) return; const id = L.worldId, n = this.foundIn(id), left = this.PER - n;
+    el.textContent = left ? `🔎 ${n}/${this.PER} records  ·  ${this.temp() || "look around"}` : `🏆 World complete  ·  ${this.total()} total`;
+  },
+  open(){ this.ui(); const d = $("#huntDlg"); if (d && !d.open) d.showModal(); },
+  ui(){
+    const d = $("#huntBody"); if (!d) return; const L = Lounge, h = this.state(), cur = L.worldId, tot = L.WORLDS.length*this.PER;
+    const rows = L.WORLDS.map(w => { const n = (h.found[w.id] || []).length; return `<div class="hrow${w.id === cur ? " cur" : ""}"><span>${h.done[w.id] ? "🏆" : "🎵"} ${esc(w.name)}</span><span class="hn">${n}/${this.PER}</span>${w.id === cur ? `<em>you are here</em>` : `<button type="button" class="ghost tiny" data-go="${w.id}">Go</button>`}</div>`; }).join("");
+    let clues = ""; if (h.on && cur){ const f = h.found[cur] || [], list = this.spots(cur).map((s, i) => f.includes(i) ? "" : `<li>Record ${i + 1}: ${esc(this.clue(cur, i))}</li>`).filter(Boolean).join(""); clues = `<h3>Clues for this world</h3>${list ? `<ul class="hclues">${list}</ul>` : `<p>You found them all here! 🏆</p>`}`; }
+    d.innerHTML = `<p class="hbig">${this.total()} / ${tot} Golden Records${h.master ? " · 👑 Master Hunter" : ""}</p>
+      <p class="hint">Five Golden Records are hidden in every world. Look around, tap them, or walk up to one. A ping gets faster and higher as you get warmer. Each record pays <b>$${this.PAY}</b> in Nightclub Mogul cash, finishing a world pays <b>$${this.WORLD_BONUS}</b>, and finding every world pays <b>$${this.ALL_BONUS}</b>.</p>
+      <div class="btnrow"><button class="primary" id="huntToggle" type="button">${h.on ? "⏸ Pause the hunt" : "▶ Start hunting"}</button></div>${clues}
+      <h3>Worlds</h3><div class="hlist">${rows}</div>`;
+  },
+  bind(){
+    const d = $("#huntDlg"); if (!d) return;
+    d.addEventListener("click", e => { if (e.target.id === "huntToggle") this.setOn(!this.on); if (e.target.id === "huntClose") d.close(); if (e.target.id === "huntReset"){ if (confirm("Start the whole scavenger hunt over? Your cash stays.")){ this.save({on: this.on, found: {}, done: {}, master: false}); this.onWorld(Lounge.worldId); this.ui(); } }
+      const go = e.target.closest("[data-go]"); if (go){ d.close(); try{ Lounge.chooseWorld(go.dataset.go); }catch(er){} setTimeout(() => this.ui(), 1200); } });
+    document.addEventListener("click", e => { if (e.target.closest("#btnHunt")){ if (!Age.ok("The scavenger hunt") && false) return; this.open(); } });
+  }
+};
+
 const VRMenu = {
   W: 1024, H: 760, tab: "music", sub: "favs", page: 0, open: false, regions: [], hover: null, status: "", statusT: 0, art: null, artKey: "",
   build(){
@@ -15909,6 +16027,7 @@ const VRMenu = {
     const n = P && inP ? Object.values(P.peers).filter(p => p.hello).length : 0;
     b("people", 9, `👥 People${n ? " (" + n + ")" : ""}`, () => { this.partyView = "people"; this.page = 0; });
     b("mogul", 10, "🍾 Nightclub Mogul", () => { this.toggle(false); Mogul.open(); }, {primary: true});
+    b("hunt", 17, Hunt.on ? `🔎 Hunt ${Hunt.foundIn(Lounge.worldId)}/${Hunt.PER} ${Hunt.temp()}` : "🔎 Start the hunt", () => { Hunt.setOn(!Hunt.on); this.say(Hunt.on ? "Hunt on! Golden Records are hidden around you. Listen for the ping." : "Hunt paused."); }, {on: Hunt.on, size: 21});
     b("empire", 16, "👑 My Empire", () => { this.toggle(false); Mogul.empire(); }, {primary: true});
     b("nav", 11, "🧭 Controls", () => { this.toggle(false); View.vrCard(); });
     b("brawl", 12, "🥊 Brawl mode", () => { this.toggle(false); Mogul.brawlHere(); }, {primary: true});
@@ -15968,6 +16087,7 @@ const VRMenu = {
   }
 };
 
+Hunt.bind();
 Screens.bindUI();
 VIP.bindUI(); Media.bindUI(); Booth.bindUI(); Links.bindUI(); Social.bindUI();
 setTimeout(() => VIP.load(), 1500);
