@@ -316,6 +316,15 @@ dialog.wide{width:min(860px,calc(100% - 24px))}
 #btnAccount.on .acctdot{display:block;background:#3ddc84}#btnAccount[data-s=dirty] .acctdot{background:#ffc21a}#btnAccount[data-s=busy] .acctdot{background:#4da3ff}
 #acctDlg label{display:block;margin:10px 0;font-weight:600;font-size:13px}#acctDlg label.row{display:flex;gap:8px;align-items:center;font-weight:500}
 #acctDlg input:not([type=checkbox]){display:block;width:100%;margin-top:4px;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--chrome);font:500 15px var(--f-body)}
+.dhud{position:fixed;inset:0;z-index:58;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:10px;box-sizing:border-box}
+.dhud .dtop{display:flex;align-items:center;gap:10px;pointer-events:auto}.dhud .dsc{flex:1;display:flex;align-items:center;gap:8px;color:#fff;font:800 14px var(--f-display,system-ui);background:rgba(20,13,10,.75);padding:8px 12px;border-radius:14px}
+.dhud .dsc.r{flex-direction:row-reverse}.dhud .dbar{flex:1;height:12px;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden;display:block}.dhud .dbar span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffc21a,#ff8ad8);transition:width .2s}.dhud .dbar.rv span{background:linear-gradient(90deg,#4de1ff,#8dff9e)}
+.dhud .dsc em{font-style:normal;min-width:32px;text-align:center;font-size:18px}.dhud .dmid{width:220px;text-align:center}.dhud .drate{font:900 34px var(--f-display,system-ui);text-shadow:0 3px 12px rgba(0,0,0,.6);transition:opacity .25s}.dhud .dcombo{color:#ffd87a;font:800 16px var(--f-display,system-ui)}
+.dhud .dx{pointer-events:auto;width:44px;height:44px;border-radius:50%;border:0;background:rgba(20,13,10,.85);color:#fff;font-size:20px}
+.dhud .dtrack{width:100%;max-width:1100px;align-self:center;height:auto;margin-top:auto;margin-bottom:8px}
+.dhud .dbtns{display:flex;gap:8px;justify-content:center;pointer-events:auto}.dhud .dbtns button{flex:1;max-width:150px;min-height:70px;border-radius:18px;border:2px solid rgba(255,194,26,.6);background:rgba(20,13,10,.82);color:#fff;font:800 26px var(--f-display,system-ui);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none}
+.dhud .dbtns button small{font:600 11px var(--f-body,system-ui);opacity:.8}.dhud .dbtns button.on{background:#ffc21a;color:#241404}
+@media (max-height:520px){.dhud .dbtns button{min-height:54px;font-size:20px}.dhud .drate{font-size:26px}.dhud .dtrack{max-width:760px}}
 .homehud{position:fixed;left:10px;top:70px;z-index:44;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:min(560px,calc(100vw - 20px));font:500 13px var(--f-body,system-ui)}
 .homehud .hh-card,.homehud .hh-dock{pointer-events:auto;background:rgba(20,13,10,.88);border:1px solid rgba(255,194,26,.5);border-radius:16px;padding:10px 12px;color:#fff;box-shadow:0 6px 24px rgba(0,0,0,.4)}
 .homehud .hh-card{width:250px}.homehud .hh-top{display:flex;align-items:center;gap:8px}.homehud .hh-top b{flex:1;font:800 15px var(--f-display,system-ui)}.homehud .hh-cash{color:#ffd87a;font-weight:800}
@@ -510,7 +519,7 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 .mogul.hurt::before{content:"";position:fixed;inset:0;background:radial-gradient(circle,rgba(255,0,0,0) 30%,rgba(255,0,0,.55));animation:mhurt .5s forwards;pointer-events:none;z-index:-1}
 @keyframes mhurt{to{opacity:0}}
 .chipbtn.mogulbtn{background:linear-gradient(135deg,#ffc21a,#ff8a1a);color:#2a1405;font-weight:800;border:0}
-.teen #btnMogul,.teen #btnBrawl,.teen #btnEmpire{display:none!important}
+.teen #btnMogul,.teen #btnBrawl,.teen #btnEmpire,.teen #btnDanceoff{display:none!important}
 .chipbtn.brawlbtn{background:linear-gradient(135deg,#ff4a3a,#b0102a);color:#fff;font-weight:800;border:0}
 @media (min-width:1100px){.mogul{width:640px}}
 .agedlg{width:min(560px,calc(100% - 24px))}
@@ -657,6 +666,19 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
 .tapaudio{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:75;padding:16px 26px;border-radius:99px;border:0;background:linear-gradient(135deg,var(--gold),var(--amber));color:#2a1405;font:800 17px var(--f-body,sans-serif);box-shadow:0 10px 30px -6px rgba(255,170,30,.7);animation:tappulse 1.6s infinite}
 @keyframes tappulse{50%{transform:translateX(-50%) scale(1.06)}}
 
+/* the controls dashboard: everything under "Hide controls" as labeled tiles */
+.partybar.dashgrid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px;overflow:visible!important;flex-wrap:wrap!important}
+.dashgrid .dsec{background:rgba(20,13,10,.62);border:1px solid rgba(255,194,26,.22);border-radius:16px;padding:8px 10px 10px;pointer-events:auto;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.dashgrid .dsec h4{margin:0 0 6px;font:800 11px var(--f-body,sans-serif);letter-spacing:.1em;text-transform:uppercase;color:#ffd87a}
+.dtiles{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;overflow:visible!important}
+.dtiles>.chipbtn,.dtiles>.vipbtn,.dtiles>button{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px;min-height:58px;padding:8px 6px;border-radius:12px;font-size:12.5px;line-height:1.2;white-space:normal;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#fff}
+.dtiles>.chipbtn:hover,.dtiles>button:hover{background:rgba(255,194,26,.18);border-color:#ffc21a}
+.dtiles>.chipbtn.party{background:linear-gradient(135deg,var(--gold),var(--amber));color:#2a1405;border:0}
+.dtiles>.partyinfo{grid-column:1/-1;align-self:start}.dtiles>.partyinfo:empty{display:none}
+.dtiles>[hidden]{display:none!important}
+.xp-bottom .btnrow.dtiles{background:rgba(20,13,10,.62);border:1px solid rgba(255,194,26,.22);border-radius:16px;padding:8px 10px;pointer-events:auto}
+.xp-bottom .btnrow.dtiles svg{width:20px;height:20px}
+@media (max-width:1024px),(pointer:coarse){.xp-bottom .partybar.dashgrid,.xp-bottom .btnrow.dtiles{overflow-x:visible;flex-wrap:wrap}.dtiles{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}}
 /* Stage controls: minimize to a slim bar (default on phones and tablets) */
 .xp-minibar{display:none}
 .xp-hide{justify-self:center;pointer-events:auto;padding:6px 16px;border-radius:99px;border:1px solid var(--line);background:rgba(20,13,10,.6);color:rgba(255,255,255,.8);font:700 12px var(--f-body,sans-serif);letter-spacing:.04em}
@@ -872,7 +894,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
     <button type="button" class="xp-hide" id="xpHide" aria-label="Hide controls">▼ Hide controls</button>
     <div class="seg" id="xpModes"></div>
     <div class="seg" id="worldSeg" hidden></div>
-    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn mogulbtn" id="btnMogul" type="button">🍾 Nightclub Mogul</button><button class="chipbtn" id="btnHome" type="button">🏡 My Home</button><button class="chipbtn" id="btnEmpire" type="button" aria-label="Open My Empire, your Nightclub Mogul clubs">👑 My empire</button><button class="chipbtn" id="btnHunt" type="button" aria-label="Open the scavenger hunt">🔎 Scavenger hunt</button><button class="chipbtn brawlbtn" id="btnBrawl" type="button" title="Start a bar fight right here, in any world">🥊 Brawl mode</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
+    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn mogulbtn" id="btnMogul" type="button">🍾 Nightclub Mogul</button><button class="chipbtn" id="btnHome" type="button">🏡 My Home</button><button class="chipbtn" id="btnEmpire" type="button" aria-label="Open My Empire, your Nightclub Mogul clubs">👑 My empire</button><button class="chipbtn" id="btnHunt" type="button" aria-label="Open the scavenger hunt">🔎 Scavenger hunt</button><button class="chipbtn brawlbtn" id="btnBrawl" type="button" title="Start a bar fight right here, in any world">🥊 Brawl mode</button><button class="chipbtn" id="btnDanceoff" type="button" title="Start a dance-off right here">🕺 Dance-off</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
     <div class="emotes" id="emoteBar" hidden><button type="button" data-e="wave">👋 Wave</button><button type="button" data-e="dance">💃 Dance</button><button type="button" data-e="cheer">🙌 Cheer</button><button type="button" data-e="idle">🧍 Chill</button><button type="button" data-r="🔥">🔥</button><button type="button" data-r="❤️">❤️</button><button type="button" data-r="😂">😂</button><button type="button" data-r="🎉">🎉</button><button type="button" id="btnChat">💬 Chat</button><button type="button" id="btnMic">🎤 Mic off</button><button type="button" id="btnDJ">🎧 Be the DJ</button></div>
     <div class="btnrow">
       <button class="chipbtn" id="btnSnap" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Camera</button>
@@ -2398,7 +2420,17 @@ const Dash = {
     if (remember) store.set("dashMini", !!mini);
     this.label();
   },
-  init(){ const pref = store.get("dashMini", null); this.set(pref === null ? this.small() : pref); },
+  init(){ const pref = store.get("dashMini", null); this.set(pref === null ? this.small() : pref); try{ this.grid(); }catch(e){ console.warn(e); } },
+  /* group the party bar's buttons into a tidy dashboard */
+  GROUPS: [["🎉 Party & people", ["btnParty", "partyInfo", "btnEvents2", "btnSocial2", "btnSafety2"]], ["🧑 You & help", ["btnMe", "btnHome", "btnVIP2", "btnGuide2"]],
+    ["🎵 Music & screens", ["btnBooth", "btnMedia2", "btnLinks2", "btnScreens", "btnStopVideo"]], ["🎮 Games & fun", ["btnMogul", "btnEmpire", "btnHunt", "btnDanceoff", "btnBrawl"]]],
+  grid(){
+    const pb = $("#partyBar"); if (!pb || pb.dataset.dash) return; pb.dataset.dash = "1"; pb.classList.add("dashgrid");
+    const loose = [...pb.children], sec = (title, els) => { const s = document.createElement("section"); s.className = "dsec"; s.innerHTML = `<h4>${title}</h4><div class="dtiles"></div>`; els.forEach(e => s.lastChild.appendChild(e)); pb.appendChild(s); return s; };
+    const used = new Set(); for (const [t, ids] of this.GROUPS){ const els = ids.map(id => document.getElementById(id)).filter(Boolean); els.forEach(e => used.add(e)); if (els.length) sec(t, els); }
+    const rest = loose.filter(e => !used.has(e)); if (rest.length) sec("❓ Help & more", rest);
+    const br = document.querySelector("#xpBottom .btnrow"); if (br){ br.classList.add("dtiles"); br.setAttribute("aria-label", "View and camera"); }
+  },
   label(){
     const lounge = xpMode === "lounge";
     const id = (typeof Lounge !== "undefined" && Lounge.worldId) || store.get("world", "rooftop");
@@ -4013,7 +4045,7 @@ const Lounge = {
     const T = THREE, M = this.mats, add = this.add, W = 14, D = 12, H = 4.6, zc = -4;
     this.CASTS.meditate = this.CASTS.meditate || (this.CASTS.coffee || []).slice(0, 6);
     const g = this.room = new T.Group(); this.scene.add(g);
-    const wc = Tex.wood(), floorM = new T.MeshStandardMaterial({map: Tex.make(wc, {repeat: [5, 4]}), color: 0xc9a074, roughness: .6});
+    const wc = Tex.wood(), floorM = new T.MeshStandardMaterial({map: Tex.make(wc, {repeat: [5, 4]}), normalMap: Tex.make(Tex.normal(wc, 4), {repeat: [5, 4], srgb: false}), color: 0xc9a074, roughness: .45, envMapIntensity: .6});
     const wallM = new T.MeshStandardMaterial({map: Tex.make(Tex.stucco("#ece2cf"), {repeat: [3, 1]}), roughness: .95});
     this.wShell(g, W, D, H, zc, {floor: floorM, wall: wallM, ceil: this.stdMat(0x4a3626, .8)});
     for (let i = 0; i < 6; i++) this.wBox(g, .2, .24, D, M.walnut, -5.8 + i*2.32, H - .12, zc);          // ceiling beams
@@ -4034,7 +4066,8 @@ const Lounge = {
     for (let i = 0; i < 8; i++){ const a = i/8*Math.PI*2, c = add(new T.Mesh(new T.CylinderGeometry(.32, .36, .12, 20), i % 2 ? cushion : this.stdMat(0xd8c4a0, .95)), g); c.position.set(ox + Math.cos(a)*2.1, .06, oz + Math.sin(a)*2.1); c.rotation.y = a; }
     const rug = add(new T.Mesh(new T.CircleGeometry(2.9, 48), new T.MeshStandardMaterial({map: Tex.make(Tex.rug()), roughness: 1})), g, false, true); rug.rotation.x = -Math.PI/2; rug.position.set(ox, .01, oz);
     this.mdOrb = new T.Mesh(new T.SphereGeometry(.28, 24, 16), new T.MeshBasicMaterial({color: 0xbfe8ff, transparent: true, opacity: .85, toneMapped: false})); this.mdOrb.position.set(ox, 1.25, oz); g.add(this.mdOrb);
-    this.mdHalo = this.wGlow(g, 0x6ab8ff, 1.8, ox, 1.25, oz, .3); this.mdLight = new T.PointLight(0x9fd8ff, .8, 7, 2); this.mdLight.position.set(ox, 1.4, oz); g.add(this.mdLight);
+    { const [hc, hx] = Tex.canvas(128, 128), gr = hx.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(.35, "rgba(255,255,255,.35)"); gr.addColorStop(1, "rgba(255,255,255,0)"); hx.fillStyle = gr; hx.fillRect(0, 0, 128, 128);
+      this.mdHalo = new T.Sprite(new T.SpriteMaterial({map: Tex.make(hc), color: 0x7ac8ff, transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: .3})); this.mdHalo.position.set(ox, 1.25, oz); this.mdHalo.scale.setScalar(1.8); g.add(this.mdHalo); } this.mdLight = new T.PointLight(0x9fd8ff, .8, 7, 2); this.mdLight.position.set(ox, 1.4, oz); g.add(this.mdLight);
     this.mdIn = this.wSign(g, ["Breathe in"], ox, 2.25, oz, 1.2, .34, 0, {bg: "#0c1a30", edge: "#9fd8ff"}); this.mdOut = this.wSign(g, ["Breathe out"], ox, 2.25, oz, 1.2, .34, 0, {bg: "#1a1030", edge: "#ffb0d8"});
     // singing bowl (tap it)
     const bowl = new T.Group(); bowl.position.set(ox, .02, oz + 1.1); g.add(bowl); this.add(new T.Mesh(new T.CylinderGeometry(.13, .2, .08, 24), M.brass), bowl).position.y = .04; const bowlRim = add(new T.Mesh(new T.CylinderGeometry(.19, .12, .1, 24, 1, true), M.brass), bowl); bowlRim.position.y = .13; bowlRim.material = M.brass.clone(); bowlRim.material.side = T.DoubleSide;
@@ -4053,6 +4086,7 @@ const Lounge = {
     const pg = new T.BufferGeometry(); pg.setAttribute("position", new T.Float32BufferAttribute(pp, 3)); this.mdPet = new T.Points(pg, new T.PointsMaterial({color: 0xffc0d4, size: .06, transparent: true, opacity: .8, depthWrite: false})); g.add(this.mdPet);
     this.person(g, ox + 2.1, 0, oz, Math.PI/2, "idle", {gender: "f"}); this.person(g, -1.0, 0, -7.2, 0, "idle", {gender: "m"});
     g.add(new T.HemisphereLight(0xffe2c0, 0x2a2030, .55)); const moon = new T.DirectionalLight(0xaec4ff, .25); moon.position.set(0, 6, -20); g.add(moon);
+    try{ this.enh_meditate(g); }catch(e){ console.warn(e); }
     return {id: "meditate", name: "Meditation Room", group: g, floorY: 0, fog: new T.FogExp2(0x15101c, .018), exposure: .95, bloom: .55,
       screen: [-4.4, 2.1, zc + D/2 - .06, .55, Math.PI],
       onMood: m => { this.mdLight.color.setHex(m.a); this.mdOrb.material.color.setHex(m.a); },
@@ -4073,7 +4107,7 @@ const Lounge = {
     this.CASTS.gym = this.CASTS.gym || ["Sports_Female_02", "Sports_Male_04", "Sports_Female_01", "Female_Deep_02", "Male_Adult_12", "Male_Deep_01"].concat(this.CASTS.beach || []).slice(0, 8);
     const g = this.room = new T.Group(); this.scene.add(g);
     const [fc, fx] = Tex.canvas(256, 256); fx.fillStyle = "#26282c"; fx.fillRect(0, 0, 256, 256); for (let i = 0; i < 1500; i++){ fx.fillStyle = `rgba(255,255,255,${Math.random()*.06})`; fx.fillRect(Math.random()*256, Math.random()*256, 2, 2); } fx.strokeStyle = "rgba(255,200,40,.5)"; fx.lineWidth = 6; fx.strokeRect(0, 0, 256, 256);
-    const floorM = new T.MeshStandardMaterial({map: Tex.make(fc, {repeat: [8, 6]}), roughness: .7});
+    const floorM = new T.MeshStandardMaterial({map: Tex.make(fc, {repeat: [8, 6]}), normalMap: Tex.make(Tex.normal(fc, 2), {repeat: [8, 6], srgb: false}), roughness: .75});
     const [wc, wx] = Tex.canvas(256, 256); wx.fillStyle = "#6a7480"; wx.fillRect(0, 0, 256, 256); for (let i = 0; i < 1200; i++){ wx.fillStyle = `rgba(255,255,255,${Math.random()*.05})`; wx.fillRect(Math.random()*256, Math.random()*256, 3, 3); }
     this.wShell(g, W, D, H, zc, {floor: floorM, wall: new T.MeshStandardMaterial({map: Tex.make(wc, {repeat: [4, 1.4]}), roughness: .9}), ceil: this.stdMat(0x15171a, .9)});
     // light strip and neon sign
@@ -4081,7 +4115,7 @@ const Lounge = {
     this.gyNeon = this.wSign(g, ["NO EXCUSES", "move your body"], 4.6, 3.1, zc - D/2 + .05, 4.4, 1.2, 0, {bg: "#111", edge: "#ffcc00", ink: "#ffe26a"});
     // mirror wall (left): a bright, glossy panel with a frame
     const [mc, mx] = Tex.canvas(512, 256), mg = mx.createLinearGradient(0, 0, 512, 256); mg.addColorStop(0, "#9fb4c8"); mg.addColorStop(.5, "#d8e4ee"); mg.addColorStop(1, "#8aa0b6"); mx.fillStyle = mg; mx.fillRect(0, 0, 512, 256);
-    const mir = add(new T.Mesh(new T.PlaneGeometry(D - 1.2, 2.4), new T.MeshStandardMaterial({map: Tex.make(mc), metalness: .9, roughness: .08, envMap: this.envTex, envMapIntensity: 1.2})), g, false); mir.rotation.y = Math.PI/2; mir.position.set(-W/2 + .03, 1.5, zc);
+    const mir = Mirrors.make(D - 1.2, 2.4); g.add(mir); mir.rotation.y = Math.PI/2; mir.position.set(-W/2 + .03, 1.5, zc);
     this.wBox(g, .06, .06, D - 1, M.black, -W/2 + .05, .28, zc); this.wBox(g, .06, .06, D - 1, M.black, -W/2 + .05, 2.74, zc);
     // treadmills
     this.gyBelts = [];
@@ -4103,6 +4137,7 @@ const Lounge = {
     this.gyClock = this.wSign(g, ["Stay", "strong"], -4, 3.1, zc - D/2 + .05, 1.6, .7, 0, {bg: "#15181c", edge: "#2ad0a0", ink: "#9fffe0"});
     this.person(g, 4.6, 0, -8.9, 0, "idle", {gender: "f"}); this.person(g, -4.4, 0, -7.9, 0, "idle", {gender: "m"}); this.person(g, -2.0, 0, -4.0, Math.PI, "dance", {gender: "f"});
     g.add(new T.HemisphereLight(0xe8f4ff, 0x50545a, 1.0)); const l1 = new T.PointLight(0xffffff, 1.1, 14, 2); l1.position.set(0, 3.4, -4); g.add(l1);
+    try{ this.enh_gym(g); }catch(e){ console.warn(e); }
     return {id: "gym", name: "Exercise Room", group: g, floorY: 0, fog: new T.FogExp2(0x15171a, .01), exposure: 1.05, bloom: .35,
       screen: [-1.6, 1.9, zc - D/2 + .06, .75, 0],
       onMood: m => { l1.color.setHex(m.warm || 0xffffff); },
@@ -4118,11 +4153,11 @@ const Lounge = {
     const T = THREE, M = this.mats, add = this.add, W = 14, D = 12, H = 4.4, zc = -4;
     this.CASTS.dancestudio = this.CASTS.dancestudio || (this.CASTS.club || []).slice(0, 8);
     const g = this.room = new T.Group(); this.scene.add(g);
-    const wc = Tex.wood(), floorM = new T.MeshStandardMaterial({map: Tex.make(wc, {repeat: [6, 5]}), color: 0xd8b078, roughness: .22, metalness: .05, envMap: this.envTex, envMapIntensity: .5});
+    const wc = Tex.wood(), floorM = new T.MeshStandardMaterial({map: Tex.make(wc, {repeat: [6, 5]}), normalMap: Tex.make(Tex.normal(wc, 4), {repeat: [6, 5], srgb: false}), normalScale: new T.Vector2(.5, .5), color: 0xd8b078, roughness: .16, metalness: .05, envMap: this.envTex, envMapIntensity: .9});
     this.wShell(g, W, D, H, zc, {floor: floorM, wall: new T.MeshStandardMaterial({map: Tex.make(Tex.stucco("#f1e4e6"), {repeat: [3, 1]}), roughness: .95}), ceil: this.stdMat(0x2a2024, .9)});
     // the big mirror on the back wall
     const [mc, mx] = Tex.canvas(512, 256), mg = mx.createLinearGradient(0, 0, 512, 256); mg.addColorStop(0, "#b8a8c4"); mg.addColorStop(.5, "#f0e6f4"); mg.addColorStop(1, "#a898b8"); mx.fillStyle = mg; mx.fillRect(0, 0, 512, 256);
-    const mir = add(new T.Mesh(new T.PlaneGeometry(W - 1.4, 2.7), new T.MeshStandardMaterial({map: Tex.make(mc), metalness: .9, roughness: .06, envMap: this.envTex, envMapIntensity: 1.3})), g, false); mir.position.set(0, 1.75, zc - D/2 + .03);
+    const mir = Mirrors.make(W - 1.4, 2.7); g.add(mir); mir.position.set(0, 1.75, zc - D/2 + .03);
     this.wBox(g, W - 1.3, .08, .06, M.brass, 0, .38, zc - D/2 + .05); this.wBox(g, W - 1.3, .08, .06, M.brass, 0, 3.12, zc - D/2 + .05);
     // ballet barre on the right wall
     for (const y of [.95, 1.2]){ const r = this.wCyl(g, .028, .028, D - 2, M.brass, W/2 - .45, y, zc, 10); r.rotation.x = Math.PI/2; }
@@ -4138,11 +4173,13 @@ const Lounge = {
     for (let r = 0; r < 2; r++) for (let i = 0; i < 4; i++){ const s = add(new T.Mesh(new T.CircleGeometry(.28, 24), new T.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: .14, depthWrite: false})), g, false); s.rotation.x = -Math.PI/2; s.position.set(-3.6 + i*2.4, .012, -5.6 + r*2.6); }
     this.person(g, 0, 0, -7.2, 0, "dance", {gender: "f", clip: undefined}); this.person(g, -2.4, 0, -5.4, 0, "dance", {gender: "m"}); this.person(g, 2.4, 0, -5.4, 0, "dance", {gender: "f"}); this.person(g, 0.4, 0, -3.0, 0, "dance", {gender: "f"});
     g.add(new T.HemisphereLight(0xfff0f4, 0x3a2a30, .65)); const key = new T.PointLight(0xffd8e0, .9, 11, 2); key.position.set(0, 3.8, -4); g.add(key);
+    try{ this.enh_dancestudio(g); }catch(e){ console.warn(e); }
     return {id: "dancestudio", name: "Dance Class", group: g, floorY: 0, fog: new T.FogExp2(0x1a1216, .012), exposure: 1.0, bloom: .45,
       screen: [-W/2 + .08, 2.2, zc + 1.6, .55, Math.PI/2],
       onMood: m => { key.color.setHex(m.warm || 0xffd8e0); },
       update: (dt, t, A) => {
         this.dsBall.rotation.y += dt*.7; const b = A.bass || 0;
+        if (this.dsBeams){ const dn = new T.Vector3(0, -1, 0); this.dsBeams.forEach(bm => { const sp = bm.userData.sp, d = sp.target.position.clone().sub(bm.position).normalize(); bm.quaternion.setFromUnitVectors(dn, d); bm.material.opacity = .04 + b*.08; }); }
         this.dsLights.forEach((s, i) => { s.intensity = s.visible ? 1.2 + b*3 : 0; s.target.position.set(Math.sin(t*.8 + i*1.6)*3.5, 0, -4 + Math.cos(t*.6 + i)*3); s.userData.cone.material.opacity = .5 + b*.5; });
       }};
   },
@@ -4152,7 +4189,7 @@ const Lounge = {
     const T = THREE, M = this.mats, add = this.add, W = 10, D = 10, H = 3.2, zc = -4;
     this.CASTS.escape = this.CASTS.escape || [];
     const g = this.room = new T.Group(); this.scene.add(g);
-    const wc = Tex.walnut(), floorM = new T.MeshStandardMaterial({map: Tex.make(wc, {repeat: [4, 4]}), color: 0x6a4a34, roughness: .5});
+    const wc = Tex.walnut(), floorM = new T.MeshStandardMaterial({map: Tex.make(wc, {repeat: [4, 4]}), normalMap: Tex.make(Tex.normal(wc, 4), {repeat: [4, 4], srgb: false}), color: 0x6a4a34, roughness: .35, envMapIntensity: .6});
     const [pc, px] = Tex.canvas(256, 256); px.fillStyle = "#3a2a22"; px.fillRect(0, 0, 256, 256); px.strokeStyle = "#241812"; px.lineWidth = 6; for (let i = 0; i < 4; i++){ px.strokeRect(8 + i*62, 14, 52, 228); } for (let i = 0; i < 500; i++){ px.fillStyle = `rgba(255,255,255,${Math.random()*.04})`; px.fillRect(Math.random()*256, Math.random()*256, 2, 4); }
     this.wShell(g, W, D, H, zc, {floor: floorM, wall: new T.MeshStandardMaterial({map: Tex.make(pc, {repeat: [4, 1]}), roughness: .85}), ceil: this.stdMat(0x1c130e, .9)});
     const rug = add(new T.Mesh(new T.PlaneGeometry(4.4, 3), new T.MeshStandardMaterial({map: Tex.make(Tex.rug()), roughness: 1, color: 0xa08060})), g, false, true); rug.rotation.x = -Math.PI/2; rug.position.set(0, .006, -4.4);
@@ -4189,6 +4226,7 @@ const Lounge = {
     };
     this.esApi.code("000"); this.esApi.word("???");
     g.add(new T.HemisphereLight(0xffd8b0, 0x2a1a10, .6));
+    try{ this.enh_escape(g); }catch(e){ console.warn(e); }
     return {id: "escape", name: "Escape Room", group: g, floorY: 0, fog: new T.FogExp2(0x120c08, .035), exposure: .9, bloom: .35,
       screen: [-2.4, 2.4, zc + D/2 - .06, .5, Math.PI],
       onMood: m => { this.esLamp.color.setHex(m.warm || 0xffc070); },
@@ -4203,6 +4241,127 @@ const Lounge = {
       }};
   },
 
+  /* ================= ✨ Realism pass for the wellness worlds: trim, light shafts, dust in the air, real models ================= */
+  wTrim(g, W, D, H, zc, mat, opts = {}){
+    const sides = [[W, 0, zc - D/2 + .013, 0], [W, 0, zc + D/2 - .013, 0], [D, -W/2 + .013, zc, Math.PI/2], [D, W/2 - .013, zc, Math.PI/2]];
+    for (const [w, x, z, ry] of sides){ const b = this.wBox(g, w, .13, .026, mat, x, .065, z, false); b.rotation.y = ry; b.receiveShadow = true;
+      if (opts.crown !== false){ const c = this.wBox(g, w, .09, .06, mat, x, H - .045, z, false); c.rotation.y = ry; }
+      if (opts.rail){ const r = this.wBox(g, w, .05, .035, mat, x, opts.rail, z, false); r.rotation.y = ry; } }
+  },
+  /* floating dust / pollen that drifts slowly through the light */
+  wDust(g, cx, cy, cz, sx, sy, sz, n, color = 0xfff0d0, size = .025){
+    const T = THREE, p = []; for (let i = 0; i < n; i++) p.push(cx + (Math.random() - .5)*sx, cy + (Math.random() - .5)*sy, cz + (Math.random() - .5)*sz);
+    const geo = new T.BufferGeometry(); geo.setAttribute("position", new T.Float32BufferAttribute(p, 3));
+    const pts = new T.Points(geo, new T.PointsMaterial({color, size, map: this.glowT, transparent: true, opacity: .55, depthWrite: false, blending: T.AdditiveBlending}));
+    pts.position.set(0, 0, 0); g.add(pts); const t0 = Math.random()*9;
+    pts.onBeforeRender = () => { const t = performance.now()/1000 + t0; pts.position.set(Math.sin(t*.07)*.25, Math.sin(t*.11)*.12, Math.cos(t*.05)*.25); };
+    return pts;
+  },
+  wNormalMat(canvas, rep, o = {}){ const T = THREE; return new T.MeshStandardMaterial(Object.assign({map: Tex.make(canvas, {repeat: rep}), normalMap: Tex.make(Tex.normal(canvas, o.ns || 3), {repeat: rep, srgb: false}), roughness: .6}, o.m || {})); },
+  wPaper(c1, c2){ const [c, x] = Tex.canvas(256, 256); x.fillStyle = c1; x.fillRect(0, 0, 256, 256); x.strokeStyle = c2; x.lineWidth = 2;
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++){ const cx = 32 + i*64, cy = 32 + j*64; x.beginPath(); x.moveTo(cx, cy - 22); x.quadraticCurveTo(cx + 18, cy, cx, cy + 22); x.quadraticCurveTo(cx - 18, cy, cx, cy - 22); x.stroke(); x.beginPath(); x.arc(cx, cy, 5, 0, 7); x.stroke(); }
+    Tex.noise(x, 256, 256, 10); return c; },
+  wFlames(g, x, y, z, n, s = .3){ const T = THREE, fl = []; for (let i = 0; i < n; i++){ const sp = new T.Sprite(new T.SpriteMaterial({map: this.glowT, color: i % 2 ? 0xff7a20 : 0xffb040, transparent: true, depthWrite: false, blending: T.AdditiveBlending})); sp.position.set(x + (i - (n - 1)/2)*s*.35, y, z); sp.scale.set(s*.6, s, 1); g.add(sp); fl.push(sp); }
+    const l = new T.PointLight(0xff8a30, 1.2, 6, 2); l.position.set(x, y + .2, z + .3); g.add(l);
+    const tick = () => { const t = performance.now()/1000; fl.forEach((f, i) => { const k = .8 + Math.sin(t*9 + i*1.7)*.18 + Math.sin(t*13 + i)*.1; f.scale.set(s*.6*k, s*k*1.3, 1); }); l.intensity = 1.1 + Math.sin(t*10)*.15 + Math.sin(t*23)*.08; };
+    fl[0].onBeforeRender = tick; return {fl, l}; },
+  wSmoke(g, x, y, z, n = 6){ const T = THREE, tex = Tex.make(Tex.cloud()), list = []; for (let i = 0; i < n; i++){ const s = new T.Sprite(new T.SpriteMaterial({map: tex, color: 0xdedede, transparent: true, opacity: .15, depthWrite: false})); s.userData.ph = i/n; g.add(s); list.push(s); }
+    list[0].onBeforeRender = () => { const t = performance.now()/1000; list.forEach(s => { const k = (t*.18 + s.userData.ph) % 1; s.position.set(x + Math.sin(t*.7 + s.userData.ph*6)*.08*k*3, y + k*1.4, z); s.material.opacity = .16*(1 - k); s.scale.setScalar(.12 + k*.5); }); };
+    return list; },
+
+  enh_meditate(g){
+    const T = THREE, M = this.mats, U = typeof GFX !== "undefined" && GFX.level === "ultra", W = 14, D = 12, H = 4.6, zc = -4;
+    this.wTrim(g, W, D, H, zc, M.walnut);
+    // tatami mats around the circle
+    const [tc, tx] = Tex.canvas(256, 256); tx.fillStyle = "#c8b97a"; tx.fillRect(0, 0, 256, 256); for (let y = 0; y < 256; y += 3){ tx.fillStyle = `rgba(90,80,30,${.08 + Math.random()*.08})`; tx.fillRect(0, y, 256, 1); } tx.fillStyle = "#2a3a24"; tx.fillRect(0, 0, 256, 10); tx.fillRect(0, 246, 256, 10); Tex.noise(tx, 256, 256, 8);
+    const tm = this.wNormalMat(tc, [1, 1], {ns: 2, m: {roughness: .85}});
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++){ const m = this.add(new T.Mesh(new T.BoxGeometry(1.8, .03, .9), tm), g, false, true); m.position.set(-3.0 + i*1.85, .015, -7.1 + j*.95 + (i % 2)*.0); if (i % 2) { m.rotation.y = 0; } }
+    // shoji screens glowing softly on the side walls
+    const paper = new T.MeshStandardMaterial({color: 0xfff4dc, emissive: 0xffd8a0, emissiveIntensity: .35, roughness: .9}), lat = M.walnut;
+    for (const sx of [-1, 1]) for (let k = 0; k < 3; k++){ const z = -8 + k*3.1, x = sx*(W/2 - .05), p = this.add(new T.Mesh(new T.PlaneGeometry(2.4, 2.6), paper), g, false); p.position.set(x, 1.65, z); p.rotation.y = -sx*Math.PI/2;
+      for (let i = 0; i <= 4; i++) this.wBox(g, .04, 2.66, .04, lat, x - sx*.02, 1.65, z - 1.2 + i*.6, false); for (let i = 0; i <= 5; i++) this.wBox(g, .04, .04, 2.44, lat, x - sx*.02, .35 + i*.52, z, false); }
+    // moonlight through the round window, and drifting incense
+    this.beam(g, [0, 3.4, zc - D/2 + .3], [.6, 0, -4.2], 1.6, 0xaac4ff, U ? .09 : .06);
+    this.wDust(g, .6, 1.6, -5.5, 5, 2.6, 5, U ? 160 : 80, 0xd8e8ff, .02);
+    // a low tea table with tea, real cushions, candles, plants and an incense brazier
+    const tt = this.wBox(g, 1.0, .06, .6, M.walnut, 2.2, .32, -1.4); for (const [x, z] of [[-.42, -.24], [.42, -.24], [-.42, .24], [.42, .24]]) this.wBox(g, .06, .3, .06, M.walnut, 2.2 + x, .15, -1.4 + z); this.surface(tt);
+    this.asset(g, "teacup", {x: 2.05, y: .35, z: -1.35, ry: .6, h: .09}); this.asset(g, "teacup", {x: 2.4, y: .35, z: -1.5, ry: 2.1, h: .09});
+    for (const [x, z, r] of [[1.4, -1.2, .4], [3.0, -1.2, -.4], [-6.2, -9.2, 0], [6.2, -9.2, 0]]) this.asset(g, "pouf", {x, z, ry: r, h: .42});
+    for (const [x, z] of [[-6.3, 1.0], [6.3, 1.0], [-6.3, -9.6], [6.3, -9.6]]) this.asset(g, "plant", {x, z, h: 1.3, ry: Math.random()*6});
+    for (const [x, z] of [[3.6, -9.4], [4.4, -9.4], [5.2, -9.4]]) this.asset(g, "candles", {x, z, h: .38}); this.wGlow(g, 0xffa040, 1.4, 4.4, .35, -9.3, .35);
+    this.asset(g, "coals", {x: -2.6, z: -9.2, h: .4}); this.wSmoke(g, -2.6, .45, -9.2, 7);
+    this.asset(g, "lantern", {x: -2.4, z: -2.2, h: .55}); this.asset(g, "lantern", {x: -6.4, z: -5.4, h: .55});
+    // stepping stones from the door to the circle
+    for (let i = 0; i < 5; i++){ const s = this.add(new T.Mesh(new T.CylinderGeometry(.28, .3, .04, 10), this.stdMat(0x8a857a, .9)), g, false, true); s.position.set(.3 + Math.sin(i)*.25, .02, .6 - i*.7); s.scale.z = .8; }
+    // a couple more people meditating
+    this.person(g, -1.3, 0, -5.9, 0, "idle", {gender: "m"});
+  },
+  enh_gym(g){
+    const T = THREE, M = this.mats, U = typeof GFX !== "undefined" && GFX.level === "ultra", W = 16, D = 12, H = 4.2, zc = -4;
+    this.wTrim(g, W, D, H, zc, this.stdMat(0x1a1c20, .6), {crown: false});
+    // rubber flooring gets bumps; a wooden lifting platform
+    const [pc, px] = Tex.canvas(256, 256); px.fillStyle = "#7a5a3a"; px.fillRect(0, 0, 256, 256); for (let i = 0; i < 8; i++){ px.fillStyle = `hsl(28,${35 + Math.random()*15}%,${32 + Math.random()*12}%)`; px.fillRect(0, i*32, 256, 30); } Tex.noise(px, 256, 256, 14);
+    const plat = this.add(new T.Mesh(new T.BoxGeometry(2.6, .05, 2.6), this.wNormalMat(pc, [1, 1], {ns: 3, m: {roughness: .5}})), g, false, true); plat.position.set(-1.2, .025, -8.6);
+    for (const sx of [-1, 1]) this.wBox(g, .6, .05, 2.6, this.stdMat(0x111111, .95), -1.2 + sx*1.6, .025, -8.6, false);
+    // high windows with the city outside, and sunlight streaming in
+    const sky = new T.MeshBasicMaterial({map: Tex.make(Tex.skyline()), toneMapped: false});
+    for (let i = 0; i < 4; i++){ const z = -8.6 + i*2.4, w = this.add(new T.Mesh(new T.PlaneGeometry(1.9, .9), sky), g, false); w.position.set(W/2 - .03, 3.45, z); w.rotation.y = -Math.PI/2; this.wBox(g, .06, 1.0, 2.0, M.black, W/2 - .04, 3.45, z, false).material = this.stdMat(0x222222, .4, {metalness: .6});
+      if (i % 2 === 0) this.beam(g, [W/2 - .3, 3.5, z], [W/2 - 3.6, 0, z + .8], 1.0, 0xfff0d8, U ? .07 : .045); }
+    this.wDust(g, 4.5, 1.8, -5, 6, 3, 7, U ? 140 : 70, 0xfff2dc, .018);
+    // acoustic ceiling baffles
+    for (let i = 0; i < 7; i++) this.wBox(g, .05, .5, D - 1, this.stdMat(i % 2 ? 0x2a2e34 : 0xffcc00, .9), -6.6 + i*2.2, H - .3, zc, false);
+    // real props: water bottles, cones for agility drills, sneakers, a drinks fridge, a boombox, plants
+    for (const [x, z] of [[-4.0, -6.3], [-1.6, -6.3], [4.2, -7.2], [6.0, -2.3]]) this.asset(g, "waterbottle", {x, z, h: .26, ry: Math.random()*6});
+    for (let i = 0; i < 6; i++) this.asset(g, "cone", {x: -5.6 + i*1.1, z: -.4, h: .32});
+    this.asset(g, "sneaker", {x: 6.6, z: -6.8, h: .12, ry: 1.2}); this.asset(g, "sneaker", {x: 6.85, z: -6.6, h: .12, ry: 1.5});
+    this.asset(g, "fridge", {x: 7.3, z: -9.3, h: 1.95, ry: -Math.PI/2});
+    this.asset(g, "boombox", {x: -6.6, y: .94, z: -9.6, h: .3});
+    for (const [x, z] of [[-7.4, 1.0], [7.4, 1.0]]) this.asset(g, "plant", {x, z, h: 1.4});
+    // an aerobics class in front of the mirror
+    for (let i = 0; i < 4; i++) this.person(g, -5.2, 0, -5.6 + i*1.3, -Math.PI/2, "dance", {gender: i % 2 ? "m" : "f"});
+    this.person(g, -6.9, 0, -3.6, Math.PI/2, "dance", {gender: "f"});
+  },
+  enh_dancestudio(g){
+    const T = THREE, M = this.mats, U = typeof GFX !== "undefined" && GFX.level === "ultra", W = 14, D = 12, H = 4.4, zc = -4;
+    this.wTrim(g, W, D, H, zc, this.stdMat(0xf4f0ea, .5));
+    // tall windows with soft daylight on the right wall above the barre
+    const sky = new T.MeshBasicMaterial({map: Tex.make(Tex.skyline()), toneMapped: false});
+    for (let i = 0; i < 3; i++){ const z = -8 + i*3, w = this.add(new T.Mesh(new T.PlaneGeometry(1.8, 1.6), sky), g, false); w.position.set(W/2 - .03, 2.6, z); w.rotation.y = -Math.PI/2;
+      for (const dy of [-.82, .82]) this.wBox(g, .08, .06, 1.9, M.walnut, W/2 - .05, 2.6 + dy, z, false); for (const dz of [-.92, 0, .92]) this.wBox(g, .08, 1.7, .06, M.walnut, W/2 - .05, 2.6, z + dz, false);
+      this.beam(g, [W/2 - .3, 3.0, z], [W/2 - 3.4, 0, z + .6], 1.1, 0xfff4e4, U ? .07 : .045); }
+    this.wDust(g, 2.5, 1.8, -4.5, 7, 3, 8, U ? 150 : 70, 0xfff4e4, .018);
+    // stage-light beams that sweep with the moving lights
+    this.dsBeams = this.dsLights.map((sp, i) => { const b = this.beam(g, [sp.position.x, sp.position.y, sp.position.z], [sp.position.x, 0, -4], 1.0, [0xff4fd8, 0x4de1ff, 0xffc21a, 0x8dff9e][i], U ? .08 : .05); b.userData.sp = sp; return b; });
+    // waiting area, speakers' boombox, flowers, water bottles
+    this.asset(g, "sofa", {x: -4.6, z: .6, ry: Math.PI, h: .85}); this.asset(g, "pouf", {x: -2.8, z: .7, h: .42}); this.asset(g, "pouf", {x: 4.6, z: .7, h: .42});
+    const st = this.wBox(g, .6, .5, .45, M.walnut, -6.4, .25, .9); this.asset(g, "vaseflowers", {x: -6.4, y: .5, z: .9, h: .5});
+    this.asset(g, "boombox", {x: 5.8, y: 1.1, z: -8.9, h: .3});
+    for (const [x, z] of [[6.4, -9.2], [6.4, -7.0], [6.5, -3.5]]) this.asset(g, "waterbottle", {x, z, h: .26});
+    for (const [x, z] of [[-6.4, -9.4], [6.4, 1.2]]) this.asset(g, "plant", {x, z, h: 1.4});
+    // a bigger class
+    for (const [x, z] of [[-3.6, -3.0], [3.6, -3.0], [-1.2, -1.2], [1.6, -1.2]]) this.person(g, x, 0, z, Math.PI, "dance", {gender: Math.random() < .5 ? "f" : "m"});
+  },
+  enh_escape(g){
+    const T = THREE, M = this.mats, U = typeof GFX !== "undefined" && GFX.level === "ultra", W = 10, D = 10, H = 3.2, zc = -4;
+    // wallpaper above a wood chair rail
+    const wp = this.wNormalMat(this.wPaper("#3a1c22", "rgba(200,160,90,.55)"), [3, 1], {ns: 1.5, m: {roughness: .8}});
+    for (const [w, x, z, ry] of [[W, 0, zc - D/2 + .015, 0], [D, -W/2 + .015, zc, Math.PI/2], [D, W/2 - .015, zc, -Math.PI/2], [W, 0, zc + D/2 - .015, Math.PI]]){ const p = this.add(new T.Mesh(new T.PlaneGeometry(w, H - 1.15), wp), g, false, true); p.position.set(x, 1.15 + (H - 1.15)/2, z); p.rotation.y = ry; }
+    this.wTrim(g, W, D, H, zc, M.walnut, {rail: 1.12});
+    // coffered ceiling
+    for (let i = 1; i < 4; i++){ this.wBox(g, W, .14, .14, M.walnut, 0, H - .07, zc - D/2 + i*D/4, false); this.wBox(g, .14, .14, D, M.walnut, -W/2 + i*W/4, H - .07, zc, false); }
+    // a fireplace on the left wall
+    const fx = -W/2 + .35, fz = -8.0; this.wBox(g, .5, 1.2, 1.8, this.stdMat(0x5a4a40, .9), fx, .6, fz); this.wBox(g, .6, .1, 2.0, M.walnut, fx + .02, 1.25, fz);
+    this.wBox(g, .52, .7, 1.0, this.stdMat(0x0a0806, .95), fx + .02, .38, fz, false); const fire = this.wFlames(g, fx + .3, .3, fz, 4, .35); this.esFire = fire;
+    for (let i = 0; i < 3; i++){ const lg = this.wCyl(g, .05, .05, .7, this.stdMat(0x3a2414, .9), fx + .28, .1 + i*.04, fz + (i - 1)*.08, 8); lg.rotation.x = Math.PI/2; lg.rotation.z = .2*i; }
+    this.asset(g, "vaseflowers", {x: fx + .05, y: 1.3, z: fz - .6, h: .4}); this.asset(g, "candles", {x: fx + .05, y: 1.3, z: fz + .6, h: .3});
+    // real curios: a desk lamp, amber, a skull on a pedestal, armchairs by the fire
+    this.asset(g, "desklamp", {x: -1.6, y: .82, z: -8.35, h: .45, ry: .4}); this.asset(g, "amber", {x: -2.5, y: .82, z: -8.0, h: .08});
+    this.wCyl(g, .18, .22, 1.0, this.stdMat(0x2a2420, .4, {metalness: .2}), 2.3, .5, -8.5, 16); this.asset(g, "skull", {x: 2.3, y: 1.0, z: -8.5, h: .22, ry: .5});
+    this.asset(g, "damaskchair", {x: -2.4, z: -7.4, ry: Math.PI, h: 1.0}); this.asset(g, "leathersofa", {x: -2.6, z: -6.0, ry: -Math.PI/2 - .2, h: .9}); this.asset(g, "armchair", {x: 3.6, z: -3.4, ry: -2.2, h: .95});
+    // lamp light and dust
+    this.beam(g, [-1.6, 1.25, -8.3], [-1.9, .82, -8.0], .5, 0xffd090, .07);
+    this.wDust(g, -1.5, 1.5, -6.5, 5, 2.4, 4, U ? 120 : 60, 0xffd8a0, .015);
+  },
   buildHome(){ return Home.build(this); },
   /* ---------- shared bits for the jazz café, aquarium and wedding ---------- */
   neonTex(text, color, font, w = 1024, h = 320){
@@ -8693,6 +8852,7 @@ const Lounge = {
       if (h){ const b = new T.Box3().setFromObject(src); k = h/Math.max(.001, b.max.y - b.min.y); }
       m.scale.multiplyScalar(k);
       const b = new T.Box3().setFromObject(m); m.position.y -= b.min.y;          // stand on the surface
+      { const lights = []; m.traverse(o => { if (o.isLight) lights.push(o); }); lights.forEach(l => l.parent && l.parent.remove(l)); }
       m.traverse(o => { if (o.isMesh){ o.castShadow = shadow; o.receiveShadow = true;
         if (surface){ const sw = (this.surfaces || (this.surfaces = {}))[world] || (this.surfaces[world] = []); sw.push(o); } } });
       holder.add(m);
@@ -9281,7 +9441,7 @@ const Lounge = {
     this.lastBass = bass;
     if (this.btnMeshes){ const xr = this.renderer.xr.isPresenting; for (const id in this.btnMeshes) this.btnMeshes[id].visible = this.mode === "ar"; }
     this.updateMove(dt, xrFrame); this.updateBooths(dt); this.updateGrab(dt); try{ VRMenu.update(dt); }catch(e){ console.warn(e); } this.updateCorks(dt); Party.update(dt); Screens.update();
-    try{ Hunt.update(dt, t); }catch(e){ console.warn("Hunt", e); } try{ Pets.tick(dt, t); }catch(e){ console.warn("Pets", e); } this.updatePeople(dt, bass); this.updateCurtain(dt); try{ Mogul.update(dt); }catch(e){ console.warn(e); } try{ View.update(dt); }catch(e){ console.warn(e); }
+    try{ Hunt.update(dt, t); }catch(e){ console.warn("Hunt", e); } try{ Pets.tick(dt, t); }catch(e){ console.warn("Pets", e); } try{ Mirrors.update(); SelfBody.update(dt); }catch(e){ console.warn("Mirrors", e); } this.updatePeople(dt, bass); this.updateCurtain(dt); try{ Mogul.update(dt); }catch(e){ console.warn(e); } try{ View.update(dt); }catch(e){ console.warn(e); }
     try{ Cam.xrFrame(dt); }catch(e){ console.warn(e); }
     try{ if (!GFX.ready) GFX.init(); GFX.tick(dt); }catch(e){ console.warn(e); }
     if (this.composer && !this.gfxNoPost && !this.renderer.xr.isPresenting){ this.finalPass.uniforms.exposure.value = this.renderer.toneMappingExposure; if (this.finalPass.uniforms.time) this.finalPass.uniforms.time.value = this.clock.elapsedTime; this.composer.render(dt); }
@@ -10146,72 +10306,226 @@ const Studio = {
 
 /* ---------- Your profile ---------- */
 /* ================= 🐾 Pets: a little friend that follows you around the lounge ================= */
+/* ================= 🪞 Mirrors: real reflections, and you can see yourself in them =================
+   Reflection maths adapted from three.js's Reflector (MIT License, © three.js authors). Only the nearest mirror you're
+   facing renders live; the others show a soft glossy surface until you walk up to them. */
+const Mirrors = {
+  list: [], LAYER: 5,
+  shader: {
+    vertexShader: "uniform mat4 textureMatrix; varying vec4 vUv; void main(){ vUv = textureMatrix * vec4(position, 1.0); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
+    fragmentShader: "uniform vec3 color; uniform sampler2D tDiffuse; varying vec4 vUv; void main(){ vec4 base = texture2DProj(tDiffuse, vUv); gl_FragColor = vec4(base.rgb * color, 1.0); }"
+  },
+  make(w, h, o = {}){
+    const T = THREE, L = Lounge, lv = typeof GFX !== "undefined" ? GFX.level : "high", res = o.res || (lv === "ultra" ? 1024 : lv === "low" ? 256 : 512);
+    const rt = new T.WebGLRenderTarget(Math.round(res*Math.min(2, w/h)), res, {minFilter: T.LinearFilter, magFilter: T.LinearFilter, format: T.RGBFormat}); rt.texture.generateMipmaps = false;
+    const textureMatrix = new T.Matrix4(), mat = new T.ShaderMaterial({uniforms: {color: {value: new T.Color(o.tint || 0xb8bec4)}, tDiffuse: {value: rt.texture}, textureMatrix: {value: textureMatrix}}, vertexShader: this.shader.vertexShader, fragmentShader: this.shader.fragmentShader});
+    const still = new T.MeshStandardMaterial({color: 0xb8c4cc, metalness: 1, roughness: .12, envMap: L.envTex, envMapIntensity: 1.2});
+    const mesh = new T.Mesh(new T.PlaneGeometry(w, h), still), M = {mesh, rt, mat, still, live: false, w, h};
+    const plane = new T.Plane(), normal = new T.Vector3(), rp = new T.Vector3(), cp = new T.Vector3(), rot = new T.Matrix4(), look = new T.Vector3(), clip = new T.Vector4(), view = new T.Vector3(), target = new T.Vector3(), q = new T.Vector4(), vcam = new T.PerspectiveCamera();
+    mesh.onBeforeRender = (renderer, scene, camera) => {
+      if (!M.live || this.busy) return; if (renderer.xr.isPresenting && (this.frame % 2)) return;
+      rp.setFromMatrixPosition(mesh.matrixWorld); cp.setFromMatrixPosition(camera.matrixWorld); rot.extractRotation(mesh.matrixWorld); normal.set(0, 0, 1).applyMatrix4(rot);
+      view.subVectors(rp, cp); if (view.dot(normal) > 0) return; view.reflect(normal).negate().add(rp);
+      rot.extractRotation(camera.matrixWorld); look.set(0, 0, -1).applyMatrix4(rot).add(cp); target.subVectors(rp, look).reflect(normal).negate().add(rp);
+      vcam.position.copy(view); vcam.up.set(0, 1, 0).applyMatrix4(rot).reflect(normal); vcam.lookAt(target); vcam.far = camera.far; vcam.updateMatrixWorld(); vcam.projectionMatrix.copy(camera.projectionMatrix);
+      vcam.layers.mask = 1 | (1 << this.LAYER);
+      textureMatrix.set(.5, 0, 0, .5, 0, .5, 0, .5, 0, 0, .5, .5, 0, 0, 0, 1); textureMatrix.multiply(vcam.projectionMatrix); textureMatrix.multiply(vcam.matrixWorldInverse); textureMatrix.multiply(mesh.matrixWorld);
+      plane.setFromNormalAndCoplanarPoint(normal, rp); plane.applyMatrix4(vcam.matrixWorldInverse); clip.set(plane.normal.x, plane.normal.y, plane.normal.z, plane.constant);
+      const pm = vcam.projectionMatrix; q.x = (Math.sign(clip.x) + pm.elements[8])/pm.elements[0]; q.y = (Math.sign(clip.y) + pm.elements[9])/pm.elements[5]; q.z = -1; q.w = (1 + pm.elements[10])/pm.elements[14];
+      clip.multiplyScalar(2/clip.dot(q)); pm.elements[2] = clip.x; pm.elements[6] = clip.y; pm.elements[10] = clip.z + 1 - .003; pm.elements[14] = clip.w;
+      rt.texture.encoding = renderer.outputEncoding; mesh.visible = false; this.busy = true;
+      const cur = renderer.getRenderTarget(), xr = renderer.xr.enabled, sh = renderer.shadowMap.autoUpdate;
+      renderer.xr.enabled = false; renderer.shadowMap.autoUpdate = false; renderer.setRenderTarget(rt); renderer.state.buffers.depth.setMask(true); if (renderer.autoClear === false) renderer.clear();
+      try{ renderer.render(scene, vcam); }catch(e){}
+      renderer.xr.enabled = xr; renderer.shadowMap.autoUpdate = sh; renderer.setRenderTarget(cur); if (camera.viewport !== undefined) renderer.state.viewport(camera.viewport);
+      mesh.visible = true; this.busy = false;
+    };
+    this.list.push(M); return mesh;
+  },
+  attached(o){ const L = Lounge; for (let p = o; p; p = p.parent) if (p === L.scene) return true; return false; },
+  /* each frame: the nearest mirror you're facing goes live */
+  update(){
+    const L = Lounge; this.frame = (this.frame || 0) + 1; if (!this.list.length || !L.camera) { this.near = false; return; }
+    this.list = this.list.filter(M => { if (M.mesh.parent && this.attached(M.mesh)) return true; if (!M.mesh.parent){ M.rt.dispose(); M.mat.dispose(); return false; } return true; });
+    const h = L.headPos(), T = THREE, n = new T.Vector3(), p = new T.Vector3(); let best = null, bd = 1e9;
+    for (const M of this.list){ M.live = false; if (!L.isShown(M.mesh) || !this.attached(M.mesh) || L.mode === "ar") continue; M.mesh.getWorldPosition(p); const d = p.distanceTo(h); if (d > 10) continue;
+      n.set(0, 0, 1).applyQuaternion(M.mesh.getWorldQuaternion(new T.Quaternion())); if (n.dot(h.clone().sub(p)) <= 0) continue; if (d < bd){ bd = d; best = M; } }
+    for (const M of this.list){ const want = M === best ? M.mat : M.still; if (M.mesh.material !== want) M.mesh.material = want; }
+    if (best) best.live = true; this.near = !!best;
+  }
+};
+/* 🧍 your own body, visible only in mirrors: it stands where you stand and moves when you move */
+const SelfBody = {
+  slot: null, sig: "", last: null,
+  update(dt){
+    const L = Lounge, T = THREE; if (!L.camera || !L.worlds) return;
+    if (!Mirrors.near || L.mode === "ar"){ if (this.slot && this.slot.p) this.slot.p.visible = false; return; }
+    const w = L.worlds[L.worldId]; if (!w) return; const pr = Profile.get(), sig = [L.worldId, pr.avatar, JSON.stringify(pr.outfit || {}), pr.hat, pr.eyes, pr.neck, pr.acc, pr.phones, pr.height].join("|");
+    if (!this.slot || this.sig !== sig || !this.slot.p.parent){
+      if (this.slot){ try{ Mogul.despawn(this.slot); }catch(e){} } this.sig = sig; this.layered = false;
+      const prev = L.buildingWorld; L.buildingWorld = L.worldId; let p; try{ p = L.person(w.group, 0, 0, 0, 0, "idle", {avatar: pr.avatar, outfit: pr.outfit, gear: {hat: pr.hat, eyes: pr.eyes, neck: pr.neck, phones: pr.phones, aura: pr.aura, acc: pr.acc}}); }finally{ L.buildingWorld = prev; }
+      this.slot = p.userData.slot; this.slot.mogul = true; this.slot.selfBody = true; }
+    const s = this.slot; s.p.visible = true;
+    if (s.real && !this.layered){ this.layered = true; s.p.traverse(o => { o.layers.set(Mirrors.LAYER); }); }
+    if (!s.real) s.p.traverse(o => { o.layers.set(Mirrors.LAYER); });
+    const h = L.headPos(), y = (() => { try{ const f = L.floorAt(h.x, h.z, h.y + .3); return f == null ? 0 : f; }catch(e){ return 0; } })();
+    const lp = w.group.worldToLocal(new T.Vector3(h.x, y, h.z)); s.p.position.copy(lp); s.p.rotation.y = L.headYaw() + Math.PI;
+    const sp = this.last ? Math.hypot(h.x - this.last.x, h.z - this.last.z)/Math.max(dt, .001) : 0; this.last = {x: h.x, z: h.z};
+    let em = "idle"; try{ em = Party.emote || "idle"; }catch(e){}
+    Fight.clip(s, sp > .5 ? "walk" : em === "dance" ? "dance2" : em === "cheer" ? "cheer" : em === "wave" ? "talk" : "idle");
+  }
+};
+
 const Pets = {
   KINDS: {none: "No pet", dog: "🐶 Puppy", cat: "🐱 Kitten", bunny: "🐰 Bunny", fox: "🦊 Fox", parrot: "🦜 Parrot", penguin: "🐧 Penguin", dragon: "🐲 Baby dragon"},
-  COL: {dog: "#c58b4a", cat: "#8f8f98", bunny: "#f0ebe4", fox: "#e0742a", parrot: "#2fbf5b", penguin: "#23272c", dragon: "#58c860"},
-  list: [], cache: {},
+  COL: {dog: "#c58b4a", cat: "#8f8f98", bunny: "#f0ebe4", fox: "#e0742a", parrot: "#d8262a", penguin: "#1d2126", dragon: "#3f9a4a"},
+  list: [], cache: {}, texC: {},
   mat(c, r = .85){ return new THREE.MeshStandardMaterial({color: c, roughness: r}); },
-  ell(g, c, rx, ry, rz, x, y, z, seg = 14){ const m = new THREE.Mesh(new THREE.SphereGeometry(1, seg, Math.max(6, seg - 4)), c); m.scale.set(rx, ry, rz); m.position.set(x, y, z); g.add(m); return m; },
+  ell(g, c, rx, ry, rz, x, y, z, seg = 18){ const m = new THREE.Mesh(new THREE.SphereGeometry(1, seg, Math.max(8, seg - 6)), c); m.scale.set(rx, ry, rz); m.position.set(x, y, z); m.castShadow = true; g.add(m); return m; },
   tag(name){
     const T = THREE, [c, x] = Tex.canvas(256, 64); x.fillStyle = "rgba(20,13,10,.78)"; x.beginPath(); x.roundRect ? x.roundRect(4, 8, 248, 48, 24) : x.rect(4, 8, 248, 48); x.fill(); x.fillStyle = "#fff"; x.font = '700 30px "Hanken Grotesk", sans-serif'; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(name, 128, 34, 230);
     const s = new T.Sprite(new T.SpriteMaterial({map: Tex.make(c), transparent: true, depthWrite: false})); s.scale.set(.3, .075, 1); s.renderOrder = 6; return s;
   },
-  /* build the model: it faces +z, stands on y = 0 and is about 30 cm long */
-  make(kind, color, name){
-    const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body); const U = g.userData; U.kind = kind; U.legs = []; U.ph = Math.random()*6;
-    const base = new T.Color(color || this.COL[kind] || "#c58b4a"), belly = base.clone().lerp(new T.Color(0xffffff), .6), dark = base.clone().multiplyScalar(.55);
-    const M = this.mat(base), B = this.mat(belly), D = this.mat(dark), eyeM = this.mat(0x14100c, .3), E = (parent, x, y, z, r = .012) => this.ell(parent, eyeM, r, r, r, x, y, z, 8);
-    if (kind === "parrot"){
-      this.ell(body, M, .07, .09, .06, 0, .22, 0); this.ell(body, B, .05, .07, .04, 0, .21, .03);
-      const head = new T.Group(); head.position.set(0, .31, .03); body.add(head); this.ell(head, M, .05, .05, .05, 0, 0, 0); E(head, .025, .01, .04); E(head, -.025, .01, .04);
-      const beak = new T.Mesh(new T.ConeGeometry(.02, .05, 8), this.mat(0xffb020)); beak.rotation.x = Math.PI/2; beak.position.set(0, -.005, .07); head.add(beak); U.head = head;
-      U.wings = []; for (const s of [-1, 1]){ const w = new T.Group(); w.position.set(s*.06, .24, -.01); const f = this.ell(w, this.mat(0x1f8fe0), .09, .012, .05, s*.08, 0, -.02); body.add(w); U.wings.push([w, s]); }
-      this.ell(body, this.mat(0xe03030), .02, .02, .13, 0, .13, -.1); this.ell(body, this.mat(0xffd020), .018, .018, .1, .015, .13, -.12);
-    } else if (kind === "penguin"){
-      this.ell(body, M, .09, .13, .08, 0, .17, 0); this.ell(body, this.mat(0xf6f6f6), .065, .1, .05, 0, .16, .04);
-      const head = new T.Group(); head.position.set(0, .31, .01); body.add(head); this.ell(head, M, .06, .06, .06, 0, 0, 0); E(head, .026, .008, .05); E(head, -.026, .008, .05);
-      const beak = new T.Mesh(new T.ConeGeometry(.018, .045, 8), this.mat(0xff9a1a)); beak.rotation.x = Math.PI/2; beak.position.set(0, -.012, .075); head.add(beak); U.head = head;
-      U.wings = []; for (const s of [-1, 1]){ const w = new T.Group(); w.position.set(s*.09, .22, 0); this.ell(w, M, .02, .07, .045, s*.015, -.05, 0); body.add(w); U.wings.push([w, s]); }
-      for (const s of [-1, 1]){ const f = new T.Group(); f.position.set(s*.04, .035, .02); this.ell(f, this.mat(0xff9a1a), .035, .015, .05, 0, 0, .02); g.add(f); U.legs.push(f); }
-    } else {
-      const sp = {dog: {l: .15, h: .13, hs: .075, ear: "floppy", tail: "up", leg: .1}, cat: {l: .13, h: .1, hs: .07, ear: "point", tail: "long", leg: .1}, bunny: {l: .11, h: .1, hs: .07, ear: "long", tail: "puff", leg: .06},
-        fox: {l: .15, h: .1, hs: .07, ear: "point", tail: "bush", leg: .11}, dragon: {l: .14, h: .12, hs: .08, ear: "horn", tail: "spike", leg: .09}}[kind] || {l: .14, h: .11, hs: .07, ear: "point", tail: "up", leg: .1};
-      const by = sp.leg + sp.h*.7; this.ell(body, M, sp.h*.8, sp.h, sp.l, 0, by, 0); this.ell(body, B, sp.h*.6, sp.h*.7, sp.l*.8, 0, by - sp.h*.25, .01);
-      const head = new T.Group(); head.position.set(0, by + sp.h*.7, sp.l*.85); body.add(head); this.ell(head, M, sp.hs, sp.hs*.9, sp.hs, 0, 0, 0);
-      const sn = this.ell(head, kind === "dog" || kind === "fox" || kind === "dragon" ? B : M, sp.hs*.5, sp.hs*.4, sp.hs*.55, 0, -sp.hs*.25, sp.hs*.75); this.ell(head, eyeM, .012, .012, .012, 0, -sp.hs*.15, sp.hs*1.28, 8);
-      E(head, sp.hs*.5, sp.hs*.15, sp.hs*.82); E(head, -sp.hs*.5, sp.hs*.15, sp.hs*.82); U.head = head;
-      U.ears = []; for (const s of [-1, 1]){
-        const e = new T.Group(); e.position.set(s*sp.hs*.55, sp.hs*.7, -sp.hs*.1); head.add(e);
-        if (sp.ear === "floppy"){ this.ell(e, D, .028, .06, .02, s*.01, -.04, 0); e.rotation.z = -s*.3; }
-        else if (sp.ear === "long"){ this.ell(e, M, .022, .1, .014, 0, .09, 0); this.ell(e, this.mat(0xf4b0c0), .011, .07, .008, 0, .09, .008); e.rotation.z = -s*.15; }
-        else if (sp.ear === "horn"){ const h = new T.Mesh(new T.ConeGeometry(.016, .07, 8), this.mat(0xfff0c0)); h.position.y = .03; e.add(h); h.rotation.z = -s*.3; }
-        else { const c = new T.Mesh(new T.ConeGeometry(.03, .065, 4), M); c.position.y = .03; e.add(c); const c2 = new T.Mesh(new T.ConeGeometry(.016, .04, 4), this.mat(0xf4b0c0)); c2.position.set(0, .025, .008); e.add(c2); }
-        U.ears.push(e); }
-      const tl = new T.Group(); tl.position.set(0, by + sp.h*.2, -sp.l*.9); body.add(tl); U.tail = tl;
-      if (sp.tail === "puff") this.ell(tl, B, .035, .035, .035, 0, 0, -.02);
-      else if (sp.tail === "bush"){ this.ell(tl, M, .045, .045, .12, 0, .02, -.1); this.ell(tl, this.mat(0xffffff), .04, .04, .05, 0, .02, -.2); }
-      else if (sp.tail === "spike"){ this.ell(tl, M, .025, .025, .12, 0, .01, -.1); const sk = new T.Mesh(new T.ConeGeometry(.03, .06, 4), this.mat(0xe03a3a)); sk.rotation.x = -Math.PI/2; sk.position.set(0, .01, -.24); tl.add(sk); }
-      else if (sp.tail === "long"){ this.ell(tl, M, .016, .016, .14, 0, .06, -.1); tl.rotation.x = -.5; }
-      else { this.ell(tl, M, .02, .02, .07, 0, .04, -.06); tl.rotation.x = -.6; }
-      if (kind === "dragon"){ U.wings = []; for (const s of [-1, 1]){ const w = new T.Group(); w.position.set(s*sp.h*.7, by + sp.h*.7, -.01); const m = this.ell(w, this.mat(0x9a3ad0), .09, .008, .07, s*.09, .03, -.03); body.add(w); U.wings.push([w, s]); } }
-      for (const [x, z] of [[.05, sp.l*.55], [-.05, sp.l*.55], [.05, -sp.l*.55], [-.05, -sp.l*.55]]){ const lg = new T.Group(); lg.position.set(x, sp.leg, z); const c = new T.Mesh(new T.CylinderGeometry(.018, .016, sp.leg, 8), M); c.position.y = -sp.leg/2; lg.add(c); this.ell(lg, B, .022, .012, .03, 0, -sp.leg, .01, 8); g.add(lg); U.legs.push(lg); }
-    }
-    if (name){ const t = this.tag(String(name).slice(0, 16)); t.position.y = kind === "parrot" ? .5 : .42; g.add(t); }
-    const proxy = new T.Mesh(new T.SphereGeometry(.28, 8, 6), new T.MeshBasicMaterial({transparent: true, opacity: 0, depthWrite: false})); proxy.position.y = .2; proxy.userData.petProxy = true; g.add(proxy); U.proxy = proxy;
-    g.traverse(o => { if (o.isMesh) o.castShadow = false; });
+  /* fur, feathers and scales: a texture of tiny strokes (plus stripes, spots or scales), also used as a bump map for depth */
+  coat(hex, kind){
+    const key = hex + kind; if (this.texC[key]) return this.texC[key];
+    const T = THREE, [c, x] = Tex.canvas(256, 256), base = new T.Color(hex), hsl = {}; base.getHSL(hsl); x.fillStyle = "#" + base.getHexString(); x.fillRect(0, 0, 256, 256);
+    const shade = (dl, a) => `hsla(${hsl.h*360},${hsl.s*100}%,${Math.max(3, Math.min(97, hsl.l*100 + dl))}%,${a})`;
+    if (kind === "tabby"){ for (let i = 0; i < 9; i++){ x.fillStyle = shade(-22, .55); x.beginPath(); const y0 = i*29 + 6; x.moveTo(0, y0); for (let X = 0; X <= 256; X += 16) x.lineTo(X, y0 + Math.sin(X/30 + i)*6); for (let X = 256; X >= 0; X -= 16) x.lineTo(X, y0 + 9 + Math.sin(X/24 + i)*5); x.fill(); } }
+    if (kind === "scale"){ for (let r = 0; r < 18; r++) for (let q = 0; q < 18; q++){ const X = q*15 + (r % 2)*7, Y = r*15; x.strokeStyle = shade(-18, .7); x.lineWidth = 2; x.beginPath(); x.arc(X, Y, 8, 0, Math.PI); x.stroke(); x.fillStyle = shade(8, .25); x.beginPath(); x.arc(X, Y + 2, 4, 0, Math.PI); x.fill(); } }
+    if (kind === "feather"){ for (let r = 0; r < 14; r++) for (let q = 0; q < 10; q++){ const X = q*28 + (r % 2)*14, Y = r*19; x.fillStyle = shade(-10 + Math.random()*8, .7); x.beginPath(); x.ellipse(X, Y, 13, 9, 0, 0, Math.PI); x.fill(); x.strokeStyle = shade(-25, .5); x.lineWidth = 1; x.stroke(); } }
+    const n = kind === "scale" || kind === "feather" ? 1500 : 7000; x.lineCap = "round";
+    for (let i = 0; i < n; i++){ const X = Math.random()*256, Y = Math.random()*256, a = Math.PI/2 + (Math.random() - .5)*.7, len = 3 + Math.random()*6; x.strokeStyle = shade((Math.random() - .5)*34, .45); x.lineWidth = 1 + Math.random()*.8; x.beginPath(); x.moveTo(X, Y); x.lineTo(X + Math.cos(a)*len, Y + Math.sin(a)*len); x.stroke(); }
+    const map = Tex.make(c, {repeat: [2, 2]}), out = {map, bump: Tex.make(c, {repeat: [2, 2], srgb: false})}; this.texC[key] = out; return out;
+  },
+  furMat(hex, kind = "fur", o = {}){ const t = this.coat(hex, kind); return new THREE.MeshStandardMaterial(Object.assign({map: t.map, bumpMap: t.bump, bumpScale: kind === "scale" ? .006 : .004, roughness: kind === "scale" ? .45 : .92}, o)); },
+  /* glossy eyes with an iris, a pupil and a catch-light; they blink */
+  eye(parent, x, y, z, r, iris, slit){
+    const T = THREE, g = new T.Group(); g.position.set(x, y, z); parent.add(g);
+    const ball = new T.Mesh(new T.SphereGeometry(r, 16, 12), new T.MeshPhysicalMaterial({color: iris, roughness: .08, clearcoat: 1, clearcoatRoughness: .05})); g.add(ball);
+    const pup = new T.Mesh(new T.SphereGeometry(r*.55, 12, 8), new T.MeshStandardMaterial({color: 0x050505, roughness: .1})); pup.scale.set(slit ? .35 : 1, slit ? 1.3 : 1, .45); pup.position.z = r*.72; g.add(pup);
+    const hl = new T.Mesh(new T.SphereGeometry(r*.18, 8, 6), new T.MeshBasicMaterial({color: 0xffffff})); hl.position.set(r*.3, r*.35, r*.85); g.add(hl);
     return g;
   },
-  /* one frame of life: walking legs, wagging tail, flapping wings, a bounce when it's happy */
+  /* a leg in two parts, with a knee/hock that bends as it walks */
+  leg(parent, x, y, z, len, r, mat, pawMat, rear){
+    const T = THREE, hip = new T.Group(); hip.position.set(x, y, z); parent.add(hip);
+    const up = new T.Mesh(new T.CylinderGeometry(r*1.25, r*.95, len*.5, 10), mat); up.position.y = -len*.25; up.castShadow = true; hip.add(up);
+    const knee = new T.Group(); knee.position.y = -len*.5; hip.add(knee); const lo = new T.Mesh(new T.CylinderGeometry(r*.9, r*.75, len*.5, 10), mat); lo.position.y = -len*.25; lo.castShadow = true; knee.add(lo);
+    const paw = new T.Mesh(new T.SphereGeometry(r*1.15, 12, 8), pawMat); paw.scale.set(1, .6, 1.35); paw.position.set(0, -len*.5 + r*.3, r*.35); knee.add(paw);
+    if (rear){ hip.rotation.x = -.25; knee.rotation.x = .45; } hip.userData = {rear, rx: hip.rotation.x, kx: knee.rotation.x, knee}; return hip;
+  },
+  /* a tail made of linked segments, so it curves and wags */
+  tailChain(parent, n, len, r0, r1, mat, curl, fluff){
+    const T = THREE, segs = []; let p = parent;
+    for (let i = 0; i < n; i++){ const s = new T.Group(); s.position.set(0, 0, i ? -len/n : 0); s.rotation.x = curl*(i ? 1 : .6); p.add(s); const r = r0 + (r1 - r0)*i/(n - 1), m = new T.Mesh(new T.CylinderGeometry(r*(fluff ? 1.5 : 1), r*(fluff ? 1.7 : 1.1), len/n*1.25, 10), mat); m.rotation.x = Math.PI/2; m.position.z = -len/n/2; m.castShadow = true; s.add(m); segs.push(s); p = s; }
+    return segs;
+  },
+  /* ---------- build the model: faces +z, stands on y = 0, about 35 cm long ---------- */
+  make(kind, color, name){
+    const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body); const U = g.userData; U.kind = kind; U.legs = []; U.ph = Math.random()*6; U.blink = 2 + Math.random()*3;
+    const hex = color || this.COL[kind] || "#c58b4a", base = new T.Color(hex), light = base.clone().lerp(new T.Color(0xfff6ea), .55), dark = base.clone().multiplyScalar(.5);
+    const pink = this.mat(0xe89aa6, .6), noseM = new T.MeshPhysicalMaterial({color: 0x1a1210, roughness: .3, clearcoat: .6});
+    if (kind === "parrot"){
+      const red = this.furMat(hex, "feather"), blue = this.furMat("#1f6fd8", "feather"), yel = this.furMat("#ffc21a", "feather");
+      const tor = this.ell(body, red, .07, .1, .07, 0, .24, 0, 20); tor.rotation.x = .35; this.ell(body, red, .05, .05, .06, 0, .15, -.04);
+      const head = new T.Group(); head.position.set(0, .34, .045); body.add(head); U.head = head; this.ell(head, red, .052, .055, .055, 0, 0, 0, 20);
+      this.ell(head, this.mat(0xf6f2ea, .7), .018, .02, .008, .04, -.012, .028).rotation.y = .8; this.ell(head, this.mat(0xf6f2ea, .7), .018, .02, .008, -.04, -.012, .028).rotation.y = -.8;
+      const beakM = this.mat(0xe8e0d0, .35), up = new T.Mesh(new T.TorusGeometry(.03, .016, 8, 16, Math.PI*.9), beakM); up.position.set(0, -.005, .045); up.rotation.set(0, Math.PI/2, Math.PI*.15); head.add(up); this.ell(head, this.mat(0x2a2420, .4), .016, .014, .016, 0, -.03, .05);
+      this.eye(head, .036, .01, .03, .009, 0xfff4c8); this.eye(head, -.036, .01, .03, .009, 0xfff4c8);
+      U.wings = []; for (const s of [-1, 1]){ const w = new T.Group(); w.position.set(s*.065, .27, .01); body.add(w);
+        [[red, .08, .0], [yel, .1, -.01], [blue, .13, -.02]].forEach(([m, L, dz], i) => { const f = this.ell(w, m, .03 - i*.004, .009, L, s*(.02 + i*.012), -.02 - i*.025, dz - L*.6); f.rotation.x = .35; });
+        U.wings.push([w, s]); }
+      for (const [m, L, x] of [[red, .2, 0], [blue, .18, .018], [blue, .17, -.018]]){ const f = this.ell(body, m, .012, .006, L, x, .1, -.08 - L*.5); f.rotation.x = -.45; }
+      for (const s of [-1, 1]){ const f = new T.Group(); f.position.set(s*.025, .13, .01); g.add(f); this.ell(f, this.mat(0x6a6a70, .7), .008, .03, .008, 0, -.03, 0); for (const a of [-.5, 0, .5]) this.ell(f, this.mat(0x6a6a70, .7), .006, .006, .02, Math.sin(a)*.015, -.06, Math.cos(a)*.015); U.legs.push(f); }
+    } else if (kind === "penguin"){
+      const blk = this.furMat(hex, "feather", {roughness: .6}), wht = this.furMat("#f4f4f2", "feather", {roughness: .7});
+      const prof = []; for (let i = 0; i <= 16; i++){ const t = i/16, y = t*.36, r = Math.sin(Math.min(1, t*1.05)*Math.PI)*(.085 + .02*(1 - t)) + (t < .05 ? .03 : 0); prof.push(new T.Vector2(Math.max(.001, r), y)); }
+      const bod = new T.Mesh(new T.LatheGeometry(prof, 28), blk); bod.position.y = .03; bod.castShadow = true; body.add(bod);
+      const bel = new T.Mesh(new T.LatheGeometry(prof.map(p => new T.Vector2(p.x*.9, p.y)), 28, -Math.PI*.42, Math.PI*.84), wht); bel.position.set(0, .03, .012); bel.rotation.y = 0; body.add(bel);
+      const head = new T.Group(); head.position.set(0, .35, .012); body.add(head); U.head = head; this.ell(head, blk, .062, .06, .06, 0, 0, 0, 20);
+      this.ell(head, this.mat(0xffb020, .5), .03, .012, .01, .045, -.03, .03).rotation.y = .8; this.ell(head, this.mat(0xffb020, .5), .03, .012, .01, -.045, -.03, .03).rotation.y = -.8;
+      const bk = new T.Mesh(new T.ConeGeometry(.014, .06, 8), this.mat(0x2a2420, .4)); bk.rotation.x = Math.PI/2.2; bk.position.set(0, -.008, .075); head.add(bk); this.ell(head, this.mat(0xff7a1a, .5), .008, .004, .03, 0, -.016, .07);
+      this.eye(head, .028, .014, .05, .009, 0x3a2a1a); this.eye(head, -.028, .014, .05, .009, 0x3a2a1a);
+      U.wings = []; for (const s of [-1, 1]){ const w = new T.Group(); w.position.set(s*.09, .26, 0); body.add(w); const f = this.ell(w, blk, .014, .09, .04, s*.012, -.07, 0); U.wings.push([w, s]); }
+      for (const s of [-1, 1]){ const f = new T.Group(); f.position.set(s*.04, .03, .03); g.add(f); this.ell(f, this.mat(0xff7a10, .6), .03, .01, .045, 0, -.02, .02); U.legs.push(f); }
+    } else {
+      /* four-legged: dog, cat, bunny, fox, dragon */
+      const S = {dog: {L: .16, H: .09, W: .085, leg: .13, hr: .075, mz: .7, ear: "floppy", tail: "dog", coat: "fur"}, cat: {L: .15, H: .075, W: .07, leg: .12, hr: .065, mz: .35, ear: "point", tail: "cat", coat: hex === this.COL.cat ? "tabby" : "fur", slit: true},
+        bunny: {L: .12, H: .085, W: .085, leg: .06, hr: .062, mz: .35, ear: "long", tail: "puff", coat: "fur"}, fox: {L: .16, H: .075, W: .07, leg: .14, hr: .066, mz: .8, ear: "point", tail: "bush", coat: "fur"},
+        dragon: {L: .16, H: .085, W: .08, leg: .12, hr: .07, mz: .7, ear: "horn", tail: "spike", coat: "scale", slit: true}}[kind] || {L: .15, H: .08, W: .075, leg: .12, hr: .07, mz: .6, ear: "point", tail: "dog", coat: "fur"};
+      const fur = this.furMat(hex, S.coat), belly = this.furMat("#" + light.getHexString(), S.coat === "scale" ? "scale" : "fur"), darkM = this.furMat("#" + dark.getHexString(), S.coat === "scale" ? "scale" : "fur");
+      const by = S.leg + S.H*.55;
+      // torso: a rounded body with a fuller chest
+      const tg = new T.SphereGeometry(1, 32, 20), tp = tg.attributes.position; for (let i = 0; i < tp.count; i++){ const z = tp.getZ(i), y = tp.getY(i); tp.setY(i, y*(z > 0 ? 1 + z*.12 : 1 + z*.05) + (y < 0 ? z*.06 : 0)); } tg.computeVertexNormals();
+      const tor = new T.Mesh(tg, fur); tor.scale.set(S.W, S.H, S.L); tor.position.y = by; tor.castShadow = true; body.add(tor); U.torso = tor;
+      const bel = this.ell(body, belly, S.W*.75, S.H*.6, S.L*.8, 0, by - S.H*.38, .01); bel.material = belly;
+      // neck and head
+      const neck = new T.Mesh(new T.CylinderGeometry(S.hr*.65, S.W*.75, S.H*1.1, 14), fur); neck.position.set(0, by + S.H*.55, S.L*.72); neck.rotation.x = .75; body.add(neck);
+      const head = new T.Group(); head.position.set(0, by + S.H*1.15, S.L*1.0); body.add(head); U.head = head;
+      const sk = this.ell(head, fur, S.hr, S.hr*.92, S.hr*1.0, 0, 0, 0, 22); this.ell(head, fur, S.hr*.75, S.hr*.6, S.hr*.6, 0, -S.hr*.25, S.hr*.25);
+      const mz = this.ell(head, kind === "cat" || kind === "bunny" ? belly : fur, S.hr*.5, S.hr*.42, S.hr*(.5 + S.mz*.45), 0, -S.hr*.35, S.hr*(.7 + S.mz*.25));
+      if (kind === "fox" || kind === "dog") this.ell(head, belly, S.hr*.42, S.hr*.25, S.hr*(.45 + S.mz*.4), 0, -S.hr*.5, S.hr*(.72 + S.mz*.25));
+      const nz = S.hr*(.95 + S.mz*.75), nose = this.ell(head, kind === "cat" || kind === "bunny" ? pink : noseM, S.hr*.16, S.hr*.12, S.hr*.1, 0, -S.hr*.24, nz); nose.material = kind === "cat" || kind === "bunny" ? pink : noseM;
+      if (kind === "dog"){ U.tongue = this.ell(head, pink, S.hr*.12, S.hr*.03, S.hr*.2, 0, -S.hr*.62, nz - S.hr*.12); U.tongue.visible = false; }
+      U.eyes = [this.eye(head, S.hr*.42, S.hr*.12, S.hr*.75, S.hr*.19, kind === "cat" ? 0x8ac83a : kind === "dragon" ? 0xffc21a : kind === "fox" ? 0xd8902a : 0x3a2414, S.slit), this.eye(head, -S.hr*.42, S.hr*.12, S.hr*.75, S.hr*.19, kind === "cat" ? 0x8ac83a : kind === "dragon" ? 0xffc21a : kind === "fox" ? 0xd8902a : 0x3a2414, S.slit)];
+      if (kind === "cat" || kind === "bunny"){ const wm = new T.MeshBasicMaterial({color: 0xf4f0e8}); for (const s of [-1, 1]) for (let i = 0; i < 3; i++){ const w = new T.Mesh(new T.CylinderGeometry(.0012, .0008, S.hr*1.6, 3), wm); w.rotation.z = s*(Math.PI/2 - .15 + i*.12); w.position.set(s*S.hr*.7, -S.hr*.32 - i*.01, nz - S.hr*.15); head.add(w); } }
+      U.ears = []; for (const s of [-1, 1]){
+        const e = new T.Group(); head.add(e);
+        if (S.ear === "floppy"){ e.position.set(s*S.hr*.7, S.hr*.55, -S.hr*.1); this.ell(e, darkM, S.hr*.34, S.hr*.9, S.hr*.12, s*S.hr*.18, -S.hr*.6, S.hr*.05); e.rotation.z = -s*.35; }
+        else if (S.ear === "long"){ e.position.set(s*S.hr*.4, S.hr*.8, -S.hr*.1); this.ell(e, fur, S.hr*.26, S.hr*1.3, S.hr*.1, 0, S.hr*1.15, 0); this.ell(e, pink, S.hr*.15, S.hr*1.05, S.hr*.05, 0, S.hr*1.15, S.hr*.06); e.rotation.z = -s*.12; e.rotation.x = -.15; }
+        else if (S.ear === "horn"){ e.position.set(s*S.hr*.5, S.hr*.7, -S.hr*.3); const h = new T.Mesh(new T.ConeGeometry(S.hr*.18, S.hr*1.1, 10), this.mat(0xeae0c0, .4)); h.position.y = S.hr*.45; h.rotation.x = -.6; e.add(h); }
+        else { e.position.set(s*S.hr*.55, S.hr*.7, -S.hr*.15); const c = new T.Mesh(new T.ConeGeometry(S.hr*.38, S.hr*(kind === "fox" ? 1.05 : .85), 4), darkM); c.scale.z = .45; c.position.y = S.hr*.38; e.add(c); const c2 = new T.Mesh(new T.ConeGeometry(S.hr*.22, S.hr*.6, 4), pink); c2.scale.z = .3; c2.position.set(0, S.hr*.33, S.hr*.06); e.add(c2); e.rotation.z = -s*.18; }
+        U.ears.push(e); }
+      // legs: front pair at the chest, back pair at the hips
+      const pawM = kind === "fox" ? this.furMat("#2a1a14") : fur, lr = S.W*.24;
+      for (const [x, z, rear] of [[S.W*.55, S.L*.55, false], [-S.W*.55, S.L*.55, false], [S.W*.6, -S.L*.55, true], [-S.W*.6, -S.L*.55, true]]){ const legH = kind === "bunny" && rear ? S.leg*1.6 : S.leg + S.H*.35; U.legs.push(this.leg(body, x, by - S.H*.1, z, legH, lr*(kind === "bunny" && rear ? 1.4 : 1), kind === "fox" ? pawM : fur, pawM, rear)); }
+      // the tail
+      const tb = new T.Group(); tb.position.set(0, by + S.H*.35, -S.L*.92); body.add(tb); U.tailBase = tb;
+      if (S.tail === "puff"){ this.ell(tb, belly, .035, .035, .035, 0, 0, -.015); U.tail = []; }
+      else if (S.tail === "dog") U.tail = this.tailChain(tb, 5, .14, .016, .008, fur, -.28);
+      else if (S.tail === "cat") U.tail = this.tailChain(tb, 7, .2, .013, .009, fur, -.2);
+      else if (S.tail === "bush"){ U.tail = this.tailChain(tb, 6, .22, .028, .018, fur, .06, true); const tip = this.ell(U.tail[U.tail.length - 1], this.furMat("#f8f4ee"), .04, .04, .05, 0, 0, -.05); }
+      else { U.tail = this.tailChain(tb, 7, .22, .022, .007, fur, .04); for (let i = 1; i < U.tail.length; i++){ const sp = new T.Mesh(new T.ConeGeometry(.01, .025, 4), this.mat(0xc8342a, .5)); sp.position.set(0, .018, -.012); U.tail[i].add(sp); } }
+      if (kind === "dragon"){ for (let i = 0; i < 5; i++){ const sp = new T.Mesh(new T.ConeGeometry(.012, .035, 4), this.mat(0xc8342a, .5)); sp.position.set(0, by + S.H*.98 - Math.abs(i - 2)*.006, S.L*.6 - i*S.L*.3); body.add(sp); }
+        U.wings = []; const memM = new T.MeshStandardMaterial({color: 0x8a3ad0, roughness: .6, side: T.DoubleSide, transparent: true, opacity: .9});
+        for (const s of [-1, 1]){ const w = new T.Group(); w.position.set(s*S.W*.6, by + S.H*.75, S.L*.2); body.add(w); const sh = new T.Shape(); sh.moveTo(0, 0); sh.lineTo(s*.14, .1); sh.lineTo(s*.2, .03); sh.quadraticCurveTo(s*.15, .0, s*.16, -.04); sh.quadraticCurveTo(s*.1, -.02, s*.09, -.07); sh.quadraticCurveTo(s*.05, -.03, 0, -.05); sh.lineTo(0, 0);
+          const m = new T.Mesh(new T.ShapeGeometry(sh), memM); m.rotation.x = -Math.PI/2; w.add(m); const bone = new T.Mesh(new T.CylinderGeometry(.004, .003, .2, 5), this.mat(0x5a2a8a, .6)); bone.rotation.z = Math.PI/2 - s*.4; bone.position.set(s*.09, 0, -.04); w.add(bone); U.wings.push([w, s]); } }
+    }
+    if (name){ const t = this.tag(String(name).slice(0, 16)); t.position.y = kind === "parrot" ? .5 : .46; g.add(t); }
+    const proxy = new T.Mesh(new T.SphereGeometry(.28, 8, 6), new T.MeshBasicMaterial({transparent: true, opacity: 0, depthWrite: false})); proxy.position.y = .2; proxy.userData.petProxy = true; g.add(proxy); U.proxy = proxy;
+    if (kind === "fox") this.realFox(g);
+    return g;
+  },
+  /* the fox pet uses the real, animated fox model once it has loaded */
+  realFox(g){
+    const T = THREE, L = Lounge;
+    this.foxP = this.foxP || (async () => { try{ await loadThreeExtras(); }catch(e){} if (!T.GLTFLoader) return null; const ld = new T.GLTFLoader(); for (const h of L.ASSET_HOSTS){ try{ return await ld.loadAsync(h + "fox.glb"); }catch(e){} } return null; })();
+    this.foxP.then(gl => { if (!gl || !T.SkeletonUtils) return; const m = T.SkeletonUtils.clone(gl.scene), b = new T.Box3().setFromObject(gl.scene), h = (b.max.y - b.min.y) || 1; m.scale.setScalar(.32/h);
+      m.traverse(o => { if (o.isMesh){ o.castShadow = true; o.frustumCulled = false; } }); g.children[0].visible = false; g.add(m);
+      const mx = new T.AnimationMixer(m), clip = n => gl.animations.find(c => c.name === n); g.userData.mixer = mx; g.userData.acts = {walk: clip("Walk") && mx.clipAction(clip("Walk")), run: clip("Run") && mx.clipAction(clip("Run")), look: clip("Survey") && mx.clipAction(clip("Survey"))};
+      if (g.userData.acts.look) g.userData.acts.look.play(); g.userData.cur = "look"; }).catch(() => {});
+  },
+  /* one frame of life: breathing, blinking, a real walking gait, a wagging tail, looking at you, a happy bounce */
   animate(g, dt, t, moving, speed){
-    const U = g.userData, k = U.kind, ph = t*(moving ? 12 : 2) + U.ph; U.joy = Math.max(0, (U.joy || 0) - dt);
-    const body = g.children[0]; body.position.y = moving ? Math.abs(Math.sin(ph))*.012*(speed > 1 ? 1.6 : 1) : Math.sin(t*2 + U.ph)*.002; if (U.joy > 0) body.position.y += Math.abs(Math.sin(U.joy*14))*.07;
-    if (k === "penguin"){ body.rotation.z = moving ? Math.sin(ph)*.14 : 0; U.legs.forEach((l, i) => { l.rotation.x = moving ? Math.sin(ph + i*Math.PI)*.5 : 0; }); }
-    else if (k === "bunny"){ g.position.y += moving ? Math.abs(Math.sin(ph*.7))*.12 : 0; U.legs.forEach((l, i) => { l.rotation.x = moving ? Math.sin(ph*.7 + (i < 2 ? 0 : .8))*.6 : 0; }); }
-    else if (k !== "parrot"){ U.legs.forEach((l, i) => { l.rotation.x = moving ? Math.sin(ph + (i % 2 ? Math.PI : 0) + (i > 1 ? Math.PI/2 : 0))*.7 : 0; }); }
-    if (U.tail && k !== "bunny") U.tail.rotation.y = Math.sin(t*(moving ? 9 : 5) + U.ph)*(k === "cat" ? .25 : .5);
-    if (U.wings){ const f = k === "parrot" ? (moving || g.userData.fly ? 1 : .2) : .35; U.wings.forEach(([w, s]) => { w.rotation.z = s*Math.sin(t*(k === "parrot" ? 16 : 9) + U.ph)*.7*f + (k === "penguin" ? s*.3 : 0); }); }
-    if (U.head){ U.head.rotation.y = moving ? 0 : Math.sin(t*.7 + U.ph)*.35; U.head.rotation.x = U.joy > 0 ? -.35 : 0; }
-    if (U.ears && !moving) U.ears.forEach((e, i) => { e.rotation.x = Math.sin(t*3 + i + U.ph)*.06; });
+    const U = g.userData, k = U.kind; U.joy = Math.max(0, (U.joy || 0) - dt);
+    if (U.mixer){ const want = !moving ? "look" : speed > 2 && U.acts.run ? "run" : "walk"; if (want !== U.cur && U.acts[want]){ const from = U.acts[U.cur]; U.acts[want].reset().play(); if (from) U.acts[want].crossFadeFrom(from, .3, false); U.cur = want; } U.mixer.update(dt); if (U.joy > 0) g.children[g.children.length - 1].position.y = Math.abs(Math.sin(U.joy*14))*.07; return; }
+    const body = g.children[0], gait = t*(moving ? (speed > 1.8 ? 13 : 9) : 0) + U.ph;
+    body.position.y = moving ? Math.abs(Math.sin(gait))*.01 : 0; if (U.joy > 0) body.position.y += Math.abs(Math.sin(U.joy*14))*.07;
+    if (U.torso){ const br = 1 + Math.sin(t*(moving ? 6 : 2.2) + U.ph)*.025; U.torso.scale.x = U.torso.scale.x/(U.br || 1)*br; U.br = br; }
+    if (k === "penguin"){ body.rotation.z = moving ? Math.sin(gait)*.14 : Math.sin(t*1.5)*.02; U.legs.forEach((l, i) => { l.rotation.x = moving ? Math.sin(gait + i*Math.PI)*.5 : 0; }); }
+    else if (k === "parrot"){ U.legs.forEach(l => { l.visible = !moving; }); body.rotation.x = moving ? .5 : 0; }
+    else if (k === "bunny"){ const hop = moving ? Math.max(0, Math.sin(gait*.7)) : 0; g.position.y += hop*.1; U.legs.forEach((l, i) => { l.rotation.x = l.userData.rx + (moving ? (i < 2 ? -hop*.6 : hop*.8) : 0); }); }
+    else U.legs.forEach((l, i) => { const ph = gait + ([0, Math.PI, Math.PI, 0][i]), sw = moving ? Math.sin(ph) : 0; l.rotation.x = l.userData.rx + sw*.55; l.userData.knee.rotation.x = l.userData.kx + (moving ? Math.max(0, (l.userData.rear ? 1 : -1)*Math.cos(ph))*.6 : 0); });
+    if (U.tail && U.tail.length){ const wag = k === "dog" ? (moving ? 10 : 6) : k === "cat" ? 1.6 : 3, amp = k === "dog" ? .35 : k === "cat" ? .18 : .12; U.tail.forEach((s, i) => { s.rotation.y = Math.sin(t*wag - i*.6 + U.ph)*amp; }); }
+    if (U.wings){ const f = k === "parrot" ? (moving ? 1 : .08) : k === "dragon" ? (U.joy > 0 ? 1 : .25) : .3, sp = k === "parrot" ? 18 : 8; U.wings.forEach(([w, s]) => { w.rotation.z = s*(Math.sin(t*sp + U.ph)*.75*f + (k === "penguin" ? .25 : 0)); }); }
+    // blink
+    U.blink -= dt; if (U.eyes){ const closing = U.blink < .12; U.eyes.forEach(e => { e.scale.y = closing ? .15 : 1; }); if (U.blink < 0) U.blink = 2 + Math.random()*4; }
+    // look at you when standing still
+    if (U.head){ let want = 0; if (!moving && Lounge.camera){ const cp = Lounge.headPos(), gp = g.getWorldPosition(new THREE.Vector3()); let a = Math.atan2(cp.x - gp.x, cp.z - gp.z) - g.rotation.y; a = Math.atan2(Math.sin(a), Math.cos(a)); want = Math.max(-.8, Math.min(.8, a)); }
+      U.head.rotation.y += (want - U.head.rotation.y)*Math.min(1, dt*4); U.head.rotation.x = U.joy > 0 ? -.3 : moving ? .05 : Math.sin(t*.6 + U.ph)*.05; U.head.rotation.z = !moving ? Math.sin(t*.45 + U.ph)*.08 : 0; }
+    if (U.tongue) U.tongue.visible = !moving && ((t + U.ph) % 9) < 4;
+    if (U.ears) U.ears.forEach((e, i) => { const tw = ((t*1.3 + i*3.1 + U.ph) % 6) < .15; e.rotation.x = (tw ? -.25 : 0) + (moving ? Math.sin(gait)*.06 : 0); });
   },
   /* ---------- followers ---------- */
   follow(key, kind, color, name, leader){
@@ -12836,7 +13150,7 @@ const Safety = {
   }
 };
 Age.bindUI(); Safety.bindUI();
-document.addEventListener("click", e => { if (e.target.closest("#btnMogul")) Mogul.open(); if (e.target.closest("#btnEmpire")) Mogul.empire(); if (e.target.closest("#btnBrawl")) Mogul.brawlHere(); if (e.target.closest("#btnHome")){ if ($("#stage").hidden || !Lounge.built){ store.set("world", "home"); openStage("lounge"); } else Lounge.chooseWorld("home"); } });
+document.addEventListener("click", e => { if (e.target.closest("#btnMogul")) Mogul.open(); if (e.target.closest("#btnEmpire")) Mogul.empire(); if (e.target.closest("#btnBrawl")) Mogul.brawlHere(); if (e.target.closest("#btnDanceoff")) Mogul.danceHere(); if (e.target.closest("#btnHome")){ if ($("#stage").hidden || !Lounge.built){ store.set("world", "home"); openStage("lounge"); } else Lounge.chooseWorld("home"); } });
 
 /* ================= NIGHTCLUB MOGUL =================
    A game inside the Nightclub: work the jobs (bartender, bouncer, DJ, barback, bottle service, promoter,
@@ -13004,8 +13318,8 @@ const Mogul = {
     jobs.forEach((r, i) => { const X = 28 + (i % cols)*(bw + 12), Y = 118 + Math.floor(i/cols)*(bh + 8), lv = this.level(r.id, d);
       this.btn("r" + r.id, X, Y, bw, bh, r.id === "owner" ? "👑  My Empire" : `${r.icon}  ${r.name}`, () => { this.role = r.id; this.view = r.id === "owner" ? "empire" : "role"; this.draw(); },
         {left: true, size: 24, primary: r.id === "owner", sub: r.id === "owner" ? `${Object.keys(d.clubs).length} club${Object.keys(d.clubs).length === 1 ? "" : "s"} · worth ${this.money(this.worth(d))}` : `Level ${lv}${d.tut[r.id] ? " · trained ✓" : " · start with training"}${d.best[r.id] ? " · best " + d.best[r.id] + "%" : ""}`}); });
-    { const wy = 118 + Math.ceil(jobs.length/cols)*(bh + 8) + 6, ww = (W - 56 - 36)/4; this.text("WELLNESS & PLAY · no strikes, no pressure", 28, wy + 14, 18, "#9fe8ff", 800);
-      well.forEach((r, i) => this.btn("r" + r.id, 28 + i*(ww + 12), wy + 26, ww, 78, `${r.icon} ${r.name}`, () => { this.role = r.id; this.view = "role"; this.draw(); }, {size: 21, sub: `Level ${this.level(r.id, d)}${d.best[r.id] ? " · best " + d.best[r.id] + "%" : ""}`})); }
+    { const wy = 118 + Math.ceil(jobs.length/cols)*(bh + 8) + 6, ww = (W - 56 - 10*(well.length - 1))/Math.max(4, well.length); this.text("WELLNESS & PLAY · no strikes, no pressure", 28, wy + 14, 18, "#9fe8ff", 800);
+      well.forEach((r, i) => this.btn("r" + r.id, 28 + i*(ww + 10), wy + 26, ww, 78, well.length > 4 ? r.icon + " " + r.name.replace("Music ", "").replace(" Room", "").replace(" Class", "") : `${r.icon} ${r.name}`, () => { this.role = r.id; this.view = "role"; this.draw(); }, {size: 21, sub: `Level ${this.level(r.id, d)}${d.best[r.id] ? " · best " + d.best[r.id] + "%" : ""}`})); }
     this.btn("share", 28, this.H - 74, 300, 54, "📣 Share my empire", () => { try{ this.close(); Social.compose(); $("#postText").value = `I'm a ${this.title(d)} in Nightclub Mogul on Turn Up Music: ${this.money(this.worth(d))} and ${Object.keys(d.clubs).length} club${Object.keys(d.clubs).length === 1 ? "" : "s"}. 🍾`; }catch(e){} }, {size: 21});
   },
   drawRole(){
@@ -14445,6 +14759,176 @@ Mogul.GAMES.birthday = Mogul.scripted({
   end(){ if (this.cakeG && !this.m.shift.over) this.m.dropProps([this.cakeG]); }
 });
 
+/* ================= ❓ Question banks: every game draws fresh questions and doesn't repeat until it has used them all ================= */
+const QB = {
+  /* each item: [question, right answer, wrong, wrong, (wrong)] */
+  music: [
+    ["Hip-hop was born at a 1973 back-to-school party in which New York borough?", "The Bronx", "Brooklyn", "Queens", "Harlem"],
+    ["Which DJ threw that 1973 party at 1520 Sedgwick Avenue?", "DJ Kool Herc", "Grandmaster Flash", "Afrika Bambaataa", "DJ Premier"],
+    ["Which 1979 single was the first hip-hop record to become a Top 40 hit?", "“Rapper's Delight” by The Sugarhill Gang", "“The Message” by Grandmaster Flash", "“Walk This Way” by Run-DMC", "“It Takes Two” by Rob Base"],
+    ["“The Message” (1982) is by…", "Grandmaster Flash and the Furious Five", "The Sugarhill Gang", "Public Enemy", "LL Cool J"],
+    ["Run-DMC teamed up with which rock band on “Walk This Way” (1986)?", "Aerosmith", "Led Zeppelin", "The Rolling Stones", "Queen"],
+    ["What was The Notorious B.I.G.'s real name?", "Christopher Wallace", "Sean Combs", "Shawn Carter", "Calvin Broadus"],
+    ["Dr. Dre's 1992 debut solo album is…", "The Chronic", "2001", "Doggystyle", "Straight Outta Compton"],
+    ["N.W.A.'s 1988 debut album is…", "Straight Outta Compton", "The Chronic", "Efil4zaggin", "AmeriKKKa's Most Wanted"],
+    ["The first single from Kanye West's The College Dropout was…", "Through the Wire", "Jesus Walks", "All Falls Down", "Gold Digger"],
+    ["Which album followed Kanye West's The College Dropout?", "Late Registration", "Graduation", "808s & Heartbreak", "Yeezus"],
+    ["Kendrick Lamar's debut studio album is…", "Section.80", "good kid, m.A.A.d city", "To Pimp a Butterfly", "DAMN."],
+    ["Which Kendrick Lamar album won the Pulitzer Prize for Music?", "DAMN.", "To Pimp a Butterfly", "Section.80", "Mr. Morale & the Big Steppers"],
+    ["Jay-Z's The Blueprint came out in…", "2001", "1996", "2006", "1999"],
+    ["Lauryn Hill's 1998 solo album is called…", "The Miseducation of Lauryn Hill", "The Score", "Unplugged", "Ready or Not"],
+    ["OutKast is from which city?", "Atlanta", "Houston", "New Orleans", "Memphis"],
+    ["Missy Elliott's hometown is…", "Portsmouth, Virginia", "Atlanta, Georgia", "Detroit, Michigan", "Newark, New Jersey"],
+    ["Which album did Eminem's breakout single “My Name Is” come from?", "The Slim Shady LP", "The Marshall Mathers LP", "The Eminem Show", "Encore"],
+    ["Drake's debut studio album is…", "Thank Me Later", "Take Care", "So Far Gone", "Views"],
+    ["Breaking made its Olympic debut at which Games?", "Paris 2024", "Tokyo 2020", "Los Angeles 2028", "Brisbane 2032"],
+    ["Trap music grew up mostly in which city?", "Atlanta", "Chicago", "Los Angeles", "Miami"],
+    ["Who is called the Queen of Soul?", "Aretha Franklin", "Diana Ross", "Gladys Knight", "Patti LaBelle"],
+    ["Who is called the Godfather of Soul?", "James Brown", "Ray Charles", "Otis Redding", "Sam Cooke"],
+    ["Who founded Motown Records in Detroit in 1959?", "Berry Gordy", "Quincy Jones", "Clive Davis", "Ahmet Ertegun"],
+    ["Michael Jackson's best-selling album is…", "Thriller", "Bad", "Off the Wall", "Dangerous"],
+    ["“What's Going On” (1971) is by…", "Marvin Gaye", "Stevie Wonder", "Curtis Mayfield", "Al Green"],
+    ["Prince's 1984 album and film share which title?", "Purple Rain", "1999", "Sign o' the Times", "Under the Cherry Moon"],
+    ["Who wrote “I Will Always Love You” before Whitney Houston's famous version?", "Dolly Parton", "Diane Warren", "Carole King", "Babyface"],
+    ["Beyoncé first became famous in which group?", "Destiny's Child", "TLC", "En Vogue", "SWV"],
+    ["Who recorded “Respect” before Aretha Franklin made it a 1967 anthem?", "Otis Redding", "Sam Cooke", "Wilson Pickett", "James Brown"],
+    ["George Clinton led which funk collective?", "Parliament-Funkadelic", "Earth, Wind & Fire", "Kool & the Gang", "The Gap Band"],
+    ["Usher's diamond-selling 2004 album is…", "Confessions", "8701", "Here I Stand", "Raymond v. Raymond"],
+    ["Jazz is widely said to have been born in which city?", "New Orleans", "Chicago", "Kansas City", "New York"],
+    ["Which jazz legend was nicknamed “Satchmo”?", "Louis Armstrong", "Duke Ellington", "Count Basie", "Dizzy Gillespie"],
+    ["Miles Davis's best-selling 1959 album is…", "Kind of Blue", "Bitches Brew", "Sketches of Spain", "Birth of the Cool"],
+    ["John Coltrane's spiritual 1965 album is…", "A Love Supreme", "Giant Steps", "Blue Train", "Ascension"],
+    ["Ella Fitzgerald was known as…", "The First Lady of Song", "Lady Day", "The Divine One", "The Empress of the Blues"],
+    ["Charlie “Bird” Parker played which instrument?", "Alto saxophone", "Trumpet", "Piano", "Double bass"],
+    ["Bob Marley's band was called…", "The Wailers", "Toots and the Maytals", "Steel Pulse", "Third World"],
+    ["Reggae was born in which country?", "Jamaica", "Trinidad and Tobago", "Barbados", "Cuba"],
+    ["Fela Kuti pioneered which genre?", "Afrobeat", "Highlife", "Juju", "Amapiano"],
+    ["Burna Boy is from which country?", "Nigeria", "Ghana", "South Africa", "Kenya"],
+    ["Amapiano music comes from which country?", "South Africa", "Nigeria", "Angola", "Tanzania"],
+    ["Reggaeton grew up mostly in which Caribbean island in the 1990s?", "Puerto Rico", "Jamaica", "Cuba", "Trinidad"],
+    ["Who sang “Despacito” (2017)?", "Luis Fonsi and Daddy Yankee", "J Balvin and Bad Bunny", "Shakira and Maluma", "Pitbull and Marc Anthony"],
+    ["Celia Cruz is known as the Queen of…", "Salsa", "Merengue", "Bachata", "Cumbia"],
+    ["House music was born in which city?", "Chicago", "Detroit", "New York", "London"],
+    ["Techno was born in which city?", "Detroit", "Chicago", "Berlin", "Manchester"],
+    ["Go-go music is the sound of which city?", "Washington, D.C.", "Baltimore", "Philadelphia", "Richmond"],
+    ["The Roland TR-808 is a famous…", "Drum machine", "Turntable", "Microphone", "Guitar pedal"],
+    ["How many keys does a standard piano have?", "88", "76", "61", "100"],
+    ["In music, BPM stands for…", "Beats per minute", "Bass per measure", "Bars per melody", "Beats per measure"],
+    ["How many lines are on a musical staff?", "5", "4", "6", "7"],
+    ["Most house music sits at about what tempo?", "120 to 128 BPM", "60 to 70 BPM", "170 to 180 BPM", "90 to 95 BPM"],
+    ["A song's catchy repeated part is called the…", "Hook", "Bridge", "Outro", "Verse"],
+    ["What does a DJ do when “beatmatching”?", "Lines up two tracks to the same tempo", "Plays two songs in different keys", "Turns the bass all the way up", "Talks over the intro"]
+  ],
+  dance: [
+    ["Salsa's roots are mainly in which country's music and dance?", "Cuba", "Brazil", "Spain", "Mexico"],
+    ["Bachata comes from…", "The Dominican Republic", "Colombia", "Cuba", "Venezuela"],
+    ["Kizomba comes from…", "Angola", "Cape Verde", "Brazil", "Portugal"],
+    ["The Argentine tango was born around…", "Buenos Aires and Montevideo", "Madrid and Seville", "Havana", "Mexico City"],
+    ["The cha-cha came from Cuba in which decade?", "The 1950s", "The 1920s", "The 1970s", "The 1990s"],
+    ["The Lindy Hop was born in which neighborhood?", "Harlem, New York", "The French Quarter, New Orleans", "South Side, Chicago", "Watts, Los Angeles"],
+    ["The Charleston craze swept the U.S. in which decade?", "The 1920s", "The 1950s", "The 1890s", "The 1970s"],
+    ["The Hustle was a disco dance from which city in the 1970s?", "New York", "Miami", "Detroit", "Philadelphia"],
+    ["Breaking (breakdancing) started in which borough in the 1970s?", "The Bronx", "Brooklyn", "Manhattan", "Staten Island"],
+    ["Vogue dancing grew out of which scene?", "Harlem's ballroom scene", "Hollywood musicals", "Paris fashion shows", "Ballet schools"],
+    ["Michael Jackson first showed the moonwalk on TV at…", "Motown 25 in 1983", "The Grammys in 1984", "Soul Train in 1979", "The Super Bowl in 1993"],
+    ["A waltz is counted in…", "Threes (1-2-3)", "Fours (1-2-3-4)", "Twos (1-2)", "Sixes"],
+    ["Krumping started in which city in the early 2000s?", "Los Angeles", "Atlanta", "Chicago", "New York"],
+    ["Locking was created by…", "Don Campbell", "Michael Jackson", "Bob Fosse", "Gene Kelly"],
+    ["Cumbia comes from…", "Colombia", "Argentina", "Peru", "Chile"],
+    ["Merengue is the national dance of…", "The Dominican Republic", "Puerto Rico", "Cuba", "Haiti"],
+    ["The polka started in Bohemia, now part of…", "The Czech Republic", "Austria", "Poland", "Germany"],
+    ["In salsa “On1”, you break forward on count…", "1", "2", "4", "8"],
+    ["What's a “freeze” in breaking?", "Holding a still pose, often on your hands", "A spin on your back", "Fast footwork near the floor", "A jump turn"],
+    ["Toprock in breaking is…", "Dancing standing up before going to the floor", "Spinning on your head", "Holding a handstand", "A partner lift"]
+  ],
+  fitness: [
+    ["What should you do before a hard workout?", "Warm up with 5 to 10 minutes of light movement", "Stretch cold muscles as far as they go", "Go straight to your heaviest weight", "Eat a huge meal"],
+    ["Which is safe squat form?", "Chest up, back flat, knees tracking over your toes", "Knees caving in, back rounded", "Heels off the floor, leaning way forward", "Locked knees and a bent back"],
+    ["A good plank looks like…", "A straight line from head to heels", "Hips high in the air", "Hips sagging to the floor", "Head hanging down"],
+    ["When lifting, you usually breathe out…", "On the effort (the hard part)", "Never: hold your breath the whole time", "Only between sets", "On the easy part"],
+    ["HIIT stands for…", "High-intensity interval training", "Heavy iron interval training", "Healthy indoor intensity training", "High-impact isometric training"],
+    ["Why do rest days matter?", "Muscles repair and get stronger while you rest", "They don't: train hard every day", "Rest makes you lose all progress", "Only beginners need them"],
+    ["Static stretches (holding still) are best done…", "After your workout", "Before sprinting, held for minutes", "Never", "In the middle of a heavy set"],
+    ["How should you drink water during exercise?", "Sip regularly before, during and after", "Only once you feel dizzy", "Chug a gallon at the end", "Avoid water while training"],
+    ["Most adults need about how much sleep a night?", "At least 7 hours", "4 hours", "12 hours", "It doesn't matter"],
+    ["Sharp pain (not just burn) during an exercise means…", "Stop and check it", "Push harder", "Add more weight", "Hold your breath"],
+    ["In a push-up, your elbows should…", "Bend at about 45° from your body", "Flare straight out to the sides", "Lock straight the whole time", "Point forward"],
+    ["A deadlift should be done by…", "Hinging at the hips with a flat back", "Rounding your back to reach the bar", "Jerking the bar up fast", "Lifting with your arms"],
+    ["Cardio mainly trains your…", "Heart and lungs", "Hair and nails", "Eyesight", "Bones only"],
+    ["The “burn” in your muscles during reps is…", "Normal fatigue from hard work", "Always an injury", "A sign to add more weight", "Dehydration"],
+    ["After a workout, protein helps your…", "Muscles recover", "Bones grow longer", "Eyes focus", "Hair grow faster"],
+    ["Good running posture is…", "Tall, relaxed shoulders, arms swinging forward", "Hunched over, fists clenched", "Leaning way back", "Arms crossing your chest"]
+  ],
+  mind: [
+    ["A worry about tomorrow pops into your head. What do you do?", "Notice it kindly, let it float by, and return to your breath", "Push it away angrily", "Follow it and plan everything out"],
+    ["Your shoulders feel tight. What helps?", "Drop them on an exhale and soften your jaw", "Hold them up high and hope it passes", "Check your phone"],
+    ["Your mind has wandered for a minute. What now?", "Gently come back. Noticing it IS the practice.", "Give up: you're bad at this", "Scold yourself for it"],
+    ["Box breathing is…", "In 4, hold 4, out 4, hold 4", "As fast as you can for a minute", "Holding your breath as long as possible", "Breathing only through your mouth"],
+    ["A body scan means…", "Slowly noticing each part of your body, head to toe", "Checking yourself in a mirror", "Counting your heartbeat out loud", "Stretching every muscle hard"],
+    ["A noisy sound outside breaks your focus. Try…", "Let the sound be part of the moment, then return to your breath", "Get up and yell", "Quit for today"],
+    ["Which posture helps meditation?", "Upright but relaxed, hands resting", "Slumped and tense", "Standing on one foot", "Lying face down"],
+    ["Counting breaths, you lose count at 6. What do you do?", "Start again at 1, no big deal", "Stop meditating", "Make up a number"],
+    ["A slow, long exhale tends to…", "Calm your body down", "Make you jittery", "Raise your heart rate", "Do nothing at all"],
+    ["Gratitude practice means…", "Noticing a few things you're thankful for", "Listing everything that went wrong", "Comparing yourself to others"]
+  ],
+  riddle: [
+    ["I have keys but open no locks. I have space but no room. What am I?", "A keyboard", "A piano tuner", "A door"],
+    ["The more you take, the more you leave behind. What am I?", "Footsteps", "Memories", "Money"],
+    ["What gets wetter the more it dries?", "A towel", "A sponge", "The rain"],
+    ["I speak without a mouth and hear without ears. What am I?", "An echo", "A ghost", "A radio"],
+    ["What has to be broken before you can use it?", "An egg", "A promise", "A record"],
+    ["What has hands but can't clap?", "A clock", "A glove", "A statue"],
+    ["What has a neck but no head?", "A bottle", "A guitar pick", "A scarf"],
+    ["What goes up but never comes down?", "Your age", "A balloon", "Smoke"],
+    ["What has many teeth but can't bite?", "A comb", "A zipper's pull", "A shark doll"],
+    ["What can you catch but not throw?", "A cold", "A ball", "A wave"],
+    ["What has one eye but can't see?", "A needle", "A cyclops", "A storm"],
+    ["The more of me there is, the less you see. What am I?", "Darkness", "Fog", "Glasses"],
+    ["What has legs but doesn't walk?", "A table", "A spider", "A snake"],
+    ["What is full of holes but still holds water?", "A sponge", "A net", "A bucket"],
+    ["What gets bigger the more you take away from it?", "A hole", "A pile", "A shadow"],
+    ["What runs but never walks, has a mouth but never talks?", "A river", "A clock", "A road"],
+    ["What has a head and a tail but no body?", "A coin", "A snake", "A comet"],
+    ["What can travel around the world while staying in a corner?", "A stamp", "A map", "The moon"],
+    ["What building has the most stories?", "A library", "A skyscraper", "A hotel"],
+    ["What belongs to you, but other people use it more than you do?", "Your name", "Your phone", "Your car"],
+    ["What has cities but no houses, forests but no trees, and water but no fish?", "A map", "A desert", "A dream"],
+    ["Which month has 28 days?", "All of them", "February", "None"],
+    ["I'm tall when I'm young and short when I'm old. What am I?", "A candle", "A tree", "A pencil sharpener"],
+    ["What can fill a room but takes up no space?", "Light", "Air", "Water"],
+    ["What has words but never speaks?", "A book", "A parrot", "A singer"],
+    ["What comes once in a minute, twice in a moment, but never in a thousand years?", "The letter M", "A heartbeat", "A blink"],
+    ["What invention lets you look right through a wall?", "A window", "X-ray glasses", "A mirror"],
+    ["What has a ring but no finger?", "A telephone", "A boxer", "A bell tower"],
+    ["What kind of band never plays music?", "A rubber band", "A boy band", "A marching band"],
+    ["What has an eye but never cries, and spins in a storm?", "A hurricane", "A potato", "A needle"],
+    ["Forward I'm heavy, backward I'm not. What am I?", "Ton", "Rock", "Lead"],
+    ["What can you hold in your right hand but never in your left?", "Your left hand (or elbow)", "A pen", "A cup"],
+    ["What has 13 hearts but no other organs?", "A deck of cards", "A hospital", "A valentine box"],
+    ["What goes through cities and fields but never moves?", "A road", "A train", "The wind"],
+    ["What can't talk but will reply when spoken to?", "An echo", "A mirror", "A parrot"]
+  ],
+  words: ["MUSIC", "DANCE", "BASS", "VIBES", "RHYTHM", "GROOVE", "PARTY", "TEMPO", "SOUL", "JAZZ", "BEAT", "DRUMS", "PIANO", "SALSA", "LYRIC", "VINYL", "STAGE", "CHORUS", "SPEAKER", "MELODY", "REMIX", "HOOK", "FUNK", "DISCO", "SWING", "TRUMPET", "GUITAR", "STUDIO", "ENCORE", "SPOTLIGHT"],
+  /* pick n items from a bank without repeating until every item has been seen */
+  pick(bank, n){
+    const all = this[bank], seen = new Set(store.get("qbSeen:" + bank, [])); let fresh = all.map((_, i) => i).filter(i => !seen.has(i));
+    if (fresh.length < n){ seen.clear(); fresh = all.map((_, i) => i); }
+    const out = []; while (out.length < n && fresh.length){ const k = Math.floor(Math.random()*fresh.length); out.push(fresh.splice(k, 1)[0]); }
+    out.forEach(i => seen.add(i)); store.set("qbSeen:" + bank, [...seen]); return out.map(i => all[i]);
+  },
+  shuffle(a){ return a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]); },
+  /* a ready-made multiple-choice stage */
+  choice(item, o = {}){ const [q, a, ...w] = item; return Object.assign({type: "choice", title: o.title || "Question", text: q, log: o.log || "Question", cash: o.cash || 20, time: o.time, options: this.shuffle([a, ...w.slice(0, 3)]).map(t => ({t, s: t === a ? 100 : 0, fb: t === a ? (o.yes || "Correct!") : `Not quite. It's ${a}.`}))}, o.extra || {}); },
+  /* puzzles made fresh every time */
+  math(){ const a = 2 + Math.floor(Math.random()*12), b = 2 + Math.floor(Math.random()*12), c = 1 + Math.floor(Math.random()*20), r = a*b + c, w = new Set([r]); while (w.size < 4) w.add(r + (Math.floor(Math.random()*13) - 6 || 7));
+    return {q: `The lock wants ${a} × ${b} + ${c}. What's the number?`, correct: String(r), options: this.shuffle([...w].map(String))}; },
+  sequence(){ const kinds = [() => { const s = 1 + Math.floor(Math.random()*5), d = 2 + Math.floor(Math.random()*6); return [[s, s + d, s + 2*d, s + 3*d], s + 4*d]; }, () => { const s = 1 + Math.floor(Math.random()*3), k = 2 + Math.floor(Math.random()*2); return [[s, s*k, s*k*k, s*k*k*k], s*k*k*k*k]; }, () => { const a = 1 + Math.floor(Math.random()*3), b = a + 1 + Math.floor(Math.random()*2); const f = [a, b]; while (f.length < 5) f.push(f[f.length - 1] + f[f.length - 2]); return [f.slice(0, 4), f[4]]; }, () => { const s = 1 + Math.floor(Math.random()*4); return [[s*s, (s + 1)**2, (s + 2)**2, (s + 3)**2], (s + 4)**2]; }];
+    const [seq, ans] = kinds[Math.floor(Math.random()*kinds.length)](), w = new Set([ans]); while (w.size < 4) w.add(ans + (Math.floor(Math.random()*9) - 4 || 5));
+    return {q: `What comes next? ${seq.join(", ")}, …`, correct: String(ans), options: this.shuffle([...w].map(String))}; },
+  oddOne(){ const sets = [[["Salsa", "Bachata", "Merengue"], "Waltz"], [["Trumpet", "Saxophone", "Trombone"], "Violin"], [["Kick", "Snare", "Hi-hat"], "Chorus"], [["House", "Techno", "Trance"], "Bluegrass"], [["Bronx", "Brooklyn", "Queens"], "Detroit"], [["Verse", "Chorus", "Bridge"], "Turntable"], [["Guitar", "Bass", "Violin"], "Flute"], [["Afrobeats", "Amapiano", "Highlife"], "Polka"], [["Vinyl", "Cassette", "CD"], "Microphone"], [["Breaking", "Popping", "Locking"], "Tango"]];
+    const [grp, odd] = sets[Math.floor(Math.random()*sets.length)]; return {q: "Which one doesn't belong?", correct: odd, options: this.shuffle([...grp, odd])}; }
+};
+
 /* ================= 🧘 Wellness: calm, fitness, fun and brain power, fed by four activities ================= */
 const Wellness = {
   NEEDS: {calm: "🧘 Calm", fit: "💪 Fitness", fun: "🎉 Fun", brain: "🧠 Brain", social: "👥 Social"},
@@ -14475,17 +14959,14 @@ Mogul.GAMES.meditate = Mogul.scripted({
   howTo: ["Watch the glowing orb: it grows as you breathe in and shrinks as you breathe out.", "Hold the button while you breathe in or out for the number of seconds shown.", "Keep the stone in the green zone. Calm minds don't overcorrect.", "There are no strikes here. Just breathe."],
   vrTip: "Sit or stand comfortably. The orb in the middle of the room is your guide.",
   make(s){
-    const pick = a => a[Math.floor(Math.random()*a.length)];
-    const thoughts = pick([
-      {t: "A worry about tomorrow pops into your head. What do you do?", o: [["Notice it kindly, let it float by, and return to your breath", 100, "That's the practice."], ["Push it away angrily", 30, "Fighting a thought gives it more power."], ["Follow it and plan everything out", 20, "Planning is for later; now is for breathing."]]},
-      {t: "Your shoulders feel tight. What helps?", o: [["Drop them on an exhale and soften your jaw", 100, "Perfect. The body follows the breath."], ["Hold them up high and hope it passes", 20, "Tension stays where you keep it."], ["Check your phone", 10, "Not now. This time is yours."]]},
-      {t: "Your mind has wandered for a minute. What now?", o: [["Gently come back. Noticing it IS the practice.", 100, "Every return is a rep for your mind."], ["Give up: you're bad at this", 15, "Wandering is normal. Everyone does it."], ["Scold yourself for it", 25, "Be kind to yourself."]]}]);
+    const th = QB.pick("mind", 2);
     return [
       {type: "info", title: "Settle in", text: "Find a cushion, or just stand tall and relax. Look at the glowing orb in the room. Breathe in as it grows, out as it shrinks. Tap Next when you're ready.", btn: "I'm ready ▶"},
       {type: "hold", title: "Breathe with the orb", text: "Hold the button for the number of seconds, then let go.", log: "Breathing", cash: 40, rounds: [
         {label: "Breathe IN slowly", target: 4, unit: "s", rate: 1, max: 8}, {label: "Breathe OUT slowly", target: 6, unit: "s", rate: 1, max: 10}, {label: "Breathe IN slowly", target: 4, unit: "s", rate: 1, max: 8}, {label: "Breathe OUT slowly", target: 6, unit: "s", rate: 1, max: 10}]},
       {type: "balance", title: "Still body", text: "Lean gently to keep the stone in the green zone. Small moves only.", dur: 16, bumps: .8, force: 1.5, spillMsg: "Let it go and re-center.", log: "Stillness", cash: 40},
-      {type: "choice", title: "A passing thought", text: thoughts.t, log: "Mindfulness", cash: 30, options: thoughts.o.map(([t, sc, fb]) => ({t, s: sc, fb}))},
+      QB.choice(th[0], {title: "A passing thought", log: "Mindfulness", cash: 30, yes: "That's the practice."}),
+      QB.choice(th[1], {title: "Mindful moment", log: "Mindfulness", cash: 20, yes: "Exactly."}),
       {type: "timing", title: "Ring the singing bowl", text: "Tap when the marker is in the green zone, slow and easy.", count: 3, speed: .35, zw: .3, label: "RING", log: "Singing bowl", cash: 30, after: () => { try{ Wellness.tone(220, 2.6, "sine", .22); Wellness.tone(331, 2.2, "sine", .08); }catch(e){} }}
     ];
   },
@@ -14496,12 +14977,14 @@ Mogul.GAMES.gym = Mogul.scripted({
   howTo: ["Warm up first. Then follow the beat for jumping jacks.", "Tap when the marker is in the green zone to finish clean squat reps.", "Hold the plank: lean to keep the dot centered.", "Boxing pads: face the flash. Then cool down with a stretch."],
   vrTip: "For the boxing pads, turn your head toward the flash.",
   make(s){
+    const fq = QB.pick("fitness", 3);
     return [
-      {type: "choice", title: "Warm-up", text: "You're about to work out. What should you do first?", log: "Warm-up", cash: 20, options: [{t: "5 minutes of light movement to warm up", s: 100, fb: "Warm muscles get hurt less."}, {t: "Go straight to the heaviest weight", s: 15, fb: "That's how people get hurt."}, {t: "Stretch cold muscles as far as they go", s: 40, fb: "Move first, deep-stretch after."}]},
+      QB.choice(fq[0], {title: "Coach asks…", log: "Fitness know-how", cash: 20}),
       {type: "rhythm", title: "Jumping jacks", text: "Hit each beat as it reaches the line.", bpm: 110, count: 14, log: "Jacks", cash: 40},
-      {type: "choice", title: "Form check", text: "Which is a safe squat?", log: "Form", cash: 20, options: [{t: "Chest up, back flat, knees track over your toes", s: 100, fb: "Textbook form."}, {t: "Knees cave in, back rounded", s: 10, fb: "That strains your knees and back."}, {t: "Heels off the floor, leaning way forward", s: 30, fb: "Keep your weight on your whole foot."}]},
+      QB.choice(fq[1], {title: "Form check", log: "Form", cash: 20}),
       {type: "timing", title: "Squat reps", text: "Tap at the bottom of each rep, in the green zone.", count: 6, speed: .9, zw: .2, label: "REP!", log: "Squats", cash: 50},
       {type: "balance", title: "Plank hold", text: "Keep your core tight: lean to keep the dot in the zone.", dur: 15, bumps: 1.4, force: 2.2, spillMsg: "Core! Reset your plank.", log: "Plank", cash: 50},
+      QB.choice(fq[2], {title: "Quick quiz", log: "Fitness know-how", cash: 20}),
       {type: "dir", title: "Boxing pads", text: "Face the flash and throw the combo.", count: 6, window: 1.3, log: "Pads", cash: 40},
       {type: "hold", title: "Cool down", text: "Hold the stretch for the time shown. Breathe.", log: "Stretch", cash: 20, rounds: [{label: "Hamstring stretch", target: 6, unit: "s", rate: 1, max: 10}, {label: "Quad stretch", target: 6, unit: "s", rate: 1, max: 10}]}
     ];
@@ -14513,12 +14996,14 @@ Mogul.GAMES.dance = Mogul.scripted({
   howTo: ["Watch the instructor in the studio, then mirror her moves.", "Hit the beat: arrows come up the lanes, tap them on the line.", "Salsa counts 1-2-3, pause, 5-6-7, pause.", "End with the full routine."],
   vrTip: "The instructor is in the middle of the room, facing the mirror.",
   make(s){
+    const dq = QB.pick("dance", 2);
     return [
       {type: "info", title: "Class begins", text: "Welcome! Today: salsa basics. Count 1-2-3, hold on 4, then 5-6-7, hold on 8. Watch the instructor, then follow along.", btn: "Let's dance ▶"},
       {type: "dir", title: "Mirror the teacher", text: "She points left, front or right. Move that way!", count: 6, window: 1.4, log: "Mirror", cash: 30},
-      {type: "choice", title: "The count", text: "In the salsa basic step, which counts do you step on?", log: "Counts", cash: 20, options: [{t: "1-2-3 and 5-6-7, resting on 4 and 8", s: 100, fb: "That's the salsa basic."}, {t: "Every single count, 1 through 8", s: 40, fb: "Close, but the 4 and 8 are rests."}, {t: "Only the even counts", s: 15, fb: "Try counting along to the music."}]},
+      QB.choice(dq[0], {title: "Dance history", log: "Dance know-how", cash: 20}),
       {type: "rhythm", title: "Basic step", text: "Hit each beat as it reaches the line.", bpm: 100, count: 12, log: "Basic step", cash: 40},
       {type: "timing", title: "The spin", text: "Tap when you finish the spin facing front.", count: 4, speed: .8, zw: .18, label: "SPIN!", log: "Spin", cash: 40},
+      QB.choice(dq[1], {title: "Instructor's question", log: "Dance know-how", cash: 20}),
       {type: "rhythm", title: "Full routine!", text: "Faster now. Show the class what you've got.", bpm: 118, count: 18, log: "Routine", cash: 60}
     ];
   },
@@ -14534,20 +15019,16 @@ Mogul.GAMES.escape = Mogul.scripted({
     const seq = sh([0, 1, 2, 3]).slice(0, 3 + (Math.random() < .5 ? 1 : 0)), ico = ["🔴", "🟢", "🔵", "🟡"], seqS = a => a.map(i => ico[[0, 1, 2, 3][i]]).join(" ");
     const mapIdx = [0, 1, 2, 3]; // lamp order on the shelf: red, green, blue, yellow
     const seqOpts = new Set([seqS(seq)]); let guard = 0; while (seqOpts.size < 3 && guard++ < 40) seqOpts.add(seqS(sh([0, 1, 2, 3]).slice(0, seq.length)));
-    const words = ["MUSIC", "DANCE", "BASS", "VIBES", "RHYTHM", "GROOVE", "PARTY"], word = pick(words), enc = word.split("").map(c => String.fromCharCode((c.charCodeAt(0) - 65 + 1) % 26 + 65)).join(""), wopts = new Set([word]); while (wopts.size < 4) wopts.add(pick(words));
+    const words = QB.words, word = pick(words), enc = word.split("").map(c => String.fromCharCode((c.charCodeAt(0) - 65 + 1) % 26 + 65)).join(""), wopts = new Set([word]); while (wopts.size < 4) wopts.add(pick(words));
     this.pre = () => { try{ A.open(false); A.code(code); A.word(enc); A.seq(seq); }catch(e){ console.warn(e); } };
-    const riddles = [
-      {q: "I have keys but open no locks. I have space but no room. What am I?", a: "A keyboard", w: ["A piano tuner", "A door"]},
-      {q: "The more you take, the more you leave behind. What am I?", a: "Footsteps", w: ["Memories", "Money"]},
-      {q: "What gets wetter the more it dries?", a: "A towel", w: ["A sponge", "The rain"]},
-      {q: "I speak without a mouth and answer without ears. What am I?", a: "An echo", w: ["A ghost", "A radio"]}];
-    const r = pick(riddles);
+    const rd = QB.pick("riddle", 1)[0], r = {q: rd[0], a: rd[1], w: rd.slice(2, 4)}, gen = [QB.math, QB.sequence, QB.oddOne][Math.floor(Math.random()*3)].call(QB);
     return [
       {type: "info", title: "Locked in!", text: "The study door slammed shut. Look around the room: there's a painting, four lamps on the shelf and a blackboard. Walk up to them. Tap Start when you're ready for the first puzzle.", btn: "Start ▶", before: () => this.pre()},
       {type: "match", title: "Puzzle 1: the painting", text: "There's a number glowing in the painting on the left of the back wall.", time: 60, decay: 1, log: "Painting code", cash: 40, rounds: [{q: "What is the 3-digit code?", correct: code, options: sh([...codes])}]},
       {type: "choice", title: "Puzzle 2: the lamps", text: "Watch the four lamps on the shelf. They light in a pattern, then pause, then repeat. Red, green, blue, yellow from left to right. What was the order?", time: 90, log: "Lamp order", cash: 40, options: sh([...seqOpts]).map(t => ({t, s: t === seqS(seq) ? 100 : 0, fb: t === seqS(seq) ? "Exactly the pattern." : "That's not the order they lit."}))},
       {type: "match", title: "Puzzle 3: the blackboard", text: "Each letter on the blackboard was moved forward by one. Decode it.", time: 60, decay: 1, log: "Cipher", cash: 40, rounds: [{q: `Decode: ${enc}`, correct: word, options: sh([...wopts])}]},
       {type: "choice", title: "Puzzle 4: a riddle", text: r.q, log: "Riddle", cash: 30, options: sh([r.a, ...r.w]).map(t => ({t, s: t === r.a ? 100 : 0, fb: t === r.a ? "Yes!" : "Not quite."}))},
+      {type: "match", title: "Puzzle 5: the safe", text: "A little safe under the desk has a puzzle on its dial.", time: 45, decay: 1, log: "Safe puzzle", cash: 30, rounds: [gen]},
       {type: "timing", title: "Pick the lock", text: "The vault lock has a sweet spot. Tap when the pick is in the green zone.", count: 3, speed: .85, zw: .14, label: "PICK", log: "Lock", cash: 40}
     ];
   },
@@ -14570,7 +15051,17 @@ const Home = {
     lamp: {n: "Floor lamp", i: "💡", c: "furn", cost: 30, r: .25},
     rug: {n: "Rug", i: "🟫", c: "furn", cost: 50, r: .4, flat: true},
     houseplant: {n: "Houseplant", i: "🪴", c: "furn", cost: 20, r: .3, plant: {st: [0, 3, 10], thirst: 60}, inOk: true},
+    leathersofa: {n: "Leather sofa", i: "🛋", c: "furn", cost: 260, r: 1.0, use: ["calm", 5, "Sinking into soft leather."]},
+    damaskchair: {n: "Velvet chair", i: "🪑", c: "furn", cost: 110, r: .45, use: ["calm", 2, "Fancy."]},
+    pouf: {n: "Silk pouf", i: "🟣", c: "furn", cost: 40, r: .35, use: ["calm", 2, "Feet up."]},
+    fridge: {n: "Drinks fridge", i: "🧊", c: "furn", cost: 250, r: .55, use: ["fun", 2, "A cold drink. Refreshing!"]},
+    vase: {n: "Flower vase", i: "💐", c: "furn", cost: 30, r: .25},
+    mirror: {n: "Full-length mirror", i: "🪞", c: "furn", cost: 80, r: .4, use: ["fun", 1, "Looking good!"]},
+    candles: {n: "Candles", i: "🕯", c: "furn", cost: 25, r: .2, use: ["calm", 2, "Soft candlelight."]},
+    desklamp: {n: "Table lamp", i: "💡", c: "furn", cost: 60, r: .25},
+    iridlamp: {n: "Glass lamp", i: "🔮", c: "furn", cost: 80, r: .25},
     tv: {n: "TV", i: "📺", c: "fun", cost: 200, r: .6, use: ["fun", 5, "Great show."]},
+    boombox: {n: "Boombox", i: "📻", c: "fun", cost: 90, r: .3, use: ["fun", 3, "You turned up the music!"]},
     piano: {n: "Piano", i: "🎹", c: "fun", cost: 300, r: .7, use: ["fun", 6, "You played a little tune."]},
     treadmill: {n: "Treadmill", i: "🏃", c: "fun", cost: 220, r: .8, use: ["fit", 6, "A quick run."]},
     weights: {n: "Dumbbells", i: "🏋", c: "fun", cost: 60, r: .3, use: ["fit", 3, "Reps done."]},
@@ -14615,8 +15106,8 @@ const Home = {
   load(){ const d = store.get("home", null); if (d && Array.isArray(d.items)) return d;
     const now = Date.now(), it = (k, x, z, r = 0) => ({id: Math.random().toString(36).slice(2, 9), k, x, z, r, p: now, g: 1e9, wt: now, u: now});
     return {v: 1, gift: false, items: [it("sofa", -2, -14.6, 0), it("rug", -2, -12.6), it("table", -2, -12.4), it("lamp", -4.6, -14.8), it("bed", 4, -13.8, 0), it("bookshelf", 5.4, -10, 3),
-      it("daisy", -2.5, -5.5), it("tulip", -1.5, -5.5), it("oak", 7, -4), it("fern", 2, -5.5), it("path", 0, -7.5), it("path", 0, -6.5), it("path", 0, -5.5)]}; },
-  save(){ store.set("home", {v: 1, gift: this.gift, items: this.items.slice(0, 160)}); },
+      it("mirror", -5.5, -11.5, 1), it("daisy", -2.5, -5.5), it("tulip", -1.5, -5.5), it("oak", 7, -4), it("fern", 2, -5.5), it("path", 0, -7.5), it("path", 0, -6.5), it("path", 0, -5.5)]}; },
+  save(){ store.set("home", {v: 1, gift: this.gift, mirror: true, items: this.items.slice(0, 160)}); },
   cash(){ try{ return Mogul.d().cash; }catch(e){ return 0; } },
   spend(n){ const d = Mogul.d(); if (d.cash < n) return false; d.cash -= n; Mogul.put(d); return true; },
   earn(n){ const d = Mogul.d(); d.cash += n; d.earned = (d.earned || 0) + n; Mogul.put(d); },
@@ -14642,6 +15133,18 @@ const Home = {
     fence(px0, pz1, -1.2, pz1); fence(1.2, pz1, px1, pz1); fence(px0, pz0, px0, pz1); fence(px1, pz0, px1, pz1);
     const leaf = L.stdMat(0x2f6a2a, .9), trunk = L.stdMat(0x5a3a22, .9);
     for (let i = 0; i < 26; i++){ const a = i/26*Math.PI*2, R = 22 + Math.random()*6, x = Math.cos(a)*R, z = -6 + Math.sin(a)*R; L.wCyl(g, .25, .35, 3, trunk, x, 1.5, z, 6); const f = add(new T.Mesh(new T.IcosahedronGeometry(2 + Math.random(), 0), leaf), g, false); f.position.set(x, 4.2, z); }
+    // depth and detail: skirting boards, window and door frames, a cornice, grass tufts, garden lamps, drifting clouds
+    { const U = typeof GFX !== "undefined" && GFX.level === "ultra", trimM = L.stdMat(0xf4efe6, .5);
+      for (const [w, x, z, ry] of [[HW - .2, hcx, hz0 + .11, 0], [HD - .2, hx0 + .11, hcz, Math.PI/2], [HD - .2, hx1 - .11, hcz, Math.PI/2]]){ const b = L.wBox(g, w, .12, .03, trim, x, .12, z, false); b.rotation.y = ry; }
+      L.wBox(g, .12, 2.5, .3, trimM, hcx - 1.25, 1.25, hz1, false); L.wBox(g, .12, 2.5, .3, trimM, hcx + 1.25, 1.25, hz1, false);
+      for (const s of [-1, 1]){ const x = hcx + s*(HW/4 + .65); L.wBox(g, HW/2 - 1.2, .08, .32, trimM, x, 1.0, hz1, false); L.wBox(g, HW/2 - 1.2, .08, .26, trimM, x, 2.5, hz1, false); }
+      for (const [x, z] of [[hx0 - .1, hz1 + .1], [hx1 + .1, hz1 + .1], [hx0 - .1, hz0 - .1], [hx1 + .1, hz0 - .1]]) L.wBox(g, .3, WH + .3, .3, trimM, x, (WH + .3)/2, z);
+      const n = U ? 2600 : 1200, bladeG = new T.ConeGeometry(.03, .22, 3); bladeG.translate(0, .11, 0); const im = new T.InstancedMesh(bladeG, new T.MeshStandardMaterial({color: 0x4e8a30, roughness: .9}), n), o = new T.Object3D(), col = new T.Color();
+      let k2 = 0; for (let i = 0; i < n*3 && k2 < n; i++){ const x = px0 + Math.random()*(px1 - px0), z = pz0 + Math.random()*(pz1 - pz0 + 6); if (x > hx0 - .4 && x < hx1 + .4 && z < hz1 + .4) continue; if (Math.abs(x) < .6 && z > hz1 && z < -4.5) continue;
+        o.position.set(x, 0, z); o.rotation.set((Math.random() - .5)*.4, Math.random()*6, (Math.random() - .5)*.4); o.scale.setScalar(.6 + Math.random()*.9); o.updateMatrix(); im.setMatrixAt(k2, o.matrix); im.setColorAt && im.setColorAt(k2, col.setHSL(.24 + Math.random()*.06, .5, .25 + Math.random()*.15)); k2++; }
+      im.count = k2; im.receiveShadow = true; g.add(im);
+      this.gLamps = []; for (const [x, z] of [[-1.6, -6.2], [1.6, -6.2], [-1.6, 2.5], [1.6, 2.5]]){ L.wCyl(g, .04, .05, 1.2, L.stdMat(0x222222, .4, {metalness: .6}), x, .6, z, 8); const gl = L.wGlow(g, 0xffd08a, .6, x, 1.28, z, 0); const bulb = L.wCyl(g, .08, .08, .16, new T.MeshStandardMaterial({color: 0xfff4d8, emissive: 0xffc870, emissiveIntensity: 0}), x, 1.28, z, 10); this.gLamps.push([gl, bulb]); }
+      const ct = Tex.make(Tex.cloud()); this.clouds = []; for (let i = 0; i < (U ? 14 : 8); i++){ const c = new T.Sprite(new T.SpriteMaterial({map: ct, color: 0xffffff, transparent: true, opacity: .8, depthWrite: false, fog: false})); const a = Math.random()*Math.PI*2; c.position.set(Math.cos(a)*120, 45 + Math.random()*30, Math.sin(a)*120 - 20); c.scale.set(60 + Math.random()*40, 22 + Math.random()*10, 1); g.add(c); this.clouds.push(c); } }
     // sky that follows your real clock: sunrise, day, sunset, night
     this.sky = new T.Mesh(new T.SphereGeometry(200, 24, 12), new T.MeshBasicMaterial({color: 0x8ec8ff, side: T.BackSide, fog: false})); g.add(this.sky);
     const sp = []; for (let i = 0; i < 400; i++){ const a = Math.random()*Math.PI*2, b = Math.random()*1.3; sp.push(Math.cos(a)*Math.cos(b)*190, Math.sin(b)*190, Math.sin(a)*Math.cos(b)*190); }
@@ -14651,6 +15154,7 @@ const Home = {
     this.fog = new T.Fog(0x8ec8ff, 30, 90);
     this.layer = new T.Group(); g.add(this.layer);
     const d = this.load(); this.items = d.items; this.gift = d.gift;
+    if (!d.mirror && !this.items.some(i => i.k === "mirror")){ const spots = [[-5.5, -11.5], [-5.5, -10], [5.5, -12.5], [-3, -9.5]]; for (const [x, z] of spots) if (!this.valid("mirror", x, z)){ const now = Date.now(); this.items.push({id: Math.random().toString(36).slice(2, 9), k: "mirror", x, z, r: x < 0 ? 1 : 3, p: now, g: 0, wt: now, u: now}); break; } } this.mirrorGift = true;
     if (!this.gift){ this.gift = true; try{ this.earn(400); setTimeout(() => toast("🏡 Welcome home! Here's $400 to decorate. Tap 🔨 Build."), 1500); }catch(e){} this.save(); }
     this.nodes = new Map(); this.agents = []; for (const it of this.items) this.place(it); this.eco(true);
     return {id: "home", name: "My Home", group: g, floorY: 0, fog: this.fog, exposure: 1.0, bloom: .3, far: 400,
@@ -14697,8 +15201,12 @@ const Home = {
       case "compost": box(.7, .6, .7, 0x3a5a2a, 0, .3, 0); box(.74, .05, .74, 0x2a4a1a, 0, .62, 0); break;
       case "bench": box(1.4, .06, .45, 0x8a5a34, 0, .45, 0); box(1.4, .35, .05, 0x8a5a34, 0, .7, -.2); for (const x of [-.6, .6]) box(.06, .45, .4, 0x333333, x, .22, 0); break;
       case "rock": sph(.35, 0x8a8478, 0, .18, 0, 1.2, .7, 1); sph(.2, 0x7a7468, .3, .1, .1); break;
+      case "mirror": { const fr = L.stdMat(0xc9a46a, .3, {metalness: .8}); box(.7, 1.9, .06, fr, 0, .95, 0); const mm = Mirrors.make(.6, 1.78); mm.position.set(0, .95, .035); g.add(mm); box(.5, .04, .3, fr, 0, .02, -.1); } break;
       case "path": { const s = new T.Mesh(new T.CylinderGeometry(.3, .32, .05, 10), m(0xb8b0a0)); s.position.y = .03; s.scale.z = .8; g.add(s); } break;
     }
+    const AS = {sofa: ["sofa", .85], armchair: ["armchair", .95], houseplant: ["plant", 1.0], leathersofa: ["leathersofa", .9], damaskchair: ["damaskchair", 1.0], pouf: ["pouf", .42], fridge: ["fridge", 1.9], vase: ["vaseflowers", .55], candles: ["candles", .32], desklamp: ["desklamp", .5], iridlamp: ["iridlamp", .55], boombox: ["boombox", .3]}[k];
+    if (!g.children.length) box(.4, .4, .4, 0x8a7a6a, 0, .2, 0);
+    if (AS){ const fallback = g.children.slice(); try{ L.asset(g, AS[0], {h: AS[1], ry: k === "fridge" ? 0 : 0, replace: fallback}); }catch(e){} }
     if (P && this.thirsty(it)){ const drop = new T.Mesh(new T.SphereGeometry(.06, 8, 6), new T.MeshBasicMaterial({color: 0x4ab0ff, toneMapped: false})); drop.scale.y = 1.4; drop.position.y = (this.CAT[k].tree ? 2.6*sc + 1 : .9); drop.userData.drop = true; g.add(drop); }
     return g;
   },
@@ -14789,8 +15297,19 @@ const Home = {
     else if (sp === "hedgehog"){ ball(.12, 0x6a4a2a, 0, .08, 0, 1, .7, 1.3); ball(.05, 0xc8a080, 0, .06, .14); a.sp_ = .25; }
     else if (sp === "firefly"){ const pts = []; for (let i = 0; i < 40; i++) pts.push((Math.random() - .5)*16, .3 + Math.random()*1.8, -2 + (Math.random() - .5)*10); const geo = new T.BufferGeometry(); geo.setAttribute("position", new T.Float32BufferAttribute(pts, 3)); const pt = new T.Points(geo, new T.PointsMaterial({color: 0xe8ff7a, size: .08, map: this.L.glowT, transparent: true, depthWrite: false, blending: T.AdditiveBlending})); g.add(pt); a.cloud = pt; a.base = pts.slice(); }
     else if (sp === "rabbit" || sp === "fox"){ const pg = Pets.make(sp === "rabbit" ? "bunny" : "fox", sp === "rabbit" ? "#b8a088" : null, ""); pg.scale.setScalar(1.2); g.add(pg); a.pet = pg; a.sp_ = sp === "fox" ? 1.4 : 1; }
+    if (sp === "fox") this.realFox(a);
+    if (sp === "fish") this.L.loadAsset("fish").then(src => { if (!src || !a.g.parent) return; const m = src.clone(true), b = new T.Box3().setFromObject(m), len = Math.max(b.max.x - b.min.x, b.max.z - b.min.z) || 1; m.scale.multiplyScalar(.22/len); const b2 = new T.Box3().setFromObject(m); m.position.y -= (b2.min.y + b2.max.y)/2; m.rotation.y = (b.max.x - b.min.x) > (b.max.z - b.min.z) ? Math.PI/2 : 0; a.g.children.forEach(c => c.visible = false); a.g.add(m); }).catch(() => {});
     const [x, z] = this.gardenPt(); a.x = a.tx = x; a.z = a.tz = z; if (a.fish || a.pond){ const p = this.items.find(i => i.k === "pond"); if (p){ a.px = p.x; a.pz = p.z; a.x = p.x; a.z = p.z; } }
     g.position.set(a.x, 0, a.z); this.layer.add(g); return a;
+  },
+  /* the real, animated fox model (walks, stops and looks around) */
+  realFox(a){
+    const T = THREE, L = this.L;
+    this.foxP = this.foxP || (async () => { if (!T.GLTFLoader) return null; const ld = new T.GLTFLoader(); for (const h of L.ASSET_HOSTS){ try{ return await ld.loadAsync(h + "fox.glb"); }catch(e){} } return null; })();
+    this.foxP.then(gl => { if (!gl || !a.g.parent || !T.SkeletonUtils) return; const m = T.SkeletonUtils.clone(gl.scene), b = new T.Box3().setFromObject(gl.scene), h = (b.max.y - b.min.y) || 1; m.scale.setScalar(.55/h);
+      m.traverse(o => { if (o.isMesh){ o.castShadow = true; o.frustumCulled = false; } });
+      if (a.pet) a.pet.visible = false; a.pet = null; a.g.add(m); const mx = new T.AnimationMixer(m), clip = n => gl.animations.find(c => c.name === n);
+      a.mixer = mx; a.acts = {walk: clip("Walk") && mx.clipAction(clip("Walk")), look: clip("Survey") && mx.clipAction(clip("Survey"))}; if (a.acts.look) a.acts.look.play(); a.cur = "look"; }).catch(() => {});
   },
   pickTarget(a){
     const flowers = this.spots(i => this.CAT[i.k].flower && this.stage(i) >= 1), trees = this.spots(i => this.CAT[i.k].tree), r = Math.random(), any = arr => arr[Math.floor(Math.random()*arr.length)];
@@ -14811,6 +15330,7 @@ const Home = {
       if (a.fish) y = -.01; a.g.position.set(a.x, Math.max(a.fish ? -.01 : 0, y) + (a.fish ? .04 : 0), a.z);
       const flap = a.bird ? (moving ? 18 : 0) : 22; a.wings.forEach(([w, s]) => { w.rotation.z = s*Math.sin(t*flap + a.ph)*(a.bird && !moving ? 0 : .9); });
       if (a.pet) Pets.animate(a.pet, dt, t, moving, a.sp_);
+      if (a.mixer){ const want = moving ? "walk" : "look"; if (want !== a.cur && a.acts[want]){ const from = a.acts[a.cur]; a.acts[want].reset().play(); if (from) a.acts[want].crossFadeFrom(from, .3, false); a.cur = want; } a.mixer.update(dt); }
     }
   },
   /* ---------- the clock: sky, lights, growth ---------- */
@@ -14822,10 +15342,10 @@ const Home = {
       if (ch){ this.eco(); this.refresh(); } if (Math.random() < .1) this.save();
       const day = this.daylight(), T = THREE, night = 1 - day; this.night = night;
       const sky = new T.Color(0x0a1028).lerp(new T.Color(0x5aa8f0), day); const h = new Date().getHours(); if ((h >= 6 && h < 8) || (h >= 18 && h < 20)) sky.lerp(new T.Color(0xff9a6a), .35);
-      this.sky.material.color.copy(sky); this.fog.color.copy(sky); this.stars.material.opacity = night; this.sun.intensity = .15 + day*1.0; this.hemi.intensity = .25 + day*.5; this.lamps.forEach(l => { l.intensity = night*1.1; });
+      this.sky.material.color.copy(sky); this.fog.color.copy(sky); this.stars.material.opacity = night; this.sun.intensity = .15 + day*1.0; this.hemi.intensity = .25 + day*.5; this.lamps.forEach(l => { l.intensity = night*1.1; }); (this.gLamps || []).forEach(([gl, b]) => { gl.material.opacity = night*.8; b.material.emissiveIntensity = night*1.5; }); (this.clouds || []).forEach(c => { c.material.color.setScalar(.25 + day*.75); c.material.opacity = .25 + day*.55; });
       try{ if (typeof Party !== "undefined" && Party.room && Object.keys(Party.peers).length) Wellness.add("social", .15, true); }catch(e){}
       { const hh = $("#homeHud"), show = this.active && !(Lounge.renderer && Lounge.renderer.xr.isPresenting) && !$("#stage").hidden; if (!hh ? show : hh.hidden === show) this.hud(); } }
-    this.updateAgents(dt, t);
+    this.updateAgents(dt, t); (this.clouds || []).forEach((c, i) => { const a = Math.atan2(c.position.z + 20, c.position.x) + dt*.004*(1 + i % 3*.3), r = Math.hypot(c.position.x, c.position.z + 20); c.position.x = Math.cos(a)*r; c.position.z = Math.sin(a)*r - 20; });
     for (const n of this.nodes.values()) n.g.children.forEach(c => { if (c.userData.drop) c.position.y += Math.sin(t*4)*.002; });
     if (this.fx) this.fx = this.fx.filter(f => { f.t += dt; f.g.children.forEach(d => { d.position.y -= d.userData.v*dt; }); if (f.t > .9){ this.layer.remove(f.g); return false; } return true; });
     if (this.ghost){ this.ghost.visible = this.mode === "place" && !!this.sel; }
@@ -14876,6 +15396,163 @@ const Home = {
     M.btn("ht", 508, by, 200, 64, "↻ Turn", () => { this.rot = (this.rot + 1) % 4; }, {size: 23}); M.btn("hd", 720, by, 280, 64, this.mode ? "✓ Stop building" : "Not building", () => { this.mode = ""; }, {size: 23});
     M.text(Object.entries(Wellness.NEEDS).map(([k, l]) => `${l.split(" ")[0]} ${Math.round(w.n[k])}`).join("   "), 30, by + 96, 22, "rgba(255,255,255,.8)", 600, "left", W - 60);
   }
+};
+
+/* ================= 🕺 Dance-off: a Just Dance-style challenge right on the dance floor ================= */
+Mogul.GAMES.danceoff = {
+  panelSide: .9, anyWorld: true, well: true,
+  MOVES: {L: {n: "Point left", e: "👈"}, U: {n: "Hands up", e: "🙌"}, R: {n: "Point right", e: "👉"}, D: {n: "Drop it", e: "⬇"}, C: {n: "Clap", e: "👏"}},
+  KEYS: {arrowleft: "L", a: "L", arrowup: "U", w: "U", arrowright: "R", d: "R", arrowdown: "D", s: "D", " ": "C", enter: "C"},
+  howTo: ["A rival steps up. Move cards slide toward the ring in time with the beat.", "Hit each move as its card reaches the ring: ◀ point left, ▲ hands up, ▶ point right, ▼ drop it, 👏 clap (or the arrow keys and Space).", "Perfect timing scores most. Keep a combo going for bonus points.", "Beat your rival's score to win the crowd."],
+  vrTip: "Do the moves with your real arms: both hands up, point a hand out to the left or right, both hands low to drop it, hands together to clap.",
+  start(s){
+    const m = this.m, L = Lounge, T = THREE, lv = s.lv || 1;
+    this.bpm = Math.min(132, 96 + lv*4); this.spb = 60/this.bpm; this.notes = []; this.hits = {perfect: 0, good: 0, miss: 0}; this.score = 0; this.combo = 0; this.best = 0; this.flash = null; this.over = false;
+    // the chart: a short warm-up, then faster patterns, with the occasional double move
+    const keys = ["L", "U", "R", "D", "C"], pats = [["L", "R", "L", "R"], ["U", "C", "U", "C"], ["L", "U", "R", "U"], ["D", "C", "D", "U"], ["R", "L", "U", "C"], ["C", "C", "U", "D"]];
+    let beat = 8; for (let bar = 0; bar < 10; bar++){ const p = pats[Math.floor(Math.random()*pats.length)], step = bar < 3 ? 2 : bar < 7 ? 1 : (Math.random() < .5 ? 1 : .5);
+      for (let i = 0; i < 4; i++){ this.notes.push({t: beat*this.spb, k: Math.random() < .15 ? keys[Math.floor(Math.random()*5)] : p[i], hit: null}); beat += step; } beat += 2; }
+    this.len = beat*this.spb + 2; this.total = this.notes.length;
+    this.rivalTarget = Math.min(95, 52 + lv*4 + Math.random()*14); this.rivalName = Mogul.NAMES[0][Math.floor(Math.random()*Mogul.NAMES[0].length)];
+    // where: the dancers face you, a few steps ahead, like a game coach
+    const h = L.headPos(), yaw = L.renderer.xr.isPresenting ? L.headYaw() : L.yaw; this.anchor = {x: h.x, z: h.z, yaw};
+    const at = (rx, fz) => ({x: h.x + Math.cos(yaw)*rx - Math.sin(yaw)*fz, z: h.z - Math.sin(yaw)*rx - Math.cos(yaw)*fz}), g = this.wg(), pr = Profile.get();
+    const put = (rx, opts) => { const p = at(rx, 2.7), lp = g.worldToLocal(new T.Vector3(p.x, 0, p.z)), sl = m.spawn(lp.x, lp.z, yaw, "dance", opts); if (sl){ const fy = L.floorAt(p.x, p.z, h.y + .5); if (fy != null) sl.p.position.y = fy - g.getWorldPosition(new T.Vector3()).y; } return sl; };
+    this.me = put(-.75, {avatar: pr.avatar, outfit: pr.outfit, gear: {hat: pr.hat, eyes: pr.eyes, neck: pr.neck, phones: pr.phones, aura: pr.aura}});
+    this.rival = put(.75, {gender: Math.random() < .5 ? "f" : "m"});
+    if (!m.vr()){ L.pitch = -.08; L.userLooked = true; }
+    this.pad = this.padEl = m.vr() ? null : this.mkHud(); if (this.pad && m.box) m.box.hidden = true;
+    this.wasPlaying = (typeof S !== "undefined") && (S.playing || S.loading); if (this.wasPlaying) try{ togglePlay(); }catch(e){}
+    this.ac = Wellness.ac || (Wellness.ac = (L.listener && L.listener.context) || new (window.AudioContext || window.webkitAudioContext)()); try{ this.ac.resume(); }catch(e){}
+    this.t0 = this.ac.currentTime + 1.2; this.music(); this.clipT = 0; this.lastPose = ""; this.poseHeld = {};
+    try{ Party.setEmote("dance"); }catch(e){}
+    m.say(`🕺 Dance-off vs ${this.rivalName}! Hit the moves when the cards reach the ring.`);
+  },
+  wg(){ const L = Lounge, w = L.worlds[L.worldId]; return w ? w.group : L.scene; },
+  now(){ return this.ac ? this.ac.currentTime - this.t0 : 0; },
+  /* a built-in beat so the moves line up exactly: kick, snare, hats, bass and a synth stab */
+  music(){
+    const ac = this.ac, out = this.out = ac.createGain(); out.gain.value = .55; out.connect(ac.destination); const spb = this.spb, t0 = this.t0, beats = Math.ceil(this.len/spb) + 4;
+    const noise = (() => { const b = ac.createBuffer(1, ac.sampleRate*.3, ac.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1; return b; })();
+    const kick = t => { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(42, t + .12); g.gain.setValueAtTime(1, t); g.gain.exponentialRampToValueAtTime(.001, t + .3); o.connect(g); g.connect(out); o.start(t); o.stop(t + .32); };
+    const hiss = (t, len, f, v) => { const s = ac.createBufferSource(), bp = ac.createBiquadFilter(), g = ac.createGain(); s.buffer = noise; bp.type = "highpass"; bp.frequency.value = f; g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + len); s.connect(bp); bp.connect(g); g.connect(out); s.start(t); s.stop(t + len + .02); };
+    const tone = (t, f, len, v, type) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.value = f; g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + len); o.connect(g); g.connect(out); o.start(t); o.stop(t + len + .02); };
+    const roots = [55, 55, 73.42, 65.41], chord = [[220, 277.18, 329.63], [220, 277.18, 329.63], [293.66, 369.99, 440], [261.63, 329.63, 392]];
+    for (let b = -4; b < beats; b++){ const t = t0 + b*spb; if (t < ac.currentTime) continue; const bar = Math.floor((b + 4)/4) % 4;
+      kick(t); hiss(t + spb/2, .05, 7000, .25); if ((b + 4) % 2 === 1) hiss(t, .18, 1500, .5); if (b >= 0){ tone(t, roots[bar], spb*.9, .35, "sawtooth"); if ((b + 4) % 4 === 2) chord[bar].forEach(f => tone(t + spb/2, f, spb*.4, .05, "square")); } }
+  },
+  /* phones and computers: an overlay with the move track and big buttons */
+  mkHud(){
+    const d = document.createElement("div"); d.className = "dhud";
+    d.innerHTML = `<div class="dtop"><div class="dsc"><b>YOU</b><i class="dbar me"><span></span></i><em class="dpct me">0</em></div><div class="dmid"><div class="drate"></div><div class="dcombo"></div></div><div class="dsc r"><b class="rn">RIVAL</b><i class="dbar rv"><span></span></i><em class="dpct rv">0</em></div><button class="dx" aria-label="Stop the dance-off">✕</button></div>
+      <canvas class="dtrack" width="1200" height="170"></canvas>
+      <div class="dbtns">${["L", "U", "R", "D", "C"].map(k => `<button data-k="${k}"><span>${k === "L" ? "◀" : k === "U" ? "▲" : k === "R" ? "▶" : k === "D" ? "▼" : "👏"}</span><small>${this.MOVES[k].n}</small></button>`).join("")}</div>`;
+    document.body.appendChild(d); d.querySelector(".rn").textContent = this.rivalName.toUpperCase();
+    d.querySelectorAll("[data-k]").forEach(b => b.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); this.press(b.dataset.k); b.classList.add("on"); setTimeout(() => b.classList.remove("on"), 120); }));
+    d.querySelector(".dx").addEventListener("click", () => { this.m.quitGame ? this.m.quitGame(true) : this.m.endGame("You left the dance floor."); });
+    this.cv = d.querySelector(".dtrack"); this.cx = this.cv.getContext("2d"); return d;
+  },
+  key(k, down){ const mv = this.KEYS[k]; if (!mv) return false; if (down) this.press(mv); return true; },
+  /* a move: find the nearest card of that kind near the ring */
+  press(k){
+    if (this.over) return; const t = this.now(); let best = null, bd = 9;
+    for (const n of this.notes){ if (n.hit !== null || n.k !== k) continue; const d = Math.abs(n.t - t); if (d < bd){ bd = d; best = n; } }
+    if (!best || bd > .3){ this.combo = 0; this.rate("Off beat", "#ff8a7a"); return; }
+    const q = bd <= .12 ? "perfect" : "good"; best.hit = q; this.hits[q]++; this.combo++; this.best = Math.max(this.best, this.combo);
+    this.score += (q === "perfect" ? 100 : 60) + Math.min(50, this.combo*2); this.rate(q === "perfect" ? "PERFECT!" : "GOOD", q === "perfect" ? "#7dffb0" : "#ffd87a");
+    if (this.combo && this.combo % 8 === 0){ try{ Lounge.burst(this.me ? this.me.p.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 1.9, 0)) : Lounge.headPos(), 10); }catch(e){} if (this.me) Fight.clip(this.me, "cheer"); this.cheerT = 1.2; }
+    try{ const c = (Lounge.xrCtls || [])[0]; if (c) Lounge.haptic(c, .4, 40); }catch(e){}
+  },
+  rate(txt, col){ this.flash = {txt, col, t: performance.now()}; },
+  pct(){ const max = this.total*150; return Math.max(0, Math.min(100, Math.round(this.score/max*100*1.15))); },
+  rivalPct(t){ return Math.round(this.rivalTarget*Math.max(0, Math.min(1, t/(this.len - 2)))); },
+  /* VR: read your arms */
+  pose(){
+    const L = Lounge, T = THREE, head = L.headPos(), yaw = L.headYaw(), hands = {};
+    for (const side of ["left", "right"]){ const h = Cam.gripFor && Cam.gripFor(side); if (h && h.grip) hands[side] = h.grip.getWorldPosition(new T.Vector3()); }
+    if (!hands.left || !hands.right) return ""; const rx = v => (v.x - head.x)*Math.cos(yaw) - (v.z - head.z)*Math.sin(yaw);
+    const l = hands.left, r = hands.right, up = l.y > head.y + .02 && r.y > head.y + .02, low = l.y < head.y - .85 && r.y < head.y - .85, clap = l.distanceTo(r) < .16 && l.y > head.y - .7;
+    if (up) return "U"; if (clap) return "C"; if (low) return "D"; if (rx(l) < -.5 && rx(r) > -.25) return "L"; if (rx(r) > .5 && rx(l) < .25) return "R"; return "";
+  },
+  update(dt){
+    const m = this.m; if (this.over) return; const t = this.now();
+    for (const n of this.notes) if (n.hit === null && t > n.t + .3){ n.hit = "miss"; this.hits.miss++; this.combo = 0; this.rate("MISS", "#ff6a5a"); if (this.me){ Fight.clip(this.me, "idle", .15); this.missT = .5; } }
+    if (m.vr()){ const p = this.pose(); if (p && p !== this.lastPose) this.press(p); this.lastPose = p; }
+    // the dancers: switch moves every couple of bars; react to misses and combos
+    this.clipT += dt; if (this.missT > 0){ this.missT -= dt; if (this.missT <= 0 && this.me) Fight.clip(this.me, "dance" + (1 + Math.floor(Math.random()*4))); }
+    if (this.cheerT > 0){ this.cheerT -= dt; if (this.cheerT <= 0 && this.me) Fight.clip(this.me, "dance" + (1 + Math.floor(Math.random()*4))); }
+    if (this.clipT > this.spb*8){ this.clipT = 0; if (this.rival) Fight.clip(this.rival, "dance" + (1 + Math.floor(Math.random()*4))); if (this.me && !(this.missT > 0) && !(this.cheerT > 0)) Fight.clip(this.me, "dance" + (1 + Math.floor(Math.random()*4))); }
+    if (this.pad) this.drawHud(t);
+    if (t > this.len) this.finish();
+    if (m.vr() && (this.drawT = (this.drawT || 0) + dt) > .05){ this.drawT = 0; m.draw(); }
+  },
+  /* a stick figure doing each move, like a dance game pictogram */
+  figure(x, X, Y, s, k, col){
+    x.save(); x.translate(X, Y); x.scale(s, s); x.strokeStyle = col; x.fillStyle = col; x.lineWidth = 7; x.lineCap = "round"; x.lineJoin = "round";
+    x.beginPath(); x.arc(0, -46, 11, 0, 7); x.fill(); x.beginPath(); x.moveTo(0, -34); x.lineTo(0, 6); x.stroke();
+    const arm = (a, b, c, d) => { x.beginPath(); x.moveTo(0, -28); x.lineTo(a, b); x.lineTo(c, d); x.stroke(); };
+    if (k === "U"){ arm(-14, -46, -20, -64); arm(14, -46, 20, -64); } else if (k === "L"){ arm(-22, -30, -44, -32); arm(12, -12, 16, 4); } else if (k === "R"){ arm(22, -30, 44, -32); arm(-12, -12, -16, 4); }
+    else if (k === "D"){ arm(-18, -8, -24, 10); arm(18, -8, 24, 10); } else { arm(-14, -18, -2, -26); arm(14, -18, 2, -26); }
+    const knee = k === "D" ? 14 : 6; x.beginPath(); x.moveTo(0, 6); x.lineTo(-knee, 24); x.lineTo(-12, 44); x.moveTo(0, 6); x.lineTo(knee, 24); x.lineTo(12, 44); x.stroke(); x.restore();
+  },
+  drawTrack(x, W, H, t){
+    x.clearRect(0, 0, W, H); const ringX = 120, pps = 340, cy = H/2;
+    x.fillStyle = "rgba(20,13,10,.55)"; x.beginPath(); x.roundRect ? x.roundRect(0, 10, W, H - 20, 24) : x.rect(0, 10, W, H - 20); x.fill();
+    const pulse = 1 + Math.max(0, 1 - ((t % this.spb) + this.spb) % this.spb/this.spb*3)*.12; x.strokeStyle = "#ffc21a"; x.lineWidth = 6; x.beginPath(); x.arc(ringX, cy, 62*pulse, 0, 7); x.stroke();
+    const col = {L: "#4de1ff", U: "#ffc21a", R: "#ff8ad8", D: "#8dff9e", C: "#ffffff"};
+    for (const n of this.notes){ const dx = (n.t - t)*pps; if (dx < -90 || dx > W) continue; if (n.hit && n.hit !== "miss" && dx < -10) continue; const X = ringX + dx, a = n.hit === "miss" ? .35 : 1;
+      x.globalAlpha = a; x.fillStyle = "rgba(0,0,0,.45)"; x.beginPath(); x.roundRect ? x.roundRect(X - 50, cy - 64, 100, 128, 18) : x.rect(X - 50, cy - 64, 100, 128); x.fill(); x.strokeStyle = col[n.k]; x.lineWidth = 4; x.stroke();
+      this.figure(x, X, cy + 6, 1, n.k, col[n.k]); x.font = "700 18px system-ui"; x.textAlign = "center"; x.fillStyle = "#fff"; x.fillText(this.MOVES[n.k].e, X + 34, cy - 40); x.globalAlpha = 1; }
+  },
+  drawHud(t){
+    const d = this.pad; if (!d) return; this.drawTrack(this.cx, this.cv.width, this.cv.height, t);
+    const me = this.pct(), rv = this.rivalPct(t);
+    d.querySelector(".dbar.me span").style.width = me + "%"; d.querySelector(".dpct.me").textContent = me; d.querySelector(".dbar.rv span").style.width = rv + "%"; d.querySelector(".dpct.rv").textContent = rv;
+    const f = this.flash, r = d.querySelector(".drate"); if (f && performance.now() - f.t < 600){ r.textContent = f.txt; r.style.color = f.col; r.style.opacity = 1; } else r.style.opacity = 0;
+    d.querySelector(".dcombo").textContent = this.combo >= 3 ? `🔥 ${this.combo} combo` : "";
+  },
+  /* VR: the same track on the floating panel */
+  draw(m){
+    const t = this.now(), x = m.x, W = m.W; let Y = 90;
+    m.text(`🕺 Dance-off vs ${this.rivalName}   YOU ${this.pct()} · ${this.rivalPct(t)} RIVAL`, 28, Y, 26, "#fff", 800, "left", W - 56);
+    if (this.flash && performance.now() - this.flash.t < 600) m.text(this.flash.txt, W/2, Y + 50, 40, this.flash.col, 900, "center");
+    x.save(); x.translate(0, Y + 90); this.drawTrack(x, W, 200, t); x.restore();
+    m.text(m.vr() ? "Do the moves with your arms: hands up, point left or right, hands low, clap." : "◀ ▲ ▶ ▼ and Space", W/2, Y + 330, 22, "rgba(255,255,255,.75)", 600, "center", W - 60);
+    if (!m.vr()) ["L", "U", "R", "D", "C"].forEach((k, i) => m.btn("dk" + k, 40 + i*190, Y + 360, 176, 90, this.MOVES[k].e + " " + this.MOVES[k].n, () => this.press(k), {size: 20, primary: true}));
+    if (this.combo >= 3) m.text(`🔥 ${this.combo} combo`, W/2, Y + 480, 26, "#ffd87a", 800, "center");
+  },
+  finish(){
+    if (this.over) return; this.over = true; const m = this.m, me = this.pct(), rv = Math.round(this.rivalTarget), win = me >= rv;
+    if (this.me) Fight.clip(this.me, win ? "cheer" : "idle"); if (this.rival) Fight.clip(this.rival, win ? "idle" : "cheer");
+    try{ if (win){ Lounge.burst(this.me.p.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 2, 0)), 30); m.emoji("🏆", this.me.p.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 2.2, 0))); } }catch(e){}
+    m.score(me, win ? 120 : 30); m.shift.log.push(`Perfect ${this.hits.perfect} · Good ${this.hits.good} · Miss ${this.hits.miss} · best combo ${this.best}`);
+    setTimeout(() => m.endGame(win ? `🏆 You won the dance-off, ${me} to ${rv}! The crowd goes wild.` : `${this.rivalName} won this one, ${rv} to ${me}. Run it back!`), 2200);
+  },
+  end(){
+    const m = this.m; this.over = true; try{ if (this.out){ this.out.gain.setTargetAtTime(0, this.ac.currentTime, .05); setTimeout(() => { try{ this.out.disconnect(); }catch(e){} }, 400); } }catch(e){}
+    if (this.wasPlaying && typeof S !== "undefined" && !S.playing) try{ togglePlay(); }catch(e){}
+    setTimeout(() => { if (this.me) m.despawn(this.me); if (this.rival) m.despawn(this.rival); this.me = this.rival = null; }, 2500);
+    if (this.pad){ this.pad.remove(); this.pad = this.padEl = null; if (m.box && !m.vr() && m.on) m.box.hidden = false; }
+    try{ Party.setEmote("idle"); }catch(e){}
+  }
+};
+Mogul.ROLES.splice(Mogul.ROLES.findIndex(r => r.id === "owner"), 0,
+  {id: "trivia", well: true, icon: "🎵", name: "Music Trivia", pay: [30, 150], blurb: "Eight quick questions on hip-hop, R&B, soul, jazz, reggae, Afrobeats, Latin and dance history. Fresh questions every round, and they don't repeat until you've seen them all. Raises your Brain."},
+  {id: "danceoff", well: true, icon: "🕺", name: "Dance-off", pay: [40, 200], blurb: "A Just Dance-style battle right where you're standing: a rival steps up, move cards slide in on the beat, and you hit each move on time. Beat their score to win. In VR, dance with your arms."});
+Wellness.FEED.trivia = {brain: 1}; Wellness.FEED.danceoff = {fun: .8, fit: .6};
+Mogul.GAMES.trivia = Mogul.scripted({
+  anyWorld: true, well: true, panelSide: .9,
+  howTo: ["Eight questions, 15 seconds each.", "Topics: hip-hop, R&B and soul, jazz, reggae, Afrobeats, Latin music, dance history and music basics.", "Questions don't repeat until you've seen the whole bank."],
+  make(s){ const q = QB.pick("music", 7).map((it, i) => QB.choice(it, {title: `Question ${i + 1} of 8`, log: "Trivia", cash: 15, time: 15}));
+    q.push(QB.choice(QB.pick("dance", 1)[0], {title: "Bonus: dance history", log: "Dance trivia", cash: 25, time: 15})); return q; },
+  outro(){ const sc = this.m.shift.scores, right = sc.filter(v => v >= 100).length; return `${right} of ${sc.length} right. ${right >= 7 ? "Music genius! 🎓" : right >= 5 ? "Nice ear! 🎶" : "Keep listening, you'll get there. 🎧"}`; }
+});
+/* start a dance-off right here, from the party bar */
+Mogul.danceHere = function(){
+  if (!Age.ok("Dance-off")) return;
+  const go = () => { this.ensure(); this.on = true; const xr = Lounge.renderer && Lounge.renderer.xr.isPresenting; this.box.hidden = xr; if (xr) this.vrPanel().visible = true; if (this.game && this.view === "game") this.quitGame(true); this.startGame("danceoff", false); };
+  if ($("#stage").hidden || !Lounge.built){ openStage("lounge"); const w = setInterval(() => { if (Lounge.built && Lounge.worlds[Lounge.worldId]){ clearInterval(w); setTimeout(go, 800); } }, 300); setTimeout(() => clearInterval(w), 60000); }
+  else go();
 };
 
 /* ================= 👑 Club owner: the empire ================= */

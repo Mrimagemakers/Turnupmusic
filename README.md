@@ -300,3 +300,13 @@ People on bar stools, chairs, sofas and benches now settle onto the nearest real
 - **Four new worlds**: Meditation Room, Exercise Room, Dance Class Studio and Escape Room.
 - **Wellness & play** in Nightclub Mogul: Meditation (breathing, stillness, singing bowl), Exercise (warm-up, jumping jacks, squats, plank, boxing pads, stretch), Dance Class (salsa basics) and Escape Room (randomized painting code, lamp pattern, cipher, riddle, lock). No strikes. Each raises a need and pays a little cash.
 - **🏡 My Home** (party bar or world list): a Sims-style house and garden. Build with Mogul cash (36 items: furniture, fun, flowers, vegetables, trees, pond, beehive, bird house, sprinkler…). Plants grow while watered, even offline; tomatoes, apples and honey can be sold. Wildlife (11 species) moves in as biodiversity rises. Needs (Calm, Fitness, Fun, Brain, Social) decay over time and are refilled by furniture, activities, pets and parties. Real-clock day and night sky. Saved on the device (key `home`). VR: wrist menu > 🏡 Home.
+
+## Realism pass (wellness worlds and My Home)
+Meditation, Exercise, Dance Class, Escape Room and My Home have trim, window light shafts, drifting dust, normal-mapped floors, more people and real 3D models (candles, incense brazier, cones, sneakers, fridge, desk lamp, amber, skull, velvet and leather seating, an animated fox and pond fish). Home furniture uses the detailed models, with 8 new items. Ultra graphics adds denser grass, more dust and clouds, and stronger light shafts. Model credits: `assets/CREDITS.md`.
+
+## Dance-off, trivia, mirrors, pets and the dashboard
+- **🕺 Dance-off** (party bar or Mogul > Wellness & play): a Just Dance-style battle with a built-in beat, stick-figure move cards, Perfect/Good/Miss timing, combos and a rival score. VR detects arm poses.
+- **🎵 Music Trivia** and bigger question banks (`QB` in the source): 55 music, 20 dance, 16 fitness, 10 mindfulness, 35 riddles, 30 cipher words, plus generated math, number-pattern and odd-one-out puzzles. Questions don't repeat until a bank is used up (stored per device).
+- **🪞 Mirrors** with real reflections in the Dance Class Studio, Exercise Room and My Home (buyable item). You see your own avatar in them (it is drawn only in reflections). Only the nearest mirror you face renders live.
+- **Pets** rebuilt with fur/feather/scale textures, jointed legs, blinking eyes and natural motion; the fox uses the animated Khronos Fox model.
+- **Controls dashboard**: the expanded controls are grouped into labeled tile sections.
