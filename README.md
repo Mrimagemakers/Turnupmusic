@@ -310,3 +310,9 @@ Meditation, Exercise, Dance Class, Escape Room and My Home have trim, window lig
 - **🪞 Mirrors** with real reflections in the Dance Class Studio, Exercise Room and My Home (buyable item). You see your own avatar in them (it is drawn only in reflections). Only the nearest mirror you face renders live.
 - **Pets** rebuilt with fur/feather/scale textures, jointed legs, blinking eyes and natural motion; the fox uses the animated Khronos Fox model.
 - **Controls dashboard**: the expanded controls are grouped into labeled tile sections.
+
+## Website layout
+- `index.html`: the front page (turnupmusic.online). It links to the app and to GitHub, and forwards old share links (`/#watch=…`, `/#club`) into the app.
+- `app/index.html`: the app itself (built from `build/turnup.src.html`).
+- `guide.html`, `assets/`, `people/`, `img/`: shared files. The app looks for models in `../assets/` and `../people/` first.
+- Custom domain: `CNAME` (added once the GoDaddy DNS records point at GitHub Pages).
