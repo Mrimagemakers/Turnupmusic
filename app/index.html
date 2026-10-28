@@ -325,6 +325,37 @@ dialog.wide{width:min(860px,calc(100% - 24px))}
 .dhud .dbtns{display:flex;gap:8px;justify-content:center;pointer-events:auto}.dhud .dbtns button{flex:1;max-width:150px;min-height:70px;border-radius:18px;border:2px solid rgba(255,194,26,.6);background:rgba(20,13,10,.82);color:#fff;font:800 26px var(--f-display,system-ui);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none}
 .dhud .dbtns button small{font:600 11px var(--f-body,system-ui);opacity:.8}.dhud .dbtns button.on{background:#ffc21a;color:#241404}
 @media (max-height:520px){.dhud .dbtns button{min-height:54px;font-size:20px}.dhud .drate{font-size:26px}.dhud .dtrack{max-width:760px}}
+.tlive{position:fixed;inset:0;z-index:70;background:radial-gradient(120% 90% at 50% 0%,#5b2bb0,#381272 60%,#250b4e);color:#fff;font:600 16px var(--f-body,system-ui);overflow-y:auto;padding:max(14px,env(safe-area-inset-top)) 14px max(18px,env(safe-area-inset-bottom));box-sizing:border-box}
+.tlive *{box-sizing:border-box}.tlive button{font:inherit;cursor:pointer}
+.tlive .tl-x{position:fixed;top:12px;right:12px;z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:rgba(0,0,0,.35);color:#fff;font-size:20px}
+.tlive h2{font:800 clamp(26px,4vw,40px) var(--f-display,system-ui);margin:8px 0 6px;text-align:center}.tlive h3{margin:22px 0 10px;font:800 15px var(--f-display,system-ui);letter-spacing:.08em;text-transform:uppercase;color:#ffd87a}
+.tlive .tl-sub{text-align:center;color:rgba(255,255,255,.82);font-weight:500;max-width:60ch;margin:6px auto}
+.tl-lobby,.tl-make{max-width:980px;margin:0 auto;padding-top:20px}
+.tl-packs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.tl-pack{background:#fff;color:#333;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;box-shadow:0 6px 0 rgba(0,0,0,.25)}
+.tl-pack b{font:800 18px var(--f-display,system-ui)}.tl-pack span{color:#666;font-weight:500;font-size:14px}.tl-pack div{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.tl-pack button,.tl-row button{border:0;border-radius:8px;padding:10px 14px;background:#e6e6e6;color:#333;font-weight:800;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.tl-pack button.hl,.tl-row button.hl{background:#46178f;color:#fff}.tl-pack.new{background:#fff8e1}.tl-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:16px 0}.tl-row.center{justify-content:center}.tl-row .grow{flex:1}
+.tl-lbl{display:block;font-weight:800;margin:10px 0}.tl-make input:not([type=radio]),.tl-make select{width:100%;padding:12px;border-radius:8px;border:0;font:600 16px var(--f-body,system-ui);color:#222!important;background:#fff!important}
+.tl-qed{background:rgba(255,255,255,.12);border-radius:14px;padding:12px;margin:12px 0}.tl-qh{display:flex;align-items:center;gap:8px;margin-bottom:8px}.tl-qh b{flex:1}.tl-qh select{width:auto!important;padding:6px!important}.tl-qh button{border:0;background:rgba(0,0,0,.3);color:#fff;border-radius:8px;padding:6px 10px}
+.tl-aed{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.tl-aed label{display:flex;align-items:center;gap:8px;background:var(--c);border-radius:8px;padding:6px 8px}.tl-aed span{font-size:22px;width:24px;text-align:center}.tl-aed input[type=radio]{width:24px;height:24px;accent-color:#26890c}
+.tl-q{max-width:1100px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;gap:14px;padding-top:6px}
+.tl-top{display:flex;align-items:center;gap:12px;padding-right:56px}.tl-n,.tl-ans{background:rgba(0,0,0,.3);padding:6px 12px;border-radius:999px;font-weight:800}.tl-ans{margin-left:auto}
+.tl-timer{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font:800 26px var(--f-display,system-ui);background:conic-gradient(#fff calc(var(--p)*360deg),rgba(255,255,255,.2) 0);color:#46178f;position:relative}
+.tl-timer::before{content:"";position:absolute;inset:6px;border-radius:50%;background:#fff;z-index:-0}.tl-timer{isolation:isolate}.tl-timer::before{z-index:-1}
+.tl-card{background:#fff;color:#222;border-radius:10px;padding:clamp(16px,3vw,28px);font:800 clamp(20px,3.2vw,34px)/1.25 var(--f-display,system-ui);text-align:center;box-shadow:0 6px 0 rgba(0,0,0,.25)}
+.tl-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1;min-height:200px}.tl-tiles.small{flex:none;min-height:0}
+.tl-tile{display:flex;align-items:center;gap:14px;border:0;border-radius:8px;background:var(--c);color:#fff;padding:16px 18px;font:800 clamp(19px,2.6vw,28px)/1.2 var(--f-body,system-ui);text-align:left;box-shadow:inset 0 -6px 0 rgba(0,0,0,.25);min-height:84px;transition:transform .1s,opacity .2s}
+.tl-tile:not(:disabled):active{transform:scale(.98)}.tl-tile .sh{font-size:clamp(26px,3.5vw,40px);width:44px;text-align:center;flex:none}.tl-tile.dim{opacity:.35}.tl-tile.picked{outline:5px solid #fff}.tl-tile.right{outline:5px solid #fff;opacity:1}
+.tl-tiles.small .tl-tile{min-height:52px;padding:10px 14px}
+.tl-wait{text-align:center;font:800 20px var(--f-display,system-ui);animation:tlp 1.2s infinite}@keyframes tlp{50%{opacity:.5}}
+.tl-bars{display:flex;justify-content:center;align-items:flex-end;gap:14px;height:150px}.tl-bar{width:70px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}.tl-bar i{display:block;width:100%;background:var(--c);border-radius:4px 4px 0 0;min-height:6px}.tl-bar span{background:var(--c);width:100%;text-align:center;border-radius:0 0 4px 4px;padding:2px 0}.tl-bar:not(.ok){opacity:.55}
+.tl-me{align-self:center;padding:14px 26px;border-radius:12px;font:800 22px var(--f-display,system-ui)}.tl-me.good{background:#26890c}.tl-me.bad{background:#e21b3c}
+.tl-center{max-width:760px;margin:0 auto;padding-top:40px;text-align:center}.tl-big{font:800 44px var(--f-display,system-ui);margin-top:30px}
+.tl-board{list-style:none;padding:0;margin:20px auto;display:flex;flex-direction:column;gap:8px}.tl-board li{display:flex;justify-content:space-between;background:#fff;color:#222;border-radius:8px;padding:14px 18px;font:800 22px var(--f-display,system-ui)}.tl-board li.me{background:#ffd87a}
+.tl-podium{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:10px;margin:30px auto;max-width:560px}.tl-podium>div{background:#fff;color:#222;border-radius:8px 8px 0 0;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:800}
+.tl-podium .p1{height:220px;background:#ffd34d}.tl-podium .p2{height:170px;background:#e2e2e2}.tl-podium .p3{height:130px;background:#e8b07a}.tl-podium i{font-style:normal;font-size:34px;margin-top:auto}.tl-podium b{font:800 22px var(--f-display,system-ui)}
+@media (max-width:560px){.tl-tiles{grid-template-columns:1fr}.tl-tile{min-height:64px}.tl-aed{grid-template-columns:1fr}.tl-bar{width:52px}}
 .homehud{position:fixed;left:10px;top:70px;z-index:44;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:min(560px,calc(100vw - 20px));font:500 13px var(--f-body,system-ui)}
 .homehud .hh-card,.homehud .hh-dock{pointer-events:auto;background:rgba(20,13,10,.88);border:1px solid rgba(255,194,26,.5);border-radius:16px;padding:10px 12px;color:#fff;box-shadow:0 6px 24px rgba(0,0,0,.4)}
 .homehud .hh-card{width:250px}.homehud .hh-top{display:flex;align-items:center;gap:8px}.homehud .hh-top b{flex:1;font:800 15px var(--f-display,system-ui)}.homehud .hh-cash{color:#ffd87a;font-weight:800}
@@ -894,7 +925,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
     <button type="button" class="xp-hide" id="xpHide" aria-label="Hide controls">▼ Hide controls</button>
     <div class="seg" id="xpModes"></div>
     <div class="seg" id="worldSeg" hidden></div>
-    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn mogulbtn" id="btnMogul" type="button">🍾 Nightclub Mogul</button><button class="chipbtn" id="btnHome" type="button">🏡 My Home</button><button class="chipbtn" id="btnEmpire" type="button" aria-label="Open My Empire, your Nightclub Mogul clubs">👑 My empire</button><button class="chipbtn" id="btnHunt" type="button" aria-label="Open the scavenger hunt">🔎 Scavenger hunt</button><button class="chipbtn brawlbtn" id="btnBrawl" type="button" title="Start a bar fight right here, in any world">🥊 Brawl mode</button><button class="chipbtn" id="btnDanceoff" type="button" title="Start a dance-off right here">🕺 Dance-off</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
+    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn mogulbtn" id="btnMogul" type="button">🍾 Nightclub Mogul</button><button class="chipbtn" id="btnHome" type="button">🏡 My Home</button><button class="chipbtn" id="btnEmpire" type="button" aria-label="Open My Empire, your Nightclub Mogul clubs">👑 My empire</button><button class="chipbtn" id="btnHunt" type="button" aria-label="Open the scavenger hunt">🔎 Scavenger hunt</button><button class="chipbtn brawlbtn" id="btnBrawl" type="button" title="Start a bar fight right here, in any world">🥊 Brawl mode</button><button class="chipbtn" id="btnDanceoff" type="button" title="Start a dance-off right here">🕺 Dance-off</button><button class="chipbtn" id="btnTrivia" type="button" title="Play or host a trivia game">🎯 Trivia Live</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
     <div class="emotes" id="emoteBar" hidden><button type="button" data-e="wave">👋 Wave</button><button type="button" data-e="dance">💃 Dance</button><button type="button" data-e="cheer">🙌 Cheer</button><button type="button" data-e="idle">🧍 Chill</button><button type="button" data-r="🔥">🔥</button><button type="button" data-r="❤️">❤️</button><button type="button" data-r="😂">😂</button><button type="button" data-r="🎉">🎉</button><button type="button" id="btnChat">💬 Chat</button><button type="button" id="btnMic">🎤 Mic off</button><button type="button" id="btnDJ">🎧 Be the DJ</button></div>
     <div class="btnrow">
       <button class="chipbtn" id="btnSnap" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Camera</button>
@@ -2423,7 +2454,7 @@ const Dash = {
   init(){ const pref = store.get("dashMini", null); this.set(pref === null ? this.small() : pref); try{ this.grid(); }catch(e){ console.warn(e); } },
   /* group the party bar's buttons into a tidy dashboard */
   GROUPS: [["🎉 Party & people", ["btnParty", "partyInfo", "btnEvents2", "btnSocial2", "btnSafety2"]], ["🧑 You & help", ["btnMe", "btnHome", "btnVIP2", "btnGuide2"]],
-    ["🎵 Music & screens", ["btnBooth", "btnMedia2", "btnLinks2", "btnScreens", "btnStopVideo"]], ["🎮 Games & fun", ["btnMogul", "btnEmpire", "btnHunt", "btnDanceoff", "btnBrawl"]]],
+    ["🎵 Music & screens", ["btnBooth", "btnMedia2", "btnLinks2", "btnScreens", "btnStopVideo"]], ["🎮 Games & fun", ["btnTrivia", "btnMogul", "btnEmpire", "btnHunt", "btnDanceoff", "btnBrawl"]]],
   grid(){
     const pb = $("#partyBar"); if (!pb || pb.dataset.dash) return; pb.dataset.dash = "1"; pb.classList.add("dashgrid");
     const loose = [...pb.children], sec = (title, els) => { const s = document.createElement("section"); s.className = "dsec"; s.innerHTML = `<h4>${title}</h4><div class="dtiles"></div>`; els.forEach(e => s.lastChild.appendChild(e)); pb.appendChild(s); return s; };
@@ -10769,7 +10800,8 @@ const Party = {
     catch(e){ toast("The party couldn't connect right now.", 5000); return; }
     this.room = room; this.roomKey = key; this.kind = kind; this.eventId = kind === "event" ? code : null;
     const A = {};
-    for (const n of ["hello", "pose", "chat", "react", "music", "mod", "link", "screen", "karaoke", "avatar"]) A[n] = room.makeAction(n);
+    for (const n of ["hello", "pose", "chat", "react", "music", "mod", "link", "screen", "karaoke", "avatar", "trivia"]) A[n] = room.makeAction(n);
+    A.trivia.onMessage = (d, ctx) => { try{ TriviaLive.onMsg(ctx.peerId, d); }catch(e){ console.warn(e); } };
     A.avatar.onMessage = (d, ctx) => { try{ this.onAvatarBlob(ctx.peerId, d); }catch(e){ console.warn(e); } };
     A.karaoke.onMessage = (d, ctx) => { try{ Karaoke.onMsg(ctx.peerId, d); }catch(e){ console.warn(e); } };
     A.screen.onMessage = (d, ctx) => { const p = this.peers[ctx.peerId]; if (p) Screens.onMsg(p, d); };
@@ -10792,7 +10824,7 @@ const Party = {
       setTimeout(() => { try{ Karaoke.snapshot(id); }catch(e){} }, 1800);
       this.sysMsg("Someone joined the party");
     };
-    room.onPeerLeave = id => { const p = this.peers[id]; if (p) this.sysMsg(`${p.profile.name} left`); this.dropPeer(id); try{ Karaoke.peerLeft(id); }catch(e){} };
+    room.onPeerLeave = id => { const p = this.peers[id]; if (p) this.sysMsg(`${p.profile.name} left`); this.dropPeer(id); try{ Karaoke.peerLeft(id); }catch(e){} try{ TriviaLive.peerLeft(id); }catch(e){} };
     room.onPeerStream = (stream, id, meta) => this.onStream(id, stream, meta);
     A.hello.send(this.myHello());
     if (kind === "event"){ const ev = Events.byId(code); if (ev && ev.pk === Events.myKey()) this.setDJ(true, true); }
@@ -13150,7 +13182,7 @@ const Safety = {
   }
 };
 Age.bindUI(); Safety.bindUI();
-document.addEventListener("click", e => { if (e.target.closest("#btnMogul")) Mogul.open(); if (e.target.closest("#btnEmpire")) Mogul.empire(); if (e.target.closest("#btnBrawl")) Mogul.brawlHere(); if (e.target.closest("#btnDanceoff")) Mogul.danceHere(); if (e.target.closest("#btnHome")){ if ($("#stage").hidden || !Lounge.built){ store.set("world", "home"); openStage("lounge"); } else Lounge.chooseWorld("home"); } });
+document.addEventListener("click", e => { if (e.target.closest("#btnMogul")) Mogul.open(); if (e.target.closest("#btnEmpire")) Mogul.empire(); if (e.target.closest("#btnBrawl")) Mogul.brawlHere(); if (e.target.closest("#btnDanceoff")) Mogul.danceHere(); if (e.target.closest("#btnTrivia")) TriviaLive.open(); if (e.target.closest("#btnHome")){ if ($("#stage").hidden || !Lounge.built){ store.set("world", "home"); openStage("lounge"); } else Lounge.chooseWorld("home"); } });
 
 /* ================= NIGHTCLUB MOGUL =================
    A game inside the Nightclub: work the jobs (bartender, bouncer, DJ, barback, bottle service, promoter,
@@ -15555,6 +15587,157 @@ Mogul.danceHere = function(){
   else go();
 };
 
+/* ================= 🎯 Trivia Live: big colored answer tiles, a countdown, speed points, leaderboards and a podium =================
+   Play solo, or host a game for everyone in your party. Make your own quizzes, save them, and play or share them. */
+const TriviaLive = {
+  TILES: [{c: "#e21b3c", s: "▲"}, {c: "#1368ce", s: "◆"}, {c: "#d89e00", s: "●"}, {c: "#26890c", s: "■"}],
+  PACKS: [{id: "music", n: "🎵 Music Mix", bank: "music", k: 10}, {id: "dance", n: "💃 Dance History", bank: "dance", k: 10}, {id: "riddle", n: "🧩 Riddles", bank: "riddle", k: 10},
+    {id: "fitness", n: "💪 Fitness", bank: "fitness", k: 8}, {id: "mix", n: "🎲 Everything", mix: true, k: 12}],
+  st: "lobby", game: null, el: null,
+  me(){ return (window.TUNet && TUNet.selfId) || "me"; },
+  myName(){ try{ return Profile.get().name || "You"; }catch(e){ return "You"; } },
+  nameOf(id){ if (id === this.me()) return this.myName(); try{ const p = Party.peers[id]; return p ? p.profile.name : "Player"; }catch(e){ return "Player"; } },
+  inParty(){ return !!(typeof Party !== "undefined" && Party.room && Party.act && Party.act.trivia); },
+  send(m, o){ if (this.inParty()) try{ Party.act.trivia.send(m, o); }catch(e){} },
+  clean(s, n){ return String(s ?? "").replace(/[\u0000-\u001f<>]/g, "").slice(0, n).trim(); },
+  esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c])); },
+  beep(f, d = .12, type = "square", v = .08){ try{ Wellness.tone(f, d, type, v); }catch(e){} },
+  /* ---------- quizzes ---------- */
+  mine(){ const q = store.get("myQuizzes", []); return Array.isArray(q) ? q : []; },
+  saveMine(list){ store.set("myQuizzes", list.slice(0, 40)); },
+  fromBank(it, time = 20){ const [q, a, ...w] = it, opts = QB.shuffle([a, ...w.slice(0, 3)]); return {q, a: opts, c: opts.indexOf(a), time}; },
+  pack(id){ const P = this.PACKS.find(p => p.id === id); if (!P) return null;
+    const qs = P.mix ? QB.shuffle([...QB.pick("music", 5), ...QB.pick("dance", 3), ...QB.pick("riddle", 2), ...QB.pick("fitness", 2)]) : QB.pick(P.bank, P.k);
+    return {title: P.n, qs: qs.map(it => this.fromBank(it))}; },
+  /* checks anything that comes from another player */
+  cleanQuiz(z){ if (!z || !Array.isArray(z.qs)) return null; const qs = z.qs.slice(0, 50).map(q => { const a = (Array.isArray(q.a) ? q.a : []).slice(0, 4).map(s => this.clean(s, 80)); const c = Math.max(0, Math.min(a.length - 1, q.c | 0));
+      return {q: this.clean(q.q, 160), a, c, time: [5, 10, 20, 30, 60].includes(+q.time) ? +q.time : 20}; }).filter(q => q.q && q.a.filter(Boolean).length >= 2 && q.a[q.c]);
+    return qs.length ? {title: this.clean(z.title, 50) || "Quiz", qs} : null; },
+  /* ---------- the screen ---------- */
+  open(){ this.ensure(); this.el.hidden = false; if (!this.game) this.st = "lobby"; this.draw(); },
+  close(){ if (this.game && this.game.host && this.game.multi && this.st !== "end") this.send({t: "cancel"}); this.stop(); this.game = null; this.st = "lobby"; if (this.el) this.el.hidden = true; },
+  ensure(){ if (this.el) return; const d = this.el = document.createElement("div"); d.className = "tlive"; d.hidden = true; d.setAttribute("role", "dialog"); d.setAttribute("aria-label", "Trivia Live"); document.body.appendChild(d);
+    d.addEventListener("click", e => this.click(e)); d.addEventListener("input", e => this.input(e)); },
+  stop(){ clearInterval(this.timer); this.timer = null; clearTimeout(this.nextT); },
+  draw(){
+    const d = this.el, g = this.game; if (!d) return; let h = `<button class="tl-x" data-a="close" aria-label="Close">✕</button>`;
+    if (this.st === "lobby"){
+      const mine = this.mine();
+      h += `<div class="tl-lobby"><h2>🎯 Trivia Live</h2><p class="tl-sub">Answer fast for more points. ${this.inParty() ? "Host a game and everyone in your party plays along." : "Join a party to play against friends."}</p>
+        <h3>Quiz packs</h3><div class="tl-packs">${this.PACKS.map(p => `<div class="tl-pack"><b>${p.n}</b><span>${p.k} questions</span><div><button data-a="solo" data-p="${p.id}">Play solo</button>${this.inParty() ? `<button class="hl" data-a="host" data-p="${p.id}">Host for party</button>` : ""}</div></div>`).join("")}</div>
+        <h3>My quizzes</h3><div class="tl-packs">${mine.map((z, i) => `<div class="tl-pack mine"><b>${this.esc(z.title)}</b><span>${z.qs.length} question${z.qs.length === 1 ? "" : "s"}</span><div><button data-a="solo" data-m="${i}">Play</button>${this.inParty() ? `<button class="hl" data-a="host" data-m="${i}">Host</button>` : ""}<button data-a="edit" data-m="${i}">Edit</button></div></div>`).join("")}
+        <div class="tl-pack new"><b>✏️ Make your own quiz</b><span>Write your own questions and answers</span><div><button class="hl" data-a="new">Create a quiz</button></div></div></div></div>`;
+    } else if (this.st === "make"){
+      const z = this.draft;
+      h += `<div class="tl-make"><h2>✏️ ${this.editIdx === null ? "New quiz" : "Edit quiz"}</h2><label class="tl-lbl">Quiz title<input data-f="title" maxlength="50" value="${this.esc(z.title)}" placeholder="Name your quiz"></label>
+        ${z.qs.map((q, i) => `<div class="tl-qed"><div class="tl-qh"><b>Question ${i + 1}</b><select data-f="time" data-i="${i}" aria-label="Time limit">${[5, 10, 20, 30, 60].map(s => `<option value="${s}"${+q.time === s ? " selected" : ""}>${s} sec</option>`).join("")}</select><button data-a="delq" data-i="${i}" aria-label="Delete question ${i + 1}">🗑</button></div>
+          <input data-f="q" data-i="${i}" maxlength="160" value="${this.esc(q.q)}" placeholder="Type your question">
+          <div class="tl-aed">${[0, 1, 2, 3].map(k => `<label style="--c:${this.TILES[k].c}"><span>${this.TILES[k].s}</span><input data-f="a" data-i="${i}" data-k="${k}" maxlength="80" value="${this.esc(q.a[k] || "")}" placeholder="Answer ${k + 1}${k > 1 ? " (optional)" : ""}"><input type="radio" name="c${i}" data-f="c" data-i="${i}" data-k="${k}"${q.c === k ? " checked" : ""} aria-label="Answer ${k + 1} is correct" title="Correct answer"></label>`).join("")}</div></div>`).join("")}
+        <div class="tl-row"><button data-a="addq">➕ Add a question</button><span class="grow"></span>${this.editIdx !== null ? `<button data-a="delquiz">Delete quiz</button>` : ""}<button data-a="back">Cancel</button><button class="hl" data-a="savequiz">💾 Save quiz</button></div>
+        <p class="tl-sub">Tick the circle next to the right answer. Two to four answers per question. Your quizzes are saved on this device; when you host one, everyone in the party plays it and can save a copy.</p></div>`;
+    } else if (this.st === "wait"){
+      h += `<div class="tl-center"><h2>${this.esc(g.title)}</h2><p class="tl-sub">${g.host ? "Starting…" : `${this.esc(this.nameOf(g.hostId))} is hosting. Get ready!`}</p><div class="tl-big">${g.qn} questions</div></div>`;
+    } else if (this.st === "q"){
+      const Q = g.q, left = Math.max(0, Math.ceil(g.timeLeft)), ans = g.my;
+      h += `<div class="tl-q"><div class="tl-top"><span class="tl-timer" style="--p:${Math.max(0, g.timeLeft/Q.time)}">${left}</span><span class="tl-n">${g.i + 1} / ${g.qn}</span><span class="tl-ans">${g.answered || 0} answer${g.answered === 1 ? "" : "s"}</span></div>
+        <div class="tl-card">${this.esc(Q.q)}</div>
+        <div class="tl-tiles">${Q.a.map((a, k) => a ? `<button class="tl-tile${ans !== undefined ? (ans === k ? " picked" : " dim") : ""}" style="--c:${this.TILES[k].c}" data-a="ans" data-k="${k}"${ans !== undefined ? " disabled" : ""}><span class="sh">${this.TILES[k].s}</span><span>${this.esc(a)}</span></button>` : "").join("")}</div>
+        ${ans !== undefined ? `<p class="tl-wait">Answer locked in… waiting for the others</p>` : ""}</div>`;
+    } else if (this.st === "reveal"){
+      const Q = g.q, r = g.res || {}, mx = Math.max(1, ...(g.counts || [0, 0, 0, 0]));
+      h += `<div class="tl-q"><div class="tl-top"><span class="tl-n">${g.i + 1} / ${g.qn}</span></div><div class="tl-card">${this.esc(Q.q)}</div>
+        <div class="tl-bars">${Q.a.map((a, k) => a ? `<div class="tl-bar${k === g.correct ? " ok" : ""}" style="--c:${this.TILES[k].c}"><i style="height:${Math.round((g.counts[k] || 0)/mx*100)}%"></i><b>${g.counts[k] || 0}</b><span>${this.TILES[k].s}${k === g.correct ? " ✔" : ""}</span></div>` : "").join("")}</div>
+        <div class="tl-tiles small">${Q.a.map((a, k) => a ? `<div class="tl-tile${k === g.correct ? " right" : " dim"}" style="--c:${this.TILES[k].c}"><span class="sh">${this.TILES[k].s}</span><span>${this.esc(a)}</span></div>` : "").join("")}</div>
+        <div class="tl-me ${r.ok ? "good" : "bad"}">${r.ok ? `✔ Correct! +${r.pts}${r.streak > 1 ? `  🔥 Answer streak ${r.streak}` : ""}` : r.picked === undefined ? "⏰ Time's up!" : "✘ Not this time"}</div>
+        ${g.host || !g.multi ? `<div class="tl-row center"><button class="hl" data-a="next">${g.i + 1 >= g.qn ? "🏆 Final results" : "Next ▶"}</button></div>` : `<p class="tl-wait">Next question soon…</p>`}</div>`;
+    } else if (this.st === "board"){
+      const list = this.ranking().slice(0, 5);
+      h += `<div class="tl-center"><h2>Scoreboard</h2><ol class="tl-board">${list.map(p => `<li class="${p.id === this.me() ? "me" : ""}"><span>${this.esc(p.name)}</span><b>${p.score}</b></li>`).join("")}</ol></div>`;
+    } else if (this.st === "end"){
+      const list = this.ranking(), top = list.slice(0, 3), meI = list.findIndex(p => p.id === this.me());
+      h += `<div class="tl-center"><h2>🏆 ${this.esc(g.title)}</h2><div class="tl-podium">${[1, 0, 2].map(i => top[i] ? `<div class="p${i + 1}"><span>${this.esc(top[i].name)}</span><b>${top[i].score}</b><i>${["🥇", "🥈", "🥉"][i]}</i></div>` : "<div></div>").join("")}</div>
+        <p class="tl-sub">${meI >= 0 ? `You finished #${meI + 1} with ${list[meI].score} points and ${g.right || 0} of ${g.qn} right.` : ""}</p>
+        <div class="tl-row center">${g.quiz && !g.host && g.custom ? `<button data-a="keep">💾 Save this quiz</button>` : ""}<button class="hl" data-a="lobby">Play again</button><button data-a="close">Done</button></div></div>`;
+    }
+    d.innerHTML = h;
+  },
+  input(e){ const t = e.target, f = t.dataset.f; if (!f || this.st !== "make") return; const z = this.draft, i = +t.dataset.i;
+    if (f === "title") z.title = t.value; else if (f === "q") z.qs[i].q = t.value; else if (f === "a") z.qs[i].a[+t.dataset.k] = t.value; else if (f === "c") z.qs[i].c = +t.dataset.k; else if (f === "time") z.qs[i].time = +t.value; },
+  click(e){
+    const b = e.target.closest("[data-a]"); if (!b) return; const a = b.dataset.a;
+    if (a === "close") return this.close();
+    if (a === "lobby" || a === "back"){ this.stop(); this.game = null; this.st = "lobby"; return this.draw(); }
+    if (a === "solo" || a === "host"){ const z = b.dataset.p ? this.pack(b.dataset.p) : this.cleanQuiz(this.mine()[+b.dataset.m]); if (!z){ toast("That quiz needs at least one complete question."); return; } return this.start(z, a === "host", !b.dataset.p); }
+    if (a === "new" || a === "edit"){ this.editIdx = a === "edit" ? +b.dataset.m : null; const src = a === "edit" ? this.mine()[this.editIdx] : null;
+      this.draft = src ? JSON.parse(JSON.stringify(src)) : {title: "", qs: [{q: "", a: ["", "", "", ""], c: 0, time: 20}]}; this.draft.qs.forEach(q => { while (q.a.length < 4) q.a.push(""); }); this.st = "make"; return this.draw(); }
+    if (a === "addq"){ if (this.draft.qs.length >= 50) return toast("50 questions max."); this.draft.qs.push({q: "", a: ["", "", "", ""], c: 0, time: 20}); this.draw(); const ins = this.el.querySelectorAll('[data-f="q"]'); ins[ins.length - 1].focus(); return; }
+    if (a === "delq"){ this.draft.qs.splice(+b.dataset.i, 1); if (!this.draft.qs.length) this.draft.qs.push({q: "", a: ["", "", "", ""], c: 0, time: 20}); return this.draw(); }
+    if (a === "savequiz"){ const z = this.cleanQuiz(this.draft); if (!z) return toast("Add at least one question with two answers, and tick the right one."); const bad = this.draft.qs.filter(q => q.q.trim() && !(q.a[q.c] || "").trim()).length; if (bad) return toast("Tick a correct answer that isn't blank for every question.");
+      const list = this.mine(); if (this.editIdx === null) list.push(z); else list[this.editIdx] = z; this.saveMine(list); toast(`💾 Saved “${z.title}” (${z.qs.length} questions).`); this.st = "lobby"; return this.draw(); }
+    if (a === "delquiz"){ const list = this.mine(); list.splice(this.editIdx, 1); this.saveMine(list); toast("Quiz deleted."); this.st = "lobby"; return this.draw(); }
+    if (a === "keep"){ const z = this.cleanQuiz(this.game.quiz); if (z){ const list = this.mine(); list.push(z); this.saveMine(list); toast(`💾 Saved “${z.title}” to My quizzes.`); b.disabled = true; } return; }
+    if (a === "ans") return this.answer(+b.dataset.k);
+    if (a === "next") return this.next();
+  },
+  /* ---------- running a game ---------- */
+  start(quiz, host, custom){
+    this.stop(); const multi = !!host && this.inParty(); const me = this.me();
+    this.game = {quiz, title: quiz.title, qn: quiz.qs.length, i: -1, host: true, hostId: me, multi, custom, players: {[me]: {id: me, name: this.myName(), score: 0, streak: 0}}, right: 0};
+    if (multi){ this.send({t: "start", title: quiz.title, n: quiz.qs.length, custom: !!custom}); try{ Party.sysMsg(`🎯 You started Trivia Live: ${quiz.title}`); }catch(e){} }
+    this.st = "wait"; this.draw(); this.nextT = setTimeout(() => this.next(), multi ? 4000 : 1200);
+  },
+  next(){
+    const g = this.game; if (!g || !g.host) return; this.stop();
+    if (g.i + 1 >= g.qn) return this.finish();
+    g.i++; const Q = g.quiz.qs[g.i]; g.q = Q; g.answers = {}; g.answered = 0; g.my = undefined; g.t0 = performance.now(); g.timeLeft = Q.time; g.res = null;
+    if (g.multi) this.send({t: "q", i: g.i, n: g.qn, q: Q.q, a: Q.a, time: Q.time});
+    this.st = "q"; this.draw(); this.runTimer();
+  },
+  runTimer(){ const g = this.game; this.timer = setInterval(() => { if (!g || this.game !== g) return this.stop(); const prev = Math.ceil(g.timeLeft); g.timeLeft = g.q.time - (performance.now() - g.t0)/1000;
+      if (Math.ceil(g.timeLeft) !== prev && g.timeLeft > 0 && g.timeLeft <= 5) this.beep(880, .06, "sine", .06);
+      if (this.st === "q"){ const tm = this.el.querySelector(".tl-timer"); if (tm){ tm.textContent = Math.max(0, Math.ceil(g.timeLeft)); tm.style.setProperty("--p", Math.max(0, g.timeLeft/g.q.time)); } }
+      if (g.host && (g.timeLeft <= 0 || g.answered >= Object.keys(this.everyone()).length)) this.reveal(); else if (!g.host && g.timeLeft <= -1.5 && this.st === "q"){ /* wait for the host */ } }, 100); },
+  everyone(){ const g = this.game, out = {[this.me()]: 1}; if (g.multi) try{ for (const id of Object.keys(Party.peers)) out[id] = 1; }catch(e){} return out; },
+  answer(k){
+    const g = this.game; if (!g || this.st !== "q" || g.my !== undefined) return; g.my = k; const ms = performance.now() - g.t0; this.beep(520, .08, "triangle", .1);
+    if (g.host) this.record(this.me(), k, ms); else this.send({t: "ans", i: g.i, k, ms: Math.round(ms)});
+    this.draw();
+  },
+  record(id, k, ms){ const g = this.game; if (!g || g.answers[id] !== undefined || this.st !== "q") return; g.answers[id] = {k, ms: Math.max(0, Math.min(ms, g.q.time*1000))}; g.answered = Object.keys(g.answers).length;
+    if (!g.players[id]) g.players[id] = {id, name: this.nameOf(id), score: 0, streak: 0}; const el = this.el && this.el.querySelector(".tl-ans"); if (el) el.textContent = `${g.answered} answer${g.answered === 1 ? "" : "s"}`; },
+  reveal(){
+    const g = this.game; if (!g || this.st !== "q") return; this.stop(); const Q = g.q, counts = [0, 0, 0, 0], res = {};
+    for (const [id, p] of Object.entries(g.players)){ const an = g.answers[id]; if (an) counts[an.k]++; const ok = !!an && an.k === Q.c;
+      p.streak = ok ? p.streak + 1 : 0; const pts = ok ? Math.round(1000*(1 - an.ms/(Q.time*1000)/2)) + Math.min(500, (p.streak - 1)*100) : 0; p.score += pts; res[id] = {ok, pts, streak: p.streak, picked: an ? an.k : undefined}; }
+    g.correct = Q.c; g.counts = counts; g.res = res[this.me()]; if (g.res && g.res.ok) g.right++;
+    this.beep(g.res && g.res.ok ? 784 : 196, .35, g.res && g.res.ok ? "triangle" : "sawtooth", .09);
+    if (g.multi) this.send({t: "reveal", i: g.i, c: Q.c, counts, res, scores: Object.values(g.players).map(p => ({id: p.id, name: p.name, score: p.score}))});
+    this.st = "reveal"; this.draw();
+    if (g.multi) this.nextT = setTimeout(() => { if (this.game === g && this.st === "reveal"){ this.st = "board"; this.draw(); this.send({t: "board"}); this.nextT = setTimeout(() => { if (this.game === g) this.next(); }, 4000); } }, 5000);
+  },
+  ranking(){ const g = this.game; return Object.values(g ? g.players : {}).sort((a, b) => b.score - a.score); },
+  finish(){ const g = this.game; this.stop(); this.st = "end"; this.draw(); this.beep(523, .2, "triangle"); setTimeout(() => this.beep(659, .2, "triangle"), 180); setTimeout(() => this.beep(784, .4, "triangle"), 360);
+    if (g.multi) this.send({t: "end", scores: Object.values(g.players).map(p => ({id: p.id, name: p.name, score: p.score})), quiz: g.custom ? g.quiz : null});
+    try{ const me = g.players[this.me()]; if (me && !g.multi) Wellness.add("brain", Math.min(15, 3 + g.right)); else if (me) Wellness.add("social", 6); }catch(e){} },
+  /* ---------- messages from the party ---------- */
+  onMsg(from, m){
+    if (!m || typeof m !== "object") return; const g = this.game;
+    if (m.t === "start"){ if (g && g.host && this.st !== "end" && this.st !== "lobby") return; this.stop();
+      this.game = {title: this.clean(m.title, 50) || "Trivia", qn: Math.max(1, Math.min(50, m.n | 0)), i: -1, host: false, hostId: from, multi: true, custom: !!m.custom, players: {}, right: 0};
+      this.ensure(); if (this.el.hidden){ toast(`🎯 ${this.nameOf(from)} started Trivia Live! Tap 🎯 to join.`, 6000); this.pending = true; } this.st = "wait"; this.draw(); return; }
+    if (!g && m.t === "q"){ this.game = {title: "Trivia Live", qn: Math.max(1, m.n | 0), i: -1, host: false, hostId: from, multi: true, players: {}, right: 0}; this.ensure(); toast(`🎯 ${this.nameOf(from)} is hosting Trivia Live. Tap 🎯 to join.`, 6000); return this.onMsg(from, m); }
+    if (!g || g.host || from !== g.hostId){ if (g && g.host && m.t === "ans" && m.i === g.i) this.record(from, Math.max(0, Math.min(3, m.k | 0)), +m.ms || 0); return; }
+    if (m.t === "q"){ const a = (Array.isArray(m.a) ? m.a : []).slice(0, 4).map(s => this.clean(s, 80)); this.stop(); g.i = m.i | 0; g.qn = Math.max(g.qn, m.n | 0); g.q = {q: this.clean(m.q, 160), a, time: [5, 10, 20, 30, 60].includes(+m.time) ? +m.time : 20}; g.my = undefined; g.answered = 0; g.t0 = performance.now(); g.timeLeft = g.q.time; this.st = "q"; if (!this.el.hidden) this.draw(); this.runTimer(); }
+    else if (m.t === "reveal" && m.i === g.i){ this.stop(); g.correct = m.c | 0; g.counts = (m.counts || []).slice(0, 4).map(v => v | 0); const r = m.res && m.res[this.me()]; g.res = r ? {ok: !!r.ok, pts: r.pts | 0, streak: r.streak | 0, picked: r.picked} : {ok: false}; if (g.res.ok) g.right++;
+      g.players = {}; for (const s of (m.scores || []).slice(0, 60)) g.players[s.id] = {id: s.id, name: s.id === this.me() ? this.myName() : this.clean(s.name, 24), score: s.score | 0};
+      this.beep(g.res.ok ? 784 : 196, .35, g.res.ok ? "triangle" : "sawtooth", .09); this.st = "reveal"; if (!this.el.hidden) this.draw(); }
+    else if (m.t === "board"){ this.st = "board"; if (!this.el.hidden) this.draw(); }
+    else if (m.t === "end"){ g.players = {}; for (const s of (m.scores || []).slice(0, 60)) g.players[s.id] = {id: s.id, name: s.id === this.me() ? this.myName() : this.clean(s.name, 24), score: s.score | 0}; g.quiz = m.quiz ? this.cleanQuiz(m.quiz) : null; this.st = "end"; this.ensure(); this.el.hidden = false; this.draw(); }
+    else if (m.t === "cancel"){ this.stop(); this.game = null; this.st = "lobby"; toast("The host ended the trivia game."); if (!this.el.hidden) this.draw(); }
+  },
+  peerLeft(id){ const g = this.game; if (g && !g.host && id === g.hostId){ this.stop(); this.game = null; this.st = "lobby"; if (this.el && !this.el.hidden){ this.draw(); toast("The trivia host left the party."); } } }
+};
+
 /* ================= 👑 Club owner: the empire ================= */
 Object.assign(Mogul, {
   drawEmpire(){
@@ -15982,14 +16165,35 @@ const Karaoke = {
       const a = [["Jin","gle ","bells, ","jin","gle ","bells, ","jin","gle ","all ","the ","way"], [[64,1],[64,1],[64,2],[64,1],[64,1],[64,2],[64,1],[67,1],[72,1.5],[74,.5],[64,4]]],
             b = [["Oh ","what ","fun ","it ","is ","to ","ride ","in ","a ","one ","horse ","o","pen ","sleigh, ","hey!"], [[65,1],[65,1],[65,1.5],[65,.5],[65,1],[64,1],[64,1],[64,.5],[64,.5],[64,1],[62,1],[62,1],[64,1],[62,2],[67,2]]];
       return [a, b, a, b].map(([syl, notes]) => ({syl, notes: notes.map(n => n.slice())}));
-    })()}
+    })()},
+    /* more public-domain sing-alongs (traditional tunes; the hymn words are by Henry van Dyke, 1907) */
+    ...(() => { const L = (s, n) => ({syl: s.split("|"), notes: n.map(x => x.slice())}), out = [];
+      const mary1 = L("Ma|ry |had |a |lit|tle |lamb, ", [[64,1],[62,1],[60,1],[62,1],[64,1],[64,1],[64,2]]);
+      out.push({id: "mary", title: "Mary Had a Little Lamb", bpm: 112, lines: [mary1, L("lit|tle |lamb, |lit|tle |lamb, ", [[62,1],[62,1],[62,2],[64,1],[67,1],[67,2]]), L("Ma|ry |had |a |lit|tle |lamb, ", [[64,1],[62,1],[60,1],[62,1],[64,1],[64,1],[64,1]]), L("its |fleece |was |white |as |snow", [[64,1],[62,1],[62,1],[64,1],[62,1],[60,3]])]});
+      const ode1 = [[64,1],[64,1],[65,1],[67,1],[67,1],[65,1],[64,1],[62,1]];
+      out.push({id: "joyful", title: "Joyful, Joyful (Ode to Joy)", bpm: 100, lines: [L("Joy|ful, |joy|ful, |we |a|dore |Thee, ", ode1), L("God |of |glo|ry, |Lord |of |love; ", [[60,1],[60,1],[62,1],[64,1],[64,1.5],[62,.5],[62,2]]), L("Hearts |un|fold |like |flowers |be|fore |Thee, ", ode1), L("op'|ning |to |the |sun |a|bove.", [[60,1],[60,1],[62,1],[64,1],[62,1.5],[60,.5],[60,2]])]});
+      const fj = [L("Are |you |sleep|ing, |are |you |sleep|ing, ", [[60,1],[62,1],[64,1],[60,1],[60,1],[62,1],[64,1],[60,1]]), L("Bro|ther |John, |Bro|ther |John? ", [[64,1],[65,1],[67,2],[64,1],[65,1],[67,2]]),
+        L("Morn|ing |bells |are |ring|ing, |morn|ing |bells |are |ring|ing, ", [[67,.5],[69,.5],[67,.5],[65,.5],[64,1],[60,1],[67,.5],[69,.5],[67,.5],[65,.5],[64,1],[60,1]]), L("Ding, |dang, |dong. |Ding, |dang, |dong.", [[60,1],[55,1],[60,2],[60,1],[55,1],[60,2]])];
+      out.push({id: "jacques", title: "Are You Sleeping (Frère Jacques)", bpm: 110, lines: fj.concat(fj.map(l => ({syl: l.syl.slice(), notes: l.notes.map(x => x.slice())})))});
+      const lb = L("Lon|don |Bridge |is |fall|ing |down, ", [[67,1.5],[69,.5],[67,1],[65,1],[64,1],[65,1],[67,2]]);
+      out.push({id: "london", title: "London Bridge", bpm: 112, lines: [lb, L("fall|ing |down, |fall|ing |down, ", [[62,1],[64,1],[65,2],[64,1],[65,1],[67,2]]), L("Lon|don |Bridge |is |fall|ing |down, ", [[67,1.5],[69,.5],[67,1],[65,1],[64,1],[65,1],[67,2]]), L("my |fair |la|dy.", [[62,2],[67,2],[64,1],[60,3]])]});
+      const eio = () => L("E|I|E|I|O! ", [[71,1],[71,1],[69,1],[69,1],[67,3]]), farm = () => L("Old |Mac|Don|ald |had |a |farm, ", [[67,1],[67,1],[67,1],[62,1],[64,1],[64,1],[62,2]]);
+      out.push({id: "macdonald", title: "Old MacDonald Had a Farm", bpm: 116, key: 7, lines: [farm(), eio(), L("And |on |that |farm |he |had |a |cow, ", [[62,1],[67,1],[67,1],[67,1],[62,1],[64,1],[64,1],[62,2]]), eio(),
+        L("with |a |moo |moo |here |and |a |moo |moo |there, ", [[62,.5],[62,.5],[67,1],[67,1],[67,2],[62,.5],[62,.5],[67,1],[67,1],[67,2]]), L("here |a |moo, |there |a |moo, |ev|ery|where |a |moo |moo, ", [[67,1],[67,.5],[67,1.5],[67,1],[67,.5],[67,1.5],[67,.5],[67,.5],[67,.5],[67,.5],[67,1],[67,1]]), farm(), eio()]});
+      out.push({id: "oldman", title: "This Old Man", bpm: 120, lines: [L("This |old |man, |he |played |one, ", [[67,1],[64,1],[67,2],[67,1],[64,1],[67,2]]), L("he |played |knick-|knack |on |my |thumb; ", [[69,1],[67,1],[65,1],[64,1],[62,1],[64,1],[65,2]]),
+        L("with |a |knick-|knack |pad|dy|whack, |give |the |dog |a |bone; ", [[64,.5],[65,.5],[67,1],[60,.5],[60,.5],[60,.5],[60,.5],[60,.5],[62,.5],[64,.5],[65,.5],[67,2]]), L("this |old |man |came |roll|ing |home.", [[67,1],[62,1],[62,1],[65,1],[64,1],[62,1],[60,2]])]});
+      out.push({id: "saints", title: "When the Saints Go Marching In", bpm: 124, lines: [L("Oh, |when |the |saints |go |march|ing |in, ", [[60,1],[64,1],[65,1],[67,4],[60,1],[64,1],[65,1],[67,4]]), L("oh, |when |the |saints |go |march|ing |in, ", [[60,1],[64,1],[65,1],[67,2],[64,2],[60,2],[64,2],[62,4]]),
+        L("oh, |Lord, |I |want |to |be |in |that |num|ber ", [[64,1],[64,1],[62,1],[60,2],[60,1],[64,1],[67,2],[67,1],[65,2],[65,1]]), L("when |the |saints |go |march|ing |in.", [[64,1],[65,1],[67,2],[64,2],[60,2],[62,2],[60,4]])]});
+      return out; })()
   ],
+  STYLES: {pop: "🎹 Pop", gospel: "⛪ Gospel organ", hiphop: "🥁 Hip-hop beat", acoustic: "🎸 Acoustic"},
   q: [], cur: null, ended: new Set(), board: [], open: false, guide: true, vol: .7, files: {}, reacts: 0, fr: 0, vo: 0, lvl: 0, ver: 0,
   init(){
     for (const s of this.SONGS){ const spb = 60/s.bpm; let t = 0;
       for (const l of s.lines){ l.t0 = t; for (const n of l.notes){ n.t0 = t; n.t1 = t + n[1]*spb; t = n.t1; } l.t1 = t; t += spb*.5; }
       s.dur = t; s.lead = this.COUNT*spb; }
-    this.guide = store.get("kGuide", true); this.vol = store.get("kVol", .7);
+    this.guide = store.get("kGuide", true); this.vol = store.get("kVol", .7); this.style = store.get("kStyle", "pop"); this.hype = 0;
+    for (const s of this.SONGS){ const ms = s.lines.flatMap(l => l.notes.map(n => n[0])); s.lo = Math.min(...ms); s.hi = Math.max(...ms); }
     this.build();
   },
   me(){ return (window.TUNet && TUNet.selfId) || "me"; },
@@ -16004,6 +16208,8 @@ const Karaoke = {
     if (!e.u) return null;
     const p = typeof Party !== "undefined" && Party.peers[from];
     e.name = this.clean(from === this.me() ? (raw.name || "Me") : (p ? p.profile.name : raw.name), 24) || "Guest";
+    if (raw.duo){ e.duo = this.clean(raw.duo, 60); e.duoName = this.clean(e.duo === this.me() ? Profile.get().name : (typeof Party !== "undefined" && Party.peers[e.duo] ? Party.peers[e.duo].profile.name : raw.duoName), 24) || "Partner"; }
+    if (raw.style && this.STYLES[raw.style]) e.style = raw.style;
     if (built) e.title = built.title;
     else if (sid === "file"){
       const src = raw.song || {}, lines = (Array.isArray(src.lines) ? src.lines : []).slice(0, 80).map(l => ({t0: Math.max(0, +l.t0 || 0), t1: Math.min(1800, +l.t1 || 0), text: this.clean(l.text, 80)})).filter(l => l.text && l.t1 > l.t0);
@@ -16023,7 +16229,8 @@ const Karaoke = {
         else this.say(`🎤 ${e.name} finished "${e.title}". Great job!`);
         this.next(); } }
     else if (m.t === "rm"){ const u = this.clean(m.u, 24), e = this.q.find(x => x.u === u); if (e && (e.by === from || mod)) this.q = this.q.filter(x => x.u !== u); }
-    else if (m.t === "cheer"){ if (this.cur && this.cur.by === this.me() && !mine) this.reacts++; }
+    else if (m.t === "cheer"){ this.hype = Math.min(1, this.hype + .12); if (this.cur && this.cur.by === this.me() && !mine) this.reacts++; }
+    else if (m.t === "dscore"){ if (this.cur && this.cur.u === this.clean(m.u, 24) && this.cur.duo === from) this.duoScore = Math.max(0, Math.min(100, +m.score || 0)); }
     else if (m.t === "snap" && !mine){
       for (const u of (Array.isArray(m.ended) ? m.ended : []).slice(0, 60)) this.ended.add(this.clean(u, 24));
       for (const r of (Array.isArray(m.q) ? m.q : []).slice(0, 20)){ const by = this.clean(r && r.by, 60); const e = by && this.entry(r, by); if (e && !this.ended.has(e.u) && !this.q.some(x => x.u === e.u) && !(this.cur && this.cur.u === e.u)) this.q.push(e); }
@@ -16042,7 +16249,8 @@ const Karaoke = {
   say(t){ try{ Party.sysMsg(t); }catch(e){} },
   /* my actions */
   add(sid, custom){
-    const e = {u: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), by: this.me(), ts: Date.now(), sid, name: Profile.get().name || "Guest"};
+    const e = {u: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), by: this.me(), ts: Date.now(), sid, name: Profile.get().name || "Guest", style: this.style};
+    if (this.duoWith && typeof Party !== "undefined" && Party.peers[this.duoWith]){ e.duo = this.duoWith; e.duoName = Party.peers[this.duoWith].profile.name; }
     const built = this.SONGS.find(s => s.id === sid); if (built) e.title = built.title; else { e.title = custom.title; e.song = custom; }
     if (typeof Party !== "undefined" && Party.room && !this.inParty()) return toast("Hang on, the party is still connecting.");
     this.apply({t: "q", e: Object.assign({}, e, {song: e.song})}, this.me()); this.send({t: "q", e: Object.assign({}, e, {song: e.song})});
@@ -16056,7 +16264,8 @@ const Karaoke = {
     this.apply(m, this.me()); this.send(m);
   },
   next(){ const e = this.q[0]; if (!this.cur && e && e.by === this.me()){ toast("🎤 You're up! Open Karaoke and tap Start."); try{ Party.react("🎉"); }catch(er){} } },
-  cheer(emoji){ try{ Party.react(emoji); }catch(e){} this.send({t: "cheer"}); if (this.cur && this.cur.by === this.me()) this.reacts++; },
+  cheer(emoji){ try{ Party.react(emoji); }catch(e){} this.send({t: "cheer"}); this.hype = Math.min(1, this.hype + .12); if (this.cur && this.cur.by === this.me()) this.reacts++;
+    if (emoji === "💡" || emoji === "🌹") try{ const p = Lounge.screenGroup.getWorldPosition(new THREE.Vector3()); for (let i = 0; i < 6; i++) setTimeout(() => Party.floatEmoji(emoji, p.clone().add(new THREE.Vector3((Math.random() - .5)*4, -1.2 + Math.random(), 1.5))), i*120); }catch(e){} },
   skip(){ const c = this.cur; if (!c) return; const m = {t: "end", u: c.u, score: null}; this.apply(m, this.me()); this.send(m); },
   remove(u){ const m = {t: "rm", u}; this.apply(m, this.me()); this.send(m); },
   /* ---------- performing ---------- */
@@ -16066,7 +16275,7 @@ const Karaoke = {
       let st = typeof Party !== "undefined" && Party.mic && Party.mic.getTracks().some(t => t.readyState === "live") ? Party.mic : null;
       if (!st){ if (typeof Party !== "undefined" && Party.room){ await Party.toggleMic(); st = Party.mic; }
         if (!st) st = this.localMic = await navigator.mediaDevices.getUserMedia({audio: {echoCancellation: true, noiseSuppression: true}}); }
-      if (this.srcStream !== st){ const c = this.ac(), src = c.createMediaStreamSource(st), an = c.createAnalyser(); an.fftSize = 1024; src.connect(an); this.an = an; this.buf = new Float32Array(an.fftSize); this.srcStream = st; }
+      if (this.srcStream !== st){ const c = this.ac(), src = c.createMediaStreamSource(st), an = c.createAnalyser(); an.fftSize = 2048; src.connect(an); this.an = an; this.buf = new Float32Array(an.fftSize); this.srcStream = st; }
       this.render(); return true;
     }catch(e){ toast("Mic not available. You can still sing, but there won't be a score."); return false; }
   },
@@ -16077,12 +16286,13 @@ const Karaoke = {
     const song = this.songOf(e); if (!song) return;
     this.stopAudio(); this.cur = e; e.song = song; this.reacts = 0; this.fr = 0; this.vo = 0;
     try{ if (S.playing) togglePlay(); }catch(er){}
-    const mine = e.by === this.me();
+    const mine = e.by === this.me() || e.duo === this.me(); this.duoScore = null; this.pt = 0; this.ph = 0; this.trail = []; this.hype = 0;
+    if (e.duo === this.me()){ toast(`👯 Duet time! Sing the pink lines with ${e.name}.`); this.ensureMic(); }
     if (mine){ this.ac(); this.playBacking(e); if (this.open) this.toggle(false); }
     else if (this.ctx && this.ctx.state === "running") this.playBacking(e);
     else toast("🎤 Tap the 🎤 button to hear the backing music.");
     clearInterval(this._tm); this._tm = setInterval(() => this.tick(), 100);
-    this.say(`🎤 ${e.name} is singing "${e.title}". Sing along and cheer them on!`);
+    this.say(e.duo ? `👯 ${e.name} and ${e.duoName} are singing "${e.title}" as a duet!` : `🎤 ${e.name} is singing "${e.title}". Sing along and cheer them on!`);
     if (!mine) toast(`🎤 ${e.name} is singing "${e.title}"`);
   },
   playBacking(e){
@@ -16093,7 +16303,7 @@ const Karaoke = {
     if (spb){
       const kick = (at, v) => { if (at < c.currentTime - .02) return; const o = c.createOscillator(), g = c.createGain(); o.type = "sine"; o.frequency.setValueAtTime(130, at); o.frequency.exponentialRampToValueAtTime(48, at + .12); g.gain.setValueAtTime(v, at); g.gain.exponentialRampToValueAtTime(.001, at + .16); o.connect(g); g.connect(bus); o.start(at); o.stop(at + .2); };
       for (let i = 0; i < this.COUNT; i++) kick(t0 + i*spb, .55);
-      const total = Math.ceil(song.dur/spb); for (let i = 0; i < total; i += 2) kick(t0 + song.lead + i*spb, .12);
+      try{ this.band(c, bus, song, t0 + song.lead, spb, e.style || this.style); }catch(err){ console.warn(err); const total = Math.ceil(song.dur/spb); for (let i = 0; i < total; i += 2) kick(t0 + song.lead + i*spb, .12); }
       for (const l of song.lines) for (const n of l.notes){ const at = t0 + song.lead + n.t0, dur = n.t1 - n.t0; if (at + dur < c.currentTime) continue;
         const o = c.createOscillator(), g = c.createGain(); o.type = "triangle"; o.frequency.value = 440*Math.pow(2, (n[0] - 69)/12);
         const st = Math.max(at, c.currentTime); g.gain.setValueAtTime(0, st); g.gain.linearRampToValueAtTime(.2, st + .02); g.gain.setTargetAtTime(0, st + Math.max(.03, dur*.8), .05);
@@ -16103,22 +16313,65 @@ const Karaoke = {
       setTimeout(go, Math.max(0, e.startAt + song.lead*1000 - Date.now()));
     }
   },
+  /* a backing band: chords that fit the melody, a bass line and drums, in the style you pick */
+  chords(song, spb){
+    const key = song.key !== undefined ? song.key : (song.lines[song.lines.length - 1].notes.slice(-1)[0][0] % 12), C = [[0, 4, 7], [5, 9, 0], [7, 11, 2], [9, 0, 4], [2, 5, 9]], out = [], beats = Math.ceil(song.lines[song.lines.length - 1].t1/spb); let prev = 0;
+    const noteAt = t => { for (const l of song.lines) for (const n of l.notes) if (t >= n.t0 - .01 && t < n.t1) return n[0]; return null; };
+    for (let b = 0; b < beats; b += 2){ const m = noteAt(b*spb), m2 = noteAt((b + 1)*spb); const pcs = [m, m2].filter(v => v !== null).map(v => ((v - key) % 12 + 12) % 12);
+      let best = prev, bs = -1; C.forEach((ch, i) => { const s = pcs.reduce((a, p) => a + (ch.includes(p) ? 2 : 0), 0) + (i === prev ? 1 : 0) + (i < 3 ? .5 : 0); if (s > bs){ bs = s; best = i; } }); prev = best; out.push({b, root: key + C[best][0], tones: C[best].map(x => key + x)}); }
+    return out;
+  },
+  band(c, bus, song, start, spb, style){
+    const now = c.currentTime, noise = this._nz || (this._nz = (() => { const b = c.createBuffer(1, c.sampleRate*.3, c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1; return b; })());
+    const tone = (at, f, len, v, type, dest = bus) => { if (at + len < now) return; const o = c.createOscillator(), g = c.createGain(), st = Math.max(at, now); o.type = type; o.frequency.value = f; g.gain.setValueAtTime(0, st); g.gain.linearRampToValueAtTime(v, st + .02); g.gain.setTargetAtTime(0, st + len*.85, .06); o.connect(g); g.connect(dest); o.start(st); o.stop(st + len + .4); };
+    const hz = m => 440*Math.pow(2, (m - 69)/12), kick = (at, v = .5) => { if (at < now) return; const o = c.createOscillator(), g = c.createGain(); o.frequency.setValueAtTime(130, at); o.frequency.exponentialRampToValueAtTime(45, at + .12); g.gain.setValueAtTime(v, at); g.gain.exponentialRampToValueAtTime(.001, at + .25); o.connect(g); g.connect(bus); o.start(at); o.stop(at + .3); };
+    const hiss = (at, len, f, v) => { if (at < now) return; const s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain(); s.buffer = noise; fl.type = "highpass"; fl.frequency.value = f; g.gain.setValueAtTime(v, at); g.gain.exponentialRampToValueAtTime(.001, at + len); s.connect(fl); fl.connect(g); g.connect(bus); s.start(at); s.stop(at + len + .02); };
+    const prog = this.chords(song, spb), end = start + song.lines[song.lines.length - 1].t1;
+    for (const ch of prog){ const at = start + ch.b*spb, len = spb*2; if (at > end) break;
+      // chords
+      if (style === "acoustic") ch.tones.forEach((m, i) => [0, 1].forEach(h => tone(at + h*spb + i*spb/4, hz(m + 48 - 12*0 + (m % 12 < 5 ? 12 : 0) - 0), spb*.9, .045, "triangle")));
+      else if (style === "gospel") ch.tones.forEach(m => { tone(at, hz(m + 48), len, .03, "sine"); tone(at, hz(m + 60), len, .018, "sine"); });
+      else if (style === "hiphop") ch.tones.forEach(m => tone(at, hz(m + 48), len*.9, .028, "sine"));
+      else ch.tones.forEach(m => [0, 1].forEach(h => tone(at + h*spb, hz(m + 48), spb*.8, .035, "triangle")));
+      // bass
+      const r = ch.root % 12 + 36; if (style === "hiphop"){ tone(at, hz(r), spb*.9, .22, "sine"); tone(at + spb*1.5, hz(r), spb*.4, .16, "sine"); } else { tone(at, hz(r), spb*.9, .16, style === "acoustic" ? "triangle" : "sawtooth"); tone(at + spb, hz(r + 7), spb*.8, .12, style === "acoustic" ? "triangle" : "sawtooth"); }
+      // drums
+      for (let k = 0; k < 2; k++){ const bt = at + k*spb, beat = ch.b + k;
+        if (style === "pop"){ kick(bt, .35); hiss(bt + spb/2, .05, 7000, .12); if (beat % 2) hiss(bt, .15, 1800, .25); }
+        else if (style === "gospel"){ if (beat % 2) { hiss(bt, .12, 1200, .32); hiss(bt + .01, .1, 2500, .2); } else kick(bt, .3); hiss(bt + spb*.66, .04, 8000, .1); }
+        else if (style === "hiphop"){ if (beat % 2 === 0){ kick(bt, .55); kick(bt + spb*.75, .35); } else hiss(bt, .2, 1500, .4); hiss(bt, .04, 8000, .12); hiss(bt + spb/2, .04, 8000, .1); }
+        else if (beat % 2 === 0) hiss(bt, .03, 9000, .05); } }
+  },
+  /* the note you're singing, from the mic (autocorrelation); null when it's too quiet or unclear */
+  pitch(){
+    const an = this.an; if (!an) return null; const n = an.fftSize, buf = this.pbuf || (this.pbuf = new Float32Array(n)); an.getFloatTimeDomainData(buf);
+    let rms = 0; for (let i = 0; i < n; i++) rms += buf[i]*buf[i]; rms = Math.sqrt(rms/n); if (rms < .012) return null;
+    const sr = this.ctx.sampleRate, minL = Math.floor(sr/1000), maxL = Math.floor(sr/70); let best = -1, bv = 0;
+    for (let L = minL; L <= maxL; L++){ let s = 0; for (let i = 0; i < n - L; i += 2) s += buf[i]*buf[i + L]; if (s > bv){ bv = s; best = L; } }
+    if (best < 0) return null; let e = 0; for (let i = 0; i < n; i += 2) e += buf[i]*buf[i]; if (bv/e < .35) return null;
+    return 69 + 12*Math.log2(sr/best/440);
+  },
+  owner(song, l){ const i = song.lines.indexOf(l); return i === song.lines.length - 1 ? "both" : i % 2 ? "duo" : "lead"; },
   stopAudio(){
     clearInterval(this._tm); this._tm = null;
     try{ if (this.bus){ const b = this.bus, c = this.ctx; b.gain.setTargetAtTime(0, c.currentTime, .05); setTimeout(() => { try{ b.disconnect(); }catch(e){} }, 400); } }catch(e){} this.bus = this.gbus = null;
     try{ if (this.aud){ this.aud.pause(); this.aud = null; } }catch(e){}
   },
   tick(){
-    const c = this.cur; if (!c) return; const t = this.t(), mine = c.by === this.me();
-    if (mine && t >= 0){ this.lvl = this.level(); if (this.lineAt(t)){ this.fr++; if (this.lvl > .012) this.vo++; } }
+    const c = this.cur; if (!c) return; const t = this.t(), lead = c.by === this.me(), mine = lead || c.duo === this.me(); this.hype *= .985;
+    if (mine && t >= 0){ this.lvl = this.level(); const l = this.lineAt(t), who = l && c.duo && c.song.bpm ? this.owner(c.song, l) : "lead", myLine = l && (!c.duo || who === "both" || (lead ? who === "lead" : who === "duo"));
+      if (myLine){ this.fr++; if (this.lvl > .012) this.vo++;
+        const n = l.notes && l.notes.find(x => t >= x.t0 && t < x.t1); if (n){ const p = this.pitch(); this.pt++; if (p !== null){ const d = Math.abs(((p - n[0]) % 12 + 18) % 12 - 6); if (d <= 1.1) this.ph++; this.trail.push({t, m: p - 12*Math.round((p - n[0])/12)}); } else this.trail.push({t, m: null}); if (this.trail.length > 80) this.trail.shift(); } } }
     if (!this.inParty() && mine && t > 4 && Math.random() < .035){ this.reacts++; try{ const p = Lounge.screenGroup.getWorldPosition(new THREE.Vector3()); Party.floatEmoji(["👏", "🔥", "🙌", "🎉"][Math.floor(Math.random()*4)], p.add(new THREE.Vector3((Math.random() - .5)*3, -1 + Math.random(), 1))); }catch(e){} }
-    if (mine && t > c.song.dur + 1.2) this.finish(); else if (t > c.song.dur + 25){ this.ended.add(c.u); this.stopAudio(); this.cur = null; }
+    if (mine && t > c.song.dur + 1.2 && !this.fin) this.finish(); else if (t > c.song.dur + 25){ this.ended.add(c.u); this.stopAudio(); this.cur = null; }
     this.render(true);
   },
   finish(){
-    const c = this.cur; if (!c) return; let score = null;
-    if (this.an && this.fr > 8){ const pct = this.vo/this.fr; score = Math.min(100, Math.round(Math.min(1, pct*1.15)*70 + Math.min(30, this.reacts*3))); }
-    const m = {t: "end", u: c.u, score}; this.apply(m, this.me()); this.send(m);
+    const c = this.cur; if (!c) return; let score = null; this.fin = true; setTimeout(() => { this.fin = false; }, 4000);
+    if (this.an && this.fr > 8){ const pres = Math.min(1, this.vo/this.fr*1.15), tune = this.pt > 4 ? Math.min(1, this.ph/this.pt*1.25) : pres*.6; score = Math.min(100, Math.round(tune*55 + pres*30 + Math.min(15, this.reacts*1.5 + this.hype*5))); }
+    if (c.duo === this.me() && c.by !== this.me()){ this.send({t: "dscore", u: c.u, score: score === null ? 0 : score}); return; }
+    const send = () => { if (!this.cur || this.cur.u !== c.u) return; let sc = score; if (c.duo && this.duoScore !== null && this.duoScore !== undefined) sc = sc === null ? this.duoScore : Math.round((sc + this.duoScore)/2); const m = {t: "end", u: c.u, score: sc}; this.apply(m, this.me()); this.send(m); };
+    if (c.duo) setTimeout(send, 1600); else send();
   },
   /* ---------- the big screen ---------- */
   paint(x, W, H){
@@ -16132,7 +16385,9 @@ const Karaoke = {
       return;
     }
     const song = c.song, t = this.t(), spb = song.bpm ? 60/song.bpm : 1;
-    x.fillStyle = "#ffc21a"; x.font = `700 28px ${F}`; x.fillText(`🎤 ${c.name} · ${c.title}`.slice(0, 60), W/2, 44);
+    x.fillStyle = "#ffc21a"; x.font = `700 28px ${F}`; x.fillText((c.duo ? `👯 ${c.name} & ${c.duoName} · ${c.title}` : `🎤 ${c.name} · ${c.title}`).slice(0, 64), W/2, 44);
+    // hype meter
+    { const hx = W - 46, y0 = 110, y1 = H - 120, hh = (y1 - y0)*this.hype; x.fillStyle = "rgba(255,255,255,.15)"; x.fillRect(hx, y0, 18, y1 - y0); const gr = x.createLinearGradient(0, y1, 0, y0); gr.addColorStop(0, "#ffc21a"); gr.addColorStop(1, "#ff4fd8"); x.fillStyle = gr; x.fillRect(hx, y1 - hh, 18, hh); x.font = `700 22px ${F}`; x.fillStyle = "#fff"; x.fillText(this.hype > .7 ? "🔥" : "👏", hx + 9, y1 + 24); }
     if (t < 0){ const n = Math.ceil(-t/spb); x.fillStyle = "#fff"; x.font = `700 200px ${F}`; x.fillText(String(Math.min(this.COUNT, n)), W/2, H/2 - 10); x.font = `600 34px ${F}`; x.fillStyle = "#ffd87a"; x.fillText("Get ready…", W/2, H/2 + 130); return; }
     let i = song.lines.findIndex(l => t < l.t1 + .4); if (i < 0) i = song.lines.length - 1; const l = song.lines[i];
     const text = l.syl ? l.syl.join("") : l.text; let size = 66; do { x.font = `700 ${size}px ${F}`; size -= 2; } while (x.measureText(text).width > W - 70 && size > 26);
@@ -16141,7 +16396,14 @@ const Karaoke = {
     let prog = 0;
     if (l.syl){ let k = l.notes.findIndex(n => t < n.t1); if (k < 0) k = l.notes.length; const before = l.syl.slice(0, Math.min(k, l.syl.length)).join(""); const w0 = x.measureText(before).width; let w1 = 0; if (k < l.syl.length){ const n = l.notes[k], f = Math.max(0, Math.min(1, (t - n.t0)/(n.t1 - n.t0))); w1 = x.measureText(l.syl[k]).width*f; } prog = w0 + w1; }
     else prog = full*Math.max(0, Math.min(1, (t - l.t0)/Math.max(.1, l.t1 - l.t0)));
-    x.save(); x.beginPath(); x.rect(x0 - 4, 0, prog + 4, H); x.clip(); x.fillStyle = "#ffc21a"; x.fillText(text, x0, H/2 - 20); x.restore();
+    const who = c.duo && song.bpm ? this.owner(song, l) : "lead"; x.save(); x.beginPath(); x.rect(x0 - 4, 0, prog + 4, H); x.clip(); x.fillStyle = who === "duo" ? "#ff8ad8" : who === "both" ? "#8dff9e" : "#ffc21a"; x.fillText(text, x0, H/2 - 20); x.restore();
+    if (c.duo && song.bpm){ x.font = `700 24px ${F}`; x.textAlign = "center"; x.fillStyle = who === "duo" ? "#ff8ad8" : who === "both" ? "#8dff9e" : "#ffc21a"; x.fillText(who === "both" ? "🎤 Both of you!" : `🎤 ${who === "duo" ? c.duoName : c.name}`, W/2, H/2 - 90); }
+    // the pitch lane: where the notes are, and where your voice is
+    if (song.bpm && song.lo !== undefined){ const lx = 150, px = 170, ly0 = H - 165, ly1 = H - 100, span = Math.max(6, song.hi - song.lo + 2), yOf = m => ly1 - (m - song.lo + 1)/span*(ly1 - ly0);
+      x.fillStyle = "rgba(0,0,0,.35)"; x.fillRect(30, ly0 - 8, W - 110, ly1 - ly0 + 16); x.fillStyle = "rgba(255,255,255,.6)"; x.fillRect(lx, ly0 - 8, 3, ly1 - ly0 + 16);
+      for (const L of song.lines) for (const n of L.notes){ const a = lx + (n.t0 - t)*px, b = lx + (n.t1 - t)*px; if (b < 30 || a > W - 80) continue; const ow = c.duo ? this.owner(song, L) : "lead";
+        x.fillStyle = t >= n.t0 && t < n.t1 ? "#fff" : ow === "duo" ? "rgba(255,138,216,.8)" : ow === "both" ? "rgba(141,255,158,.8)" : "rgba(255,194,26,.8)"; x.fillRect(Math.max(30, a), yOf(n[0]) - 5, Math.max(4, Math.min(W - 80, b) - Math.max(30, a) - 2), 10); }
+      if ((c.by === this.me() || c.duo === this.me()) && this.trail){ x.fillStyle = "#4de1ff"; for (const p of this.trail){ if (p.m === null) continue; const X = lx + (p.t - t)*px; if (X < 30) continue; x.beginPath(); x.arc(X, Math.max(ly0 - 6, Math.min(ly1 + 6, yOf(p.m))), 4, 0, 7); x.fill(); } } }
     const nx = song.lines[i + 1]; if (nx){ const nt = nx.syl ? nx.syl.join("") : nx.text; x.font = `600 36px ${F}`; x.textAlign = "center"; x.fillStyle = "rgba(255,255,255,.5)"; x.fillText(nt, W/2, H/2 + 70, W - 80); }
     x.textAlign = "center";
     if (c.by === this.me() && this.an){ x.fillStyle = "rgba(255,255,255,.18)"; x.fillRect(W/2 - 180, H - 60, 360, 14); x.fillStyle = "#ff4d3d"; x.fillRect(W/2 - 180, H - 60, 360*Math.min(1, this.lvl*8), 14); x.fillStyle = "#fff"; x.font = `600 22px ${F}`; x.fillText("🎤 mic", W/2, H - 82); }
@@ -16165,7 +16427,7 @@ const Karaoke = {
       else if (b.id === "kAddFile") this.addFile();
     });
     d.addEventListener("input", e => { if (e.target.id === "kVol"){ this.vol = +e.target.value/100; store.set("kVol", this.vol); if (this.bus) this.bus.gain.value = this.vol; if (this.aud) this.aud.volume = this.vol; } });
-    d.addEventListener("change", e => { if (e.target.id === "kGuide"){ this.guide = e.target.checked; store.set("kGuide", this.guide); if (this.gbus) this.gbus.gain.value = this.guide ? 1 : 0; } });
+    d.addEventListener("change", e => { if (e.target.id === "kStyle"){ this.style = e.target.value; store.set("kStyle", this.style); return; } if (e.target.id === "kDuo"){ this.duoWith = e.target.value || null; return; } if (e.target.id === "kGuide"){ this.guide = e.target.checked; store.set("kGuide", this.guide); if (this.gbus) this.gbus.gain.value = this.guide ? 1 : 0; } });
   },
   toggle(on){ this.open = on === undefined ? !this.open : !!on; $("#karaoke").hidden = !this.open; if (this.open){ this._full = true; this.render(); this.ac().resume().then(() => { if (this.cur && !this.bus && !this.aud) this.playBacking(this.cur); }).catch(() => {}); } else if (!this.cur){ try{ Lounge.lastScreenKey = null; }catch(e){} } },
   render(light){
@@ -16176,7 +16438,8 @@ const Karaoke = {
     $("#kMic").textContent = micOn ? "🎤 Mic ready" : "🎤 Turn on mic";
     body.innerHTML = `
       <div class="k-now">${c ? `<div><b>${esc(c.name)}</b> is singing<br><span class="k-t">${esc(c.title)}</span><br><small id="kNowT"></small> <small id="kReacts"></small></div>${c.by === me ? `<button type="button" id="kSkip" class="ghost">⏹ Stop my song</button>` : ""}` : mineNext ? `<div>You're up next: <b>${esc(this.q[0].title)}</b></div><button type="button" id="kStart" class="primary">🎤 Start my turn</button>` : `<div>Nobody is singing right now.<br><small>Pick a song below to go first.</small></div>`}</div>
-      <div class="k-cheer">${["👏", "🔥", "❤️", "🎉", "🙌"].map(e => `<button type="button" data-cheer="${e}" aria-label="Cheer ${e}">${e}</button>`).join("")}</div>
+      <div class="k-cheer">${["👏", "🔥", "❤️", "🎉", "🙌", "💡", "🌹"].map(e => `<button type="button" data-cheer="${e}" aria-label="Cheer ${e}">${e}</button>`).join("")}</div>
+      <div class="k-opts"><label>Band <select id="kStyle">${Object.entries(this.STYLES).map(([k, v]) => `<option value="${k}"${k === this.style ? " selected" : ""}>${v}</option>`).join("")}</select></label>${this.inParty() && Object.keys(Party.peers).length ? `<label>👯 Duet with <select id="kDuo"><option value="">Nobody (solo)</option>${Object.entries(Party.peers).map(([id, p]) => `<option value="${esc(id)}"${id === this.duoWith ? " selected" : ""}>${esc(p.profile.name)}</option>`).join("")}</select></label>` : ""}</div>
       <div class="k-sec">Songs <small>(free to sing: public domain)</small></div>
       <div class="k-grid">${this.SONGS.map(s => `<button type="button" data-song="${s.id}">🎵 ${esc(s.title)}</button>`).join("")}</div>
       <details class="k-own"><summary>➕ Use my own song</summary>
@@ -16187,6 +16450,7 @@ const Karaoke = {
       <ol class="k-q">${this.q.length ? this.q.map(e => `<li><b>${esc(e.name)}</b> · ${esc(e.title)} ${e.by === me ? `<button type="button" data-rm="${e.u}" aria-label="Remove">✕</button>` : ""}</li>`).join("") : "<li class='k-hint'>The queue is empty.</li>"}</ol>
       ${this.board.length ? `<div class="k-sec">🏆 Scores</div><ol class="k-q">${this.board.map(b => `<li><b>${esc(b.name)}</b> · ${esc(b.title)} · ${b.score}</li>`).join("")}</ol>` : ""}
       <div class="k-opts"><label><input type="checkbox" id="kGuide" ${this.guide ? "checked" : ""}> Guide melody</label><label>Backing <input type="range" id="kVol" min="0" max="100" value="${Math.round(this.vol*100)}"></label></div>
+      <p class="k-hint">🎯 Scoring listens to your pitch: follow the bars on the big screen (your voice is the blue dots). Cheers fill the hype meter for bonus points.</p>
       <p class="k-hint">${this.inParty() ? "Everyone in the party sees the lyrics and hears the singer's voice." : "Tip: join the party so friends can hear you and cheer. Without it, a virtual crowd cheers you on."}</p>`;
     if (keep) body.querySelector("details").open = true;
     if (c){ const t = this.t(), el = $("#kNowT"); if (el) el.textContent = t < 0 ? "Get ready…" : ""; const r = $("#kReacts"); if (r) r.textContent = `👏 ${this.reacts}`; }

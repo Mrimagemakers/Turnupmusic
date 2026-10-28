@@ -316,3 +316,7 @@ Meditation, Exercise, Dance Class, Escape Room and My Home have trim, window lig
 - `app/index.html`: the app itself (built from `build/turnup.src.html`).
 - `guide.html`, `assets/`, `people/`, `img/`: shared files. The app looks for models in `../assets/` and `../people/` first.
 - Custom domain: `CNAME` (added once the GoDaddy DNS records point at GitHub Pages).
+
+## Trivia Live and karaoke upgrades
+- **🎯 Trivia Live** (`TriviaLive` in the source): colored answer tiles, countdown, speed-based points with streaks, scoreboards and a podium. Solo or hosted for the whole party (new party channel `trivia`, host-authoritative). Players write their own quizzes (stored per device under `myQuizzes`) and can save quizzes a host shared.
+- **Karaoke**: 7 more public-domain songs (11 total), a backing band in four styles with chords and bass fitted to the melody, pitch-based scoring with a note lane, duets with alternating lines, and a hype meter fed by cheers.
