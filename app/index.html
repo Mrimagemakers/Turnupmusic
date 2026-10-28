@@ -3534,6 +3534,9 @@ const Lounge = {
     }
     this.setupGrab(); this.bindKeys();
 
+    { const crashed = store.get("buildingWorld", ""); if (crashed){ const n = store.get("crashGuard", 0) + 1; store.set("crashGuard", n); store.set("buildingWorld", "");
+        setTimeout(() => { try{ toast("The last world closed unexpectedly, so the lounge is using lighter graphics now. Change it any time with the graphics button.", 7000); }catch(e){} }, 2500);
+        if (n >= 2 && store.get("world", "rooftop") === crashed) store.set("world", "coffee"); } }
     this.setWorld(store.get("world", "rooftop"));
     this.setupPost();
     this.bindPointer(canvas); try{ View.init(); }catch(e){ console.warn(e); } try{ this.furnBtn(); Visuals.ui(); WorldPick.ui(); Karaoke.ui(); }catch(e){}
@@ -6893,7 +6896,7 @@ const Lounge = {
     if (!this.WORLDS.some(w => w.id === id)) id = "rooftop";
     for (const k in this.worlds) this.worlds[k].group.visible = false;
     if (!this.worlds[id]){
-      this.buildingWorld = id;
+      this.buildingWorld = id; try{ store.set("buildingWorld", id); clearTimeout(this._bwT); this._bwT = setTimeout(() => store.set("buildingWorld", ""), 15000); }catch(e){}
       try{ this.makeRoom(); }catch(e){ console.warn(e); }
       const builder = {rooftop:"buildRooftop", club:"buildClub", beach:"buildBeach", nyc:"buildNYC", madrid:"buildMadrid", concert:"buildConcert", rodeo:"buildRodeo", coffee:"buildCoffee", tvshow:"buildTV", jazz:"buildJazz", aquarium:"buildAquarium", wedding:"buildWedding", divebar:"buildDiveBar", aspen:"buildAspen", yacht:"buildYacht", harambee:"buildHarambee", reggae:"buildReggae", tokyo:"buildTokyo", space:"buildSpace", penthouse:"buildPenthouse", meditate:"buildMeditation", gym:"buildGym", dancestudio:"buildDanceStudio", escape:"buildEscape", home:"buildHome"}[id];
       try{ this.worlds[id] = this[builder](); }
@@ -6929,7 +6932,9 @@ const Lounge = {
   /* ---------- memory: only a couple of worlds stay loaded ----------
      Every world is a lot of textures and meshes. A headset or phone runs out of memory after a few,
      and the browser shuts down. So worlds you've left are released (and rebuilt if you go back). */
-  lowPower(){ return /OculusBrowser|Quest|Pico|Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || (navigator.deviceMemory || 8) <= 4; },
+  lowPower(){ return /OculusBrowser|Quest|Pico|Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || this.iOS() || (navigator.deviceMemory || 8) <= 4; },
+  /* iPhone and iPad (iPadOS Safari says it's a Mac, but Macs have no touch screen). Safari closes a tab that uses too much memory, so these get a lighter setup */
+  iOS(){ return /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && (navigator.maxTouchPoints || 0) > 1); },
   /* before building a new world, let go of the oldest ones so a phone or headset never holds too many at once */
   makeRoom(){
     const keep = this.lowPower() ? 2 : 4, order = this.worldOrder || (this.worldOrder = []);
@@ -11281,7 +11286,7 @@ const Party = {
    and you can get it back on any phone, tablet or headset. The passcode never leaves this device. */
 const Account = {
   KIND: 30078, D: "tu-account",
-  SKIP: /^(hostSecret.*|acct.*|age|partyAdvisory|gfx|online|owner.*|navSeen:.*|.*[Ss]ecret.*)$/,
+  SKIP: /^(hostSecret.*|acct.*|age|partyAdvisory|gfx|online|buildingWorld|crashGuard|owner.*|navSeen:.*|.*[Ss]ecret.*)$/,
   state(){ return store.get("acct", null); },
   signedIn(){ return !!this.state(); },
   syncable(k){ return !this.SKIP.test(k); },
@@ -11379,11 +11384,15 @@ const Account = {
       d.innerHTML = `<p id="acctStatus" class="acctok">✅ Signed in as <b>${esc(a.email || a.name)}</b><br><small>${this.busy ? "Saving…" : store.get("acctDirty", false) ? "Changes waiting to save" : "All saved · " + this.ago(store.get("acctAt", 0))}${this.err ? " · " + esc(this.err) : ""}</small></p>
         <p>Your profile, favorites, stations, settings and game progress save by themselves a few seconds after you change them. Sign in with the same name and passcode on any other device to pick up where you left off.</p>
         <div class="btnrow"><button class="primary" id="acctSave" type="button">Save now</button><button class="ghost" id="acctOut" type="button">Sign out</button></div>
+        ${a.email ? "" : `<details class="acctmore" open><summary>📧 Sign in with an email from now on</summary><p>You signed up with an account name. Add an email and a passcode (it can be the same one) and use those to sign in from now on. Your progress moves over.</p>
+          <label>Email address<input id="acctNewEmail" type="email" maxlength="80" autocapitalize="off" spellcheck="false" placeholder="you@example.com"></label><label>Passcode<input id="acctNewPass" type="password" minlength="8" placeholder="at least 8 characters"></label>
+          <p id="acctMoveMsg" class="hint" role="status"></p><button class="primary tiny" id="acctMove" type="button">Switch to email sign-in</button></details>`}
         <details class="acctmore"><summary>More</summary><p>Signing out keeps everything on this device. <b>Erase my saved copy</b> replaces the copy stored online with an empty one.</p><button class="ghost tiny" id="acctErase" type="button">Erase my saved copy</button></details>`;
       return; }
     const create = this.tab === "new";
     d.innerHTML = `<div class="tabs acct-tabs"><button type="button" data-t="in" class="${create ? "" : "on"}">Sign in</button><button type="button" data-t="new" class="${create ? "on" : ""}">Create account</button></div>
-      <form id="acctForm"><label>${create ? "Email address" : "Email (or your old account name)"}<input id="acctName" type="${create ? "email" : "text"}" maxlength="80" autocapitalize="off" autocomplete="${create ? "email" : "username"}" spellcheck="false" inputmode="email" placeholder="you@example.com" required></label>
+      <form id="acctForm"><label>${create ? "Email address" : "Email or account name"}<input id="acctName" type="${create ? "email" : "text"}" maxlength="80" autocapitalize="off" autocomplete="${create ? "email" : "username"}" spellcheck="false" inputmode="${create ? "email" : "text"}" placeholder="${create ? "you@example.com" : "you@example.com or your account name"}" required></label>
+      ${create ? "" : `<p class="hint">Made your account before we asked for emails? Type your <b>account name</b> here (capitals don't matter) with your passcode. Once you're in, you can switch to signing in with an email.</p>`}
       <label>Passcode<input id="acctPass" type="password" minlength="8" autocomplete="${create ? "new-password" : "current-password"}" placeholder="at least 8 characters" required></label>
       <label class="row"><input type="checkbox" id="acctShow"> Show passcode</label>
       ${create ? (Age.adult() ? `<p class="acctok">✅ Age confirmed: 18 or older</p>` : `<div class="setgroup"><b>Date of birth</b> <span class="hint">(accounts are for adults 18+)</span><div class="agerow"><select class="field" id="acctM" aria-label="Month"></select><select class="field" id="acctD" aria-label="Day"></select><select class="field" id="acctY" aria-label="Year"></select></div></div>`) + `<label class="saf-opt"><input type="checkbox" id="acctAgree"> I am 18 or older and agree to the Community Guidelines</label>
@@ -11428,6 +11437,21 @@ const Account = {
       }
     }catch(e){ console.warn(e); this.msg("Something went wrong. Try again.", true); $("#acctGo") && ($("#acctGo").disabled = false); }
   },
+  /* an older name-only account moves to an email sign-in: the same progress, saved under the new email + passcode */
+  async moveToEmail(){
+    const a = this.state(), msg = (t, bad) => { const m = $("#acctMoveMsg"); if (m){ m.textContent = t; m.style.color = bad ? "#ff8a80" : ""; } };
+    if (!a) return; const email = ($("#acctNewEmail").value || "").trim().toLowerCase(), pass = $("#acctNewPass").value || "";
+    if (!/^[a-z0-9._%+'-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(email)) return msg("Please enter a valid email address.", true);
+    if (pass.length < 8) return msg("The passcode needs at least 8 characters.", true);
+    $("#acctMove").disabled = true; msg("Working…");
+    try{ const k = await this.derive(email, pass); const ev = await this.fetch(k.pk, true);
+      if (ev){ msg("That email and passcode already have an account. Sign out and sign in with it instead.", true); $("#acctMove").disabled = false; return; }
+      const old = Object.assign({}, a), keep = {name: email, pk: k.pk, sk: this.hex(k.sk), aes: this.hex(k.aes), email, adultAt: a.adultAt || Date.now(), was: a.name};
+      store.set("acct", keep); const ok = await this.push(false);
+      if (!ok){ store.set("acct", old); msg("Couldn't reach the save servers. Try again in a minute.", true); $("#acctMove").disabled = false; return; }
+      toast("Done! Sign in with " + email + " from now on. ✓"); this.paint(); this.badge();
+    }catch(e){ console.warn(e); store.set("acct", a); msg("Something went wrong. Try again.", true); $("#acctMove").disabled = false; }
+  },
   async out(){ if (store.get("acctDirty", false)) await this.push(false); this.applying = true; store.set("acct", null); store.set("acctDirty", false); this.applying = false; toast("Signed out. Your things stay on this device."); this.tab = "in"; this.paint(); this.badge(); },
   async erase(){ const a = this.state(); if (!a || !confirm("Replace the copy saved online with an empty one? Things on this device stay.")) return;
     try{ const ev = TUNet.finalizeEvent({kind: this.KIND, created_at: Math.floor(Date.now()/1000), content: "", tags: [["d", this.D]]}, this.unhex(a.sk)); await Promise.any(Events.pool().publish(NET.relays, ev)); toast("Saved copy erased."); }catch(e){ toast("Couldn't reach the network."); } },
@@ -11435,7 +11459,7 @@ const Account = {
     const b = $("#btnAccount"), d = $("#acctDlg"); if (!b || !d) return;
     b.addEventListener("click", () => this.open());
     d.addEventListener("click", e => { const t = e.target.closest("[data-t]"); if (t){ this.tab = t.dataset.t; this.paint(); }
-      if (e.target.id === "acctSave") this.push(true); if (e.target.id === "acctOut") this.out(); if (e.target.id === "acctErase") this.erase(); if (e.target.id === "acctClose") d.close(); });
+      if (e.target.id === "acctSave") this.push(true); if (e.target.id === "acctOut") this.out(); if (e.target.id === "acctErase") this.erase(); if (e.target.id === "acctMove") this.moveToEmail(); if (e.target.id === "acctClose") d.close(); });
     d.addEventListener("change", e => { if (e.target.id === "acctShow") for (const id of ["acctPass", "acctPass2"]) { const i = $("#" + id); if (i) i.type = e.target.checked ? "text" : "password"; } });
     d.addEventListener("submit", e => { if (e.target.id === "acctForm"){ e.preventDefault(); this.submit(); } });
     document.addEventListener("visibilitychange", () => { if (document.hidden && this.signedIn() && store.get("acctDirty", false)){ clearTimeout(this._t); this.push(false); } });
@@ -16491,14 +16515,14 @@ const GFX = {
     ultra: {name: "💎 Ultra", tip: "Sharpest picture: extra resolution, smooth edges, live shadows from everyone, crisp textures, cinematic color and glow."}},
   level: "high", seen: new WeakSet(), fpsT: 0, frames: 0, slow: 0,
   strong(){ const gl = Lounge.renderer && Lounge.renderer.capabilities; return !Lounge.lowPower() && !!(gl && gl.isWebGL2) && (navigator.hardwareConcurrency || 4) >= 8 && (navigator.deviceMemory || 8) >= 8; },
-  pick(){ const s = store.get("gfx", "auto"); return s === "auto" ? (this.strong() ? "ultra" : Lounge.lowPower() && (navigator.deviceMemory || 8) <= 3 ? "low" : "high") : s; },
+  pick(){ if (store.get("crashGuard", 0) >= 1 && store.get("gfx", "auto") === "auto") return "low"; const s = store.get("gfx", "auto"); return s === "auto" ? (this.strong() ? "ultra" : Lounge.lowPower() && (navigator.deviceMemory || 8) <= 3 ? "low" : "high") : s; },
   init(){ if (this.ready || !Lounge.renderer) return; this.ready = true; this.apply(this.pick(), true); this.ui(); },
   set(lv){ store.set("gfx", lv); this.apply(lv); this.ui(); toast(`${this.LEVELS[lv].name} graphics on. ${this.LEVELS[lv].tip}`); },
   apply(lv, first){
     const L = Lounge, r = L.renderer, T = THREE; if (!r) return; this.level = lv; this.slow = 0;
-    const dpr = devicePixelRatio || 1, pr = lv === "low" ? 1 : lv === "ultra" ? Math.min(2.5, Math.max(1.5, dpr*1.25)) : Math.min(dpr, 2);
+    const dpr = devicePixelRatio || 1, ios = L.iOS(); let pr = lv === "low" ? 1 : lv === "ultra" ? Math.min(2.5, Math.max(1.5, dpr*1.25)) : Math.min(dpr, 2); if (ios) pr = Math.min(pr, lv === "low" ? 1 : lv === "ultra" ? 1.5 : 1.25);
     r.setPixelRatio(pr); this.pr = pr;
-    if (L.composer){ if (lv === "ultra") this.msaa(true); else if (this.msaaOn) this.msaa(false); L.composer.setPixelRatio(pr); }
+    if (L.composer){ if (lv === "ultra" && !ios) this.msaa(true); else if (this.msaaOn) this.msaa(false); L.composer.setPixelRatio(pr); }
     L.gfxNoPost = lv === "low";
     if (L.finalPass && L.finalPass.uniforms.grade) L.finalPass.uniforms.grade.value = lv === "ultra" ? 1 : 0;
     r.shadowMap.autoUpdate = lv === "ultra"; r.shadowMap.needsUpdate = true;
