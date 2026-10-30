@@ -526,7 +526,7 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 .post .acts button.on{color:var(--live);border-color:rgba(255,77,61,.4)}
 .post .replies{display:grid;gap:6px;padding-left:12px;border-left:2px solid var(--line)}
 .post .replies p{font-size:13px}
-.mogul{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));width:min(620px,calc(100vw - 24px));z-index:35;pointer-events:auto}
+.mogul{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));width:min(620px,calc(100vw - 24px),calc((100vh - 24px)*1.46));z-index:35;pointer-events:auto}
 .stage .mogul canvas,.mogul canvas{position:relative;inset:auto;display:block;width:100%;height:auto;border-radius:22px;box-shadow:0 16px 50px rgba(0,0,0,.55);touch-action:none;user-select:none;-webkit-user-select:none}
 .fpad{position:fixed;inset:0;z-index:36;pointer-events:none;font-family:var(--f-body)}
 .fpad.hurt::before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(255,0,0,0) 35%,rgba(255,0,0,.55));animation:mhurt .5s forwards}
@@ -547,13 +547,29 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 .fpad .frow{display:flex;gap:10px;align-items:flex-end}
 .fighting .xp-top,.fighting .xp-bottom,.fighting .zoomctl{display:none!important}
 .mogul.small{height:84px;overflow:hidden;border-radius:22px}
+.mogul-xp{position:absolute;left:58px;top:10px;width:40px;height:36px;border-radius:10px;border:1px solid rgba(255,194,26,.5);background:rgba(16,10,8,.9);color:#ffc21a;font:800 18px var(--f-body);cursor:pointer}
+.mogul.xpand{left:0!important;right:0!important;top:0!important;bottom:0!important;width:100vw!important;height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;background:rgba(8,5,12,.95);z-index:72;padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);box-sizing:border-box}
+.mogul.xpand[hidden]{display:none}
+body.mg-xp .homehud,body.mg-xp .karaoke{display:none!important}
+.mogul.xpand canvas{width:auto!important;height:auto!important;max-width:100%;max-height:100%;border-radius:0}
+.mogul.xpand .mogul-mini{display:none}.mogul.xpand .mogul-xp{position:fixed;left:auto;right:14px;top:max(10px,env(safe-area-inset-top,0px));width:48px;height:44px;font-size:20px;z-index:2}
+.skdlg{position:fixed;inset:0;z-index:90;background:rgba(6,4,10,.7);display:flex;align-items:center;justify-content:center;padding:12px}
+.skdlg[hidden]{display:none}
+.skdlg .sk-card{width:min(760px,100%);max-height:92vh;overflow:auto;background:#1a120e;border:1px solid rgba(255,194,26,.5);border-radius:18px;padding:14px 16px;color:#fff;font:500 14px var(--f-body,system-ui)}
+.skdlg .sk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.skdlg .sk-top b{font:800 18px var(--f-display,system-ui)}
+.skdlg button{min-height:42px;padding:8px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;font:700 14px var(--f-body,system-ui);cursor:pointer}
+.skdlg button.primary{background:#ffc21a;color:#241404;border-color:#ffc21a}.skdlg button[disabled]{opacity:.45;cursor:not-allowed}.skdlg .linkish{min-height:0;padding:0 4px;border:0;background:none;color:#9fe8ff;text-decoration:underline}
+.skdlg .sk-row{display:flex;gap:8px;margin:6px 0}.skdlg input{flex:1;min-width:0;min-height:42px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.35);color:#fff;padding:0 12px;font:500 15px var(--f-body,system-ui)}
+.skdlg .sk-note{color:rgba(255,255,255,.75);font-size:13px;margin:6px 0}.skdlg details{margin:8px 0;background:rgba(255,255,255,.05);border-radius:12px;padding:8px 10px}.skdlg summary{cursor:pointer;font-weight:700}
+.skdlg .sk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:8px}
+.skdlg .sk-it{display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.05);border-radius:12px;padding:8px}.skdlg .sk-it img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;background:#000}.skdlg .sk-it small{color:rgba(255,255,255,.6);font-size:11px}
 .mogul-mini{position:absolute;left:12px;top:10px;width:40px;height:36px;border-radius:10px;border:1px solid rgba(255,194,26,.5);background:rgba(16,10,8,.9);color:#ffc21a;font:800 18px var(--f-body);cursor:pointer}
 .mogul.hurt::before{content:"";position:fixed;inset:0;background:radial-gradient(circle,rgba(255,0,0,0) 30%,rgba(255,0,0,.55));animation:mhurt .5s forwards;pointer-events:none;z-index:-1}
 @keyframes mhurt{to{opacity:0}}
 .chipbtn.mogulbtn{background:linear-gradient(135deg,#ffc21a,#ff8a1a);color:#2a1405;font-weight:800;border:0}
 .teen #btnMogul,.teen #btnBrawl,.teen #btnEmpire,.teen #btnDanceoff{display:none!important}
 .chipbtn.brawlbtn{background:linear-gradient(135deg,#ff4a3a,#b0102a);color:#fff;font-weight:800;border:0}
-@media (min-width:1100px){.mogul{width:640px}}
+@media (min-width:1100px) and (min-height:500px){.mogul{width:min(640px,calc((100vh - 24px)*1.46))}}
 .agedlg{width:min(560px,calc(100% - 24px))}
 .agerow{display:grid;grid-template-columns:1.4fr .8fr 1fr;gap:8px;margin:10px 0}
 .rules{margin:6px 0 10px;padding-left:20px;display:grid;gap:5px;font-size:14px}
@@ -4083,6 +4099,7 @@ const Lounge = {
     const wc = Tex.wood(), floorM = new T.MeshStandardMaterial({map: Tex.make(wc, {repeat: [5, 4]}), normalMap: Tex.make(Tex.normal(wc, 4), {repeat: [5, 4], srgb: false}), color: 0xc9a074, roughness: .45, envMapIntensity: .6});
     const wallM = new T.MeshStandardMaterial({map: Tex.make(Tex.stucco("#ece2cf"), {repeat: [3, 1]}), roughness: .95});
     this.wShell(g, W, D, H, zc, {floor: floorM, wall: wallM, ceil: this.stdMat(0x4a3626, .8)});
+    try{ Home.hfSwap("medfloor", floorM.map, floorM.normalMap, 3, floorM); Home.hfSwap("plaster", wallM.map, null, 2); }catch(e){}
     for (let i = 0; i < 6; i++) this.wBox(g, .2, .24, D, M.walnut, -5.8 + i*2.32, H - .12, zc);          // ceiling beams
     for (let i = 0; i < 3; i++) this.wBox(g, W, .16, .16, M.walnut, 0, H - .26, zc - 4 + i*4);
     // a big round "moon gate" window onto a night garden
@@ -4144,7 +4161,9 @@ const Lounge = {
     const [fc, fx] = Tex.canvas(256, 256); fx.fillStyle = "#26282c"; fx.fillRect(0, 0, 256, 256); for (let i = 0; i < 1500; i++){ fx.fillStyle = `rgba(255,255,255,${Math.random()*.06})`; fx.fillRect(Math.random()*256, Math.random()*256, 2, 2); } fx.strokeStyle = "rgba(255,200,40,.5)"; fx.lineWidth = 6; fx.strokeRect(0, 0, 256, 256);
     const floorM = new T.MeshStandardMaterial({map: Tex.make(fc, {repeat: [8, 6]}), normalMap: Tex.make(Tex.normal(fc, 2), {repeat: [8, 6], srgb: false}), roughness: .75});
     const [wc, wx] = Tex.canvas(256, 256); wx.fillStyle = "#6a7480"; wx.fillRect(0, 0, 256, 256); for (let i = 0; i < 1200; i++){ wx.fillStyle = `rgba(255,255,255,${Math.random()*.05})`; wx.fillRect(Math.random()*256, Math.random()*256, 3, 3); }
-    this.wShell(g, W, D, H, zc, {floor: floorM, wall: new T.MeshStandardMaterial({map: Tex.make(wc, {repeat: [4, 1.4]}), roughness: .9}), ceil: this.stdMat(0x15171a, .9)});
+    const gWall = new T.MeshStandardMaterial({map: Tex.make(wc, {repeat: [4, 1.4]}), roughness: .9});
+    this.wShell(g, W, D, H, zc, {floor: floorM, wall: gWall, ceil: this.stdMat(0x15171a, .9)});
+    try{ Home.hfSwap("rubber", floorM.map, floorM.normalMap, 2); Home.hfSwap("concrete", gWall.map, null, 2, gWall); }catch(e){}
     // light strip and neon sign
     for (let i = 0; i < 4; i++){ this.wBox(g, 3, .06, .3, new T.MeshBasicMaterial({color: 0xeaf4ff, toneMapped: false}), -5 + i*3.3, H - .06, zc - 1, false); }
     this.gyNeon = this.wSign(g, ["NO EXCUSES", "move your body"], 4.6, 3.1, zc - D/2 + .05, 4.4, 1.2, 0, {bg: "#111", edge: "#ffcc00", ink: "#ffe26a"});
@@ -4163,7 +4182,7 @@ const Lounge = {
       for (const sx of [-1, 1]) for (const k of [0, 1]){ const pl = this.wCyl(b, .22 - k*.05, .22 - k*.05, .05, this.stdMat(k ? 0xffcc00 : 0x222222, .5), sx*(.62 + k*.06), 1.0, -.45, 20); pl.rotation.z = Math.PI/2; } }
     const rack = new T.Group(); rack.position.set(-6.6, 0, -9.6); g.add(rack); this.wBox(rack, 2.4, .08, .4, M.black, 0, .4, 0); this.wBox(rack, 2.4, .08, .4, M.black, 0, .9, 0); this.wBox(rack, .08, .96, .4, M.black, -1.2, .48, 0); this.wBox(rack, .08, .96, .4, M.black, 1.2, .48, 0);
     for (let r = 0; r < 2; r++) for (let i = 0; i < 8; i++){ const d = new T.Group(); d.position.set(-1.0 + i*.28, .5 + r*.5 + .08, 0); rack.add(d); const h = this.wCyl(d, .015, .015, .22, M.brass, 0, 0, 0, 8); h.rotation.z = Math.PI/2; for (const sx of [-1, 1]) this.wCyl(d, .06 + i*.004, .06 + i*.004, .05, this.stdMat(0x1a1a1a, .5), sx*.1, 0, 0, 12).rotation.z = Math.PI/2; }
-    for (let i = 0; i < 5; i++){ const k = add(new T.Mesh(new T.SphereGeometry(.14, 14, 10), this.stdMat(i % 2 ? 0xe03030 : 0x2a2a2a, .5)), g); k.position.set(-6.8 + i*.4, .14, -8.7); this.wCyl(g, .06, .05, .05, this.stdMat(0x111111, .5), -6.8 + i*.4, .3, -8.7, 10); }
+    for (let i = 0; i < 5; i++){ const k = add(new T.Mesh(new T.SphereGeometry(.14, 14, 10), this.stdMat(i % 2 ? 0xe03030 : 0x2a2a2a, .5)), g); k.position.set(-6.8 + i*.4, .14, -8.7); const hd = this.wCyl(g, .06, .05, .05, this.stdMat(0x111111, .5), -6.8 + i*.4, .3, -8.7, 10); this.asset(g, "hf:pgym/kettlebell", {x: -6.8 + i*.4, z: -8.7, h: .26 + i*.025, ry: Math.random()*.6 - .3, replace: [k, hd]}); }
     // yoga mats and a punching bag you can hit
     for (let i = 0; i < 4; i++){ const m = this.wBox(g, .7, .02, 1.8, this.stdMat([0x7a3aff, 0x2ad0a0, 0xff6a3a, 0x3a8aff][i], .9), -3.3 + i*.85, .02, -2.0, false); }
     const bagG = new T.Group(); bagG.position.set(5.6, 3.2, -4.0); g.add(bagG); this.wCyl(bagG, .004, .004, 1, M.black, 0, .5, 0, 4); this.gyBag = bagG; const bag = add(new T.Mesh(new T.CylinderGeometry(.22, .22, 1.1, 20), this.stdMat(0xb02a2a, .6)), bagG); bag.position.y = -.55;
@@ -4226,7 +4245,8 @@ const Lounge = {
     const g = this.room = new T.Group(); this.scene.add(g);
     const wc = Tex.walnut(), floorM = new T.MeshStandardMaterial({map: Tex.make(wc, {repeat: [4, 4]}), normalMap: Tex.make(Tex.normal(wc, 4), {repeat: [4, 4], srgb: false}), color: 0x6a4a34, roughness: .35, envMapIntensity: .6});
     const [pc, px] = Tex.canvas(256, 256); px.fillStyle = "#3a2a22"; px.fillRect(0, 0, 256, 256); px.strokeStyle = "#241812"; px.lineWidth = 6; for (let i = 0; i < 4; i++){ px.strokeRect(8 + i*62, 14, 52, 228); } for (let i = 0; i < 500; i++){ px.fillStyle = `rgba(255,255,255,${Math.random()*.04})`; px.fillRect(Math.random()*256, Math.random()*256, 2, 4); }
-    this.wShell(g, W, D, H, zc, {floor: floorM, wall: new T.MeshStandardMaterial({map: Tex.make(pc, {repeat: [4, 1]}), roughness: .85}), ceil: this.stdMat(0x1c130e, .9)});
+    const wall = new T.MeshStandardMaterial({map: Tex.make(pc, {repeat: [4, 1]}), roughness: .85});
+    this.wShell(g, W, D, H, zc, {floor: floorM, wall, ceil: this.stdMat(0x1c130e, .9)});
     const rug = add(new T.Mesh(new T.PlaneGeometry(4.4, 3), new T.MeshStandardMaterial({map: Tex.make(Tex.rug()), roughness: 1, color: 0xa08060})), g, false, true); rug.rotation.x = -Math.PI/2; rug.position.set(0, .006, -4.4);
     // desk with a lamp
     this.wBox(g, 2.2, .08, 1.0, M.walnut, -2.4, .78, -8.2); for (const sx of [-1, 1]) this.wBox(g, .1, .78, .9, M.walnut, -2.4 + sx*1.05, .39, -8.2); this.wBox(g, 1.2, .8, .06, M.walnut, -2.4, .4, -8.6);
@@ -4254,12 +4274,17 @@ const Lounge = {
     this.esOpen = 0; this.esWant = 0;
     this.esApi = {
       code: (s) => { const c = this.esPaintC, x = c.getContext("2d"), gr = x.createLinearGradient(0, 0, 0, 384); gr.addColorStop(0, "#3a2a4a"); gr.addColorStop(1, "#1a1020"); x.fillStyle = gr; x.fillRect(0, 0, 512, 384); x.fillStyle = "#e8d8a8"; x.beginPath(); x.arc(110, 110, 50, 0, 7); x.fill(); x.fillStyle = "#101820"; x.beginPath(); x.moveTo(0, 384); for (let i = 0; i <= 512; i += 32) x.lineTo(i, 250 + Math.sin(i/60)*40); x.lineTo(512, 384); x.fill(); x.font = '800 110px "Hanken Grotesk", sans-serif'; x.textAlign = "center"; x.fillStyle = "#ffe26a"; x.shadowColor = "#ffb020"; x.shadowBlur = 24; x.fillText(s.split("").join(" "), 330, 230); x.font = '600 24px "Hanken Grotesk", sans-serif'; x.shadowBlur = 0; x.fillStyle = "#cdbb9a"; x.fillText("the third night of the moon", 330, 290); this.esPaintT.needsUpdate = true; },
-      word: (enc) => { const c = this.esBoardC, x = c.getContext("2d"); x.fillStyle = "#17241c"; x.fillRect(0, 0, 512, 256); x.fillStyle = "#f2f0e0"; x.textAlign = "center"; x.font = '700 40px "Hanken Grotesk", sans-serif'; x.fillText("SECRET WORD", 256, 56); x.font = '800 78px "Hanken Grotesk", sans-serif'; x.fillText(enc, 256, 140); x.font = '600 26px "Hanken Grotesk", sans-serif'; x.fillStyle = "#b8d8b0"; x.fillText("each letter moved forward by 1 (A→B)", 256, 206); this.esBoardT.needsUpdate = true; },
+      word: (enc, k) => { const c = this.esBoardC, x = c.getContext("2d"); x.fillStyle = "#17241c"; x.fillRect(0, 0, 512, 256); x.fillStyle = "#f2f0e0"; x.textAlign = "center"; x.font = '700 40px "Hanken Grotesk", sans-serif'; x.fillText("SECRET WORD", 256, 56); x.font = '800 78px "Hanken Grotesk", sans-serif'; x.fillText(enc, 256, 140); x.font = '600 26px "Hanken Grotesk", sans-serif'; x.fillStyle = "#b8d8b0"; x.fillText(`each letter moved forward by ${k || 1} (A→${String.fromCharCode(65 + (k || 1))})`, 256, 206); this.esBoardT.needsUpdate = true; },
+      paper: (txt) => this.esNote(this.esPaper, ["", txt || "", ""], {bg: "#f6f1e2", ink: "#1a1a1a", big: 1}),
+      clock: (h, m) => { this.esClockT = h == null ? null : {h, m}; },
+      globe: (land) => this.esNote(this.esTag, ["📍 THE PIN IS IN", "THE CAPITAL OF", land || "?"], {bg: "#efe2bf", ink: "#3a2412"}),
+      chest: (a, b) => this.esNote(this.esLid, a == null ? ["", "LOCKED", ""] : [`▲ + ▲ = ${a*2}`, `▲ + ■ = ${a + b}`, "■ = ?"], {bg: "#e8dcc0", ink: "#2a1a0a"}),
       seq: (arr) => { this.esSeq = arr.slice(); this.esSeqT = 0; },
       open: (on) => { this.esWant = on ? 1 : 0; },
-      reset: () => { this.esWant = 0; this.esSeq = null; }
+      reset: () => { this.esWant = 0; this.esSeq = null; this.esClockT = null; try{ this.esApi.paper("· · ·"); this.esApi.globe("?"); this.esApi.chest(); }catch(e){} }
     };
-    this.esApi.code("000"); this.esApi.word("???");
+    try{ this.esExtra(g, floorM, wall); }catch(e){ console.warn(e); }
+    this.esApi.code("000"); this.esApi.word("???"); this.esApi.reset();
     g.add(new T.HemisphereLight(0xffd8b0, 0x2a1a10, .6));
     try{ this.enh_escape(g); }catch(e){ console.warn(e); }
     return {id: "escape", name: "Escape Room", group: g, floorY: 0, fog: new T.FogExp2(0x120c08, .035), exposure: .9, bloom: .35,
@@ -4267,7 +4292,8 @@ const Lounge = {
       onMood: m => { this.esLamp.color.setHex(m.warm || 0xffc070); },
       update: (dt, t, A) => {
         this.esLamp.intensity = .85 + Math.sin(t*9)*.05 + Math.sin(t*23)*.03;
-        const d = new Date(); this.esHand.rotation.z = -(d.getSeconds()/60)*Math.PI*2;
+        const d = new Date(), CT = this.esClockT; this.esHand.rotation.z = CT ? 0 : -(d.getSeconds()/60)*Math.PI*2; this.esHand.visible = !CT;
+        if (this.esHH){ const hh = CT ? CT.h % 12 + CT.m/60 : d.getHours() % 12 + d.getMinutes()/60, mi = CT ? CT.m : d.getMinutes(); this.esHH.rotation.z = -hh/12*Math.PI*2; this.esMH.rotation.z = -mi/60*Math.PI*2; }
         // the blink pattern repeats: each lamp lights for a moment, then a pause
         this.esBulbs.forEach(([b, gl]) => { b.material.emissiveIntensity = .05; gl.material.opacity = 0; });
         if (this.esSeq){ this.esSeqT += dt; const per = .9, n = this.esSeq.length, cyc = n*per + 3.5, tt = this.esSeqT % cyc; if (tt < n*per){ const i = Math.floor(tt/per), on = (tt % per) < per*.7; if (on){ const [b, gl] = this.esBulbs[this.esSeq[i]]; b.material.emissiveIntensity = 1.6; gl.material.opacity = .9; } } }
@@ -4309,10 +4335,10 @@ const Lounge = {
     this.wTrim(g, W, D, H, zc, M.walnut);
     // tatami mats around the circle
     const [tc, tx] = Tex.canvas(256, 256); tx.fillStyle = "#c8b97a"; tx.fillRect(0, 0, 256, 256); for (let y = 0; y < 256; y += 3){ tx.fillStyle = `rgba(90,80,30,${.08 + Math.random()*.08})`; tx.fillRect(0, y, 256, 1); } tx.fillStyle = "#2a3a24"; tx.fillRect(0, 0, 256, 10); tx.fillRect(0, 246, 256, 10); Tex.noise(tx, 256, 256, 8);
-    const tm = this.wNormalMat(tc, [1, 1], {ns: 2, m: {roughness: .85}});
+    const tm = this.wNormalMat(tc, [1, 1], {ns: 2, m: {roughness: .85}}); try{ Home.hfSwap("tatami", tm.map, tm.normalMap, 2); }catch(e){}
     for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++){ const m = this.add(new T.Mesh(new T.BoxGeometry(1.8, .03, .9), tm), g, false, true); m.position.set(-3.0 + i*1.85, .015, -7.1 + j*.95 + (i % 2)*.0); if (i % 2) { m.rotation.y = 0; } }
     // shoji screens glowing softly on the side walls
-    const paper = new T.MeshStandardMaterial({color: 0xfff4dc, emissive: 0xffd8a0, emissiveIntensity: .35, roughness: .9}), lat = M.walnut;
+    const paper = new T.MeshStandardMaterial({color: 0xfff4dc, emissive: 0xffd8a0, emissiveIntensity: .35, roughness: .9}), lat = M.walnut; try{ Home.hfMapInto(paper, "shoji", [1, 1]).then(ok => { if (ok){ paper.emissiveMap = paper.map; paper.needsUpdate = true; } }); }catch(e){}
     for (const sx of [-1, 1]) for (let k = 0; k < 3; k++){ const z = -8 + k*3.1, x = sx*(W/2 - .05), p = this.add(new T.Mesh(new T.PlaneGeometry(2.4, 2.6), paper), g, false); p.position.set(x, 1.65, z); p.rotation.y = -sx*Math.PI/2;
       for (let i = 0; i <= 4; i++) this.wBox(g, .04, 2.66, .04, lat, x - sx*.02, 1.65, z - 1.2 + i*.6, false); for (let i = 0; i <= 5; i++) this.wBox(g, .04, .04, 2.44, lat, x - sx*.02, .35 + i*.52, z, false); }
     // moonlight through the round window, and drifting incense
@@ -4326,6 +4352,9 @@ const Lounge = {
     for (const [x, z] of [[3.6, -9.4], [4.4, -9.4], [5.2, -9.4]]) this.asset(g, "candles", {x, z, h: .38}); this.wGlow(g, 0xffa040, 1.4, 4.4, .35, -9.3, .35);
     this.asset(g, "coals", {x: -2.6, z: -9.2, h: .4}); this.wSmoke(g, -2.6, .45, -9.2, 7);
     this.asset(g, "lantern", {x: -2.4, z: -2.2, h: .55}); this.asset(g, "lantern", {x: -6.4, z: -5.4, h: .55});
+    // Higgsfield 3D props: bonsai trees on stands, and stone lanterns by the moon window
+    for (const [x, z, r] of [[-5.2, -9.2, .4], [5.6, -6.6, -1.2]]){ this.wBox(g, .7, .5, .5, M.walnut, x, .25, z); this.asset(g, "hf:pzen/bonsai", {x, y: .5, z, h: .62, ry: r}); }
+    for (const [x, z, r] of [[-3.0, -9.3, .3], [3.0, -9.3, -.3]]){ const st = this.wCyl(g, .18, .22, .9, this.stdMat(0x8a857a, .9), x, .45, z, 8); this.asset(g, "hf:pzen/toro", {x, z, h: 1.35, ry: r, replace: st}); this.wGlow(g, 0xffc070, .5, x, .95, z, .5); }
     // stepping stones from the door to the circle
     for (let i = 0; i < 5; i++){ const s = this.add(new T.Mesh(new T.CylinderGeometry(.28, .3, .04, 10), this.stdMat(0x8a857a, .9)), g, false, true); s.position.set(.3 + Math.sin(i)*.25, .02, .6 - i*.7); s.scale.z = .8; }
     // a couple more people meditating
@@ -4336,7 +4365,7 @@ const Lounge = {
     this.wTrim(g, W, D, H, zc, this.stdMat(0x1a1c20, .6), {crown: false});
     // rubber flooring gets bumps; a wooden lifting platform
     const [pc, px] = Tex.canvas(256, 256); px.fillStyle = "#7a5a3a"; px.fillRect(0, 0, 256, 256); for (let i = 0; i < 8; i++){ px.fillStyle = `hsl(28,${35 + Math.random()*15}%,${32 + Math.random()*12}%)`; px.fillRect(0, i*32, 256, 30); } Tex.noise(px, 256, 256, 14);
-    const plat = this.add(new T.Mesh(new T.BoxGeometry(2.6, .05, 2.6), this.wNormalMat(pc, [1, 1], {ns: 3, m: {roughness: .5}})), g, false, true); plat.position.set(-1.2, .025, -8.6);
+    const plat = this.add(new T.Mesh(new T.BoxGeometry(2.6, .05, 2.6), this.wNormalMat(pc, [1, 1], {ns: 3, m: {roughness: .5}})), g, false, true); plat.position.set(-1.2, .025, -8.6); try{ Home.hfSwap("platform", plat.material.map, plat.material.normalMap, 3); }catch(e){}
     for (const sx of [-1, 1]) this.wBox(g, .6, .05, 2.6, this.stdMat(0x111111, .95), -1.2 + sx*1.6, .025, -8.6, false);
     // high windows with the city outside, and sunlight streaming in
     const sky = new T.MeshBasicMaterial({map: Tex.make(Tex.skyline()), toneMapped: false});
@@ -4376,10 +4405,37 @@ const Lounge = {
     // a bigger class
     for (const [x, z] of [[-3.6, -3.0], [3.6, -3.0], [-1.2, -1.2], [1.6, -1.2]]) this.person(g, x, 0, z, Math.PI, "dance", {gender: Math.random() < .5 ? "f" : "m"});
   },
+  /* little paper/parchment notes the escape room writes its clues on */
+  esNote(o, lines, {bg = "#f6f1e2", ink = "#222", big = 0} = {}){ if (!o) return; const c = o.userData.c, x = c.getContext("2d"), W = c.width, H = c.height;
+    x.fillStyle = bg; x.fillRect(0, 0, W, H); for (let i = 0; i < 900; i++){ x.fillStyle = `rgba(90,60,20,${Math.random()*.05})`; x.fillRect(Math.random()*W, Math.random()*H, 2, 2); }
+    x.strokeStyle = "rgba(60,40,20,.35)"; x.lineWidth = 4; x.strokeRect(6, 6, W - 12, H - 12); x.fillStyle = ink; x.textAlign = "center"; x.textBaseline = "middle";
+    lines.forEach((l, i) => { const sz = big && i === 1 ? 74 : i === 2 ? 46 : 34; x.font = `800 ${sz}px "Courier New", monospace`; let s = sz; while (x.measureText(l).width > W - 30 && s > 14){ s -= 2; x.font = `800 ${s}px "Courier New", monospace`; } x.fillText(l, W/2, H*(.24 + i*.27)); });
+    o.userData.t.needsUpdate = true; },
+  /* the escape room's newer clue spots, real (Higgsfield) props and photo textures */
+  esExtra(g, floorM, wall){
+    const T = THREE, M = this.mats, note = (w, h, x, y, z, rx = 0, ry = 0) => { const c = document.createElement("canvas"); c.width = 512; c.height = Math.round(512*h/w); const t = Tex.make(c), m = this.add(new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({map: t, toneMapped: false})), g, false); m.position.set(x, y, z); m.rotation.set(rx, ry, 0); m.userData.c = c; m.userData.t = t; return m; };
+    // typewriter on the desk, with its sheet of paper
+    const tw = this.wBox(g, .42, .16, .3, M.black, -2.1, .9, -8.15); this.asset(g, "hf:pescape/typewriter", {x: -2.1, y: .82, z: -8.15, h: .3, replace: tw});
+    this.esPaper = note(.42, .3, -2.1, 1.22, -8.26, -.15);
+    // the clock gets hour and minute hands
+    const face = new T.Vector3(3.9, 1.8, -8.6 + .225); this.esHH = new T.Group(); this.esMH = new T.Group(); this.esHH.position.copy(face); this.esMH.position.copy(face).add(new T.Vector3(0, 0, .005)); g.add(this.esHH); g.add(this.esMH);
+    const hm = new T.Mesh(new T.BoxGeometry(.022, .1, .006), M.black); hm.position.y = .045; this.esHH.add(hm); const mm = new T.Mesh(new T.BoxGeometry(.014, .16, .006), M.black); mm.position.y = .07; this.esMH.add(mm);
+    for (let i = 0; i < 12; i++){ const tick = new T.Mesh(new T.BoxGeometry(.012, .03, .004), M.black), a = i/12*Math.PI*2; tick.position.set(face.x + Math.sin(a)*.17, face.y + Math.cos(a)*.17, face.z - .002); tick.rotation.z = -a; g.add(tick); }
+    // the globe with a pinned note, and a treasure chest with a picture lock
+    const gb = this.add(new T.Mesh(new T.SphereGeometry(.3, 20, 14), this.stdMat(0xc8b080, .6)), g); gb.position.set(-3.3, .75, -3.8); const gst = this.wCyl(g, .04, .18, .45, M.walnut, -3.3, .22, -3.8, 10);
+    this.asset(g, "hf:pescape/globe", {x: -3.3, z: -3.8, h: 1.05, ry: .6, replace: [gb, gst]});
+    this.wBox(g, .05, 1.0, .05, M.walnut, -2.75, .5, -3.65); this.esTag = note(.46, .34, -2.75, 1.12, -3.62, 0, .35);
+    const cb = this.wBox(g, .9, .5, .5, M.walnut, 3.0, .25, -2.6); this.asset(g, "hf:pescape/chest", {x: 3.0, z: -2.6, h: .58, ry: -.35, replace: cb});
+    this.esLid = note(.4, .3, 2.95, .68, -2.45, -1.05, -.35);
+    // light the clue spots so they read in the dim study
+    if (!(typeof GFX !== "undefined" && GFX.level === "low")) for (const [x, y, z, i] of [[0, 2.6, -7.2, .8], [0, 2.4, -2.6, .7]]){ const l = new T.PointLight(0xffd8a8, i, 7, 2); l.position.set(x, y, z); g.add(l); }
+    // photo textures (Higgsfield): herringbone floor and walnut panelling
+    try{ Home.hfSwap("parquet", floorM.map, floorM.normalMap, 4).then(ok => { if (ok) floorM.color.set(0xc8b0a0); }); Home.hfSwap("panel", wall.map, null, 3, wall); }catch(e){}
+  },
   enh_escape(g){
     const T = THREE, M = this.mats, U = typeof GFX !== "undefined" && GFX.level === "ultra", W = 10, D = 10, H = 3.2, zc = -4;
     // wallpaper above a wood chair rail
-    const wp = this.wNormalMat(this.wPaper("#3a1c22", "rgba(200,160,90,.55)"), [3, 1], {ns: 1.5, m: {roughness: .8}});
+    const wp = this.wNormalMat(this.wPaper("#3a1c22", "rgba(200,160,90,.55)"), [3, 1], {ns: 1.5, m: {roughness: .8}}); try{ Home.hfSwap("damask", wp.map, wp.normalMap, 1.5, wp); }catch(e){}
     for (const [w, x, z, ry] of [[W, 0, zc - D/2 + .015, 0], [D, -W/2 + .015, zc, Math.PI/2], [D, W/2 - .015, zc, -Math.PI/2], [W, 0, zc + D/2 - .015, Math.PI]]){ const p = this.add(new T.Mesh(new T.PlaneGeometry(w, H - 1.15), wp), g, false, true); p.position.set(x, 1.15 + (H - 1.15)/2, z); p.rotation.y = ry; }
     this.wTrim(g, W, D, H, zc, M.walnut, {rail: 1.12});
     // coffered ceiling
@@ -6198,7 +6254,9 @@ const Lounge = {
     // ---- wet street: dark asphalt with a sheen, sidewalks and the crossing stripes ----
     const ac = Tex.asphalt(), wetM = new T.MeshStandardMaterial({map: Tex.make(ac, {repeat: [14, 24]}), normalMap: Tex.make(Tex.normal(ac, 2), {repeat: [14, 24], srgb: false}), normalScale: new T.Vector2(.4, .4), color: 0x3a3a46, roughness: .16, metalness: .55, envMapIntensity: 1.4});
     const street = add(new T.Mesh(new T.PlaneGeometry(60, 140), wetM), g, false, true); street.rotation.x = -Math.PI/2; street.position.z = -40; this.walkable(street); this.surface(street);
+    try{ Home.hfSwap("wetroad", wetM.map, wetM.normalMap, 2).then(ok => { if (ok){ wetM.map.repeat.set(7, 16); wetM.normalMap.repeat.set(7, 16); wetM.color.set(0x9a9aa8); } }); }catch(e){}
     const cc = Tex.concrete(), walkM = new T.MeshStandardMaterial({map: Tex.make(cc, {repeat: [2, 40]}), color: 0x6a6a78, roughness: .3, metalness: .3});
+    try{ Home.hfSwap("paving", walkM.map, null, 2).then(ok => { if (ok) walkM.color.set(0x9a9aa8); }); }catch(e){}
     for (const s of [-1, 1]){ const sw = add(new T.Mesh(new T.BoxGeometry(4, .14, 140), walkM), g, false, true); sw.position.set(s*10, .07, -40); this.walkable(sw); this.surface(sw); }
     { const [c, x] = Tex.canvas(1024, 1024); x.fillStyle = "rgba(240,240,250,.82)";
       for (let i=0;i<14;i++){ x.fillRect(60 + i*66, 20, 34, 170); x.fillRect(60 + i*66, 834, 34, 170); x.fillRect(20, 60 + i*66, 170, 34); x.fillRect(834, 60 + i*66, 170, 34); }
@@ -6271,6 +6329,10 @@ const Lounge = {
       this.tkLanterns = [];
       for (const z of [-1.4, 0, 1.4]){ const ln = add(new T.Mesh(new T.SphereGeometry(.22, 16, 12), new T.MeshStandardMaterial({color: 0xff3a2a, emissive: 0xff2a10, emissiveIntensity: 1.6, roughness: .6})), g, false); ln.scale.y = 1.3; ln.position.set(RX - 1.05, 2.45, RZ + z);
         const s = new T.Sprite(new T.SpriteMaterial({map: glowT, color: 0xff5a30, transparent: true, depthWrite: false, blending: T.AdditiveBlending})); s.scale.setScalar(1.3); s.position.copy(ln.position); g.add(s); this.tkLanterns.push(ln); }
+      for (const ln of this.tkLanterns) this.asset(g, "hf:ptokyo/chochin", {x: ln.position.x, y: ln.position.y - .32, z: ln.position.z, h: .62, ry: Math.PI/2, replace: ln});
+      // a row of red paper lanterns (Higgsfield 3D) strung along both sidewalks
+      for (const sx of [-1, 1]) for (let i = 0; i < 6; i++){ const x = sx*8.6, z = 2 - i*7, y = 3.1; add(new T.Mesh(new T.CylinderGeometry(.006, .006, .5, 4), M.black), g, false).position.set(x, y + .6, z);
+        this.asset(g, "hf:ptokyo/chochin", {x, y, z, h: .62, ry: sx*Math.PI/2}); const gs = new T.Sprite(new T.SpriteMaterial({map: glowT, color: 0xff5a30, transparent: true, opacity: .8, depthWrite: false, blending: T.AdditiveBlending})); gs.scale.setScalar(1.1); gs.position.set(x, y + .3, z); g.add(gs); }
       const sl = new T.PointLight(0xffb070, 1.5, 7, 2); sl.position.set(RX - .6, 2.1, RZ); g.add(sl);
       for (let k=0;k<3;k++){ const bowl = add(new T.Mesh(Props.lathe([[0, 0], [.05, 0], [.1, .06], [.11, .08]], 16), new T.MeshStandardMaterial({color: 0xf2f2f2, roughness: .3, side: T.DoubleSide})), g); bowl.position.set(RX - .55, 1.23, RZ - 1.2 + k*1.2);
         const soup = add(new T.Mesh(new T.CircleGeometry(.1, 16).rotateX(-Math.PI/2), new T.MeshStandardMaterial({color: 0xc88a3a, roughness: .2})), g, false); soup.position.set(RX - .55, 1.3, RZ - 1.2 + k*1.2); }
@@ -8871,6 +8933,7 @@ const Lounge = {
     const c = this.assetCache || (this.assetCache = {});
     if (!c[name]) c[name] = (async () => {
       if (!THREE.GLTFLoader) return null;
+      if (name.startsWith("hf:")) return HFP.get(name.slice(3));
       const L = new THREE.GLTFLoader();
       for (const h of this.ASSET_HOSTS){ try{ const g = await L.loadAsync(h + name + ".glb"); return g.scene; }catch(e){} }
       return null;
@@ -13344,6 +13407,7 @@ const Mogul = {
     {id: "brawl", icon: "🥊", name: "Bar Brawl", pay: [80, 260], blurb: "Arcade mode: rowdy troublemakers come at you. Block, dodge and knock them out. In VR, throw real punches."}
   ],
   VENUES: [
+    {id: "popup", world: "coffee", name: "Pop-up Lounge", price: 500, cap: 60, cover: 8, drink: 7, rent: 50},
     {id: "basement", world: "divebar", name: "The Basement", price: 2000, cap: 120, cover: 10, drink: 9, rent: 180},
     {id: "turnup", world: "club", name: "Club Turn Up", price: 8000, cap: 300, cover: 20, drink: 12, rent: 600},
     {id: "skyline", world: "rooftop", name: "Skyline Rooftop", price: 20000, cap: 260, cover: 30, drink: 15, rent: 1100},
@@ -13373,7 +13437,8 @@ const Mogul = {
   d(){ const d = Object.assign({cash: 300, xp: {}, tut: {}, best: {}, clubs: {}, day: 1, ran: {}, shifts: 0, fame: 0, earned: 0}, store.get("mogul", {})); for (const k of ["xp", "tut", "best", "clubs", "ran"]) d[k] = d[k] || {}; return d; },
   put(d){ store.set("mogul", d); },
   level(role, d = this.d()){ const xp = d.xp[role] || 0; return Math.min(10, 1 + Math.floor(Math.sqrt(xp/60))); },
-  worth(d = this.d()){ let w = d.cash; for (const [id, c] of Object.entries(d.clubs)){ const v = this.VENUES.find(x => x.id === id); if (!v) continue; w += v.price*.8; for (const u of this.UPGRADES) for (let i = 0; i < (c.up && c.up[u.id] || 0); i++) w += u.cost[i]*.5; } return Math.round(w); },
+  worth(d = this.d()){ let w = d.cash; for (const [id, c] of Object.entries(d.clubs)){ const v = this.VENUES.find(x => x.id === id); if (!v) continue; w += v.price*.8; for (const u of this.UPGRADES) for (let i = 0; i < (c.up && c.up[u.id] || 0); i++) w += this.upCost(u, i, v)*.5; } return Math.round(w); },
+  upCost(u, lv, v){ return Math.round(u.cost[lv]*Math.max(.3, Math.min(1, (v && v.price || 2000)/2000))/10)*10; },
   title(d){ const w = this.worth(d); let t = this.TITLES[0][1]; for (const [n, l] of this.TITLES) if (w >= n) t = l; return t; },
   money(n){ return (n < 0 ? "-$" : "$") + Math.abs(Math.round(n)).toLocaleString(); },
 
@@ -13384,6 +13449,9 @@ const Mogul = {
     const box = this.box = document.createElement("div"); box.className = "mogul"; box.hidden = true; box.appendChild(c);
     const mini = this.miniBtn = document.createElement("button"); mini.type = "button"; mini.className = "mogul-mini"; mini.textContent = "▾"; mini.title = "Shrink the panel"; box.appendChild(mini);
     mini.addEventListener("click", () => { box.classList.toggle("small"); mini.textContent = box.classList.contains("small") ? "▴" : "▾"; });
+    // ⛶ expand: the panel fills the whole screen (and turns the phone sideways when it can), so phone players can read and tap everything
+    const xp = this.xpBtn = document.createElement("button"); xp.type = "button"; xp.className = "mogul-xp"; xp.textContent = "⛶"; xp.title = "Expand to full screen"; xp.setAttribute("aria-label", "Expand to full screen"); box.appendChild(xp);
+    xp.addEventListener("click", () => this.expand(!box.classList.contains("xpand")));
     ($("#stage") || document.body).appendChild(box);
     const at = e => { const r = c.getBoundingClientRect(); return {px: (e.clientX - r.left)/r.width*this.W, py: (e.clientY - r.top)/r.height*this.H}; };
     const hit = p => this.regions.find(r => p.px >= r.X && p.px <= r.X + r.W && p.py >= r.Y && p.py <= r.Y + r.H);
@@ -13480,7 +13548,12 @@ const Mogul = {
     if ($("#stage").hidden || !Lounge.built){ openStage("lounge"); const w = setInterval(() => { if (Lounge.built && Lounge.worlds[Lounge.worldId]){ clearInterval(w); setTimeout(go, 800); } }, 300); setTimeout(() => clearInterval(w), 60000); }
     else go();
   },
-  close(){ if (this.game && this.view === "game") this.quitGame(true); this.on = false; if (this.box) this.box.hidden = true; if (this.mesh) this.mesh.visible = false; },
+  expand(on){ const box = this.box; if (!box) return; box.classList.toggle("xpand", on); document.body.classList.toggle("mg-xp", !!on); box.classList.remove("small"); if (this.miniBtn) this.miniBtn.textContent = "▾"; if (this.xpBtn){ this.xpBtn.textContent = on ? "🗗" : "⛶"; this.xpBtn.title = on ? "Back to the small panel" : "Expand to full screen"; }
+    try{ if (on){ const el = document.documentElement; if (!document.fullscreenElement && el.requestFullscreen && matchMedia("(pointer: coarse)").matches) el.requestFullscreen().then(() => { try{ screen.orientation && screen.orientation.lock && screen.orientation.lock("landscape").catch(() => {}); }catch(e){} }).catch(() => {}); }
+      else if (document.fullscreenElement && this._fsByUs !== false) document.exitFullscreen().catch(() => {}); }catch(e){}
+    store.set("mogulXp", !!on); this.draw(); },
+  phone(){ return Math.min(innerWidth, innerHeight) < 560 || innerWidth < 760; },
+  close(){ if (this.game && this.view === "game") this.quitGame(true); this.on = false; if (this.box && this.box.classList.contains("xpand")) this.expand(false); if (this.box) this.box.hidden = true; if (this.mesh) this.mesh.visible = false; },
   toMenu(){ if (this.game && this.view === "game") this.quitGame(true); this.view = "menu"; this.draw(); },
   /* ---------- the menu: pick a job ---------- */
   drawMenu(){
@@ -13510,6 +13583,7 @@ const Mogul = {
   },
   /* ---------- running a game ---------- */
   startGame(role, train){
+    if (this.phone() && this.box && !this.box.classList.contains("xpand") && !store.get("xpTip", false)){ store.set("xpTip", true); setTimeout(() => toast("📱 Tip: tap ⛶ at the top of the game panel to play full screen."), 1200); }
     const G = this.GAMES[role]; if (!G) return;
     // wellness activities happen in their own room: go there first
     if (G.world && Lounge.worldId !== G.world){ Lounge.chooseWorld(G.world); this.say("Heading there…"); const t = setInterval(() => { if (Lounge.worldId === G.world && Lounge.worlds[G.world]){ clearInterval(t); setTimeout(() => this.startGame(role, train), 900); } }, 300); setTimeout(() => clearInterval(t), 60000); return; }
@@ -13525,7 +13599,7 @@ const Mogul = {
   strike(msg){ const s = this.shift; if (!s) return; if (!s.train) s.strikes++; this.say((s.train ? "Practice tip: " : `Strike ${s.strikes}/${s.maxStrikes}: `) + msg, true); if (!s.train && s.strikes >= s.maxStrikes) setTimeout(() => this.endGame("Three strikes. The manager sent you home early."), 900); },
   score(v, money, msg){ const s = this.shift; s.scores.push(Math.max(0, Math.min(100, +v || 0))); if (money) s.earn += money; if (msg) this.say(msg, v < 50); },
   endGame(why){
-    const s = this.shift, g = this.game; if (!s || s.over) return; s.over = true; { const pb = $("#mgPeek"); if (pb && !pb.hidden){ pb.hidden = true; if (this.on) this.box.hidden = false; } }
+    const s = this.shift, g = this.game; if (!s || s.over) return; s.over = true; { this.peeking = false; const pb = $("#mgPeek"); if (pb && !pb.hidden){ pb.hidden = true; if (this.on) this.box.hidden = false; } }
     try{ g.end && g.end(); }catch(e){}
     const d = this.d(), avg = s.scores.length ? Math.round(s.scores.reduce((a, b) => a + b, 0)/s.scores.length) : 0;
     let pay = 0;
@@ -13584,7 +13658,7 @@ const Mogul = {
   update(dt){
     if (!this.on) return;
     const vr = Lounge.renderer.xr.isPresenting;
-    if (this.box) this.box.hidden = vr || !!(this.game && this.game.padEl && this.view === "game");
+    if (this.box) this.box.hidden = vr || !!this.peeking || !!(this.game && this.game.padEl && this.view === "game");
     if (this.mesh) this.mesh.visible = vr;
     if (vr && this.mesh && !this.mesh.userData.placed){ this.mesh.userData.placed = true; this.placePanel(); }
     if (!vr && this.mesh) this.mesh.userData.placed = false;
@@ -14054,7 +14128,9 @@ Object.assign(Mogul, {
   },
   // a game that's just a sequence of kit stages (bottle service, promoter, celebrity, birthday)
   /* hide the panel for a moment to look at the room (the escape room's clues are in the world) */
-  peekRoom(){ if (!this.box) return; this.box.hidden = true; let b = $("#mgPeek"); if (!b){ b = document.createElement("button"); b.id = "mgPeek"; b.type = "button"; b.className = "primary"; b.textContent = "🧩 Back to the puzzle"; b.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);bottom:90px;z-index:60;padding:12px 20px;border-radius:999px;font:800 16px var(--f-display,system-ui)"; document.body.appendChild(b); b.addEventListener("click", () => { b.hidden = true; if (this.on) this.box.hidden = false; this.draw(); }); } b.hidden = false; },
+  peekRoom(look){ if (!this.box) return; this.box.hidden = true; this.peeking = true;
+    if (look && !this.vr()) try{ const [ax, ay, az] = look.at, [fx, fz] = look.from; this.moveMe(fx, fz, {x: ax, z: az}); const L = Lounge; setTimeout(() => { try{ const hp = L.headPos(); L.pitch = Math.max(-1, Math.min(1, Math.atan2(ay - hp.y, Math.hypot(ax - hp.x, az - hp.z)))); L.userLooked = true; }catch(e){} }, 60); }catch(e){ console.warn(e); }
+    let b = $("#mgPeek"); if (!b){ b = document.createElement("button"); b.id = "mgPeek"; b.type = "button"; b.className = "primary"; b.textContent = "🧩 Back to the puzzle"; b.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);bottom:90px;z-index:60;padding:12px 20px;border-radius:999px;font:800 16px var(--f-display,system-ui)"; document.body.appendChild(b); b.addEventListener("click", () => { b.hidden = true; this.peeking = false; if (this.on) this.box.hidden = false; this.draw(); }); } b.hidden = false; },
   scripted(def){ return Object.assign({
     start(s){ this.stages = this.make(s); this.si = 0; try{ this.setup && this.setup(s); }catch(e){ console.warn(e); } this.next(); },
     next(){ const m = this.m; if (this.si >= this.stages.length){ return m.endGame(this.outro ? this.outro() : ""); }
@@ -14062,7 +14138,7 @@ Object.assign(Mogul, {
       if (st.type === "custom") return st.run(this);
       m.kit(this, Object.assign({}, st, {done: sc => { if (sc !== null && sc !== undefined){ m.score(sc, st.cash ? Math.round(st.cash*sc/100) : 0); if (st.log) m.shift.log.push(`${st.log}: ${Math.round(sc)}%`); if (sc < 30 && st.strike) m.strike(st.strike); } try{ st.after && st.after(sc); }catch(e){} setTimeout(() => this.next(), 200); }})); },
     update(dt){ this.m.kitUpdate(this, dt); this.tick && this.tick(dt); },
-    draw(m){ let Y = 82; if (this.peek && !m.vr()) m.btn("peek", m.W - 290, 70, 262, 44, "👀 Look around", () => m.peekRoom(), {size: 19}); if (!m.shift.train) { m.text(`Stage ${Math.min(this.si, this.stages.length)}/${this.stages.length}   💵 ${m.money(m.shift.earn)}${this.well ? "" : `   ❌ ${m.shift.strikes}/${m.shift.maxStrikes}`}`, 28, Y + 20, 22, "#ffd87a", 700); Y += 30; }
+    draw(m){ let Y = 82; if (this.peek && !m.vr()){ const cur = this.stages && this.stages[this.si - 1], lk = cur && cur.look; m.btn("peek", m.W - 300, 70, 272, 44, lk ? "🔍 Show me the clue" : "👀 Look around", () => m.peekRoom(lk), {size: 19, primary: !!lk}); } if (!m.shift.train) { m.text(`Stage ${Math.min(this.si, this.stages.length)}/${this.stages.length}   💵 ${m.money(m.shift.earn)}${this.well ? "" : `   ❌ ${m.shift.strikes}/${m.shift.maxStrikes}`}`, 28, Y + 20, 22, "#ffd87a", 700); Y += 30; }
       else { m.text(`🎓 Training · stage ${Math.min(this.si, this.stages.length)}/${this.stages.length}`, 28, Y + 20, 22, "#9fe8ff", 700); Y += 30; }
       if (this.kit) m.kitDraw(this, Y); else if (this.drawExtra) this.drawExtra(m, Y); },
     key(){ return false; }
@@ -14217,30 +14293,39 @@ Mogul.GAMES.bouncer = {
     if (!s.train){ m.text(`Guest ${Math.min(this.count + 1, this.goal)}/${this.goal}   💵 ${m.money(s.earn)}   ❌ ${s.strikes}/${s.maxStrikes}`, 28, Y + 20, 22, "#ffd87a", 700); Y += 34; }
     if (this.kit){ m.kitDraw(this, Y); return; }
     if (this.fight && this.fight.stage === "walk"){ m.text("🫱 Grab him (hold grip) and walk him to the green marker by the door.", 28, Y + 40, 24, "#fff", 700, "left", W - 56); m.text(`⏱ ${Math.max(0, Math.ceil(35 - this.fight.t))}s`, 28, Y + 80, 22, "#ffd87a", 700); return; }
-    // tonight's rules
-    m.rr(x, 24, Y, 300, 330, 16); x.fillStyle = "rgba(255,255,255,.05)"; x.fill();
-    m.text("TONIGHT'S RULES", 40, Y + 28, 16, "#ffc21a", 800);
-    let ry = Y + 58; for (const l of ["🔞 21 and over only", `👕 No ${this.rules.dress}`, `👥 Capacity: ${this.rules.inside}/${this.rules.cap}`, "⭐ VIP list:"]) { m.text(l, 40, ry, 19, this.rules.inside >= this.rules.cap && l.startsWith("👥") ? "#ff8a7a" : "#fff", 600, "left", 270); ry += 30; }
-    for (const n of this.vipList) { m.text("   " + n, 40, ry, 17, "rgba(255,255,255,.75)", 500, "left", 270); ry += 24; }
-    const g = this.guest; if (!g){ m.text("Next guest coming up…", 350, Y + 40, 22, "rgba(255,255,255,.6)"); return; }
-    // the ID card
-    const cx = 344, cy = Y, cw = 380, ch = 230; m.rr(x, cx, cy, cw, ch, 18); const grd = x.createLinearGradient(cx, cy, cx + cw, cy + ch); grd.addColorStop(0, "#d8e8f0"); grd.addColorStop(1, "#a8c8d8"); x.fillStyle = grd; x.fill();
-    x.fillStyle = "#1a3a5a"; x.fillRect(cx, cy + 10, cw, 34); m.text("GEORGIA · DRIVER LICENSE", cx + cw/2, cy + 33, 17, "#fff", 800, "center");
-    m.face(g.idAv, cx + 16, cy + 56, 100);
-    const f = d => d.toLocaleDateString("en-US", {month: "2-digit", day: "2-digit", year: "numeric"});
-    [["NAME", g.name], ["DOB", f(g.dob)], ["EXPIRES", f(g.exp)], ["ID", "GA" + (1e7 + Math.floor(g.dob.getTime()/1e5) % 9e7)]].forEach(([k, v], i) => { m.text(k, cx + 136, cy + 74 + i*40, 13, "#3a5a7a", 800); m.text(v, cx + 136, cy + 94 + i*40, 20, "#0a1a2a", 700, "left", cw - 150); });
-    // what you can see
-    const ix = 744; m.text("YOU SEE", ix, Y + 24, 16, "#ffc21a", 800); m.face(g.av, ix, Y + 36, 80);
-    let gy = Y + 40; for (const l of [`Wearing ${g.wear}`, g.drunk ? "Slurring, can barely stand" : "Steady, polite", `Carrying ${g.bag}`, g.claims ? "Says: “I'm on the list!”" : ""]) { if (!l) continue; gy = m.wrap(l, ix + 92, gy + 4, 17, W - ix - 116, "rgba(255,255,255,.85)") ; }
-    if (g.bagChecked) m.text(g.weapon ? "🔪 Bag: a pocket knife!" : "🎒 Bag: phone, keys, lip gloss", ix, Y + 200, 18, g.weapon ? "#ff8a7a" : "#b8ffd4", 700, "left", W - ix - 30);
-    if (g.listChecked) m.text(this.vipList.includes(g.name) ? "📋 On the list ✓" : "📋 Not on the list", ix, Y + 226, 18, this.vipList.includes(g.name) ? "#b8ffd4" : "#ff8a7a", 700, "left", W - ix - 30);
-    // decisions
-    const by = Y + 346;
-    m.btn("adm", 24, by, 230, 70, "✅ Let in", () => this.decide(true), {primary: true, size: 26});
-    m.btn("den", 266, by, 230, 70, "⛔ Deny", () => this.decide(false), {size: 26});
-    m.btn("bag", 508, by, 230, 70, "🎒 Check bag", () => { g.bagChecked = true; }, {size: 22, on: g.bagChecked});
-    m.btn("lst", 750, by, 250, 70, "📋 Check list", () => { g.listChecked = true; }, {size: 22, on: g.listChecked});
+    const g = this.guest, tap = (id, X, Y2, W2, H2) => m.regions.push({id, X, Y: Y2, W: W2, H: H2, fn: () => { this.zoom = this.zoom === id ? null : id; }});
+    const decide = (by = Y + 346) => { m.btn("adm", 24, by, 230, 70, "✅ Let in", () => { this.zoom = null; this.decide(true); }, {primary: true, size: 26}); m.btn("den", 266, by, 230, 70, "⛔ Deny", () => { this.zoom = null; this.decide(false); }, {size: 26});
+      if (g){ m.btn("bag", 508, by, 230, 70, "🎒 Check bag", () => { g.bagChecked = true; }, {size: 22, on: g.bagChecked}); m.btn("lst", 750, by, 250, 70, "📋 Check list", () => { g.listChecked = true; }, {size: 22, on: g.listChecked}); } };
+    // zoomed in: one card fills the panel (easy to read on a phone)
+    if (this.zoom && g){ const z = this.zoom;
+      m.btn("zid", 24, Y, 200, 50, "🪪 ID", () => { this.zoom = "id"; }, {on: z === "id", size: 22}); m.btn("zsee", 236, Y, 200, 50, "👀 Guest", () => { this.zoom = "see"; }, {on: z === "see", size: 22}); m.btn("zrul", 448, Y, 200, 50, "📜 Rules", () => { this.zoom = "rules"; }, {on: z === "rules", size: 22}); m.btn("zx", m.W - 224, Y, 200, 50, "✕ Zoom out", () => { this.zoom = null; }, {size: 22});
+      const Y2 = Y + 66, bz = m.H - 84, kk = Math.min(2.3, (bz - Y2 - 44)/230), kw = Math.min(kk, (m.W - 60)/380);
+      if (z === "id") this.idCard(m, g, (m.W - 380*kw)/2, Y2, kw);
+      else if (z === "see") this.seeCard(m, g, 40, Y2, Math.min(1.9, (bz - Y2 - 10)/250));
+      else this.rulesCard(m, 40, Y2, Math.min(1.45, (bz - Y2 - 10)/330));
+      decide(bz); return; }
+    this.rulesCard(m, 24, Y, 1); tap("rules", 24, Y, 300, 330);
+    if (!g){ m.text("Next guest coming up…", 350, Y + 40, 22, "rgba(255,255,255,.6)"); return; }
+    this.idCard(m, g, 344, Y, 1); tap("id", 344, Y, 380, 230);
+    this.seeCard(m, g, 744, Y, 1); tap("see", 744, Y, m.W - 744, 330);
+    m.text("🔍 Tap the ID, the guest or the rules to zoom in", 344, Y + 262, 18, "#9fe8ff", 700, "left", 400);
+    decide();
   },
+  rulesCard(m, X, Y, k){ const x = m.x; m.rr(x, X, Y, 300*k, 330*k, 16); x.fillStyle = "rgba(255,255,255,.05)"; x.fill();
+    m.text("TONIGHT'S RULES", X + 16*k, Y + 28*k, 16*k, "#ffc21a", 800);
+    let ry = Y + 58*k; for (const l of ["🔞 21 and over only", `👕 No ${this.rules.dress}`, `👥 Capacity: ${this.rules.inside}/${this.rules.cap}`, "⭐ VIP list:"]) { m.text(l, X + 16*k, ry, 19*k, this.rules.inside >= this.rules.cap && l.startsWith("👥") ? "#ff8a7a" : "#fff", 600, "left", 270*k); ry += 30*k; }
+    for (const n of this.vipList) { m.text("   " + n, X + 16*k, ry, 17*k, "rgba(255,255,255,.75)", 500, "left", 270*k); ry += 24*k; } },
+  idCard(m, g, cx, cy, k){ const x = m.x, cw = 380*k, ch = 230*k; m.rr(x, cx, cy, cw, ch, 18*k); const grd = x.createLinearGradient(cx, cy, cx + cw, cy + ch); grd.addColorStop(0, "#d8e8f0"); grd.addColorStop(1, "#a8c8d8"); x.fillStyle = grd; x.fill();
+    x.fillStyle = "#1a3a5a"; x.fillRect(cx, cy + 10*k, cw, 34*k); m.text("GEORGIA · DRIVER LICENSE", cx + cw/2, cy + 33*k, 17*k, "#fff", 800, "center");
+    m.face(g.idAv, cx + 16*k, cy + 56*k, 100*k);
+    const f = d => d.toLocaleDateString("en-US", {month: "2-digit", day: "2-digit", year: "numeric"});
+    [["NAME", g.name], ["DOB", f(g.dob)], ["EXPIRES", f(g.exp)], ["ID", "GA" + (1e7 + Math.floor(g.dob.getTime()/1e5) % 9e7)]].forEach(([kk, v], i) => { m.text(kk, cx + 136*k, cy + (74 + i*40)*k, 13*k, "#3a5a7a", 800); m.text(v, cx + 136*k, cy + (94 + i*40)*k, 20*k, "#0a1a2a", 700, "left", cw - 150*k); });
+    if (k > 1.2){ const now = new Date(), age = now.getFullYear() - g.dob.getFullYear() - (now < new Date(now.getFullYear(), g.dob.getMonth(), g.dob.getDate()) ? 1 : 0); m.text(`Today is ${f(now)}`, cx, cy + ch + 26, 22, "#ffd87a", 700, "left", cw); } },
+  seeCard(m, g, ix, Y, k){ m.text("YOU SEE", ix, Y + 24*k, 16*k, "#ffc21a", 800); m.face(g.av, ix, Y + 36*k, 80*k);
+    let gy = Y + 40*k; for (const l of [`Wearing ${g.wear}`, g.drunk ? "Slurring, can barely stand" : "Steady, polite", `Carrying ${g.bag}`, g.claims ? "Says: “I'm on the list!”" : ""]) { if (!l) continue; gy = m.wrap(l, ix + 92*k, gy + 4*k, 17*k, k > 1 ? m.W - ix - 92*k - 40 : m.W - ix - 116, "rgba(255,255,255,.85)"); }
+    const ly = Math.max(gy + 10*k, Y + 200*k);
+    if (g.bagChecked) m.text(g.weapon ? "🔪 Bag: a pocket knife!" : "🎒 Bag: phone, keys, lip gloss", ix, ly, 18*k, g.weapon ? "#ff8a7a" : "#b8ffd4", 700, "left", m.W - ix - 30);
+    if (g.listChecked) m.text(this.vipList.includes(g.name) ? "📋 On the list ✓" : "📋 Not on the list", ix, ly + 26*k, 18*k, this.vipList.includes(g.name) ? "#b8ffd4" : "#ff8a7a", 700, "left", m.W - ix - 30); },
   end(){ const m = this.m; try{ if (this.fight && this.fight.duel) Fight.stopDuel(this.fight.duel); }catch(e){} for (const sl of (Lounge.slots || []).filter(x => x.mogul)) m.despawn(sl); if (this.door && this.door.parent) this.door.parent.remove(this.door); }
 };
 
@@ -15078,8 +15163,70 @@ const QB = {
     ["What can you hold in your right hand but never in your left?", "Your left hand (or elbow)", "A pen", "A cup"],
     ["What has 13 hearts but no other organs?", "A deck of cards", "A hospital", "A valentine box"],
     ["What goes through cities and fields but never moves?", "A road", "A train", "The wind"],
-    ["What can't talk but will reply when spoken to?", "An echo", "A mirror", "A parrot"]
+    ["What can't talk but will reply when spoken to?", "An echo", "A mirror", "A parrot"],
+    ["What has hands but can't clap?", "A clock", "A statue", "A glove"],
+    ["What gets wetter the more it dries?", "A towel", "A sponge cake", "The sun"],
+    ["What has a neck but no head?", "A bottle", "A guitar pick", "A scarf"],
+    ["What runs all around a yard without moving?", "A fence", "A dog", "A hose"],
+    ["I'm tall when I'm young and short when I'm old. What am I?", "A candle", "A tree", "A pencil sharpener"],
+    ["What has many teeth but can't bite?", "A comb", "A shark fossil", "A zipper pull"],
+    ["What building has the most stories?", "A library", "A skyscraper", "A hotel"],
+    ["What can you catch but not throw?", "A cold", "A ball", "A wave"],
+    ["What has one eye but can't see?", "A needle", "A pirate", "A storm cloud"],
+    ["What goes up but never comes down?", "Your age", "A balloon", "A rocket"],
+    ["What word is spelled wrong in every dictionary?", "Wrong", "Dictionary", "Misspelled"],
+    ["What has legs but doesn't walk?", "A table", "A snake", "A cloud"],
+    ["What belongs to you, but other people use it more than you do?", "Your name", "Your phone", "Your car"],
+    ["The person who makes it sells it. The person who buys it never uses it. What is it?", "A coffin", "A gift card", "A ticket"],
+    ["I have cities but no houses, forests but no trees, water but no fish. What am I?", "A map", "A desert", "A painting"],
+    ["What can fill a room but takes up no space?", "Light", "Air", "Furniture"],
+    ["What is always in front of you but can't be seen?", "The future", "Your nose", "Glass"],
+    ["What has to be broken before you can use it?", "An egg", "A promise", "A record"]
   ],
+  /* general knowledge for the Escape Room's professor and the puzzle games */
+  brain: [
+    ["What is the largest planet in our solar system?", "Jupiter", "Saturn", "Neptune", "Earth"],
+    ["How many continents are there?", "7", "5", "6", "8"],
+    ["What gas do plants take in from the air?", "Carbon dioxide", "Oxygen", "Helium", "Nitrogen"],
+    ["What is the hardest natural substance?", "Diamond", "Gold", "Iron", "Quartz"],
+    ["Which ocean is the largest?", "The Pacific", "The Atlantic", "The Indian", "The Arctic"],
+    ["How many sides does a hexagon have?", "6", "5", "7", "8"],
+    ["What is the boiling point of water at sea level in Celsius?", "100°C", "90°C", "212°C", "80°C"],
+    ["Which planet is known as the Red Planet?", "Mars", "Venus", "Mercury", "Jupiter"],
+    ["What is the chemical symbol for gold?", "Au", "Ag", "Go", "Gd"],
+    ["Who painted the Mona Lisa?", "Leonardo da Vinci", "Michelangelo", "Vincent van Gogh", "Pablo Picasso"],
+    ["What is the longest river in Africa?", "The Nile", "The Congo", "The Niger", "The Zambezi"],
+    ["How many minutes are in a day?", "1,440", "1,240", "2,400", "1,000"],
+    ["Which animal is the largest mammal on Earth?", "The blue whale", "The African elephant", "The giraffe", "The sperm whale"],
+    ["What is the square root of 144?", "12", "14", "11", "16"],
+    ["Which country gave the Statue of Liberty to the United States?", "France", "England", "Spain", "Italy"],
+    ["How many bones are in an adult human body?", "206", "186", "250", "300"],
+    ["What does a thermometer measure?", "Temperature", "Air pressure", "Humidity", "Wind speed"],
+    ["Which is the smallest prime number?", "2", "1", "3", "0"],
+    ["What is the capital of Japan?", "Tokyo", "Kyoto", "Osaka", "Seoul"],
+    ["In which year did humans first land on the Moon?", "1969", "1959", "1972", "1965"],
+    ["What do bees make?", "Honey", "Silk", "Wax paper", "Pollen bread"],
+    ["How many players are on a soccer team on the field?", "11", "9", "10", "12"],
+    ["Which instrument has 88 keys?", "The piano", "The organ", "The accordion", "The harpsichord"],
+    ["What color do you get when you mix blue and yellow?", "Green", "Purple", "Orange", "Brown"],
+    ["Which shape has three sides?", "A triangle", "A square", "A pentagon", "A circle"],
+    ["What is the freezing point of water in Fahrenheit?", "32°F", "0°F", "100°F", "40°F"],
+    ["Who wrote Romeo and Juliet?", "William Shakespeare", "Charles Dickens", "Jane Austen", "Mark Twain"],
+    ["What is the fastest land animal?", "The cheetah", "The lion", "The horse", "The greyhound"],
+    ["How many hours are in a week?", "168", "148", "172", "160"],
+    ["Which organ pumps blood around the body?", "The heart", "The lungs", "The liver", "The kidneys"],
+    ["What is the main language spoken in Brazil?", "Portuguese", "Spanish", "Brazilian", "French"],
+    ["Which planet has the most famous rings?", "Saturn", "Uranus", "Mars", "Mercury"],
+    ["What is 15 × 4?", "60", "45", "54", "65"],
+    ["What is the tallest mountain on Earth above sea level?", "Mount Everest", "K2", "Kilimanjaro", "Denali"],
+    ["Which city is home to the Eiffel Tower?", "Paris", "Rome", "London", "Brussels"],
+    ["What is H2O better known as?", "Water", "Salt", "Hydrogen gas", "Ice cream"],
+    ["Which month has the fewest days?", "February", "April", "June", "November"],
+    ["What is the opposite of 'ancient'?", "Modern", "Old", "Antique", "Historic"],
+    ["How many strings does a standard guitar have?", "6", "4", "5", "12"],
+    ["Which country is shaped like a boot?", "Italy", "Greece", "Portugal", "Chile"]
+  ],
+  caps: [["FRANCE", "Paris"], ["JAPAN", "Tokyo"], ["KENYA", "Nairobi"], ["CANADA", "Ottawa"], ["AUSTRALIA", "Canberra"], ["BRAZIL", "Brasília"], ["EGYPT", "Cairo"], ["SPAIN", "Madrid"], ["ITALY", "Rome"], ["GERMANY", "Berlin"], ["MEXICO", "Mexico City"], ["INDIA", "New Delhi"], ["GHANA", "Accra"], ["NIGERIA", "Abuja"], ["JAMAICA", "Kingston"], ["PERU", "Lima"], ["ARGENTINA", "Buenos Aires"], ["NORWAY", "Oslo"], ["SOUTH KOREA", "Seoul"], ["THAILAND", "Bangkok"], ["PORTUGAL", "Lisbon"], ["IRELAND", "Dublin"], ["GREECE", "Athens"], ["TURKEY", "Ankara"], ["CHINA", "Beijing"], ["SOUTH AFRICA", "Pretoria"], ["MOROCCO", "Rabat"], ["CUBA", "Havana"], ["SWEDEN", "Stockholm"], ["RUSSIA", "Moscow"]],
   words: ["MUSIC", "DANCE", "BASS", "VIBES", "RHYTHM", "GROOVE", "PARTY", "TEMPO", "SOUL", "JAZZ", "BEAT", "DRUMS", "PIANO", "SALSA", "LYRIC", "VINYL", "STAGE", "CHORUS", "SPEAKER", "MELODY", "REMIX", "HOOK", "FUNK", "DISCO", "SWING", "TRUMPET", "GUITAR", "STUDIO", "ENCORE", "SPOTLIGHT"],
   /* pick n items from a bank without repeating until every item has been seen */
   pick(bank, n){
@@ -15183,36 +15330,69 @@ Mogul.GAMES.dance = Mogul.scripted({
 });
 Mogul.GAMES.escape = Mogul.scripted({
   anyWorld: true, well: true, world: "escape", panelSide: .9, peek: true,
-  howTo: ["Walk around: the clues are in the room. A painting, four blinking lamps and a blackboard.", "Answer each puzzle quickly. Some have a timer.", "Pick the lock at the end to open the vault door.", "Get at least half right to escape."],
-  vrTip: "Walk up to the painting and the blackboard. Watch the lamps on the shelf.",
+  howTo: ["You're locked in a study. Every game picks different puzzles from the room: the painting, the lamps, the blackboard, the typewriter, the clock, the globe, the treasure chest, plus riddles and the professor's quiz.", "On each puzzle, tap 🔍 Show me the clue: you'll walk right up to it. Tap 🧩 Back to the puzzle to answer.", "Some puzzles have a timer. Pick the vault lock at the end.", "Get at least half right to escape."],
+  vrTip: "Walk up to the clues: the painting and blackboard on the back wall, the lamps on the shelf, the typewriter on the desk, the clock, the globe and the chest.",
   make(s){
     const A = Lounge.esApi, pick = a => a[Math.floor(Math.random()*a.length)], sh = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);
-    const code = String(100 + Math.floor(Math.random()*900)), codes = new Set([code]); while (codes.size < 4){ codes.add(String(100 + Math.floor(Math.random()*900))); }
-    const seq = sh([0, 1, 2, 3]).slice(0, 3 + (Math.random() < .5 ? 1 : 0)), ico = ["🔴", "🟢", "🔵", "🟡"], seqS = a => a.map(i => ico[[0, 1, 2, 3][i]]).join(" ");
-    const mapIdx = [0, 1, 2, 3]; // lamp order on the shelf: red, green, blue, yellow
-    const seqOpts = new Set([seqS(seq)]); let guard = 0; while (seqOpts.size < 3 && guard++ < 40) seqOpts.add(seqS(sh([0, 1, 2, 3]).slice(0, seq.length)));
-    const words = QB.words, word = pick(words), enc = word.split("").map(c => String.fromCharCode((c.charCodeAt(0) - 65 + 1) % 26 + 65)).join(""), wopts = new Set([word]); while (wopts.size < 4) wopts.add(pick(words));
-    this.pre = () => { try{ A.open(false); A.code(code); A.word(enc); A.seq(seq); }catch(e){ console.warn(e); } };
-    const rd = QB.pick("riddle", 1)[0], r = {q: rd[0], a: rd[1], w: rd.slice(2, 4)}, gen = [QB.math, QB.sequence, QB.oddOne][Math.floor(Math.random()*3)].call(QB);
+    const setups = []; this.pre = () => { try{ A.open(false); A.reset(); setups.forEach(f => f()); }catch(e){ console.warn(e); } };
+    const words = QB.words, n4 = (good, make) => { const o = new Set([good]); let g = 0; while (o.size < 4 && g++ < 60) o.add(make()); return sh([...o]); };
+    const P = {
+      painting(){ const code = String(100 + Math.floor(Math.random()*900)); setups.push(() => A.code(code));
+        return {type: "match", title: "The painting", text: "A number is glowing in the painting on the back wall (left side).", time: 60, decay: 1, log: "Painting code", cash: 40, look: {at: [-3.9, 1.9, -8.9], from: [-3.2, -6.2]},
+          rounds: [{q: "What is the 3-digit code?", correct: code, options: n4(code, () => String(100 + Math.floor(Math.random()*900)))}]}; },
+      lamps(){ const seq = sh([0, 1, 2, 3]).slice(0, 3 + (Math.random() < .5 ? 1 : 0)), ico = ["🔴", "🟢", "🔵", "🟡"], S = a => a.map(i => ico[i]).join(" "); setups.push(() => A.seq(seq));
+        const opts = new Set([S(seq)]); let g = 0; while (opts.size < 3 && g++ < 40) opts.add(S(sh([0, 1, 2, 3]).slice(0, seq.length)));
+        return {type: "choice", title: "The lamps", text: "Watch the four lamps on the shelf (red, green, blue, yellow from left to right). They light up in a pattern, pause, then repeat. What was the order?", time: 90, log: "Lamp order", cash: 40, look: {at: [0, 1.5, -8.8], from: [0, -5.6]},
+          options: sh([...opts]).map(t => ({t, s: t === S(seq) ? 100 : 0, fb: t === S(seq) ? "Exactly the pattern." : "That's not the order they lit."}))}; },
+      cipher(){ const k = 1 + Math.floor(Math.random()*3), word = pick(words), enc = word.split("").map(c => String.fromCharCode((c.charCodeAt(0) - 65 + k) % 26 + 65)).join(""); setups.push(() => A.word(enc, k));
+        return {type: "match", title: "The blackboard", text: `Each letter on the blackboard was moved forward by ${k} (A→${String.fromCharCode(65 + k)}). Move them back to read the secret word.`, time: 75, decay: 1, log: "Cipher", cash: 40, look: {at: [3, 1.9, -8.9], from: [2.6, -6.2]},
+          rounds: [{q: `Decode: ${enc}`, correct: word, options: n4(word, () => pick(words))}]}; },
+      typewriter(){ const word = pick(words.filter(w => w.length >= 5)); let mix = word; for (let i = 0; i < 12 && mix === word; i++) mix = sh(word.split("")).join(""); setups.push(() => A.paper(mix));
+        const same = words.filter(w => w.length === word.length && w !== word);
+        return {type: "match", title: "The typewriter", text: "Someone left a message in the typewriter on the desk, but the letters are scrambled. Unscramble it.", time: 75, decay: 1, log: "Anagram", cash: 40, look: {at: [-2.1, 1.1, -8.2], from: [-2.1, -6.4]},
+          rounds: [{q: `Unscramble: ${mix}`, correct: word, options: n4(word, () => pick(same.length >= 3 ? same : words))}]}; },
+      clock(){ const h = 1 + Math.floor(Math.random()*12), mm = pick([0, 10, 15, 20, 30, 40, 45, 50]), f = (a, b) => `${a}:${String(b).padStart(2, "0")}`, t = f(h, mm); setups.push(() => A.clock(h, mm));
+        return {type: "choice", title: "The grandfather clock", text: "The grandfather clock in the corner stopped. The time it shows opens the next lock. Short hand = hours, long hand = minutes.", time: 60, log: "Clock", cash: 35, look: {at: [3.9, 1.8, -8.4], from: [3.0, -6.6]},
+          options: n4(t, () => f(1 + Math.floor(Math.random()*12), pick([0, 10, 15, 20, 30, 40, 45, 50]))).map(o => ({t: o, s: o === t ? 100 : 0, fb: o === t ? "Tick-tock. Correct!" : `It showed ${t}.`}))}; },
+      globe(){ const C = QB.caps, [land, cap] = pick(C); setups.push(() => A.globe(land));
+        return {type: "match", title: "The globe", text: "A note is pinned to the antique globe: a pin marks the capital city of a country. Which city is it?", time: 60, decay: 1, log: "Globe", cash: 35, look: {at: [-3.3, 1.0, -3.8], from: [-1.4, -2.2]},
+          rounds: [{q: `The capital of ${land}`, correct: cap, options: n4(cap, () => pick(C)[1])}]}; },
+      chest(){ const a = 2 + Math.floor(Math.random()*8), b = 2 + Math.floor(Math.random()*9); setups.push(() => A.chest(a, b));
+        return {type: "match", title: "The treasure chest", text: "The chest's lock has a picture puzzle on its lid. Each shape stands for a number.", time: 75, decay: 1, log: "Shape math", cash: 40, look: {at: [3.0, .6, -2.6], from: [2.2, -.9]},
+          rounds: [{q: "What number is the ■ square?", correct: String(b), options: n4(String(b), () => String(Math.max(1, b + Math.floor(Math.random()*9) - 4)))}]}; },
+      riddle(){ const rd = QB.pick("riddle", 1)[0]; return {type: "choice", title: "A riddle on the door", text: rd[0], log: "Riddle", cash: 30, options: sh([rd[1], ...rd.slice(2, 4)]).map(t => ({t, s: t === rd[1] ? 100 : 0, fb: t === rd[1] ? "Yes!" : "Not quite."}))}; },
+      safe(){ const gen = [QB.math, QB.sequence, QB.oddOne][Math.floor(Math.random()*3)].call(QB); return {type: "match", title: "The little safe", text: "A little safe under the desk has a puzzle on its dial.", time: 45, decay: 1, log: "Safe puzzle", cash: 30, rounds: [gen]}; },
+      quiz(){ const q = QB.pick("brain", 1)[0]; return QB.choice(q, {title: "The professor's quiz card", log: "Trivia", cash: 30, time: 30}); }
+    };
+    const room = sh(["painting", "lamps", "cipher", "typewriter", "clock", "globe", "chest"]).slice(0, 4), talk = sh(["riddle", "safe", "quiz", "quiz"]).slice(0, 2);
+    const order = sh([...room, ...talk]), stages = order.map(k => P[k]());
     return [
-      {type: "info", title: "Locked in!", text: "The study door slammed shut. Look around the room: there's a painting, four lamps on the shelf and a blackboard. Walk up to them. Tap Start when you're ready for the first puzzle.", btn: "Start ▶", before: () => this.pre()},
-      {type: "match", title: "Puzzle 1: the painting", text: "There's a number glowing in the painting on the left of the back wall.", time: 60, decay: 1, log: "Painting code", cash: 40, rounds: [{q: "What is the 3-digit code?", correct: code, options: sh([...codes])}]},
-      {type: "choice", title: "Puzzle 2: the lamps", text: "Watch the four lamps on the shelf. They light in a pattern, then pause, then repeat. Red, green, blue, yellow from left to right. What was the order?", time: 90, log: "Lamp order", cash: 40, options: sh([...seqOpts]).map(t => ({t, s: t === seqS(seq) ? 100 : 0, fb: t === seqS(seq) ? "Exactly the pattern." : "That's not the order they lit."}))},
-      {type: "match", title: "Puzzle 3: the blackboard", text: "Each letter on the blackboard was moved forward by one. Decode it.", time: 60, decay: 1, log: "Cipher", cash: 40, rounds: [{q: `Decode: ${enc}`, correct: word, options: sh([...wopts])}]},
-      {type: "choice", title: "Puzzle 4: a riddle", text: r.q, log: "Riddle", cash: 30, options: sh([r.a, ...r.w]).map(t => ({t, s: t === r.a ? 100 : 0, fb: t === r.a ? "Yes!" : "Not quite."}))},
-      {type: "match", title: "Puzzle 5: the safe", text: "A little safe under the desk has a puzzle on its dial.", time: 45, decay: 1, log: "Safe puzzle", cash: 30, rounds: [gen]},
-      {type: "timing", title: "Pick the lock", text: "The vault lock has a sweet spot. Tap when the pick is in the green zone.", count: 3, speed: .85, zw: .14, label: "PICK", log: "Lock", cash: 40}
+      {type: "info", title: "Locked in!", text: "The study door slammed shut. Six puzzles stand between you and the vault door, and the clues are hidden around the room. On each puzzle, tap 🔍 Show me the clue to walk up to it.", btn: "Start ▶", before: () => this.pre()},
+      ...stages.map((st, i) => Object.assign(st, {title: `Puzzle ${i + 1}: ${st.title.replace(/^(The|A) /, m => m.toLowerCase())}`})),
+      {type: "timing", title: "Pick the lock", text: "The vault lock has a sweet spot. Tap when the pick is in the green zone.", count: 3, speed: .85, zw: .14, label: "PICK", log: "Lock", cash: 40, look: {at: [4.9, 1.1, -5.4], from: [2.6, -5.4]}}
     ];
   },
   setup(){ try{ this.pre && this.pre(); }catch(e){} },
   outro(){ const m = this.m, sc = m.shift.scores.reduce((a, b) => a + b, 0)/Math.max(1, m.shift.scores.length);
     if (sc >= 50){ try{ Lounge.esApi.open(true); Lounge.burst(new THREE.Vector3(4.2, 1.4, -5.4), 28); Wellness.tone(523, .5, "triangle", .2); }catch(e){} return "CLICK! The vault door swings open. You escaped! 🔓"; }
-    return "Time's up. The door stays locked. Try again: the clues change every time. 🔐"; }
+    return "Time's up. The door stays locked. Try again: the puzzles change every time. 🔐"; }
 });
+
+/* ================= 📦 Model packs: real 3D furniture and props (Higgsfield 3D + Poly Haven CC0), several models per file ================= */
+const HFP = {
+  BASE: "https://d2ol7oe51mr4n9.cloudfront.net/user_2xqdkXQxcL6UFHjJwLK5drKd1tT/",
+  PACKS: {living: "3d316f06-3114-4107-bbd3-6a566160fc74", decor: "63a85caf-7c84-4cd6-ae03-92760248b71d", garden: "bcbe3178-17de-43bd-b5e1-7f3587a5d111", pgym: "7bd1f10e-04d3-4ea0-961c-9804b6fca6e0", pzen: "b6c406a0-ef3f-4e65-8793-6a40dfe2d7be", ptokyo: "531ef139-e00d-49e0-8936-7ee24a378bb6", pescape: "a8f6db51-f478-4243-bd3e-048e643cb105"},
+  _p: {},
+  on(){ try{ return store.get("hfAssets", true) !== false; }catch(e){ return true; } },
+  load(pack){ if (this._p[pack]) return this._p[pack];
+    return this._p[pack] = new Promise(ok => { const id = this.PACKS[pack]; if (!id || !this.on() || !THREE.GLTFLoader) return ok(null);
+      try{ new THREE.GLTFLoader().load(this.BASE + id + ".glb", gl => { const map = {}; gl.scene.updateMatrixWorld(true); for (const n of gl.scene.children) map[n.name] = n; ok(map); }, undefined, () => ok(null)); }catch(e){ ok(null); } }); },
+  async get(name){ const [pk, nd] = name.split("/"); const map = await this.load(pk); return map && map[nd] || null; }
+};
 
 /* ================= 🏡 My Home: build a house and a garden, grow plants, and watch wildlife move in ================= */
 const Home = {
-  CATS: {furn: "🛋 Furniture", fun: "🎮 Fun", plant: "🌸 Plants", tree: "🌳 Trees", wild: "🐝 Garden"},
+  CATS: {furn: "🛋 Furniture", decor: "🖼 Decor", fun: "🎮 Fun", plant: "🌸 Plants", tree: "🌳 Trees", wild: "🐝 Garden", mine: "📦 My models"},
   CAT: {
     sofa: {n: "Sofa", i: "🛋", c: "furn", cost: 120, r: .9, use: ["calm", 4, "Feet up. So comfy."]},
     bed: {n: "Bed", i: "🛏", c: "furn", cost: 150, r: 1.0, use: ["calm", 8, "A quick nap. Refreshed!"]},
@@ -15238,6 +15418,37 @@ const Home = {
     treadmill: {n: "Treadmill", i: "🏃", c: "fun", cost: 220, r: .8, use: ["fit", 6, "A quick run."]},
     weights: {n: "Dumbbells", i: "🏋", c: "fun", cost: 60, r: .3, use: ["fit", 3, "Reps done."]},
     yogamat: {n: "Yoga mat", i: "🧘", c: "fun", cost: 25, r: .4, flat: true, use: ["calm", 4, "A few slow stretches."]},
+    // real 3D models: Poly Haven (CC0) furniture and Higgsfield-made props, loaded from model packs
+    lounger: {n: "Lounge chair", i: "🪑", c: "furn", cost: 180, r: .6, pk: "living/mid_century_lounge_chair", ht: 1.1, use: ["calm", 4, "Feet up in the lounge chair."]},
+    modchair: {n: "Modern armchair", i: "💺", c: "furn", cost: 140, r: .5, pk: "living/modern_arm_chair_01", ht: 1, use: ["calm", 3, "Comfy."]},
+    loveseat: {n: "Loveseat", i: "🛋", c: "furn", cost: 160, r: .9, pk: "living/sofa_02", ht: .7, use: ["calm", 4, "Room for two."]},
+    chesterfield: {n: "Chesterfield sofa", i: "🛋", c: "furn", cost: 320, r: 1.3, pk: "living/sofa_03", ht: 1.1, use: ["calm", 6, "Sinking into the Chesterfield."]},
+    rocker: {n: "Rocking chair", i: "🪑", c: "furn", cost: 110, r: .45, pk: "living/Rockingchair_01", ht: 1, use: ["calm", 3, "Rock, rock, rock…"]},
+    daybed: {n: "Daybed", i: "🛏", c: "furn", cost: 240, r: 1.0, pk: "living/vintage_day_bed", ht: 1.1, use: ["calm", 8, "A lazy nap on the daybed."]},
+    roundtable: {n: "Round coffee table", i: "⚪", c: "furn", cost: 90, r: .65, pk: "living/coffee_table_round_01", ht: .5},
+    coffeetable: {n: "Coffee table", i: "🟫", c: "furn", cost: 80, r: .6, pk: "living/modern_coffee_table_01", ht: .4},
+    sidetable: {n: "Side table", i: "◻", c: "furn", cost: 45, r: .3, pk: "living/side_table_01", ht: .55},
+    dining: {n: "Dining table", i: "🍽", c: "furn", cost: 200, r: 1.1, pk: "living/dining_table", ht: .9, use: ["social", 4, "A nice meal at the table."]},
+    dchair: {n: "Dining chair", i: "🪑", c: "furn", cost: 40, r: .3, pk: "living/dining_chair_02", ht: 1},
+    dresser: {n: "Tall dresser", i: "🗄", c: "furn", cost: 150, r: .55, pk: "living/drawer_cabinet", ht: 1.9},
+    credenza: {n: "Credenza", i: "🗄", c: "furn", cost: 220, r: 1.2, pk: "living/modern_wooden_cabinet", ht: .7},
+    nightstand: {n: "Nightstand", i: "🗄", c: "furn", cost: 60, r: .3, pk: "living/ClassicNightstand_01", ht: .7},
+    frame: {n: "Photo frame", i: "🖼", c: "decor", cost: 15, r: .15, pk: "decor/standing_picture_frame_01", ht: .25},
+    retrotv: {n: "Retro TV", i: "📺", c: "decor", cost: 120, r: .3, pk: "decor/television_02", ht: .4, use: ["fun", 4, "An old movie on the retro TV."]},
+    gclock: {n: "Grandfather clock", i: "🕰", c: "decor", cost: 280, r: .4, pk: "decor/vintage_grandfather_clock_01", ht: 2.2},
+    mclock: {n: "Mantel clock", i: "🕰", c: "decor", cost: 45, r: .2, pk: "decor/mantel_clock_01", ht: .16},
+    chess: {n: "Chess set", i: "♟", c: "decor", cost: 60, r: .3, pk: "decor/chess_set", ht: .12, use: ["brain", 5, "Checkmate! You won a game of chess."]},
+    cvase: {n: "Ceramic vase", i: "🏺", c: "decor", cost: 25, r: .15, pk: "decor/ceramic_vase_01", ht: .4},
+    pillows: {n: "Throw pillows", i: "🛋", c: "decor", cost: 30, r: .45, pk: "decor/throw_pillows_01", ht: .45},
+    basket: {n: "Wicker basket", i: "🧺", c: "decor", cost: 20, r: .2, pk: "decor/wicker_basket_01", ht: .12},
+    duck: {n: "Rubber duck", i: "🦆", c: "decor", cost: 5, r: .15, pk: "decor/rubber_duck_toy", ht: .3, use: ["fun", 1, "Squeak!"]},
+    oillamp: {n: "Oil lamp", i: "🪔", c: "decor", cost: 40, r: .15, pk: "decor/vintage_oil_lamp", ht: .8, glow: [.55, 0xffb050]},
+    tchest: {n: "Treasure chest", i: "🧰", c: "decor", cost: 150, r: .5, pk: "decor/treasure_chest", ht: .6},
+    globe: {n: "Antique globe", i: "🌍", c: "decor", cost: 120, r: .35, pk: "pescape/globe", h: 1.0, ht: 1, use: ["brain", 2, "You spin the globe and pick a dream trip."]},
+    typewriter: {n: "Typewriter", i: "⌨", c: "decor", cost: 80, r: .3, pk: "pescape/typewriter", h: .3, ht: .3, use: ["brain", 3, "You typed a short poem."]},
+    bonsai: {n: "Bonsai", i: "🌳", c: "decor", cost: 90, r: .4, pk: "pzen/bonsai", h: .6, ht: .6, use: ["calm", 3, "You trim the bonsai. Peaceful."]},
+    chochin: {n: "Paper lantern", i: "🏮", c: "decor", cost: 35, r: .25, pk: "ptokyo/chochin", h: .7, ht: .7, glow: [.4, 0xff6a30]},
+    kettlebell: {n: "Kettlebell", i: "🏋", c: "fun", cost: 40, r: .25, pk: "pgym/kettlebell", h: .32, ht: .32, use: ["fit", 3, "Ten kettlebell swings!"]},
     daisy: {n: "Daisies", i: "🌼", c: "plant", cost: 8, r: .3, out: true, flower: true, plant: {st: [0, 1.5, 4], thirst: 25}},
     sunflower: {n: "Sunflower", i: "🌻", c: "plant", cost: 15, r: .3, out: true, flower: true, plant: {st: [0, 2, 6], thirst: 25}},
     rose: {n: "Roses", i: "🌹", c: "plant", cost: 12, r: .3, out: true, flower: true, plant: {st: [0, 2, 5], thirst: 25}},
@@ -15259,6 +15470,13 @@ const Home = {
     sprinkler: {n: "Sprinkler", i: "💦", c: "wild", cost: 90, r: .25, out: true},
     compost: {n: "Compost bin", i: "♻", c: "wild", cost: 40, r: .4, out: true},
     bench: {n: "Garden bench", i: "🪵", c: "wild", cost: 60, r: .6, out: true, use: ["calm", 3, "You listen to the birds."]},
+    gnome: {n: "Garden gnome", i: "🧙", c: "wild", cost: 25, r: .2, out: true, pk: "garden/garden_gnome", ht: .6},
+    patio: {n: "Patio set", i: "☕", c: "wild", cost: 180, r: .9, out: true, pk: "garden/outdoor_table_chair_set_01", ht: .9, use: ["calm", 3, "Coffee on the patio."]},
+    firepit: {n: "Fire pit", i: "🔥", c: "wild", cost: 140, r: .8, out: true, pk: "garden/stone_fire_pit", ht: .4, glow: [.5, 0xff7a20], use: ["calm", 4, "Warm hands by the fire."]},
+    planter: {n: "Planter box", i: "🪴", c: "wild", cost: 35, r: .5, out: true, pk: "garden/planter_box_01", ht: .45},
+    pbench: {n: "Painted bench", i: "🪑", c: "wild", cost: 70, r: .6, out: true, pk: "garden/painted_wooden_bench", ht: .9, use: ["calm", 3, "A quiet sit in the garden."]},
+    lamppost: {n: "Lamp post", i: "💡", c: "wild", cost: 120, r: .3, out: true, pk: "garden/street_lamp_01", ht: 3.9, glow: [3.55, 0xffe0a0]},
+    toro: {n: "Stone lantern", i: "🏮", c: "wild", cost: 130, r: .4, out: true, pk: "pzen/toro", h: 1.35, ht: 1.35, glow: [1.0, 0xffc070]},
     rock: {n: "Rock", i: "🪨", c: "wild", cost: 15, r: .4, out: true},
     path: {n: "Stepping stone", i: "⬜", c: "wild", cost: 5, r: .3, out: true, flat: true}
   },
@@ -15306,18 +15524,24 @@ const Home = {
   /* ---------- Higgsfield-made photo textures and 3D tree models (loaded from the web; the hand-drawn versions show until they arrive, and stay if they can't load) ---------- */
   HF: "https://d2ol7oe51mr4n9.cloudfront.net/user_2xqdkXQxcL6UFHjJwLK5drKd1tT/",
   HFTEX: {grass: "43ead0fa-c8ba-4df2-aafc-548c1971a572", sand: "af85a36f-0d00-441d-a96a-bbd234f3c6b5", snow: "16135b2e-917d-453f-bdcc-301e0020955c", deck: "bf2326ed-3ca0-4f32-bfb1-5f0ed34026ef", moss: "40647b1b-ebad-4ad1-a108-961605598ccf", bark: "e95ec99a-de13-42d8-9f2d-2ad6b2100af0",
-    siding: "33b17da3-fb61-44b4-ba04-16e84b2d3c35", logs: "5922afa6-1b47-450b-8337-ad16fbcc43b7", shingles: "e63c8866-979c-436b-b89e-c35fdfcb5352", asphalt: "331e2276-652c-4c08-a80e-76237dfef6b1", brick: "ee8aebb7-e8db-4a77-8d58-f86caca73e5f", floor: "d310e5be-c074-474b-8be6-95df2b53eb51"},
+    siding: "33b17da3-fb61-44b4-ba04-16e84b2d3c35", logs: "5922afa6-1b47-450b-8337-ad16fbcc43b7", shingles: "e63c8866-979c-436b-b89e-c35fdfcb5352", asphalt: "331e2276-652c-4c08-a80e-76237dfef6b1", brick: "ee8aebb7-e8db-4a77-8d58-f86caca73e5f", floor: "d310e5be-c074-474b-8be6-95df2b53eb51",
+    medfloor: "d0bfeb48-11cc-48a5-a7ee-4fde534a9c70", plaster: "e5ca76f9-cf73-41b0-9932-1c09a9fc075b", tatami: "0908bd15-2285-4863-a9d3-7fcfa087c89e", shoji: "dfbe1081-dac8-4835-a461-9597ad59c861", rubber: "7e461abc-8fb5-4a32-b31b-4731f04a1903", concrete: "592a90b1-e097-4df4-88b3-5f28874ec5a3",
+    platform: "f088dcd6-ed7c-445d-bd9e-d9e4fec4bf5b", wetroad: "9a5c3ae0-6c40-4b69-90e3-976f43300de6", paving: "17e6ee48-bb24-4cde-a6d7-9c2ce9703586", parquet: "fa237458-cdee-4ae0-8257-48c8aef8636d", damask: "501d36b7-0a25-429c-8910-3b3028a8a56e", panel: "2b1be095-fd5f-48d1-8179-eaae24723e68"},
   HFTREE: {oak: ["f7e56153-859f-4989-98bc-5bda04cdc9fe", 6.2], pine: ["9a96667a-4083-41cf-a3c7-43ddb443fc4a", 6.8], palm: ["9243a080-afed-44fb-be12-d120e8ebfd96", 6.4], cherry: ["ed4d595e-fd66-4e92-b535-6874a0923c5c", 5.0], maple: ["0906a59f-a3fa-40b6-b868-4e6a1de233e4", 5.0]},
   hfOn(){ try{ return store.get("hfAssets", true) !== false && !(typeof GFX !== "undefined" && GFX.level === "low"); }catch(e){ return true; } },
   hfImg(name){ this._hfi = this._hfi || {}; if (this._hfi[name]) return this._hfi[name];
     return this._hfi[name] = new Promise((ok, no) => { const id = this.HFTEX[name]; if (!id) return no(new Error("none")); const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => ok(im); im.onerror = no; im.src = this.HF + id + ".jpg"; }); },
   /* swap a hand-drawn texture (and its bump map) for the photo version once it downloads */
   hfSwap(name, map, nrm, strength = 3, mat = null){
-    if (!this.hfOn() || !map) return; this.hfImg(name).then(im => {
+    if (!this.hfOn() || !map) return Promise.resolve(false); return this.hfImg(name).then(im => {
       map.image = im; map.needsUpdate = true;
       if (nrm){ try{ const [c, x] = Tex.canvas(512, 512); x.drawImage(im, 0, 0, 512, 512); nrm.image = Tex.normal(c, strength); nrm.needsUpdate = true; }catch(e){} }
       if (mat){ mat.color && mat.color.set(0xffffff); mat.needsUpdate = true; }
-    }).catch(() => {}); },
+      return true;
+    }).catch(() => false); },
+  /* give a plain-coloured material a photo texture once it downloads */
+  hfMapInto(mat, name, rep = [1, 1], nrm = 0){ if (!this.hfOn() || !mat) return Promise.resolve(false); return this.hfImg(name).then(im => { const t = new THREE.Texture(im); t.encoding = THREE.sRGBEncoding; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep[0], rep[1]); t.anisotropy = 8; t.needsUpdate = true; mat.map = t;
+      if (nrm){ try{ const [c, x] = Tex.canvas(512, 512); x.drawImage(im, 0, 0, 512, 512); const n = Tex.make(Tex.normal(c, nrm), {repeat: rep, srgb: false}); mat.normalMap = n; }catch(e){} } mat.needsUpdate = true; return true; }).catch(() => false); },
   hfTree(kind){ this._hft = this._hft || {}; if (this._hft[kind] !== undefined) return this._hft[kind];
     const T = THREE, def = this.HFTREE[kind]; if (!def || !T.GLTFLoader) return this._hft[kind] = null;
     const p = new Promise(ok => { try{ new T.GLTFLoader().load(this.HF + def[0] + ".glb", gl => {
@@ -15439,11 +15663,16 @@ const Home = {
     const door = new T.Mesh(new T.BoxGeometry(1.1, 2.1, .08), L.stdMat(new T.Color().setHSL(Math.random(), .5, .3).getHex(), .5)); door.position.set(0, 1.05, D/2 + .04); h.add(door);
     const path = new T.Mesh(new T.PlaneGeometry(1.2, 6), L.stdMat(0xb8b0a0, .9)); path.rotation.x = -Math.PI/2; path.position.set(0, .015, D/2 + 3); h.add(path);
     for (const s of [-1, 1]) h.add(this.at(this.tree(Math.random() < .5 ? "oak" : "maple", .8 + Math.random()*.3), s*(W/2 + 2), 0, D/2 + 1.5));
+    // the neighbors' yards: a patio set or bench, planters, a gnome, a lamp post (real 3D models)
+    { const A = (n, o) => { try{ L.asset(h, "hf:garden/" + n, o); }catch(e){} }, r = Math.random();
+      if (r < .5) A("outdoor_table_chair_set_01", {x: -W*.3, z: D/2 + 2.6, ry: Math.PI/2}); else A("painted_wooden_bench", {x: -W*.3, z: D/2 + 1.0, ry: Math.PI});
+      A("planter_box_01", {x: -1.4, z: D/2 + .35}); A("planter_box_01", {x: 1.4, z: D/2 + .35}); if (Math.random() < .6) A("garden_gnome", {x: W*.28, z: D/2 + 2.2, ry: Math.random()*6});
+      A("street_lamp_01", {x: .9, z: D/2 + 5.6}); const lg = L.wGlow(h, 0xffe0a0, 1.1, .9, 3.55, D/2 + 5.6, 0); (this.nightGlows || (this.nightGlows = [])).push(lg); }
     return h;
   },
   /* ---------- the world ---------- */
   build(L){
-    const T = THREE, add = L.add, g = new T.Group(); L.scene.add(g); L.room = g; this.L = L; this.g = g; this.swayers = []; this.winMats = []; this.streetGlows = []; this.sea = this.snow = this.petals = this.city = this.bulbs = this.foam = null;
+    const T = THREE, add = L.add, g = new T.Group(); L.scene.add(g); L.room = g; this.L = L; this.g = g; try{ this.mineInit(); }catch(e){} this.swayers = []; this.nightGlows = []; this.winMats = []; this.streetGlows = []; this.sea = this.snow = this.petals = this.city = this.bulbs = this.foam = null;
     const lot = this.lot(), LT = this.LOTS[lot], U = typeof GFX !== "undefined" && GFX.level === "ultra", LOW = typeof GFX !== "undefined" && GFX.level === "low";
     const [hx0, hx1, hz0, hz1] = this.HOUSE, HW = hx1 - hx0, HD = hz1 - hz0, hcx = (hx0 + hx1)/2, hcz = (hz0 + hz1)/2, WH = 3, [px0, px1, pz0, pz1] = this.PLOT;
     // ground
@@ -15493,6 +15722,7 @@ const Home = {
       for (const [x, z, c] of [[-4, 7, 0xe03a3a], [4, 7.5, 0x2a8ad8]]){ L.wCyl(g, .03, .03, 2.2, L.stdMat(0xeeeeee, .5), x, 1.1, z, 6); const um = new T.Mesh(new T.ConeGeometry(1.3, .5, 10, 1, true), new T.MeshStandardMaterial({color: c, side: T.DoubleSide, roughness: .7})); um.position.set(x, 2.25, z); um.castShadow = true; g.add(um); L.wBox(g, .7, .1, 1.8, L.stdMat(0xf4f0e8, .7), x + .9, .25, z + .2); }
       for (const [x, z, s] of [[-70, 140, 1], [60, 160, 1.4]]){ const isl = new T.Mesh(new T.SphereGeometry(14*s, 16, 8, 0, Math.PI*2, 0, Math.PI/2), L.stdMat(0x3a6a3a, 1)); isl.scale.y = .35; isl.position.set(x, -1, z); g.add(isl); }
       [[-26, -4, Math.PI/2, "#f4ece0", 0x2f6aa0], [26, -4, -Math.PI/2, "#e8f0f4", 0xc0603a]].forEach(([x, z, ry, c, r]) => this.neighbor(g, x, z, ry, c, r));
+      L.asset(g, "hf:garden/stone_fire_pit", {x: 0, z: 8.4}); { const fg = L.wGlow(g, 0xff7a20, 1.4, 0, .5, 8.4, 0); this.nightGlows.push(fg); } for (const [x, z, r] of [[-1.6, 9.6, 2.5], [1.6, 9.6, -2.5]]) L.asset(g, "hf:garden/painted_wooden_bench", {x, z, ry: r});
     } else if (lot === "cabin"){
       ring(10, 110, 140, (x, z, i) => { const m = new T.Mesh(new T.ConeGeometry(28 + Math.random()*18, 40 + Math.random()*30, 7), L.stdMat(0x6a7a8a, 1)); m.position.set(x, 18, z); g.add(m); const cap = new T.Mesh(new T.ConeGeometry(12, 16, 7), L.stdMat(0xf8fbff, .7)); cap.position.set(x, m.geometry.parameters.height/2 + 18 - 8 + 0, z); cap.position.y = 18 + m.geometry.parameters.height/2 - 8; g.add(cap); });
       ring(LOW ? 30 : 46, 15, 60, (x, z) => { if (Math.abs(x) < 13 && z > -17 && z < 6) return; g.add(this.at(this.tree("pine", .9 + Math.random()*.9, {snow: true}), x, 0, z)); });
@@ -15501,6 +15731,7 @@ const Home = {
       const sp = []; for (let i = 0; i < (U ? 2400 : 1200); i++) sp.push((Math.random() - .5)*60, Math.random()*22, -6 + (Math.random() - .5)*60);
       const sg = new T.BufferGeometry(); sg.setAttribute("position", new T.Float32BufferAttribute(sp, 3)); this.snow = new T.Points(sg, new T.PointsMaterial({color: 0xffffff, size: .09, transparent: true, opacity: .9, depthWrite: false})); g.add(this.snow);
       [[-24, -2, Math.PI/2, "#8a5a3a", 0x3a3a3a], [24, -6, -Math.PI/2, "#7a5030", 0x2a2a30]].forEach(([x, z, ry, c, r]) => this.neighbor(g, x, z, ry, c, r));
+      L.asset(g, "hf:garden/stone_fire_pit", {x: 4, z: 7.6}); { const fg = L.wGlow(g, 0xff7a20, 1.6, 4, .5, 7.6, 0); this.nightGlows.push(fg); } L.asset(g, "hf:living/Rockingchair_01", {x: 5.6, z: 8.4, ry: -2.2}); L.asset(g, "hf:garden/painted_wooden_bench", {x: 2.4, z: 8.6, ry: 2.6});
     } else if (lot === "loft"){
       const city = add(new T.Mesh(new T.CylinderGeometry(180, 180, 90, 48, 1, true), new T.MeshBasicMaterial({map: Tex.make(Tex.skyline(), {repeat: [5, 1]}), side: T.BackSide, transparent: true, fog: false})), g, false); city.position.y = 20; this.city = city;
       for (let i = 0; i < 26; i++){ const a = i/26*Math.PI*2, R = 50 + Math.random()*60, w = 10 + Math.random()*14, h = 20 + Math.random()*70; const b = new T.Mesh(new T.BoxGeometry(w, h, w), new T.MeshStandardMaterial({color: 0x2a3040, roughness: .6, metalness: .3, emissive: 0xffc870, emissiveIntensity: 0, emissiveMap: this.winTex()})); b.position.set(Math.cos(a)*R, h/2 - 30, -6 + Math.sin(a)*R); g.add(b); this.winMats.push(b.material); }
@@ -15542,7 +15773,7 @@ const Home = {
     this.lamps = []; for (const [x, z] of [[-2, -12], [3, -12]]){ const l = new T.PointLight(0xffc880, 0, 8, 2); l.position.set(x, 2.6, z); g.add(l); this.lamps.push(l); }
     this.fog = new T.Fog(LT.day, LT.fog[0], LT.fog[1]);
     this.layer = new T.Group(); g.add(this.layer);
-    const d = this.load(); this.items = d.items; this.gift = d.gift; this.itemsLot = lot;
+    const d = this.load(); this.items = d.items.filter(it => this.CAT[it.k]); this.gift = d.gift; this.itemsLot = lot;
     if (lot === "suburb" && !d.mirror && !this.items.some(i => i.k === "mirror")){ const spots = [[-5.5, -11.5], [-5.5, -10], [5.5, -12.5], [-3, -9.5]]; for (const [x, z] of spots) if (!this.valid("mirror", x, z)){ const now = Date.now(); this.items.push({id: Math.random().toString(36).slice(2, 9), k: "mirror", x, z, r: x < 0 ? 1 : 3, p: now, g: 0, wt: now, u: now}); break; } }
     if (!this.gift){ this.gift = true; try{ if (lot === "suburb"){ this.earn(400); setTimeout(() => toast("🏡 Welcome home! Here's $400 to decorate. Tap 🔨 Build."), 1500); } else setTimeout(() => toast(`${LT.i} Welcome to your ${LT.n}! It comes furnished. Tap 🔨 Build to make it yours.`), 1500); }catch(e){} this.save(); }
     this.nodes = new Map(); this.agents = []; for (const it of this.items) this.place(it); this.eco(true);
@@ -15594,6 +15825,10 @@ const Home = {
       case "mirror": { const fr = L.stdMat(0xc9a46a, .3, {metalness: .8}); box(.7, 1.9, .06, fr, 0, .95, 0); const mm = Mirrors.make(.6, 1.78); mm.position.set(0, .95, .035); g.add(mm); box(.5, .04, .3, fr, 0, .02, -.1); } break;
       case "path": { const s = new T.Mesh(new T.CylinderGeometry(.3, .32, .05, 10), m(0xb8b0a0)); s.position.y = .03; s.scale.z = .8; g.add(s); } break;
     }
+    const CK = this.CAT[k];
+    if (CK && (CK.pk || CK.mine)){ const ht = CK.ht || .5, fb = []; fb.push(box(CK.r*1.3, ht, CK.r*1.1, 0x8a7a6a, 0, ht/2, 0));
+      if (CK.mine) this.mineModel(g, CK, fb); else L.asset(g, "hf:" + CK.pk, {h: CK.h || 0, replace: fb});
+      if (CK.glow){ const gl = L.wGlow(g, CK.glow[1], CK.glow[0] > 2 ? 1.1 : .7, 0, CK.glow[0], 0, 0); gl.userData.night = true; (this.nightGlows || (this.nightGlows = [])).push(gl); } }
     const AS = {sofa: ["sofa", .85], armchair: ["armchair", .95], houseplant: ["plant", 1.0], leathersofa: ["leathersofa", .9], damaskchair: ["damaskchair", 1.0], pouf: ["pouf", .42], fridge: ["fridge", 1.9], vase: ["vaseflowers", .55], candles: ["candles", .32], desklamp: ["desklamp", .5], iridlamp: ["iridlamp", .55], boombox: ["boombox", .3]}[k];
     if (!g.children.length) box(.4, .4, .4, 0x8a7a6a, 0, .2, 0);
     if (AS){ const fallback = g.children.slice(); try{ L.asset(g, AS[0], {h: AS[1], ry: k === "fridge" ? 0 : 0, replace: fallback}); }catch(e){} }
@@ -15735,7 +15970,7 @@ const Home = {
       if ((h >= 5.5 && h < 8) || (h >= 17.5 && h < 20.5)) bot.lerp(new T.Color(0xff9a5a), .45);
       if (this.skyU){ this.skyU.top.value.copy(top); this.skyU.bot.value.copy(bot); } this.fog.color.copy(bot);
       { const a = Math.max(.08, Math.min(Math.PI - .08, (h - 6)/12*Math.PI)), dir = new T.Vector3(Math.cos(a)*.8, Math.sin(a), -.45).normalize(); this.sun.position.copy(dir.clone().multiplyScalar(60)).add(new T.Vector3(0, 0, -6)); if (this.sunDisc){ this.sunDisc.position.copy(dir.multiplyScalar(260)); this.sunDisc.visible = day > .05; this.sunDisc.material.color.setHex(h < 8 || h > 17.5 ? 0xffb070 : 0xfff2c0); } }
-      (this.winMats || []).forEach(m => { m.emissiveIntensity = night*1.1; }); (this.streetGlows || []).forEach(s => { s.material.opacity = night*.9; }); (this.bulbs || []).forEach(b => b.material.color.setHex(night > .3 ? 0xffd890 : 0x8a7a5a));
+      (this.winMats || []).forEach(m => { m.emissiveIntensity = night*1.1; }); this.nightGlows = (this.nightGlows || []).filter(s => { for (let p = s; p; p = p.parent) if (p === this.g) return true; return false; }); this.nightGlows.forEach(s => { s.material.opacity = .15 + night*.75; }); (this.streetGlows || []).forEach(s => { s.material.opacity = night*.9; }); (this.bulbs || []).forEach(b => b.material.color.setHex(night > .3 ? 0xffd890 : 0x8a7a5a));
       this.swayers = (this.swayers || []).filter(s => { for (let p = s; p; p = p.parent) if (p === this.g) return true; return false; }); this.stars.material.opacity = night; this.sun.intensity = .15 + day*1.0; this.hemi.intensity = .25 + day*.5; this.lamps.forEach(l => { l.intensity = night*1.1; }); (this.gLamps || []).forEach(([gl, b]) => { gl.material.opacity = night*.8; b.material.emissiveIntensity = night*1.5; }); (this.clouds || []).forEach(c => { c.material.color.setScalar(.25 + day*.75); c.material.opacity = .25 + day*.55; });
       try{ if (typeof Party !== "undefined" && Party.room && Object.keys(Party.peers).length) Wellness.add("social", .15, true); }catch(e){}
       { const hh = $("#homeHud"), show = this.active && !(Lounge.renderer && Lounge.renderer.xr.isPresenting) && !$("#stage").hidden; if (!hh ? show : hh.hidden === show) this.hud(); } }
@@ -15769,6 +16004,9 @@ const Home = {
         else if (a === "min"){ this.min = !(this.min || (this.mode && innerHeight < 620)); if (!this.min && innerHeight < 620) this.mode = ""; }
         else if (a.startsWith("cat:")) this.cat = a.slice(4);
         else if (a.startsWith("it:")){ this.sel = a.slice(3); this.mode = "place"; toast(`${this.CAT[this.sel].i} ${this.CAT[this.sel].n}: tap the ground to place it.`); }
+        else if (a === "sk"){ this.skOpen(); return; }
+        else if (a === "imp"){ this.importFile(); return; }
+        else if (a === "mdel"){ if (this.sel && this.CAT[this.sel] && this.CAT[this.sel].mine) this.mineDelete(this.sel); }
         this.refresh(); }); }
     h.hidden = false; this.refresh();
   },
@@ -15784,11 +16022,69 @@ const Home = {
       ${this.lotsOpen ? `<div class="hh-lots">${Object.entries(this.LOTS).map(([k, L]) => `<button type="button" data-h="lot:${k}" aria-pressed="${k === this.lot()}"><b>${L.i} ${L.n}</b><small>${L.d}</small></button>`).join("")}</div>` : ""}
       ${thirsty ? `<p class="hh-warn">💧 ${thirsty} plant${thirsty === 1 ? " is" : "s are"} thirsty</p>` : ""}`}</div>
       <div class="hh-dock">${this.mode === "place" ? `<div class="hh-cats">${Object.entries(this.CATS).map(([k, l]) => `<button type="button" data-h="cat:${k}" aria-pressed="${k === cat}">${l}</button>`).join("")}</div>
-        <div class="hh-items">${Object.entries(this.CAT).filter(([, C]) => C.c === cat).map(([k, C]) => `<button type="button" data-h="it:${k}" aria-pressed="${k === this.sel}" class="${this.cash() < C.cost ? "poor" : ""}"><span>${C.i}</span>${C.n}<small>$${C.cost}</small></button>`).join("")}</div>` : ""}
+        <div class="hh-items">${cat === "mine" ? `<button type="button" data-h="sk"><span>🌐</span>Find on Sketchfab<small>free models</small></button><button type="button" data-h="imp"><span>📁</span>Import a .glb<small>CGTrader, etc.</small></button>` : ""}${Object.entries(this.CAT).filter(([, C]) => C.c === cat).map(([k, C]) => `<button type="button" data-h="it:${k}" aria-pressed="${k === this.sel}" class="${this.cash() < C.cost ? "poor" : ""}" title="${C.credit ? esc(C.credit) : ""}"><span>${C.i}</span>${esc(C.n)}<small>$${C.cost}</small></button>`).join("")}${cat === "mine" && this.sel && this.CAT[this.sel] && this.CAT[this.sel].mine ? `<button type="button" data-h="mdel"><span>🗑</span>Delete "${esc(this.CAT[this.sel].n.slice(0, 18))}"<small>from My models</small></button>` : ""}</div>${cat === "mine" && this.sel && this.CAT[this.sel] && this.CAT[this.sel].credit ? `<p class="hh-hint">${esc(this.CAT[this.sel].credit)}</p>` : ""}` : ""}
         <div class="hh-btns"><button type="button" data-h="build" aria-pressed="${this.mode === "place"}">🔨 ${this.mode === "place" ? "Done" : "Build"}</button><button type="button" data-h="water">💧 Water all</button><button type="button" data-h="remove" aria-pressed="${this.mode === "remove"}">🗑 ${this.mode === "remove" ? "Done" : "Remove"}</button>${this.mode === "place" ? `<button type="button" data-h="rot">↻ Turn</button>` : ""}</div>
         ${this.mode === "place" ? `<p class="hh-hint">Tap the ground to place: ${this.sel ? this.CAT[this.sel].i + " " + this.CAT[this.sel].n : "pick something"}. Plants go outside. Drag to look around.</p>` : this.mode === "remove" ? `<p class="hh-hint">Tap something to remove it (you get 60% back).</p>` : `<p class="hh-hint">Tap plants to water or harvest, and furniture to use it.</p>`}</div>`;
   },
   hint(id){ return {bee: "plant 3+ flowers or a beehive", butterfly: "2 kinds of flowers", bird: "a tree, bird house or bird bath", ladybug: "5 grown plants", fish: "dig a pond", frog: "a pond and 3 plants", squirrel: "2 trees", rabbit: "2 tomato plants or 8 plants", hedgehog: "a bush and a compost bin", firefly: "a pond and 4 plants (night)", fox: "4 trees and 10 plants"}[id] || ""; },
+
+  /* ---------- 📦 My models: 3D models you bring in from Sketchfab or a .glb file (kept in this browser) ---------- */
+  mineList(){ return store.get("homeModels", []); },
+  mineInit(){ for (const k of Object.keys(this.CAT)) if (this.CAT[k].mine) delete this.CAT[k];
+    for (const M of this.mineList()) this.CAT["m_" + M.id] = {n: M.n, i: "📦", c: "mine", cost: 10, r: Math.max(.2, Math.min(1.5, M.r || .5)), ht: M.ht || .8, mine: M.id, credit: M.credit || ""};
+    this.items = (this.items || []).filter(it => this.CAT[it.k]); },
+  mineScene(id){ this._mine = this._mine || {}; if (this._mine[id]) return this._mine[id];
+    return this._mine[id] = (async () => { const rec = await Custom.get_("hm:" + id); if (!rec) return null; const gl = await this.mineParse(rec); const sc = gl.scene; sc.updateMatrixWorld(true);
+      const bb = new THREE.Box3().setFromObject(sc), sz = bb.getSize(new THREE.Vector3()), mx = Math.max(sz.x, sz.y, sz.z), k = mx > .12 && mx < 4.5 ? 1 : 1.2/Math.max(1e-4, mx);
+      const root = new THREE.Group(); sc.scale.multiplyScalar(k); sc.position.set(-(bb.min.x + bb.max.x)/2*k, -bb.min.y*k, -(bb.min.z + bb.max.z)/2*k); root.add(sc);
+      root.traverse(o => { if (o.isMesh){ o.castShadow = true; o.receiveShadow = true; } }); return root; })().catch(e => { console.warn(e); return null; }); },
+  async mineParse(rec){ if (rec.kind !== "zip") return Custom.parse(rec.buf);
+    const JSZip = await this.jszip(), zip = await JSZip.loadAsync(rec.buf), files = Object.values(zip.files).filter(f => !f.dir), main = files.find(f => /\.gltf$/i.test(f.name)) || files.find(f => /\.glb$/i.test(f.name));
+    if (!main) throw new Error("No .gltf or .glb inside that zip.");
+    if (/\.glb$/i.test(main.name)) return Custom.parse(await main.async("arraybuffer"));
+    const base = main.name.replace(/[^/]*$/, ""), urls = {}; for (const f of files) urls[f.name] = URL.createObjectURL(new Blob([await f.async("arraybuffer")]));
+    const mgr = new THREE.LoadingManager(); mgr.setURLModifier(u => { const name = decodeURI(u.replace(/^.*?blob:[^/]*\/[^/]*\//, "")); const key = Object.keys(urls).find(n => n === base + name || n.endsWith("/" + name) || n === name); return key ? urls[key] : u; });
+    const txt = await main.async("string"); return new Promise((ok, no) => new THREE.GLTFLoader(mgr).parse(txt, "", ok, no)); },
+  jszip(){ return window.JSZip ? Promise.resolve(window.JSZip) : (this._jz || (this._jz = new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"; sc.onload = () => ok(window.JSZip); sc.onerror = () => no(new Error("Couldn't load the zip reader.")); document.head.appendChild(sc); }))); },
+  mineModel(g, CK, fb){ this.mineScene(CK.mine).then(src => { if (!src) return; const m = src.clone(true); g.add(m); fb.forEach(o => o.visible = false); }); },
+  async mineAdd(buf, kind, meta){
+    if (buf.byteLength > 30*1048576) throw new Error("That model is over 30 MB. Pick a lighter one.");
+    const id = Math.random().toString(36).slice(2, 10), gl = await this.mineParse({buf, kind}); let tris = 0; gl.scene.traverse(o => { if (o.isMesh && o.geometry){ const g = o.geometry; tris += (g.index ? g.index.count : g.attributes.position.count)/3; } });
+    if (tris > 200000) throw new Error(`That model has ${Math.round(tris/1000)}k triangles. Pick one under 200k so phones can handle it.`);
+    gl.scene.updateMatrixWorld(true); const bb = new THREE.Box3().setFromObject(gl.scene), sz = bb.getSize(new THREE.Vector3()), mx = Math.max(sz.x, sz.y, sz.z), k = mx > .12 && mx < 4.5 ? 1 : 1.2/Math.max(1e-4, mx);
+    await Custom.put("hm:" + id, {buf, kind});
+    const list = this.mineList(); list.push({id, n: (meta.n || "My model").slice(0, 40), credit: meta.credit || "", r: Math.max(sz.x, sz.z)*k/2, ht: sz.y*k}); store.set("homeModels", list.slice(-40));
+    this.mineInit(); this.cat = "mine"; this.sel = "m_" + id; this.mode = "place"; this.refresh(); toast(`📦 ${meta.n || "Model"} added to My models. Tap the ground to place it.`); return id; },
+  mineDelete(k){ const id = this.CAT[k].mine; store.set("homeModels", this.mineList().filter(M => M.id !== id)); Custom.del("hm:" + id).catch(() => {}); if (this._mine) delete this._mine[id];
+    const gone = this.items.filter(it => it.k === k); gone.forEach(it => { const n = this.nodes.get(it.id); if (n){ this.layer.remove(n.g); this.L.clickables = this.L.clickables.filter(o => o !== n.proxy); this.nodes.delete(it.id); } });
+    this.items = this.items.filter(it => it.k !== k); this.save(); this.sel = ""; this.mineInit(); this.refresh(); toast("Model deleted."); },
+  importFile(){ const inp = document.createElement("input"); inp.type = "file"; inp.accept = ".glb,.zip,model/gltf-binary"; inp.onchange = async () => { const f = inp.files && inp.files[0]; if (!f) return;
+      toast("Reading the model…"); try{ await Custom.ready(); const buf = await f.arrayBuffer(); await this.mineAdd(buf, /\.zip$/i.test(f.name) ? "zip" : "glb", {n: f.name.replace(/\.(glb|zip)$/i, "").replace(/[_-]+/g, " "), credit: "Imported from your device"}); }catch(e){ toast("⚠ " + (e.message || e)); } }; inp.click(); },
+  /* Sketchfab: search free downloadable models, then download with your own Sketchfab API token */
+  skOpen(){ let d = $("#skDlg"); if (!d){ d = document.createElement("div"); d.id = "skDlg"; d.className = "skdlg"; document.body.appendChild(d);
+      d.addEventListener("click", e => { const b = e.target.closest("[data-sk]"); if (!b) return; const a = b.dataset.sk;
+        if (a === "close") d.hidden = true; else if (a === "go") this.skSearch(); else if (a === "tok"){ const v = $("#skTok").value.trim(); store.set("skToken", v); toast(v ? "🔑 Token saved on this device." : "Token removed."); this.skDraw(); }
+        else if (a.startsWith("add:")) this.skAdd(a.slice(4)); });
+      d.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "skQ") this.skSearch(); }); }
+    d.hidden = false; this.skDraw(); },
+  skDraw(){ const d = $("#skDlg"), tok = store.get("skToken", ""), R = this.skRes || [];
+    d.innerHTML = `<div class="sk-card"><div class="sk-top"><b>🌐 Sketchfab models</b><button type="button" data-sk="close" aria-label="Close">✕</button></div>
+      <div class="sk-row"><input id="skQ" type="search" placeholder="Search: chair, lamp, guitar, cat…" value="${esc(this.skQ || "")}"><button type="button" class="primary" data-sk="go">Search</button></div>
+      <p class="sk-note">Only free, downloadable models show up. Many are <b>CC Attribution</b>: the author's name is saved with the model. Avoid <b>NonCommercial</b> ones if you sell what you make.</p>
+      ${tok ? `<p class="sk-note">🔑 Your Sketchfab token is saved on this device. <button type="button" class="linkish" data-sk="tok" onclick="document.getElementById('skTok').value=''">Remove</button><input id="skTok" type="hidden" value=""></p>` : `<details class="sk-tok" open><summary>🔑 Add your Sketchfab API token (needed to download)</summary><p>Make a free account at sketchfab.com, open <b>Settings → Password &amp; API</b>, copy your API token and paste it here. It stays on this device.</p><div class="sk-row"><input id="skTok" type="password" placeholder="Paste your API token"><button type="button" data-sk="tok">Save</button></div></details>`}
+      <div class="sk-grid">${this.skBusy ? `<p class="sk-note">Searching…</p>` : R.length ? R.map(m => `<div class="sk-it"><img src="${esc(m.thumb)}" alt="" loading="lazy"><b>${esc(m.name)}</b><small>by ${esc(m.user)} · ${esc(m.lic)} · ${Math.round(m.faces/1000)}k tris</small><button type="button" data-sk="add:${esc(m.uid)}" ${tok ? "" : "disabled"}>${this.skGet === m.uid ? "Downloading…" : "＋ Add to My models"}</button></div>`).join("") : `<p class="sk-note">${this.skQ ? "Nothing found. Try another word." : "Search for something to add to your home."}</p>`}</div>
+      <p class="sk-note">Got a model from <b>CGTrader</b> or anywhere else? Download it as <b>.glb</b> (or a .zip with a .gltf) and use <b>📁 Import a .glb</b>.</p></div>`;
+    const q = $("#skQ"); if (q && !this.skBusy) q.focus(); },
+  async skSearch(){ const q = ($("#skQ") || {}).value || ""; this.skQ = q.trim(); if (!this.skQ) return; this.skBusy = true; this.skDraw();
+    try{ const r = await fetch(`https://api.sketchfab.com/v3/search?type=models&downloadable=true&count=24&max_face_count=150000&q=${encodeURIComponent(this.skQ)}`), j = await r.json();
+      this.skRes = (j.results || []).filter(m => (m.faceCount || 0) <= 150000).map(m => { const im = (m.thumbnails && m.thumbnails.images || []).filter(i => i.width >= 200).sort((a, b) => a.width - b.width)[0] || {}; return {uid: m.uid, name: m.name, user: m.user && (m.user.displayName || m.user.username) || "?", lic: m.license && m.license.label || "Unknown license", faces: m.faceCount || 0, thumb: im.url || "", url: m.viewerUrl}; });
+    }catch(e){ this.skRes = []; toast("⚠ Couldn't reach Sketchfab."); } this.skBusy = false; this.skDraw(); },
+  async skAdd(uid){ const tok = store.get("skToken", ""), m = (this.skRes || []).find(x => x.uid === uid); if (!tok || !m || this.skGet) return; this.skGet = uid; this.skDraw();
+    try{ await Custom.ready(); const r = await fetch(`https://api.sketchfab.com/v3/models/${uid}/download`, {headers: {Authorization: "Token " + tok}});
+      if (r.status === 401 || r.status === 403) throw new Error("Sketchfab didn't accept that token. Check it in Settings → Password & API."); if (!r.ok) throw new Error("Sketchfab says this model can't be downloaded right now (" + r.status + ").");
+      const j = await r.json(), f = j.glb || j.gltf; if (!f || !f.url) throw new Error("No downloadable file for this model."); if (f.size && f.size > 30*1048576) throw new Error("That model is over 30 MB. Pick a lighter one.");
+      const buf = await (await fetch(f.url)).arrayBuffer(); await this.mineAdd(buf, j.glb ? "glb" : "zip", {n: m.name, credit: `“${m.name}” by ${m.user} on Sketchfab (${m.lic})`}); $("#skDlg").hidden = true;
+    }catch(e){ toast("⚠ " + (e.message || e)); } this.skGet = null; if (!$("#skDlg").hidden) this.skDraw(); },
 
   /* ---------- in VR: a Home tab on the wrist menu ---------- */
   drawTab(M, top){
@@ -16117,21 +16413,31 @@ Object.assign(Mogul, {
     const d = this.d(), W = this.W, x = this.x; let Y = 84;
     if (this.vsel){ return this.drawVenue(this.vsel); }
     this.text(`👑 ${this.title(d)} · worth ${this.money(this.worth(d))}`, 28, Y + 30, 28, "#fff", 800, "left", W - 300);
-    this.btn("sleep", W - 260, Y, 236, 52, "🌙 Next night", () => { d.day++; this.put(d); this.say("A new night. Every club can open again."); }, {size: 20});
+    this.btn("sleep", W - 260, Y, 236, 52, "🌙 Next night", () => { const D = this.d(); D.day++; this.put(D); this.say("A new night. Every club can open again."); }, {size: 20});
     Y += 64;
-    const owned = this.VENUES.filter(v => d.clubs[v.id]), forSale = this.VENUES.filter(v => !d.clubs[v.id]);
-    if (!owned.length) this.text("You don't own a club yet. Work shifts to save up, then buy The Basement.", 28, Y + 20, 21, "rgba(255,255,255,.75)", 500, "left", W - 56), Y += 40;
-    owned.forEach((v, i) => { const c = d.clubs[v.id], ran = d.ran[v.id] === d.day, by = Y + i*86;
-      this.btn("v" + v.id, 28, by, 620, 76, `${v.name}`, () => { this.vsel = v.id; this.draw(); }, {left: true, size: 24, sub: `⭐ rep ${Math.round(c.rep)} · ${c.lastProfit !== undefined ? "last night " + this.money(c.lastProfit) : "never opened"} · tap to manage`});
-      this.btn("run" + v.id, 664, by, 332, 76, ran ? "✓ Open tonight (done)" : "🎉 Open tonight", () => ran ? this.say("Already opened tonight. Tap 🌙 Next night.") : this.runNight(v.id), {primary: !ran, size: 22}); });
-    Y += owned.length*86 + 10;
-    this.text("FOR SALE", 28, Y + 22, 16, "#ffc21a", 800); Y += 34;
-    forSale.slice(0, 3).forEach((v, i) => { const can = d.cash >= v.price; this.btn("buy" + v.id, 28 + i*328, Y, 318, 88, `${v.name}`, () => { if (!can) return this.say(`You need ${this.money(v.price)}. Work more shifts!`, true); d.cash -= v.price; d.clubs[v.id] = {rep: 30, up: {}, staff: {}}; this.put(d); this.say(`🎉 You bought ${v.name}!`); try{ Lounge.burst(Lounge.headPos().add(new THREE.Vector3(0, .4, -1)), 18); }catch(e){} },
-      {left: true, size: 21, primary: can, sub: `${this.money(v.price)} · ${v.cap} capacity · ${(Lounge.WORLDS.find(w => w.id === v.world) || {}).name || ""}`}); });
+    const owned = this.VENUES.filter(v => d.clubs[v.id]), forSale = this.VENUES.filter(v => !d.clubs[v.id]).sort((p, q) => p.price - q.price);
+    this.text(`💵 Cash: ${this.money(d.cash)}`, 28, Y + 6, 22, "#ffd87a", 800); Y += 22;
+    if (!owned.length) this.text(forSale[0] && d.cash >= forSale[0].price ? `You can afford the ${forSale[0].name} right now. Tap it below to buy your first club!` : `You don't own a club yet. The ${forSale[0] ? forSale[0].name + " costs " + this.money(forSale[0].price) : "cheapest one"}: work shifts to save up, then buy it below.`, 28, Y + 20, 20, "rgba(255,255,255,.75)", 500, "left", W - 56), Y += 40;
+    const op = Math.min(this.ownPg || 0, Math.max(0, Math.ceil(owned.length/3) - 1)); this.ownPg = op;
+    owned.slice(op*3, op*3 + 3).forEach((v, i) => { const c = d.clubs[v.id], ran = d.ran[v.id] === d.day, by = Y + i*86;
+      this.btn("v" + v.id, 28, by, 560, 76, `${v.name} ›`, () => { this.vsel = v.id; this.draw(); }, {left: true, size: 24, sub: `⭐ rep ${Math.round(c.rep)} · ${c.lastProfit !== undefined ? "last night " + this.money(c.lastProfit) : "never opened"} · tap to upgrade & hire`});
+      this.btn("run" + v.id, 600, by, 396, 76, ran ? "✓ Open tonight (done)" : "🎉 Open tonight", () => { const D = this.d(); if (D.ran[v.id] === D.day) return this.say("Already opened tonight. Tap 🌙 Next night."); this.runNight(v.id); }, {primary: !ran, size: 22}); });
+    Y += Math.min(3, owned.length)*86;
+    if (owned.length > 3){ this.btn("opv", 28, Y, 120, 40, "◀", () => { this.ownPg = Math.max(0, op - 1); }, {size: 20}); this.text(`My clubs ${op + 1}/${Math.ceil(owned.length/3)}`, 160, Y + 26, 18, "#fff", 700); this.btn("onx", 330, Y, 120, 40, "▶", () => { this.ownPg = op + 1; }, {size: 20}); Y += 48; }
+    Y += 6; this.text("FOR SALE", 28, Y + 22, 16, "#ffc21a", 800);
+    const sp = Math.min(this.salePg || 0, Math.max(0, Math.ceil(forSale.length/3) - 1)); this.salePg = sp;
+    if (forSale.length > 3){ this.btn("spv", W - 260, Y, 110, 40, "◀", () => { this.salePg = Math.max(0, sp - 1); }, {size: 20}); this.btn("snx", W - 138, Y, 110, 40, "▶", () => { this.salePg = sp + 1; }, {size: 20}); }
+    Y += 46;
+    if (!forSale.length) this.text("You own every club in town. 👑", 28, Y + 30, 22, "#fff", 700);
+    forSale.slice(sp*3, sp*3 + 3).forEach((v, i) => { const can = d.cash >= v.price; this.btn("buy" + v.id, 28 + i*328, Y, 318, 92, `${can ? "🛒 " : "🔒 "}${v.name}`, () => this.buyVenue(v.id),
+      {left: true, size: 21, primary: can, sub: can ? `Buy for ${this.money(v.price)} · ${v.cap} people` : `${this.money(v.price)} · need ${this.money(v.price - d.cash)} more`}); });
     if (this.night){ const n = this.night; Y += 104; this.rr(x, 24, Y, W - 48, this.H - Y - 30, 16); x.fillStyle = "rgba(255,255,255,.05)"; x.fill();
       this.text(`Last night at ${n.name}: ${this.money(n.profit)} ${n.profit >= 0 ? "profit" : "loss"}`, 40, Y + 32, 24, n.profit >= 0 ? "#3ad07a" : "#ff8a7a", 800, "left", W - 80);
       let yy = Y + 64; for (const l of n.lines.slice(0, 6)){ this.text(l, 40, yy, 19, "rgba(255,255,255,.8)", 500, "left", W - 80); yy += 26; } }
   },
+  buyVenue(id){ const D = this.d(), v = this.VENUES.find(x => x.id === id); if (!v || D.clubs[id]) return;
+    if (D.cash < v.price){ const m = `You need ${this.money(v.price - D.cash)} more for ${v.name}. Work a few shifts (bartender and bouncer pay well), then come back.`; this.say(m, true); toast("🔒 " + m); return; }
+    D.cash -= v.price; D.clubs[id] = {rep: 30, up: {}, staff: {}}; this.put(D); this.vsel = id; this.say(`🎉 You bought ${v.name}! Hire staff and upgrade it here, then open it tonight.`); toast(`🎉 You bought ${v.name}!`); try{ Lounge.burst(Lounge.headPos().add(new THREE.Vector3(0, .4, -1)), 18); }catch(e){} this.draw(); },
   drawVenue(id){
     const d = this.d(), v = this.VENUES.find(x => x.id === id), c = d.clubs[id], W = this.W; if (!c){ this.vsel = null; return this.drawEmpire(); }
     c.up = c.up || {}; c.staff = c.staff || {};
@@ -16140,13 +16446,14 @@ Object.assign(Mogul, {
     this.btn("visit", W - 280, 84, 256, 48, "🚪 Visit this club", () => { Lounge.chooseWorld(v.world); this.say(`Welcome to ${v.name}.`); }, {size: 20});
     this.text(`⭐ Reputation ${Math.round(c.rep)}/100 · ${v.cap} capacity · $${v.cover} cover · rent ${this.money(v.rent)}/night`, 28, 162, 20, "rgba(255,255,255,.75)", 500, "left", W - 56);
     this.text("UPGRADES", 28, 200, 16, "#ffc21a", 800);
-    this.UPGRADES.forEach((u, i) => { const lv = c.up[u.id] || 0, cost = u.cost[lv], X = 28 + (i % 2)*490, Y = 212 + Math.floor(i/2)*78;
-      this.btn("u" + u.id, X, Y, 478, 70, `${u.icon} ${u.name} ${"★".repeat(lv)}${"☆".repeat(3 - lv)}`, () => { if (lv >= 3) return this.say("Maxed out."); if (d.cash < cost) return this.say(`Need ${this.money(cost)}.`, true); d.cash -= cost; c.up[u.id] = lv + 1; this.put(d); this.say(`${u.name} upgraded!`); },
-        {left: true, size: 20, sub: lv >= 3 ? "Maxed" : `${this.money(cost)} · ${u.fx}`}); });
+    this.UPGRADES.forEach((u, i) => { const lv = c.up[u.id] || 0, cost = lv < 3 ? this.upCost(u, lv, v) : 0, X = 28 + (i % 2)*490, Y = 212 + Math.floor(i/2)*78;
+      this.btn("u" + u.id, X, Y, 478, 70, `${u.icon} ${u.name}  ${"●".repeat(lv)}${"○".repeat(3 - lv)}`, () => { const D = this.d(), C = D.clubs[id]; if (!C) return; C.up = C.up || {}; const L2 = C.up[u.id] || 0, cst = L2 < 3 ? this.upCost(u, L2, v) : 0; if (L2 >= 3) return this.say("Maxed out."); if (D.cash < cst){ const m = `${u.name} costs ${this.money(cst)}. You need ${this.money(cst - D.cash)} more.`; this.say(m, true); toast("🔒 " + m); return; } D.cash -= cst; C.up[u.id] = L2 + 1; this.put(D); this.say(`${u.icon} ${u.name} upgraded to level ${L2 + 1}!`); toast(`${u.icon} ${u.name} upgraded!`); },
+        {left: true, size: 20, primary: lv < 3 && d.cash >= cost, sub: lv >= 3 ? "Maxed" : d.cash >= cost ? `Upgrade: ${this.money(cost)} · ${u.fx}` : `${this.money(cost)} · need ${this.money(cost - d.cash)} more`}); });
     this.text("STAFF (paid every night you open)", 28, 466, 16, "#ffc21a", 800);
     this.STAFF.forEach((st, i) => { const n = c.staff[st.id] || 0, X = 28 + (i % 3)*326, Y = 478 + Math.floor(i/3)*76;
-      this.btn("s" + st.id, X, Y, 230, 68, `${st.icon} ${st.name}: ${n}`, () => { if (n >= (st.max || 1)) return this.say("That's the most you need."); c.staff[st.id] = n + 1; this.put(d); this.say(`Hired: ${st.name}.`); }, {left: true, size: 18, sub: `${this.money(st.wage)}/night · ${st.fx}`});
-      this.btn("f" + st.id, X + 238, Y, 80, 68, "Let go", () => { if (!n) return; c.staff[st.id] = n - 1; this.put(d); }, {size: 15}); });
+      this.btn("s" + st.id, X, Y, 230, 68, `${st.icon} ${st.name}: ${n}`, () => { const D = this.d(), C = D.clubs[id]; if (!C) return; C.staff = C.staff || {}; const N = C.staff[st.id] || 0; if (N >= (st.max || 1)) return this.say("That's the most you need."); C.staff[st.id] = N + 1; this.put(D); this.say(`Hired: ${st.name}.`); toast(`${st.icon} Hired: ${st.name}`); }, {left: true, size: 18, sub: `${this.money(st.wage)}/night · ${st.fx}`});
+      this.btn("f" + st.id, X + 238, Y, 80, 68, "Let go", () => { const D = this.d(), C = D.clubs[id]; if (!C || !(C.staff && C.staff[st.id])) return; C.staff[st.id]--; this.put(D); }, {size: 15}); });
+    this.text(`💵 Cash: ${this.money(d.cash)}`, W - 300, 200, 20, "#ffd87a", 800, "left", 280);
   },
   /* when a night report says "a fight broke out", two guests really do trade blows a few steps in front of you */
   scuffle(){ const L = Lounge, T = THREE, w = L.worlds && L.worlds[L.worldId]; if (!w || !L.built || (this.scuf && this.scuf.on)) return;

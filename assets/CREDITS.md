@@ -31,3 +31,8 @@ Models from the Khronos glTF Sample Assets (github.com/KhronosGroup/glTF-Sample-
 | fox.glb | Fox | tomkranis; rigged and animated by @AsoboStudio and @scurest | CC BY 4.0 |
 
 CC BY 4.0: https://creativecommons.org/licenses/by/4.0/ · CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+
+## Model packs on Higgsfield's CDN (loaded at runtime)
+
+- **Poly Haven** (https://polyhaven.com), CC0 / public domain: Mid-Century Lounge Chair, Modern Arm Chair 01, Sofa 02, Sofa 03, Rocking Chair 01, Vintage Day Bed, Coffee Table Round 01, Modern Coffee Table 01, Side Table 01, Dining Table, Dining Chair 02, Drawer Cabinet, Modern Wooden Cabinet, Classic Nightstand 01, Chandelier 01, Standing Picture Frame 01, Television 02, Vintage Grandfather Clock 01, Chess Set, Ceramic Vase 01, Throw Pillows 01, Wicker Basket 01, Rubber Duck Toy, Mantel Clock 01, Vintage Oil Lamp, Treasure Chest, Garden Gnome, Outdoor Table Chair Set 01, Stone Fire Pit, Planter Box 01, Painted Wooden Bench, Street Lamp 01. Textures resized to 512px and some meshes simplified.
+- **Higgsfield AI** (made for Turn Up Music): kettlebell, bonsai, stone lantern, paper lantern, antique globe, treasure chest, typewriter (GPT Image → Tripo 3D), plus the photo textures and the oak, pine, palm, cherry and maple trees.

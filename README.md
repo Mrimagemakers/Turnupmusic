@@ -325,6 +325,15 @@ Meditation, Exercise, Dance Class, Escape Room and My Home have trim, window lig
 
 My Home's ground, floors, walls, road, roof shingles and bark use photo textures made with Higgsfield AI (GPT Image), and the oak, pine, palm, cherry and maple trees are Higgsfield/Tripo 3D models (about 10k triangles, 1024px textures, ~0.7 MB each). They load from Higgsfield's CDN at runtime. The hand-drawn textures and trees show first and stay as the fallback, and on Low graphics.
 
+## Model packs, My models (Sketchfab), phone expand
+
+- **Model packs** (`HFP` in the app): several GLB models per file, loaded from Higgsfield's CDN and picked by node name (`hf:<pack>/<node>` works anywhere `asset()` is used). Packs: `living`, `decor`, `garden` (Poly Haven, CC0, real-world scale) and `pgym`, `pzen`, `ptokyo`, `pescape` (Higgsfield/Tripo 3D props). Stand-ins show until a model arrives and stay if it can't load.
+- **Room textures**: the Meditation Room, Exercise Room, Tokyo street and Escape Room use Higgsfield photo textures (oak floor, plaster, tatami, shoji, rubber floor, concrete, lifting platform, wet asphalt, paving, herringbone parquet, damask, walnut panelling).
+- **My models**: Sketchfab search (`api.sketchfab.com/v3/search`, downloadable only) and download (`/v3/models/{uid}/download` with the player's own API token); `.glb` or zipped `.gltf` import from the device. Stored in IndexedDB (`hm:<id>`), listed in `homeModels`.
+- **Escape Room**: random six-puzzle sets from ten puzzle types, each with a "Show me the clue" camera move. Fixed a bug where "Look around" didn't actually hide the panel.
+- **My Empire fix**: new $500 Pop-up Lounge starter club, cash shown, "need $X more" labels, toasts on buy/upgrade/hire, paging for owned and for-sale clubs, and handlers that re-read the wallet (no stale saves).
+- **Phone expand**: the ⛶ button puts the Mogul game panel full screen (and requests landscape on Android). Bouncer cards zoom on tap.
+
 ## Neighborhood and jobs
 - **My Home** has five lots (`Home.LOTS`): Maple Street (with a street, sidewalks and neighbors' houses), Beach House (animated sea), Aspen Cabin (snow, pines, mountains), Downtown Loft (rooftop with the city), Tokyo Garden House (bamboo, maples, torii, petals). Each lot saves separately (`home`, `home:beach`, …). New realistic trees (layered leaf clumps, bark, branches, palms with fronds), wind-swept grass, a gradient sky with a sun that follows the clock, and sun shadows.
 - **Jobs** (`Jobs` in the source): staff in party worlds (servers with trays, photographers, security, custodians), lifeguards, guides, trainers and instructors; neighbors with routes on your street. Tapping anyone shows their name, career and a line about it.
