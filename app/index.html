@@ -358,6 +358,11 @@ dialog.wide{width:min(860px,calc(100% - 24px))}
 @media (max-width:560px){.tl-tiles{grid-template-columns:1fr}.tl-tile{min-height:64px}.tl-aed{grid-template-columns:1fr}.tl-bar{width:52px}}
 .homehud{position:fixed;left:10px;top:70px;z-index:44;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:min(560px,calc(100vw - 20px));font:500 13px var(--f-body,system-ui)}
 .homehud .hh-card,.homehud .hh-dock{pointer-events:auto;background:rgba(20,13,10,.88);border:1px solid rgba(255,194,26,.5);border-radius:16px;padding:10px 12px;color:#fff;box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.homehud .hh-move{margin-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}.homehud .hh-move b{flex:1 1 100%;font:800 14px var(--f-display,system-ui);color:#ffd87a}
+.homehud .hh-pad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,44px);gap:4px}.homehud .hh-pad button{width:48px;height:44px;padding:0;font-size:20px}
+.homehud .hh-mv2{display:flex;flex-direction:column;gap:6px}
+@media (max-height:520px){.homehud .hh-pad{grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,32px);gap:3px}.homehud .hh-pad button{width:40px;height:32px;font-size:16px}.homehud .hh-move{margin-top:4px}}
+.homehud .hh-btns button[disabled]{opacity:.4;cursor:default}
 .homehud .hh-card{width:250px}.homehud .hh-top{display:flex;align-items:center;gap:8px}.homehud .hh-top b{flex:1;font:800 15px var(--f-display,system-ui)}.homehud .hh-cash{color:#ffd87a;font-weight:800}
 .homehud button{font:inherit;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:6px 9px;cursor:pointer}.homehud button[aria-pressed=true]{background:#ffc21a;color:#241404;border-color:#ffc21a}
 .homehud .hbar{display:grid;grid-template-columns:92px 1fr;align-items:center;gap:6px;margin-top:5px;font-size:12px}.homehud .hbar i{height:8px;border-radius:9px;background:linear-gradient(90deg,var(--c) var(--v),rgba(255,255,255,.12) var(--v))}
@@ -15672,7 +15677,7 @@ const Home = {
   },
   /* ---------- the world ---------- */
   build(L){
-    const T = THREE, add = L.add, g = new T.Group(); L.scene.add(g); L.room = g; this.L = L; this.g = g; try{ this.mineInit(); }catch(e){} this.swayers = []; this.nightGlows = []; this.winMats = []; this.streetGlows = []; this.sea = this.snow = this.petals = this.city = this.bulbs = this.foam = null;
+    const T = THREE, add = L.add, g = new T.Group(); L.scene.add(g); L.room = g; this.L = L; this.g = g; try{ this.mineInit(); this.dragInit(); }catch(e){} this.hist = []; this.fut = []; this.pick = null; if (this.ring && this.ring.parent) this.ring.parent.remove(this.ring); this.swayers = []; this.nightGlows = []; this.winMats = []; this.streetGlows = []; this.sea = this.snow = this.petals = this.city = this.bulbs = this.foam = null;
     const lot = this.lot(), LT = this.LOTS[lot], U = typeof GFX !== "undefined" && GFX.level === "ultra", LOW = typeof GFX !== "undefined" && GFX.level === "low";
     const [hx0, hx1, hz0, hz1] = this.HOUSE, HW = hx1 - hx0, HD = hz1 - hz0, hcx = (hx0 + hx1)/2, hcz = (hz0 + hz1)/2, WH = 3, [px0, px1, pz0, pz1] = this.PLOT;
     // ground
@@ -15852,6 +15857,7 @@ const Home = {
   /* ---------- tapping things in your home ---------- */
   click(it){
     if (this.mode === "remove"){ this.remove(it); return; }
+    if (this.mode === "move"){ this.pickSet(this.pick === it.id ? null : it.id); return; }
     const C = this.CAT[it.k], now = Date.now(), pos = new THREE.Vector3(it.x, 1, it.z);
     if (C.plant){
       if (this.ripe(it)){ it.h = now; this.earn(C.crop[0]); this.save(); this.refreshNode(it); toast(`${C.i} Harvested! +$${C.crop[0]}`); try{ this.L.burst(pos, 10); }catch(e){} return; }
@@ -15865,27 +15871,73 @@ const Home = {
   },
   waterFx(it){ try{ const T = THREE, g = new T.Group(), n = this.nodes.get(it.id); for (let i = 0; i < 14; i++){ const d = new T.Mesh(new T.SphereGeometry(.025, 6, 4), new T.MeshBasicMaterial({color: 0x6ac8ff, toneMapped: false})); d.position.set(it.x + (Math.random() - .5)*.6, 1.6 + Math.random()*.6, it.z + (Math.random() - .5)*.6); d.userData.v = 2 + Math.random(); g.add(d); } this.layer.add(g); (this.fx || (this.fx = [])).push({g, t: 0}); }catch(e){} },
   refreshNode(it){ this.place(it); this.eco(); this.refresh(); },
-  remove(it){ this.items = this.items.filter(x => x !== it); const n = this.nodes.get(it.id); if (n){ this.layer.remove(n.g); this.L.clickables = this.L.clickables.filter(o => o !== n.proxy); this.nodes.delete(it.id); }
-    const back = Math.round(this.CAT[it.k].cost*.6); this.earn(back); this.save(); this.eco(); this.refresh(); toast(`Removed. +$${back} back`); },
+  remove(it){ this.drop(it); const back = Math.round(this.CAT[it.k].cost*.6); this.earn(back); this.save(); this.eco(); this.rec({t: "remove", it, cash: back}); toast(`Removed. +$${back} back. (↶ Undo puts it back.)`); },
+  drop(it){ this.items = this.items.filter(x => x !== it); const n = this.nodes.get(it.id); if (n){ this.layer.remove(n.g); this.L.clickables = this.L.clickables.filter(o => o !== n.proxy); this.nodes.delete(it.id); } if (this.pick === it.id) this.pickSet(null); },
+  /* ---------- ↶ undo / ↷ redo: placing, removing, moving and turning ---------- */
+  rec(a){ (this.hist || (this.hist = [])).push(a); if (this.hist.length > 80) this.hist.shift(); this.fut = []; this.refresh(); },
+  histReset(){ this.hist = []; this.fut = []; this.pickSet(null); },
+  doAct(a, back){ const it = a.it;
+    if (a.t === "move"){ const p = back ? a.from : a.to, cur = this.items.find(i => i.id === a.id); if (!cur) return false; cur.x = p.x; cur.z = p.z; cur.r = p.r; this.place(cur); if (this.pick === cur.id) this.pickRing(); return true; }
+    const insert = (a.t === "add") !== !!back;   // add forward / remove backward put it back
+    if (insert){ if (a.t === "add"){ if (!this.spend(a.cash)){ toast(`Not enough cash to put it back ($${a.cash}).`); return false; } } else { if (this.cash() < a.cash){ toast(`You need $${a.cash} to undo that (the refund you got).`); return false; } this.spend(a.cash); }
+      if (this.valid(it.k, it.x, it.z)){ /* the spot got taken: still put it back, a little to the side */ it.x += .5; } this.items.push(it); this.place(it); }
+    else { if (!this.items.includes(it)) return false; this.drop(it); this.earn(a.cash); }
+    return true; },
+  undo(){ const a = (this.hist || []).pop(); if (!a){ toast("Nothing to undo."); return; } if (this.doAct(a, true)){ (this.fut || (this.fut = [])).push(a); this.save(); this.eco(); toast("↶ Undone: " + this.actName(a)); } else this.hist.push(a); this.refresh(); },
+  redo(){ const a = (this.fut || []).pop(); if (!a){ toast("Nothing to redo."); return; } if (this.doAct(a, false)){ this.hist.push(a); this.save(); this.eco(); toast("↷ Redone: " + this.actName(a)); } else this.fut.push(a); this.refresh(); },
+  actName(a){ const it = a.it || this.items.find(i => i.id === a.id), C = it && this.CAT[it.k]; const n = C ? C.i + " " + C.n : "item"; return {add: "placed ", remove: "removed ", move: "moved "}[a.t] + n; },
+  /* ---------- ✋ moving things ---------- */
+  pickSet(id){ this.pick = id || null; this.pickRing(); this.refresh(); },
+  pickRing(){ const T = THREE; if (!this.ring){ this.ring = new T.Mesh(new T.RingGeometry(.9, 1, 40).rotateX(-Math.PI/2), new T.MeshBasicMaterial({color: 0xffc21a, transparent: true, opacity: .9, toneMapped: false, depthWrite: false})); this.ring.renderOrder = 5; }
+    const it = this.pick && this.items.find(i => i.id === this.pick); if (!it || !this.layer){ if (this.ring.parent) this.ring.parent.remove(this.ring); return; }
+    if (this.ring.parent !== this.layer) this.layer.add(this.ring); const r = Math.max(.3, this.CAT[it.k].r); this.ring.scale.setScalar(r); this.ring.position.set(it.x, .04, it.z); },
+  moveItem(it, x, z, r, quiet, merge){ if (x === it.x && z === it.z && r === (it.r || 0)) return true; const why = this.valid(it.k, x, z, it); if (why){ if (!quiet) toast(why); return false; }
+    const from = {x: it.x, z: it.z, r: it.r || 0}; it.x = x; it.z = z; it.r = r; this.place(it); this.pickRing(); this.save();
+    const last = this.hist && this.hist[this.hist.length - 1]; if (merge && last && last.t === "move" && last.merge && last.id === it.id && Date.now() - last.at < 1500){ last.to = {x, z, r}; last.at = Date.now(); this.fut = []; this.refresh(); }
+    else this.rec({t: "move", id: it.id, from, to: {x, z, r}, at: Date.now(), merge: !!merge}); return true; },
+  nudge(dir){ const it = this.items.find(i => i.id === this.pick); if (!it) return; const L = this.L, yaw = L.renderer && L.renderer.xr.isPresenting ? L.headYaw() : L.yaw, fx = -Math.sin(yaw), fz = -Math.cos(yaw);
+    // snap the view direction to the nearest grid axis so arrows move in straight lines
+    let ax = Math.abs(fx) > Math.abs(fz) ? Math.sign(fx) : 0, az = ax ? 0 : Math.sign(fz); const rx = -az, rz = ax, st = .25;
+    const v = {f: [ax, az], b: [-ax, -az], l: [-rx, -rz], r: [rx, rz]}[dir]; this.moveItem(it, Math.round((it.x + v[0]*st)*4)/4, Math.round((it.z + v[1]*st)*4)/4, it.r || 0, false, true); },
+  hitItem(ray){ const proxies = [...this.nodes.values()].map(n => n.proxy); const h = (this._rc || (this._rc = new THREE.Raycaster())); h.ray.copy(ray.ray || ray); const hit = h.intersectObjects(proxies, false)[0]; if (!hit) return null; for (const [id, n] of this.nodes) if (n.proxy === hit.object) return this.items.find(i => i.id === id); return null; },
+  floorHit(ray){ const o = ray.origin, d = ray.direction; if (d.y > -.02) return null; const t = -o.y/d.y; return {x: o.x + d.x*t, z: o.z + d.z*t}; },
+  /* drag things around with a finger or the mouse (Move mode) */
+  dragInit(){ if (this._dragOn) return; this._dragOn = true; const st = $("#stage"); if (!st) return;
+    const ray = e => { const cv = $("#loungeCv"), r = cv.getBoundingClientRect(), rc = this._rc2 || (this._rc2 = new THREE.Raycaster()); rc.setFromCamera(new THREE.Vector2((e.clientX - r.left)/r.width*2 - 1, -(e.clientY - r.top)/r.height*2 + 1), this.L.camera); return rc.ray; };
+    st.addEventListener("pointerdown", e => { if (!this.active || this.mode !== "move" || e.target.id !== "loungeCv" || !this.L) return; const it = this.hitItem(ray(e)); if (!it) return;
+      e.stopPropagation(); e.preventDefault(); if (this.pick !== it.id) this.pickSet(it.id); this.dragging = {it, id: e.pointerId, from: {x: it.x, z: it.z, r: it.r || 0}, moved: false}; try{ e.target.setPointerCapture(e.pointerId); }catch(err){} }, true);
+    st.addEventListener("pointermove", e => { const D = this.dragging; if (!D || e.pointerId !== D.id) return; e.stopPropagation(); const p = this.floorHit(ray(e)); if (!p) return; const x = Math.round(p.x*4)/4, z = Math.round(p.z*4)/4;
+      if (this.valid(D.it.k, x, z, D.it)) { this.ring && this.ring.material.color.setHex(0xff4a3a); return; } this.ring && this.ring.material.color.setHex(0xffc21a); D.moved = true; D.it.x = x; D.it.z = z; const n = this.nodes.get(D.it.id); if (n) n.g.position.set(x, 0, z); this.pickRing(); }, true);
+    const up = e => { const D = this.dragging; if (!D || e.pointerId !== D.id) return; e.stopPropagation(); this.dragging = null; this.ring && this.ring.material.color.setHex(0xffc21a);
+      if (D.moved){ const to = {x: D.it.x, z: D.it.z, r: D.it.r || 0}; this.place(D.it); this.save(); this.rec({t: "move", id: D.it.id, from: D.from, to, at: 0}); } };
+    st.addEventListener("pointerup", up, true); st.addEventListener("pointercancel", up, true);
+    addEventListener("keydown", e => { if (!this.active || /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || "")) return; const k = e.key.toLowerCase();
+      if ((e.ctrlKey || e.metaKey) && k === "z"){ e.preventDefault(); e.shiftKey ? this.redo() : this.undo(); }
+      else if ((e.ctrlKey || e.metaKey) && k === "y"){ e.preventDefault(); this.redo(); }
+      else if (this.mode === "move" && this.pick && {i: "f", k: "b", j: "l", l: "r"}[k]){ e.preventDefault(); this.nudge({i: "f", k: "b", j: "l", l: "r"}[k]); }
+      else if (this.mode === "move" && this.pick && k === "r"){ const it = this.items.find(i => i.id === this.pick); if (it) this.moveItem(it, it.x, it.z, ((it.r || 0) + 1) % 4); }
+      else if (this.mode === "move" && this.pick && (k === "delete" || k === "backspace")){ const it = this.items.find(i => i.id === this.pick); if (it){ this.pickSet(null); this.remove(it); } } }); },
   /* where something can go: furniture inside or on the patio, plants and garden things outside */
   inHouse(x, z){ const [a, b, c, d] = this.HOUSE; return x > a + .3 && x < b - .3 && z > c + .3 && z < d - .3; },
-  valid(k, x, z){ const C = this.CAT[k], [a, b, c, d] = this.PLOT; if (x < a + .3 || x > b - .3 || z < c + .3 || z > d - .3) return "That's outside your plot.";
+  valid(k, x, z, self){ const C = this.CAT[k], [a, b, c, d] = this.PLOT; if (x < a + .3 || x > b - .3 || z < c + .3 || z > d - .3) return "That's outside your plot.";
     const [h0, h1, h2, h3] = this.HOUSE, nearWall = x > h0 - .4 && x < h1 + .4 && z > h2 - .4 && z < h3 + .4 && !this.inHouse(x, z); if (nearWall) return "Too close to the wall.";
     if (C.out && this.inHouse(x, z)) return "That goes outside, in the garden.";
-    if (this.items.length >= 150) return "Your home is full (150 things). Remove something first.";
-    for (const o of this.items){ const O = this.CAT[o.k]; if ((C.flat && O.flat) || (C.flat && !O.flat && k === "rug") || (O.flat && o.k === "rug" && !C.flat)) continue; if (Math.hypot(o.x - x, o.z - z) < (C.r + O.r)*.75) return "Something's already there."; }
+    if (!self && this.items.length >= 150) return "Your home is full (150 things). Remove something first.";
+    for (const o of this.items){ if (o === self) continue; const O = this.CAT[o.k]; if ((C.flat && O.flat) || (C.flat && !O.flat && k === "rug") || (O.flat && o.k === "rug" && !C.flat)) continue; if (Math.hypot(o.x - x, o.z - z) < (C.r + O.r)*.75) return "Something's already there."; }
     return ""; },
   snap(v){ return Math.round(v*2)/2; },
   /* a tap on the floor while building: place the chosen thing */
   tapRay(ray){
     if (!this.active || !this.mode) return false;
     if (this.mode === "remove") return false;    // taps go to the things themselves
+    if (this.mode === "move"){ if (!this.pick) return false; const hit = this.hitItem(ray.ray || ray); if (hit){ this.pickSet(hit.id === this.pick ? null : hit.id); return true; }
+      const p = this.floorHit(ray.ray || ray); if (!p) return true; const it = this.items.find(i => i.id === this.pick); if (it) this.moveItem(it, this.snap(p.x), this.snap(p.z), it.r || 0); return true; }
     if (this.mode !== "place" || !this.sel) return false;
     const o = ray.ray ? ray.ray.origin : ray.origin, d = ray.ray ? ray.ray.direction : ray.direction; if (d.y > -.02) return true;
     const t = -o.y/d.y, x = this.snap(o.x + d.x*t), z = this.snap(o.z + d.z*t); this.tryPlace(this.sel, x, z); return true; },
   tryPlace(k, x, z){ const C = this.CAT[k], why = this.valid(k, x, z); if (why){ toast(why); return false; }
     if (!this.spend(C.cost)){ toast(`Not enough cash. ${C.n} costs $${C.cost}. Earn more with jobs and activities.`); return false; }
-    const now = Date.now(), it = {id: Math.random().toString(36).slice(2, 9), k, x, z, r: this.rot, p: now, g: 0, wt: now, u: now}; this.items.push(it); this.place(it); this.save(); this.eco(); this.refresh();
+    const now = Date.now(), it = {id: Math.random().toString(36).slice(2, 9), k, x, z, r: this.rot, p: now, g: 0, wt: now, u: now}; this.items.push(it); this.place(it); this.save(); this.eco(); this.rec({t: "add", it, cash: C.cost});
     try{ this.L.burst(new THREE.Vector3(x, .5, z), 8); }catch(e){} toast(`${C.i} ${C.n} placed. −$${C.cost}`); return true; },
   waterAll(){ const now = Date.now(); let n = 0; for (const it of this.items) if (this.CAT[it.k].plant){ it.wt = now; n++; this.place(it); } this.save(); this.eco(); this.refresh(); toast(n ? `💧 Watered ${n} plant${n === 1 ? "" : "s"}.` : "No plants yet. Plant some from 🔨 Build."); },
   /* ---------- the ecosystem: what lives here, and how rich it is ---------- */
@@ -15994,8 +16046,8 @@ const Home = {
     if (!show){ if (h) h.hidden = true; return; }
     if (!h){ h = document.createElement("div"); h.id = "homeHud"; h.className = "homehud"; document.body.appendChild(h);
       h.addEventListener("click", e => { const b = e.target.closest("[data-h]"); if (!b) return; const a = b.dataset.h;
-        if (a === "build"){ this.mode = this.mode === "place" ? "" : "place"; if (!this.sel) this.sel = "daisy"; }
-        else if (a === "remove") this.mode = this.mode === "remove" ? "" : "remove";
+        if (a === "build"){ this.mode = this.mode === "place" ? "" : "place"; if (!this.sel) this.sel = "daisy"; this.pickSet(null); }
+        else if (a === "remove"){ this.mode = this.mode === "remove" ? "" : "remove"; this.pickSet(null); }
         else if (a === "water") this.waterAll();
         else if (a === "rot"){ this.rot = (this.rot + 1) % 4; toast("Rotation: " + this.rot*90 + "°"); }
         else if (a === "eco") this.ecoOpen = !this.ecoOpen;
@@ -16006,7 +16058,14 @@ const Home = {
         else if (a.startsWith("it:")){ this.sel = a.slice(3); this.mode = "place"; toast(`${this.CAT[this.sel].i} ${this.CAT[this.sel].n}: tap the ground to place it.`); }
         else if (a === "sk"){ this.skOpen(); return; }
         else if (a === "imp"){ this.importFile(); return; }
+        else if (a === "mdel" && this.mode === "move"){ const it = this.items.find(i => i.id === this.pick); if (it){ this.pickSet(null); this.remove(it); } }
         else if (a === "mdel"){ if (this.sel && this.CAT[this.sel] && this.CAT[this.sel].mine) this.mineDelete(this.sel); }
+        else if (a === "move"){ this.mode = this.mode === "move" ? "" : "move"; this.pickSet(null); }
+        else if (a === "undo") this.undo();
+        else if (a === "redo") this.redo();
+        else if (a === "mdesel") this.pickSet(null);
+        else if (a === "mrot"){ const it = this.items.find(i => i.id === this.pick); if (it) this.moveItem(it, it.x, it.z, ((it.r || 0) + 1) % 4); }
+        else if (a.startsWith("nud:")) this.nudge(a.slice(4));
         this.refresh(); }); }
     h.hidden = false; this.refresh();
   },
@@ -16023,8 +16082,9 @@ const Home = {
       ${thirsty ? `<p class="hh-warn">💧 ${thirsty} plant${thirsty === 1 ? " is" : "s are"} thirsty</p>` : ""}`}</div>
       <div class="hh-dock">${this.mode === "place" ? `<div class="hh-cats">${Object.entries(this.CATS).map(([k, l]) => `<button type="button" data-h="cat:${k}" aria-pressed="${k === cat}">${l}</button>`).join("")}</div>
         <div class="hh-items">${cat === "mine" ? `<button type="button" data-h="sk"><span>🌐</span>Find on Sketchfab<small>free models</small></button><button type="button" data-h="imp"><span>📁</span>Import a .glb<small>CGTrader, etc.</small></button>` : ""}${Object.entries(this.CAT).filter(([, C]) => C.c === cat).map(([k, C]) => `<button type="button" data-h="it:${k}" aria-pressed="${k === this.sel}" class="${this.cash() < C.cost ? "poor" : ""}" title="${C.credit ? esc(C.credit) : ""}"><span>${C.i}</span>${esc(C.n)}<small>$${C.cost}</small></button>`).join("")}${cat === "mine" && this.sel && this.CAT[this.sel] && this.CAT[this.sel].mine ? `<button type="button" data-h="mdel"><span>🗑</span>Delete "${esc(this.CAT[this.sel].n.slice(0, 18))}"<small>from My models</small></button>` : ""}</div>${cat === "mine" && this.sel && this.CAT[this.sel] && this.CAT[this.sel].credit ? `<p class="hh-hint">${esc(this.CAT[this.sel].credit)}</p>` : ""}` : ""}
-        <div class="hh-btns"><button type="button" data-h="build" aria-pressed="${this.mode === "place"}">🔨 ${this.mode === "place" ? "Done" : "Build"}</button><button type="button" data-h="water">💧 Water all</button><button type="button" data-h="remove" aria-pressed="${this.mode === "remove"}">🗑 ${this.mode === "remove" ? "Done" : "Remove"}</button>${this.mode === "place" ? `<button type="button" data-h="rot">↻ Turn</button>` : ""}</div>
-        ${this.mode === "place" ? `<p class="hh-hint">Tap the ground to place: ${this.sel ? this.CAT[this.sel].i + " " + this.CAT[this.sel].n : "pick something"}. Plants go outside. Drag to look around.</p>` : this.mode === "remove" ? `<p class="hh-hint">Tap something to remove it (you get 60% back).</p>` : `<p class="hh-hint">Tap plants to water or harvest, and furniture to use it.</p>`}</div>`;
+        <div class="hh-btns"><button type="button" data-h="build" aria-pressed="${this.mode === "place"}">🔨 ${this.mode === "place" ? "Done" : "Build"}</button><button type="button" data-h="move" aria-pressed="${this.mode === "move"}">✋ ${this.mode === "move" ? "Done" : "Move"}</button><button type="button" data-h="remove" aria-pressed="${this.mode === "remove"}">🗑 ${this.mode === "remove" ? "Done" : "Remove"}</button>${this.mode === "place" ? `<button type="button" data-h="rot">↻ Turn</button>` : ""}<button type="button" data-h="undo" ${this.hist && this.hist.length ? "" : "disabled"} title="Undo (Ctrl+Z)">↶ Undo</button><button type="button" data-h="redo" ${this.fut && this.fut.length ? "" : "disabled"} title="Redo (Ctrl+Y)">↷ Redo</button>${this.mode ? "" : `<button type="button" data-h="water">💧 Water all</button>`}</div>
+        ${this.mode === "move" && this.pick ? (() => { const it = this.items.find(i => i.id === this.pick), C = it && this.CAT[it.k]; return it ? `<div class="hh-move"><b>${C.i} ${esc(C.n)}</b><div class="hh-pad"><span></span><button type="button" data-h="nud:f" aria-label="Move away">▲</button><span></span><button type="button" data-h="nud:l" aria-label="Move left">◀</button><button type="button" data-h="mrot" aria-label="Turn">↻</button><button type="button" data-h="nud:r" aria-label="Move right">▶</button><span></span><button type="button" data-h="nud:b" aria-label="Move closer">▼</button><span></span></div><div class="hh-mv2"><button type="button" data-h="mdesel">✓ Drop it here</button><button type="button" data-h="mdel">🗑 Remove</button></div></div>` : ""; })() : ""}
+        ${this.mode === "move" ? `<p class="hh-hint">${this.pick ? "Drag it, tap a new spot, or use the arrows (relative to where you're looking). ↻ turns it." : "Tap (or drag) something to pick it up."} Drag empty space to look around.</p>` : this.mode === "place" ? `<p class="hh-hint">Tap the ground to place: ${this.sel ? this.CAT[this.sel].i + " " + this.CAT[this.sel].n : "pick something"}. Plants go outside. Drag to look around.</p>` : this.mode === "remove" ? `<p class="hh-hint">Tap something to remove it (you get 60% back).</p>` : `<p class="hh-hint">Tap plants to water or harvest, and furniture to use it.</p>`}</div>`;
   },
   hint(id){ return {bee: "plant 3+ flowers or a beehive", butterfly: "2 kinds of flowers", bird: "a tree, bird house or bird bath", ladybug: "5 grown plants", fish: "dig a pond", frog: "a pond and 3 plants", squirrel: "2 trees", rabbit: "2 tomato plants or 8 plants", hedgehog: "a bush and a compost bin", firefly: "a pond and 4 plants (night)", fox: "4 trees and 10 plants"}[id] || ""; },
 
