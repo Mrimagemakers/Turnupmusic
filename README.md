@@ -321,6 +321,10 @@ Meditation, Exercise, Dance Class, Escape Room and My Home have trim, window lig
 - **🎯 Trivia Live** (`TriviaLive` in the source): colored answer tiles, countdown, speed-based points with streaks, scoreboards and a podium. Solo or hosted for the whole party (new party channel `trivia`, host-authoritative). Players write their own quizzes (stored per device under `myQuizzes`) and can save quizzes a host shared.
 - **Karaoke**: 7 more public-domain songs (11 total), a backing band in four styles with chords and bass fitted to the melody, pitch-based scoring with a note lane, duets with alternating lines, and a hype meter fed by cheers.
 
+## Photo-real homes (Higgsfield)
+
+My Home's ground, floors, walls, road, roof shingles and bark use photo textures made with Higgsfield AI (GPT Image), and the oak, pine, palm, cherry and maple trees are Higgsfield/Tripo 3D models (about 10k triangles, 1024px textures, ~0.7 MB each). They load from Higgsfield's CDN at runtime. The hand-drawn textures and trees show first and stay as the fallback, and on Low graphics.
+
 ## Neighborhood and jobs
 - **My Home** has five lots (`Home.LOTS`): Maple Street (with a street, sidewalks and neighbors' houses), Beach House (animated sea), Aspen Cabin (snow, pines, mountains), Downtown Loft (rooftop with the city), Tokyo Garden House (bamboo, maples, torii, petals). Each lot saves separately (`home`, `home:beach`, …). New realistic trees (layered leaf clumps, bark, branches, palms with fronds), wind-swept grass, a gradient sky with a sun that follows the clock, and sun shadows.
 - **Jobs** (`Jobs` in the source): staff in party worlds (servers with trays, photographers, security, custodians), lifeguards, guides, trainers and instructors; neighbors with routes on your street. Tapping anyone shows their name, career and a line about it.

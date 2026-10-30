@@ -15303,6 +15303,41 @@ const Home = {
   moveTo(lot){ if (!this.LOTS[lot] || lot === this.lot()) return; this.save(); store.set("homeLot", lot); const L = Lounge;
     try{ if (L.worlds.home){ const cur = L.worldId; if (cur === "home") L.worldId = "__switch"; L.unloadWorld("home"); if (cur === "home") L.worldId = cur; } if (L.worldId === "home") L.setWorld("home"); else L.chooseWorld("home"); }catch(e){ console.warn(e); try{ L.chooseWorld("home"); }catch(er){} }
     toast(`${this.LOTS[lot].i} Welcome to your ${this.LOTS[lot].n}!`); },
+  /* ---------- Higgsfield-made photo textures and 3D tree models (loaded from the web; the hand-drawn versions show until they arrive, and stay if they can't load) ---------- */
+  HF: "https://d2ol7oe51mr4n9.cloudfront.net/user_2xqdkXQxcL6UFHjJwLK5drKd1tT/",
+  HFTEX: {grass: "43ead0fa-c8ba-4df2-aafc-548c1971a572", sand: "af85a36f-0d00-441d-a96a-bbd234f3c6b5", snow: "16135b2e-917d-453f-bdcc-301e0020955c", deck: "bf2326ed-3ca0-4f32-bfb1-5f0ed34026ef", moss: "40647b1b-ebad-4ad1-a108-961605598ccf", bark: "e95ec99a-de13-42d8-9f2d-2ad6b2100af0",
+    siding: "33b17da3-fb61-44b4-ba04-16e84b2d3c35", logs: "5922afa6-1b47-450b-8337-ad16fbcc43b7", shingles: "e63c8866-979c-436b-b89e-c35fdfcb5352", asphalt: "331e2276-652c-4c08-a80e-76237dfef6b1", brick: "ee8aebb7-e8db-4a77-8d58-f86caca73e5f", floor: "d310e5be-c074-474b-8be6-95df2b53eb51"},
+  HFTREE: {oak: ["f7e56153-859f-4989-98bc-5bda04cdc9fe", 6.2], pine: ["9a96667a-4083-41cf-a3c7-43ddb443fc4a", 6.8], palm: ["9243a080-afed-44fb-be12-d120e8ebfd96", 6.4], cherry: ["ed4d595e-fd66-4e92-b535-6874a0923c5c", 5.0], maple: ["0906a59f-a3fa-40b6-b868-4e6a1de233e4", 5.0]},
+  hfOn(){ try{ return store.get("hfAssets", true) !== false && !(typeof GFX !== "undefined" && GFX.level === "low"); }catch(e){ return true; } },
+  hfImg(name){ this._hfi = this._hfi || {}; if (this._hfi[name]) return this._hfi[name];
+    return this._hfi[name] = new Promise((ok, no) => { const id = this.HFTEX[name]; if (!id) return no(new Error("none")); const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => ok(im); im.onerror = no; im.src = this.HF + id + ".jpg"; }); },
+  /* swap a hand-drawn texture (and its bump map) for the photo version once it downloads */
+  hfSwap(name, map, nrm, strength = 3, mat = null){
+    if (!this.hfOn() || !map) return; this.hfImg(name).then(im => {
+      map.image = im; map.needsUpdate = true;
+      if (nrm){ try{ const [c, x] = Tex.canvas(512, 512); x.drawImage(im, 0, 0, 512, 512); nrm.image = Tex.normal(c, strength); nrm.needsUpdate = true; }catch(e){} }
+      if (mat){ mat.color && mat.color.set(0xffffff); mat.needsUpdate = true; }
+    }).catch(() => {}); },
+  hfTree(kind){ this._hft = this._hft || {}; if (this._hft[kind] !== undefined) return this._hft[kind];
+    const T = THREE, def = this.HFTREE[kind]; if (!def || !T.GLTFLoader) return this._hft[kind] = null;
+    const p = new Promise(ok => { try{ new T.GLTFLoader().load(this.HF + def[0] + ".glb", gl => {
+      const m = gl.scene; m.updateMatrixWorld(true); const bb = new T.Box3().setFromObject(m), sz = bb.getSize(new T.Vector3()), k = def[1]/Math.max(.01, sz.y);
+      const root = new T.Group(), inner = new T.Group(); inner.add(m); m.scale.setScalar(k); m.position.set(-(bb.min.x + bb.max.x)/2*k, -bb.min.y*k, -(bb.min.z + bb.max.z)/2*k); root.add(inner);
+      m.traverse(o => { if (o.isMesh){ o.castShadow = true; o.receiveShadow = true; if (o.material){ o.material.metalness = 0; o.material.roughness = .85; } } });
+      this._hft[kind] = root; ok(root); }, undefined, () => { this._hft[kind] = null; ok(null); }); }catch(e){ this._hft[kind] = null; ok(null); } });
+    this._hft[kind] = p; return p; },
+  /* snow settles on the upward-facing parts of a tree */
+  snowMat(m){ this._snowM = this._snowM || new Map(); if (this._snowM.has(m)) return this._snowM.get(m); const s = m.clone();
+    s.onBeforeCompile = sh => { sh.vertexShader = sh.vertexShader.replace("#include <common>", "#include <common>\nvarying float vUp;").replace("#include <begin_vertex>", "#include <begin_vertex>\nvUp = normalize(mat3(modelMatrix) * objectNormal).y;");
+      sh.fragmentShader = sh.fragmentShader.replace("#include <common>", "#include <common>\nvarying float vUp;").replace("#include <map_fragment>", "#include <map_fragment>\ndiffuseColor.rgb = mix(diffuseColor.rgb, vec3(.93,.96,1.), smoothstep(.35,.75,vUp)*.85);"); };
+    this._snowM.set(m, s); return s; },
+  /* put the 3D model in place of the hand-built tree (right away if it's already downloaded) */
+  useHfTree(g, kind, s, opt){
+    if (!this.hfOn() || opt.bare || (opt.wilt || 0) > .25 || opt.fruit || !this.HFTREE[kind]) return;
+    const put = src => { if (!src) return; const c = src.clone(true); c.scale.setScalar(s*(.9 + Math.random()*.2)); c.rotation.y = Math.random()*Math.PI*2;
+      if (opt.snow) c.traverse(o => { if (o.isMesh) o.material = this.snowMat(o.material); });
+      while (g.children.length) g.remove(g.children[0]); delete g.userData.crown; g.add(c); c.userData.sway = Math.random()*6; (this.swayers || (this.swayers = [])).push(c.children[0]); c.children[0].userData.sway = c.userData.sway; };
+    const r = this.hfTree(kind); if (r && !r.then) put(r); else if (r) r.then(put); },
   /* ---------- textures ---------- */
   groundTex(kind){
     const [c, x] = Tex.canvas(512, 512), r = (a, b) => a + Math.random()*(b - a);
@@ -15318,10 +15353,10 @@ const Home = {
   },
   wallMat(L, lot){ const T = THREE, W = this.LOTS[lot].wall;
     if (W === "logs"){ const [c, x] = Tex.canvas(256, 256); for (let i = 0; i < 8; i++){ const gr = x.createLinearGradient(0, i*32, 0, i*32 + 32); gr.addColorStop(0, "#5a3a20"); gr.addColorStop(.5, "#9a6a3a"); gr.addColorStop(1, "#4a2e18"); x.fillStyle = gr; x.fillRect(0, i*32, 256, 32); for (let k = 0; k < 30; k++){ x.fillStyle = "rgba(40,20,10,.25)"; x.fillRect(Math.random()*256, i*32 + Math.random()*30, Math.random()*60, 1); } }
-      return new T.MeshStandardMaterial({map: Tex.make(c, {repeat: [3, 1.2]}), normalMap: Tex.make(Tex.normal(c, 5), {repeat: [3, 1.2], srgb: false}), roughness: .85}); }
-    if (W === "brick"){ const c = Tex.brick(); return new T.MeshStandardMaterial({map: Tex.make(c, {repeat: [4, 1.6]}), normalMap: Tex.make(Tex.normal(c, 5), {repeat: [4, 1.6], srgb: false}), roughness: .9}); }
+      const lm = new T.MeshStandardMaterial({map: Tex.make(c, {repeat: [3, 1.2]}), normalMap: Tex.make(Tex.normal(c, 5), {repeat: [3, 1.2], srgb: false}), roughness: .85}); this.hfSwap("logs", lm.map, lm.normalMap, 5); return lm; }
+    if (W === "brick"){ const c = Tex.brick(), bm = new T.MeshStandardMaterial({map: Tex.make(c, {repeat: [4, 1.6]}), normalMap: Tex.make(Tex.normal(c, 5), {repeat: [4, 1.6], srgb: false}), roughness: .9}); this.hfSwap("brick", bm.map, bm.normalMap, 5); return bm; }
     if (lot === "beach"){ const [c, x] = Tex.canvas(128, 128); x.fillStyle = W; x.fillRect(0, 0, 128, 128); for (let i = 0; i < 8; i++){ x.fillStyle = "rgba(0,0,0,.12)"; x.fillRect(0, i*16 + 14, 128, 2); x.fillStyle = "rgba(255,255,255,.4)"; x.fillRect(0, i*16, 128, 1); }
-      return new T.MeshStandardMaterial({map: Tex.make(c, {repeat: [4, 2]}), normalMap: Tex.make(Tex.normal(c, 3), {repeat: [4, 2], srgb: false}), roughness: .7}); }
+      const sm = new T.MeshStandardMaterial({map: Tex.make(c, {repeat: [4, 2]}), normalMap: Tex.make(Tex.normal(c, 3), {repeat: [4, 2], srgb: false}), roughness: .7}); this.hfSwap("siding", sm.map, sm.normalMap, 3); return sm; }
     return new T.MeshStandardMaterial({map: Tex.make(Tex.stucco(W), {repeat: [3, 1]}), roughness: .9});
   },
   /* leaves, needles and fronds: a texture of little leaf shapes with see-through gaps, used on leafy clumps */
@@ -15343,7 +15378,8 @@ const Home = {
     x.strokeStyle = "#6a7a3a"; x.lineWidth = 5; x.beginPath(); x.moveTo(64, 0); x.lineTo(64, 512); x.stroke(); return this._ft[hex] = Tex.make(c); },
   barkMat(hex = "#5a3a22"){ this._bark = this._bark || {}; if (this._bark[hex]) return this._bark[hex]; const T = THREE, [c, x] = Tex.canvas(128, 256); x.fillStyle = hex; x.fillRect(0, 0, 128, 256);
     for (let i = 0; i < 260; i++){ x.fillStyle = `rgba(${Math.random() < .5 ? "0,0,0" : "255,240,220"},${Math.random()*.18})`; x.fillRect(Math.random()*128, Math.random()*256, 1 + Math.random()*3, 8 + Math.random()*40); }
-    return this._bark[hex] = new T.MeshStandardMaterial({map: Tex.make(c, {repeat: [2, 1]}), normalMap: Tex.make(Tex.normal(c, 6), {repeat: [2, 1], srgb: false}), roughness: .95}); },
+    const bm = this._bark[hex] = new T.MeshStandardMaterial({map: Tex.make(c, {repeat: [2, 1]}), normalMap: Tex.make(Tex.normal(c, 6), {repeat: [2, 1], srgb: false}), roughness: .95});
+    if (hex === "#5a3a22" || hex === "#4a3020") this.hfSwap("bark", bm.map, bm.normalMap, 6); return bm; },
   /* a leafy clump: a dark inner shell plus a see-through leaf shell, lumpy so it doesn't look like a ball */
   clump(parent, r, hex, x, y, z, kind = "leaf"){
     const T = THREE, gr = new T.Group(); gr.position.set(x, y, z); parent.add(gr);
@@ -15353,7 +15389,8 @@ const Home = {
     gr.userData.sway = Math.random()*6; (this.swayers || (this.swayers = [])).push(gr); return gr;
   },
   /* a realistic-ish tree: tapered bark trunk, a few branches and layered leafy clumps (or cones for a pine, fronds for a palm) */
-  tree(kind, s = 1, opt = {}){
+  tree(kind, s = 1, opt = {}){ const g = this.tree0(kind, s, opt); try{ this.useHfTree(g, kind, s, opt); }catch(e){} return g; },
+  tree0(kind, s = 1, opt = {}){
     const T = THREE, g = new T.Group(), bark = this.barkMat(kind === "palm" ? "#8a7050" : kind === "birch" ? "#d8d2c4" : kind === "pine" ? "#4a3020" : "#5a3a22"), wl = opt.wilt || 0;
     const leafHex = opt.leaf || {oak: "#3f7a2a", apple: "#4a8a30", cherry: "#f4a6c4", maple: "#c8341c", birch: "#7aa83a", pine: "#2a5a2c"}[kind] || "#3f7a2a", lh = new T.Color(leafHex).lerp(new T.Color(0x8a6a3a), wl).getHexString();
     if (kind === "pine"){ const h = 4.2*s; const tr = new T.Mesh(new T.CylinderGeometry(.06*s, .16*s, h*.5, 8), bark); tr.position.y = h*.25; tr.castShadow = true; g.add(tr);
@@ -15385,13 +15422,17 @@ const Home = {
     return g;
   },
   at(o, x, y, z){ o.position.set(x, y, z); return o; },
+  roofMat(col){ this._roof = this._roof || {}; if (this._roof[col]) return this._roof[col]; const T = THREE, [c, x] = Tex.canvas(128, 128); x.fillStyle = "#777"; x.fillRect(0, 0, 128, 128);
+    for (let r = 0; r < 8; r++) for (let k = 0; k < 6; k++){ x.fillStyle = `hsl(0,0%,${40 + Math.random()*25}%)`; x.fillRect(k*22 + (r % 2)*11, r*16, 21, 15); }
+    const m = new T.MeshStandardMaterial({color: col, map: Tex.make(c, {repeat: [.3, .3]}), normalMap: Tex.make(Tex.normal(c, 3), {repeat: [.3, .3], srgb: false}), roughness: .85});
+    this.hfSwap("shingles", m.map, m.normalMap, 4, null); this.hfImg("shingles").then(() => { m.color.lerp(new T.Color(0xffffff), .55); }).catch(() => {}); return this._roof[col] = m; },
   /* a simple neighbor's house: walls, a pitched roof, windows that light up at night, a door and a chimney */
   neighbor(g, x, z, ry, col, roofCol){
     const T = THREE, L = this.L, h = new T.Group(); h.position.set(x, 0, z); h.rotation.y = ry; g.add(h);
     const W = 8 + Math.random()*2, D = 7, H = 3.4, wm = new T.MeshStandardMaterial({map: Tex.make(Tex.stucco(col), {repeat: [2, 1]}), roughness: .9});
     const body = new T.Mesh(new T.BoxGeometry(W, H, D), wm); body.position.y = H/2; body.castShadow = true; body.receiveShadow = true; h.add(body);
     const sh = new T.Shape(); sh.moveTo(-W/2 - .5, 0); sh.lineTo(0, 2.6); sh.lineTo(W/2 + .5, 0); sh.lineTo(-W/2 - .5, 0);
-    const roof = new T.Mesh(new T.ExtrudeGeometry(sh, {depth: D + 1, bevelEnabled: false}), new T.MeshStandardMaterial({color: roofCol, roughness: .8})); roof.position.set(0, H, -D/2 - .5); roof.castShadow = true; h.add(roof);
+    const roof = new T.Mesh(new T.ExtrudeGeometry(sh, {depth: D + 1, bevelEnabled: false}), this.roofMat(roofCol)); roof.position.set(0, H, -D/2 - .5); roof.castShadow = true; h.add(roof);
     const chim = new T.Mesh(new T.BoxGeometry(.7, 2, .7), L.stdMat(0x8a4a3a, .9)); chim.position.set(W*.25, H + 1.6, 0); h.add(chim);
     const winM = new T.MeshStandardMaterial({color: 0x223040, emissive: 0xffc870, emissiveIntensity: 0, roughness: .2, metalness: .3}); (this.winMats || (this.winMats = [])).push(winM);
     for (const wx of [-W*.3, W*.3]){ const w = new T.Mesh(new T.PlaneGeometry(1.4, 1.2), winM); w.position.set(wx, 1.8, D/2 + .01); h.add(w); const f = new T.Mesh(new T.BoxGeometry(1.55, 1.35, .05), L.stdMat(0xf4f0e8, .6)); f.position.set(wx, 1.8, D/2 - .005); h.add(f); }
@@ -15408,9 +15449,10 @@ const Home = {
     // ground
     const gc = this.groundTex(LT.ground), rep = LT.ground === "deck" ? 10 : 22;
     const gm = new T.MeshStandardMaterial({map: Tex.make(gc, {repeat: [rep, rep]}), normalMap: Tex.make(Tex.normal(gc, LT.ground === "snow" ? 2 : 4), {repeat: [rep, rep], srgb: false}), roughness: LT.ground === "snow" ? .7 : LT.ground === "deck" ? .6 : 1});
+    this.hfSwap(LT.ground, gm.map, gm.normalMap, LT.ground === "snow" ? 2 : 4);
     const gSize = lot === "loft" ? 30 : 160, ground = add(new T.Mesh(new T.PlaneGeometry(gSize, gSize), gm), g, false, true); ground.rotation.x = -Math.PI/2; ground.position.z = -6; L.walkable(ground); L.surface(ground);
     // the house: wooden floor, walls with a big doorway and windows, open to the sky so you can see in (like The Sims)
-    const fl = add(new T.Mesh(new T.BoxGeometry(HW, .06, HD), new T.MeshStandardMaterial({map: Tex.make(Tex.wood(), {repeat: [4, 3]}), normalMap: Tex.make(Tex.normal(Tex.wood(), 3), {repeat: [4, 3], srgb: false}), color: lot === "zen" ? 0xb89a6a : 0xc8a070, roughness: .45})), g, false, true); fl.position.set(hcx, .03, hcz); L.walkable(fl); L.surface(fl);
+    const fl = add(new T.Mesh(new T.BoxGeometry(HW, .06, HD), new T.MeshStandardMaterial({map: Tex.make(Tex.wood(), {repeat: [4, 3]}), normalMap: Tex.make(Tex.normal(Tex.wood(), 3), {repeat: [4, 3], srgb: false}), color: lot === "zen" ? 0xb89a6a : 0xc8a070, roughness: .45})), g, false, true); fl.position.set(hcx, .03, hcz); this.hfSwap("floor", fl.material.map, fl.material.normalMap, 3, lot === "zen" ? null : fl.material); L.walkable(fl); L.surface(fl);
     const wallM = this.wallMat(L, lot), trim = L.stdMat(LT.trim, .6), glass = L.mats.glass;
     const wb = (w, h, d, x, y, z) => L.wBox(g, w, h, d, wallM, x, y, z);
     wb(HW, WH, .2, hcx, WH/2, hz0); wb(.2, WH, HD, hx0, WH/2, hcz); wb(.2, WH, HD, hx1, WH/2, hcz);
@@ -15435,6 +15477,7 @@ const Home = {
     const ring = (n, R0, R1, fn) => { for (let i = 0; i < n; i++){ const a = i/n*Math.PI*2 + Math.random()*.2, R = R0 + Math.random()*(R1 - R0); fn(Math.cos(a)*R, -6 + Math.sin(a)*R, i); } };
     if (lot === "suburb"){
       const asphalt = add(new T.Mesh(new T.PlaneGeometry(160, 8), new T.MeshStandardMaterial({color: 0x3a3c40, roughness: .9})), g, false, true); asphalt.rotation.x = -Math.PI/2; asphalt.position.set(0, .02, 11);
+      { const ac = Tex.asphalt(), am = asphalt.material; am.map = Tex.make(ac, {repeat: [40, 2]}); am.normalMap = Tex.make(Tex.normal(ac, 3), {repeat: [40, 2], srgb: false}); am.color.set(0x9a9a9a); am.needsUpdate = true; this.hfSwap("asphalt", am.map, am.normalMap, 3, am); }
       for (let i = -15; i <= 15; i++) L.wBox(g, 1.6, .01, .15, new T.MeshBasicMaterial({color: 0xf4e8a0}), i*5, .035, 11, false);
       for (const z of [6.2, 15.8]){ const sw = L.wBox(g, 160, .12, 2, L.stdMat(0xb8b4ac, .9), 0, .06, z, false); sw.receiveShadow = true; }
       [[-16, -6, Math.PI/2, "#d8c8a8", 0x6a3a2a], [16, -6, -Math.PI/2, "#a8c0d0", 0x3a3a44], [-20, 22, Math.PI, "#e8d8c0", 0x5a2a2a], [0, 22, Math.PI, "#c8d8b8", 0x2a3a2a], [20, 22, Math.PI, "#f0e0d0", 0x4a3a3a], [-40, 22, Math.PI, "#d0c0e0", 0x3a2a3a], [40, 22, Math.PI, "#e0d0b0", 0x5a4a3a]].forEach(([x, z, ry, c, r]) => this.neighbor(g, x, z, ry, c, r));
