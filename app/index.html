@@ -752,6 +752,17 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
   .xp-bottom #xpHint{display:none}
   .xp-bottom .partyinfo{flex:none}
 }
+
+/* my closet: saved looks */
+#closetDlg .clgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:12px 0;max-height:52vh;overflow:auto}
+#closetDlg .cllook{border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px;background:rgba(255,255,255,.04)}
+#closetDlg .cllook.on{border-color:#ffc21a;box-shadow:0 0 0 2px rgba(255,194,26,.35)}
+#closetDlg .clsw{height:54px;border-radius:10px;border:1px solid rgba(255,255,255,.18)}
+#closetDlg .cllook b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#closetDlg .cllook small{opacity:.7;font-size:11.5px;line-height:1.3;min-height:30px}
+#closetDlg .cllook .row{display:flex;gap:6px}
+#closetDlg .cllook .row button{flex:1;padding:6px 4px;font-size:12px}
+#closetDlg .clempty{opacity:.7;text-align:center;padding:18px 6px;grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -947,7 +958,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
     <button type="button" class="xp-hide" id="xpHide" aria-label="Hide controls">▼ Hide controls</button>
     <div class="seg" id="xpModes"></div>
     <div class="seg" id="worldSeg" hidden></div>
-    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn mogulbtn" id="btnMogul" type="button">🍾 Nightclub Mogul</button><button class="chipbtn" id="btnHome" type="button">🏡 My Home</button><button class="chipbtn" id="btnEmpire" type="button" aria-label="Open My Empire, your Nightclub Mogul clubs">👑 My empire</button><button class="chipbtn" id="btnHunt" type="button" aria-label="Open the scavenger hunt">🔎 Scavenger hunt</button><button class="chipbtn brawlbtn" id="btnBrawl" type="button" title="Start a bar fight right here, in any world">🥊 Brawl mode</button><button class="chipbtn" id="btnDanceoff" type="button" title="Start a dance-off right here">🕺 Dance-off</button><button class="chipbtn" id="btnTrivia" type="button" title="Play or host a trivia game">🎯 Trivia Live</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
+    <div class="partybar" id="partyBar"><button class="chipbtn party" id="btnParty" type="button">👥 Join the party</button><button class="chipbtn" id="btnEvents2" type="button">📅 Live events</button><button class="chipbtn" id="btnMe" type="button">🧑 My avatar</button><button class="chipbtn" id="btnBooth" type="button">🎧 DJ booth</button><button class="chipbtn" id="btnMedia2" type="button">🎵 My media</button><button class="chipbtn" id="btnLinks2" type="button">🔗 Music links</button><button class="chipbtn" id="btnSocial2" type="button">📣 The Wall</button><button class="vipbtn" id="btnVIP2" type="button">★ VIP</button><button class="chipbtn" id="btnScreens" type="button">📺 Screens</button><button class="chipbtn mogulbtn" id="btnMogul" type="button">🍾 Nightclub Mogul</button><button class="chipbtn" id="btnHome" type="button">🏡 My Home</button><button class="chipbtn" id="btnCloset" type="button" title="Save outfits and change into them">👗 My closet</button><button class="chipbtn" id="btnEmpire" type="button" aria-label="Open My Empire, your Nightclub Mogul clubs">👑 My empire</button><button class="chipbtn" id="btnHunt" type="button" aria-label="Open the scavenger hunt">🔎 Scavenger hunt</button><button class="chipbtn brawlbtn" id="btnBrawl" type="button" title="Start a bar fight right here, in any world">🥊 Brawl mode</button><button class="chipbtn" id="btnDanceoff" type="button" title="Start a dance-off right here">🕺 Dance-off</button><button class="chipbtn" id="btnTrivia" type="button" title="Play or host a trivia game">🎯 Trivia Live</button><button class="chipbtn" id="btnCruise" type="button" title="Play Cruising USA VR, the road-trip driving game (opens in a new tab)">🚗 Cruising USA</button><button class="chipbtn" id="btnSafety2" type="button">🛡 Safety</button><button class="chipbtn" id="btnGuide2" type="button">❓ Guide</button><button class="chipbtn" id="btnStopVideo" type="button" hidden>⏹ Stop video</button><span class="partyinfo" id="partyInfo"></span></div>
     <div class="emotes" id="emoteBar" hidden><button type="button" data-e="wave">👋 Wave</button><button type="button" data-e="dance">💃 Dance</button><button type="button" data-e="cheer">🙌 Cheer</button><button type="button" data-e="idle">🧍 Chill</button><button type="button" data-r="🔥">🔥</button><button type="button" data-r="❤️">❤️</button><button type="button" data-r="😂">😂</button><button type="button" data-r="🎉">🎉</button><button type="button" id="btnChat">💬 Chat</button><button type="button" id="btnMic">🎤 Mic off</button><button type="button" id="btnDJ">🎧 Be the DJ</button></div>
     <div class="btnrow">
       <button class="chipbtn" id="btnSnap" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Camera</button>
@@ -1116,6 +1127,14 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
     </div>
   </div>
   <div class="btnrow end"><small id="meAuto" style="margin-right:auto;opacity:.65;align-self:center">Changes save automatically</small><button class="ghost" id="meCancel" type="button">Close</button><button class="primary" id="meSave" type="button">Save</button></div>
+</dialog>
+
+<dialog id="closetDlg">
+  <h2>👗 My closet</h2>
+  <p class="hint" id="clHint">Save the outfit you're wearing, then change into any saved look with one tap. Your closet keeps clothes, colors, hats, glasses, neckwear, accessories, headphones and glow.</p>
+  <div class="row2"><input class="field" id="clName" maxlength="20" placeholder="Name this look (e.g. Friday night)"><button class="primary" id="clSave" type="button">💾 Save what I'm wearing</button></div>
+  <div class="clgrid" id="clGrid"></div>
+  <div class="btnrow end"><small id="clCount" style="margin-right:auto;opacity:.65;align-self:center"></small><button class="ghost" id="clEdit" type="button">🧑 Change clothes</button><button class="ghost" id="clClose" type="button">Close</button></div>
 </dialog>
 
 <dialog id="partyDlg">
@@ -2475,8 +2494,8 @@ const Dash = {
   },
   init(){ const pref = store.get("dashMini", null); this.set(pref === null ? this.small() : pref); try{ this.grid(); }catch(e){ console.warn(e); } },
   /* group the party bar's buttons into a tidy dashboard */
-  GROUPS: [["🎉 Party & people", ["btnParty", "partyInfo", "btnEvents2", "btnSocial2", "btnSafety2"]], ["🧑 You & help", ["btnMe", "btnHome", "btnVIP2", "btnGuide2"]],
-    ["🎵 Music & screens", ["btnBooth", "btnMedia2", "btnLinks2", "btnScreens", "btnStopVideo"]], ["🎮 Games & fun", ["btnTrivia", "btnMogul", "btnEmpire", "btnHunt", "btnDanceoff", "btnBrawl"]]],
+  GROUPS: [["🎉 Party & people", ["btnParty", "partyInfo", "btnEvents2", "btnSocial2", "btnSafety2"]], ["🧑 You & help", ["btnMe", "btnCloset", "btnHome", "btnVIP2", "btnGuide2"]],
+    ["🎵 Music & screens", ["btnBooth", "btnMedia2", "btnLinks2", "btnScreens", "btnStopVideo"]], ["🎮 Games & fun", ["btnTrivia", "btnMogul", "btnEmpire", "btnHunt", "btnDanceoff", "btnBrawl", "btnCruise"]]],
   grid(){
     const pb = $("#partyBar"); if (!pb || pb.dataset.dash) return; pb.dataset.dash = "1"; pb.classList.add("dashgrid");
     const loose = [...pb.children], sec = (title, els) => { const s = document.createElement("section"); s.className = "dsec"; s.innerHTML = `<h4>${title}</h4><div class="dtiles"></div>`; els.forEach(e => s.lastChild.appendChild(e)); pb.appendChild(s); return s; };
@@ -10936,6 +10955,64 @@ const Profile = {
   }
 };
 
+
+/* ---------- 👗 My closet: saved looks you can change into (stored on this device as "closet", and in your account with everything else) ---------- */
+const Closet = {
+  MAX_FREE: 6, MAX_VIP: 24,
+  KEYS: ["outfit", "hat", "eyes", "neck", "acc", "phones", "aura"],
+  list(){ const a = store.get("closet", []); return Array.isArray(a) ? a.filter(l => l && typeof l === "object" && l.outfit).slice(0, this.MAX_VIP) : []; },
+  put(a){ store.set("closet", a.slice(0, this.MAX_VIP)); },
+  cap(){ let vip = false; try{ vip = VIP.can("dj"); }catch(e){} return vip ? this.MAX_VIP : this.MAX_FREE; },
+  lookOf(p){ const l = {}; for (const k of this.KEYS) l[k] = k === "outfit" ? Object.assign({}, p.outfit || {style: "original"}) : p[k]; return l; },
+  same(a, b){ return JSON.stringify(this.lookOf(a)) === JSON.stringify(this.lookOf(b)); },
+  label(set, v){ return set && v && v !== "none" && set[v] ? set[v] : ""; },
+  describe(l){ const o = l.outfit || {}, bits = [];
+    try{ bits.push(Outfit.STYLES[o.style] || "Original"); }catch(e){ bits.push(o.style || "Original"); }
+    try{ for (const [set, k] of [[Gear.HATS, "hat"], [Gear.EYES, "eyes"], [Gear.NECK, "neck"], [Gear.ACC, "acc"]]){ const t = this.label(set, l[k]); if (t) bits.push(t); } }catch(e){}
+    if (l.phones) bits.push("Headphones"); return bits.join(" · "); },
+  swatch(l){ const o = l.outfit || {}; if (o.style === "fabric" && o.fabric) return `background:url(${o.fabric}) center/cover`; if (!o.style || o.style === "original") return "background:linear-gradient(135deg,#6a4a3a,#c8a070)";
+    const c1 = /^#[0-9a-f]{6}$/i.test(o.c1) ? o.c1 : "#e53935", c2 = /^#[0-9a-f]{6}$/i.test(o.c2) ? o.c2 : "#111111", c3 = /^#[0-9a-f]{6}$/i.test(o.c3 || "") ? o.c3 : c1;
+    return o.style === "stripes" ? `background:repeating-linear-gradient(90deg,${c1} 0 14px,${c2} 14px 28px)` : o.style === "solid" ? `background:${c1}` : `background:linear-gradient(135deg,${c1},${c2},${c3})`; },
+  open(){ this.render(); $("#closetDlg").showModal(); },
+  render(){
+    const looks = this.list(), cur = Profile.get(), cap = this.cap(), g = $("#clGrid");
+    g.innerHTML = looks.length ? looks.map((l, i) => `<div class="cllook${this.same(l, cur) ? " on" : ""}"><div class="clsw" style="${esc(this.swatch(l))}"></div><b>${esc(l.n || "Look " + (i + 1))}</b><small>${esc(this.describe(l))}</small>
+      <div class="row"><button class="primary" type="button" data-wear="${i}">${this.same(l, cur) ? "✓ Wearing" : "👕 Wear"}</button><button class="ghost" type="button" data-del="${i}" aria-label="Remove ${esc(l.n || "look")}">🗑</button></div></div>`).join("")
+      : `<div class="clempty">Your closet is empty. Dress up in 🧑 My avatar, then tap 💾 Save what I'm wearing.</div>`;
+    $("#clCount").textContent = `${looks.length} of ${cap} hangers used` + (cap === this.MAX_FREE ? " · VIPs get 24" : "");
+  },
+  saveCurrent(){
+    const looks = this.list(), cap = this.cap();
+    if (looks.length >= cap){ if (cap === this.MAX_FREE){ try{ VIP.open(`Your closet holds ${this.MAX_FREE} looks. VIPs get ${this.MAX_VIP} hangers.`); }catch(e){ toast("Your closet is full. Remove a look first."); } } else toast("Your closet is full. Remove a look first."); return; }
+    const p = Profile.get(), n = ($("#clName").value || "").replace(/[<>\u0000-\u001f]/g, "").trim().slice(0, 20) || `Look ${looks.length + 1}`;
+    if (looks.some(l => this.same(l, p))){ toast("That outfit is already in your closet."); return; }
+    looks.push(Object.assign({n, at: Date.now()}, this.lookOf(p))); this.put(looks); $("#clName").value = ""; this.render(); toast(`👗 Saved “${n}” to your closet.`);
+    try{ Account.dirty && Account.dirty(); }catch(e){}
+  },
+  wear(i){
+    const l = this.list()[i]; if (!l) return; const p = Profile.get(), d = Object.assign({}, p);
+    for (const k of this.KEYS) if (l[k] !== undefined) d[k] = k === "outfit" ? Object.assign({}, l.outfit) : l[k];
+    let vip = false; try{ vip = VIP.can("dj"); }catch(e){}
+    const before = JSON.stringify(d.outfit); d.outfit = Outfit.clean(d.outfit, vip);
+    Profile.save(Profile.clean(Object.assign({}, d, {dj: p.dj}))); try{ Profile.refreshCustom(); }catch(e){}
+    this.render(); toast(`👕 You changed into “${l.n || "your look"}”.` + (JSON.stringify(d.outfit) !== before ? " (VIP prints switch to a free style for non-VIPs.)" : ""));
+  },
+  del(i){ const looks = this.list(), l = looks[i]; if (!l) return; if (!confirm(`Remove “${l.n || "this look"}” from your closet?`)) return; looks.splice(i, 1); this.put(looks); this.render(); },
+  bind(){
+    $("#clSave").addEventListener("click", () => this.saveCurrent());
+    $("#clClose").addEventListener("click", () => $("#closetDlg").close());
+    $("#clEdit").addEventListener("click", () => { $("#closetDlg").close(); try{ Profile.open(); }catch(e){} });
+    $("#clGrid").addEventListener("click", e => { const w = e.target.closest("[data-wear]"), d = e.target.closest("[data-del]"); if (w) this.wear(+w.dataset.wear); if (d) this.del(+d.dataset.del); });
+  }
+};
+/* ---------- 🚗 Cruising USA VR: Darnell's road-trip driving game ---------- */
+const Cruising = {
+  URL: "https://mrimagemakers.github.io/CrusingUSA/",
+  open(){ let w = null; try{ w = window.open(this.URL, "_blank"); if (w) w.opener = null; }catch(e){}
+    if (!w){ try{ location.assign(this.URL); }catch(e){ toast("Open " + this.URL + " to play Cruising USA VR."); } return; }
+    toast("🚗 Cruising USA VR opened in a new tab. Enjoy the road trip!"); }
+};
+
 /* ---------- The party (multiplayer) ---------- */
 const Party = {
   room: null, roomKey: "", peers: {}, emote: "idle", mic: null, dj: false, follow: true, hidden: new Set(store.get("hiddenGuests", [])),
@@ -13390,7 +13467,8 @@ const Safety = {
   }
 };
 Age.bindUI(); Safety.bindUI();
-document.addEventListener("click", e => { if (e.target.closest("#btnMogul")) Mogul.open(); if (e.target.closest("#btnEmpire")) Mogul.empire(); if (e.target.closest("#btnBrawl")) Mogul.brawlHere(); if (e.target.closest("#btnDanceoff")) Mogul.danceHere(); if (e.target.closest("#btnTrivia")) TriviaLive.open(); if (e.target.closest("#btnHome")){ if ($("#stage").hidden || !Lounge.built){ store.set("world", "home"); openStage("lounge"); } else Lounge.chooseWorld("home"); } });
+try{ Closet.bind(); }catch(e){ console.warn("Closet", e); }
+document.addEventListener("click", e => { if (e.target.closest("#btnCloset")) Closet.open(); if (e.target.closest("#btnCruise")) Cruising.open(); if (e.target.closest("#btnMogul")) Mogul.open(); if (e.target.closest("#btnEmpire")) Mogul.empire(); if (e.target.closest("#btnBrawl")) Mogul.brawlHere(); if (e.target.closest("#btnDanceoff")) Mogul.danceHere(); if (e.target.closest("#btnTrivia")) TriviaLive.open(); if (e.target.closest("#btnHome")){ if ($("#stage").hidden || !Lounge.built){ store.set("world", "home"); openStage("lounge"); } else Lounge.chooseWorld("home"); } });
 
 /* ================= NIGHTCLUB MOGUL =================
    A game inside the Nightclub: work the jobs (bartender, bouncer, DJ, barback, bottle service, promoter,
@@ -15397,9 +15475,22 @@ const HFP = {
 
 /* ================= 🏡 My Home: build a house and a garden, grow plants, and watch wildlife move in ================= */
 const Home = {
-  CATS: {furn: "🛋 Furniture", decor: "🖼 Decor", fun: "🎮 Fun", plant: "🌸 Plants", tree: "🌳 Trees", wild: "🐝 Garden", mine: "📦 My models"},
+  CATS: {furn: "🛋 Furniture", kitchen: "🍳 Kitchen", bath: "🛁 Bathroom", closet: "👗 Closet", decor: "🖼 Decor", fun: "🎮 Fun", plant: "🌸 Plants", tree: "🌳 Trees", wild: "🐝 Garden", mine: "📦 My models"},
   CAT: {
     sofa: {n: "Sofa", i: "🛋", c: "furn", cost: 120, r: .9, use: ["calm", 4, "Feet up. So comfy."]},
+    kcounter: {n: "Kitchen counter", i: "🗄", c: "kitchen", cost: 60, r: .45},
+    stove: {n: "Stove & oven", i: "🍳", c: "kitchen", cost: 180, r: .45, use: ["fun", 4, "You cooked a tasty meal!"]},
+    ksink: {n: "Kitchen sink", i: "🚰", c: "kitchen", cost: 90, r: .45, use: ["calm", 1, "Dishes done. Nice and tidy."]},
+    island: {n: "Kitchen island", i: "🍽", c: "kitchen", cost: 220, r: .8, use: ["social", 3, "Snacks and chat at the kitchen island."]},
+    tub: {n: "Bathtub", i: "🛁", c: "bath", cost: 260, r: .9, use: ["calm", 7, "A bubble bath. So relaxing."]},
+    shower: {n: "Shower", i: "🚿", c: "bath", cost: 200, r: .5, use: ["calm", 4, "A hot shower. Fresh and clean!"]},
+    toilet: {n: "Toilet", i: "🚽", c: "bath", cost: 80, r: .35, use: ["calm", 1, "Much better."]},
+    vanity: {n: "Bathroom sink", i: "🪥", c: "bath", cost: 120, r: .45, use: ["calm", 1, "Teeth brushed, hands washed."]},
+    towels: {n: "Towel rack", i: "🧺", c: "bath", cost: 30, r: .3},
+    wardrobe: {n: "Wardrobe (my closet)", i: "👗", c: "closet", cost: 150, r: .8, closet: true},
+    shoerack: {n: "Sneaker wall", i: "👟", c: "closet", cost: 70, r: .45, use: ["fun", 1, "Fresh kicks, lined up."]},
+    clothesrack: {n: "Clothes rack", i: "👚", c: "closet", cost: 90, r: .6, closet: true},
+    roadcar: {n: "Road-trip car", i: "🚗", c: "fun", cost: 400, r: 1.3, out: true, cruise: true},
     bed: {n: "Bed", i: "🛏", c: "furn", cost: 150, r: 1.0, use: ["calm", 8, "A quick nap. Refreshed!"]},
     armchair: {n: "Armchair", i: "💺", c: "furn", cost: 70, r: .5, use: ["calm", 3, "Nice and cozy."]},
     table: {n: "Table", i: "🍽", c: "furn", cost: 90, r: .7},
@@ -15499,6 +15590,9 @@ const Home = {
     fox: {i: "🦊", n: "A fox", need: e => e.trees >= 4 && e.plants >= 10, count: () => 1}
   },
   HOUSE: [-6, 6, -15.5, -8.5], PLOT: [-11.5, 11.5, -15.5, 4.5],
+  // side wings (open to the sky like the main room): kitchen on the left, bathroom + walk-in closet on the right
+  WINGS: {kitchen: [-11, -6, -15.5, -9.5], bath: [6, 11, -15.5, -12.5], closet: [6, 11, -12.5, -9.5]},
+  rooms(){ return [this.HOUSE, ...Object.values(this.WINGS)]; },
   items: [], nodes: new Map(), agents: [], mode: "", sel: "", rot: 0, active: false,
   load(){ const d = store.get(this.key(), null); if (d && Array.isArray(d.items)) return d;
     const now = Date.now(), it = (k, x, z, r = 0) => ({id: Math.random().toString(36).slice(2, 9), k, x, z, r, p: now, g: 1e9, wt: now, u: now}), lot = this.lot();
@@ -15508,7 +15602,36 @@ const Home = {
     if (lot === "zen") return {v: 1, gift: false, mirror: true, items: [it("yogamat", -2, -12.5), it("armchair", -4.6, -14.4), it("bed", 4, -13.8), it("table", -2, -14.4), it("lamp", -4.6, -10), it("mirror", -5.5, -11.5, 1), it("maple", -7, -3), it("cherry", 7, -3), it("pond", 4, -4), it("rock", 1.5, -3), it("lavender", -3, -5), it("path", 0, -7.5), it("path", 0, -6.5), it("path", 0, -5.5)]};
     return {v: 1, gift: false, items: [it("sofa", -2, -14.6, 0), it("rug", -2, -12.6), it("table", -2, -12.4), it("lamp", -4.6, -14.8), it("bed", 4, -13.8, 0), it("bookshelf", 5.4, -10, 3),
       it("mirror", -5.5, -11.5, 1), it("daisy", -2.5, -5.5), it("tulip", -1.5, -5.5), it("oak", 7, -4), it("fern", 2, -5.5), it("path", 0, -7.5), it("path", 0, -6.5), it("path", 0, -5.5)]}; },
-  save(){ if (!this.g || !this.itemsLot) return; store.set(this.itemsLot === "suburb" ? "home" : "home:" + this.itemsLot, {v: 1, gift: this.gift, mirror: true, items: this.items.slice(0, 160)}); },
+  save(){ if (!this.g || !this.itemsLot) return; store.set(this.itemsLot === "suburb" ? "home" : "home:" + this.itemsLot, {v: 1, gift: this.gift, mirror: true, rooms: !!this.rooms_ok, items: this.items.slice(0, 160)}); },
+  /* the kitchen, bathroom and closet come furnished (only where nothing is in the way) */
+  furnishRooms(lot){ const now = Date.now(), add = (k, x, z, r = 0) => { if (!this.CAT[k] || this.valid(k, x, z)) return; this.items.push({id: Math.random().toString(36).slice(2, 9), k, x, z, r, p: now, g: 1e9, wt: now, u: now}); };
+    add("ksink", -10.1, -14.9); add("stove", -8.9, -14.9); add("kcounter", -7.7, -14.9); add("fridge", -10.4, -12.6, 1); add("island", -8.4, -11.4);
+    add("tub", 9.6, -14.75); add("toilet", 7.0, -15.0); add("vanity", 10.55, -13.3, 3); add("towels", 7.9, -12.85, 2);
+    add("wardrobe", 10.55, -11.0, 3); add("shoerack", 8.3, -9.9, 2); add("clothesrack", 7.0, -10.9, 1);
+    if (lot !== "loft") add("roadcar", -6.8, -2.5, 0); },
+  /* walls, floors and lights for the side wings */
+  buildWings(L, g, lot, LT, wallM, trim, glass, WH){
+    const T = THREE, wb = (w, h, d, x, y, z) => L.wBox(g, w, h, d, wallM, x, y, z), W = this.WINGS;
+    const tile = (c1, c2, n = 8) => { const [c, x] = Tex.canvas(256, 256), s = 256/n; for (let i = 0; i < n; i++) for (let j = 0; j < n; j++){ x.fillStyle = (i + j) % 2 ? c1 : c2; x.fillRect(i*s, j*s, s, s); } x.strokeStyle = "rgba(0,0,0,.18)"; x.lineWidth = 2; for (let i = 0; i <= n; i++){ x.beginPath(); x.moveTo(i*s, 0); x.lineTo(i*s, 256); x.stroke(); x.beginPath(); x.moveTo(0, i*s); x.lineTo(256, i*s); x.stroke(); } return c; };
+    const floor = (r, map, rough) => { const [a, b, c, d] = r, f = L.add ? L.add(new T.Mesh(new T.BoxGeometry(b - a, .06, d - c), new T.MeshStandardMaterial({map, roughness: rough})), g, false, true) : null; if (f){ f.position.set((a + b)/2, .03, (c + d)/2); try{ L.walkable(f); L.surface(f); }catch(e){} } };
+    floor(W.kitchen, Tex.make(tile("#f2ece0", "#2a2a2e", 8), {repeat: [2, 2]}), .35);
+    floor(W.bath, Tex.make(tile("#e8f4f8", "#bfdde8", 10), {repeat: [2, 1]}), .25);
+    floor(W.closet, Tex.make(Tex.wood(), {repeat: [2, 1]}), .5);
+    // outer walls with a window in each room
+    const winWall = (len, x, z, along) => { const seg = (len - 1.6)/2; if (along === "x"){ wb(seg, WH, .2, x - len/2 + seg/2, WH/2, z); wb(seg, WH, .2, x + len/2 - seg/2, WH/2, z); wb(1.6, 1, .2, x, .5, z); wb(1.6, WH - 2.4, .2, x, 2.4 + (WH - 2.4)/2, z); L.wBox(g, 1.6, 1.4, .04, glass, x, 1.7, z); }
+      else { wb(.2, WH, seg, x, WH/2, z - len/2 + seg/2); wb(.2, WH, seg, x, WH/2, z + len/2 - seg/2); wb(.2, 1, 1.6, x, .5, z); wb(.2, WH - 2.4, 1.6, x, 2.4 + (WH - 2.4)/2, z); L.wBox(g, .04, 1.4, 1.6, glass, x, 1.7, z); } };
+    { const [a, b, c, d] = W.kitchen; wb(b - a, WH, .2, (a + b)/2, WH/2, c); winWall(d - c, a, (c + d)/2, "z"); winWall(b - a, (a + b)/2, d, "x"); }
+    { const [a, b, c] = W.bath, d = W.closet[3]; wb(b - a, WH, .2, (a + b)/2, WH/2, c); wb(.2, WH, d - c, b, WH/2, (c + d)/2); winWall(b - a, (a + b)/2, d, "x");
+      wb(b - a, WH, .14, (a + b)/2, WH/2, W.bath[3]); }
+    // top trim and corner posts
+    for (const r of Object.values(W)){ const [a, b, c, d] = r; L.wBox(g, b - a + .2, .16, .2, trim, (a + b)/2, WH + .08, c); L.wBox(g, b - a + .2, .16, .2, trim, (a + b)/2, WH + .08, d); }
+    for (const [x, z] of [[-11.1, -15.6], [-11.1, -9.4], [11.1, -15.6], [11.1, -9.4]]) L.wBox(g, .3, WH + .3, .3, trim, x, (WH + .3)/2, z);
+    // room signs above the doorways (inside the main room)
+    const sign = (txt, x, z, ry) => { try{ const [c, cx] = Tex.canvas(256, 64); cx.fillStyle = "rgba(20,14,10,.85)"; cx.fillRect(0, 0, 256, 64); cx.fillStyle = "#ffd87a"; cx.font = "700 30px sans-serif"; cx.textAlign = "center"; cx.textBaseline = "middle"; cx.fillText(txt, 128, 34); const m = new T.Mesh(new T.PlaneGeometry(1.1, .28), new T.MeshBasicMaterial({map: Tex.make(c), transparent: true})); m.position.set(x, 2.55, z); m.rotation.y = ry; g.add(m); }catch(e){} };
+    sign("🍳 Kitchen", -5.88, -13.3, Math.PI/2); sign("🛁 Bath", 5.88, -13.5, -Math.PI/2); sign("👗 Closet", 5.88, -11.0, -Math.PI/2);
+    // lights that come on at night with the house lamps
+    for (const [x, z] of [[-8.5, -12.5], [8.5, -13.6], [8.5, -11.0]]){ const l = new T.PointLight(0xffc880, 0, 7, 2); l.position.set(x, 2.6, z); g.add(l); this.lamps.push(l); }
+  },
   cash(){ try{ return Mogul.d().cash; }catch(e){ return 0; } },
   spend(n){ const d = Mogul.d(); if (d.cash < n) return false; d.cash -= n; Mogul.put(d); return true; },
   earn(n){ const d = Mogul.d(); d.cash += n; d.earned = (d.earned || 0) + n; Mogul.put(d); },
@@ -15677,7 +15800,7 @@ const Home = {
   },
   /* ---------- the world ---------- */
   build(L){
-    const T = THREE, add = L.add, g = new T.Group(); L.scene.add(g); L.room = g; this.L = L; this.g = g; try{ this.mineInit(); this.dragInit(); }catch(e){} this.hist = []; this.fut = []; this.pick = null; if (this.ring && this.ring.parent) this.ring.parent.remove(this.ring); this.swayers = []; this.nightGlows = []; this.winMats = []; this.streetGlows = []; this.sea = this.snow = this.petals = this.city = this.bulbs = this.foam = null;
+    const T = THREE, add = L.add, g = new T.Group(); L.scene.add(g); L.room = g; this.L = L; this.g = g; this.lamps = []; this.rooms_ok = false; try{ this.mineInit(); this.dragInit(); }catch(e){} this.hist = []; this.fut = []; this.pick = null; if (this.ring && this.ring.parent) this.ring.parent.remove(this.ring); this.swayers = []; this.nightGlows = []; this.winMats = []; this.streetGlows = []; this.sea = this.snow = this.petals = this.city = this.bulbs = this.foam = null;
     const lot = this.lot(), LT = this.LOTS[lot], U = typeof GFX !== "undefined" && GFX.level === "ultra", LOW = typeof GFX !== "undefined" && GFX.level === "low";
     const [hx0, hx1, hz0, hz1] = this.HOUSE, HW = hx1 - hx0, HD = hz1 - hz0, hcx = (hx0 + hx1)/2, hcz = (hz0 + hz1)/2, WH = 3, [px0, px1, pz0, pz1] = this.PLOT;
     // ground
@@ -15689,7 +15812,9 @@ const Home = {
     const fl = add(new T.Mesh(new T.BoxGeometry(HW, .06, HD), new T.MeshStandardMaterial({map: Tex.make(Tex.wood(), {repeat: [4, 3]}), normalMap: Tex.make(Tex.normal(Tex.wood(), 3), {repeat: [4, 3], srgb: false}), color: lot === "zen" ? 0xb89a6a : 0xc8a070, roughness: .45})), g, false, true); fl.position.set(hcx, .03, hcz); this.hfSwap("floor", fl.material.map, fl.material.normalMap, 3, lot === "zen" ? null : fl.material); L.walkable(fl); L.surface(fl);
     const wallM = this.wallMat(L, lot), trim = L.stdMat(LT.trim, .6), glass = L.mats.glass;
     const wb = (w, h, d, x, y, z) => L.wBox(g, w, h, d, wallM, x, y, z);
-    wb(HW, WH, .2, hcx, WH/2, hz0); wb(.2, WH, HD, hx0, WH/2, hcz); wb(.2, WH, HD, hx1, WH/2, hcz);
+    wb(HW, WH, .2, hcx, WH/2, hz0);
+    { const side = (x, gaps) => { let z = hz0; for (const [zc, w] of gaps.concat([[hz1 + 99, 0]])){ const e = Math.min(hz1, zc - w/2); if (e - z > .05) wb(.2, WH, e - z, x, WH/2, (z + e)/2); if (zc < hz1){ wb(.2, WH - 2.3, w, x, 2.3 + (WH - 2.3)/2, zc); z = zc + w/2; } } };
+      side(hx0, [[-13.3, 1.4]]); side(hx1, [[-13.5, 1.2], [-11.0, 1.2]]); this.buildWings(L, g, lot, LT, wallM, trim, glass, WH); }
     wb(HW/2 - 1.3, 1, .2, hcx - HW/4 - .65, .5, hz1); wb(HW/2 - 1.3, 1, .2, hcx + HW/4 + .65, .5, hz1); wb(HW, .5, .2, hcx, WH - .25, hz1);
     for (const s of [-1, 1]){ const x = hcx + s*(HW/4 + .65); L.wBox(g, HW/2 - 1.3, 1.5, .04, glass, x, 1.75, hz1); wb(.2, 1.5, .2, hcx + s*1.3, 1.75, hz1); wb(.2, 1.5, .2, hcx + s*(HW/2 - .1), 1.75, hz1); }
     for (let i = 0; i < 5; i++) L.wBox(g, .16, .2, HD + .4, trim, hx0 + 1 + i*(HW - 2)/4, WH + .1, hcz);
@@ -15719,7 +15844,7 @@ const Home = {
       this.streetGlows = (this.streetGlows || []).slice(-4);
       L.wBox(g, .35, .3, .5, L.stdMat(0x1a4a8a, .4, {metalness: .5}), 2.2, 1.0, 5.4).castShadow = true; L.wCyl(g, .04, .04, 1, L.stdMat(0x3a3a3a, .6), 2.2, .5, 5.4, 6);
       ring(18, 34, 46, (x, z) => g.add(this.at(this.tree(["oak", "maple", "birch", "pine"][Math.floor(Math.random()*4)], 1.1 + Math.random()*.6), x, 0, z)));
-      for (const [x, z] of [[-9, 2.5], [9, 2.5], [-9, -14], [9, -14]]) g.add(this.at(this.tree(Math.random() < .5 ? "oak" : "maple", 1), x, 0, z));
+      for (const [x, z] of [[-9, 2.5], [9, 2.5], [-9, -18.5], [9, -18.5]]) g.add(this.at(this.tree(Math.random() < .5 ? "oak" : "maple", 1), x, 0, z));
     } else if (lot === "beach"){
       const sea = this.sea = add(new T.Mesh(new T.PlaneGeometry(400, 160, 80, 30), new T.MeshStandardMaterial({color: 0x1a7a9a, roughness: .12, metalness: .2, envMap: L.envTex, envMapIntensity: 1, transparent: true, opacity: .95})), g, false, true); sea.rotation.x = -Math.PI/2; sea.position.set(0, -.15, 90); sea.userData.base = sea.geometry.attributes.position.array.slice();
       const foam = add(new T.Mesh(new T.PlaneGeometry(400, 3), new T.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: .55})), g, false); foam.rotation.x = -Math.PI/2; foam.position.set(0, -.08, 11); this.foam = foam;
@@ -15731,7 +15856,7 @@ const Home = {
     } else if (lot === "cabin"){
       ring(10, 110, 140, (x, z, i) => { const m = new T.Mesh(new T.ConeGeometry(28 + Math.random()*18, 40 + Math.random()*30, 7), L.stdMat(0x6a7a8a, 1)); m.position.set(x, 18, z); g.add(m); const cap = new T.Mesh(new T.ConeGeometry(12, 16, 7), L.stdMat(0xf8fbff, .7)); cap.position.set(x, m.geometry.parameters.height/2 + 18 - 8 + 0, z); cap.position.y = 18 + m.geometry.parameters.height/2 - 8; g.add(cap); });
       ring(LOW ? 30 : 46, 15, 60, (x, z) => { if (Math.abs(x) < 13 && z > -17 && z < 6) return; g.add(this.at(this.tree("pine", .9 + Math.random()*.9, {snow: true}), x, 0, z)); });
-      for (const [x, z] of [[-9, 2], [9, 1.5], [-10, -14], [10, -13]]) g.add(this.at(this.tree("pine", 1, {snow: true}), x, 0, z));
+      for (const [x, z] of [[-9, 2], [9, 1.5], [-10, -18.5], [10, -18.5]]) g.add(this.at(this.tree("pine", 1, {snow: true}), x, 0, z));
       const roofSnow = L.wBox(g, HW + .5, .12, HD + .5, L.stdMat(0xf4f8ff, .8), hcx, WH + .26, hcz, false); roofSnow.visible = false;
       const sp = []; for (let i = 0; i < (U ? 2400 : 1200); i++) sp.push((Math.random() - .5)*60, Math.random()*22, -6 + (Math.random() - .5)*60);
       const sg = new T.BufferGeometry(); sg.setAttribute("position", new T.Float32BufferAttribute(sp, 3)); this.snow = new T.Points(sg, new T.PointsMaterial({color: 0xffffff, size: .09, transparent: true, opacity: .9, depthWrite: false})); g.add(this.snow);
@@ -15740,13 +15865,13 @@ const Home = {
     } else if (lot === "loft"){
       const city = add(new T.Mesh(new T.CylinderGeometry(180, 180, 90, 48, 1, true), new T.MeshBasicMaterial({map: Tex.make(Tex.skyline(), {repeat: [5, 1]}), side: T.BackSide, transparent: true, fog: false})), g, false); city.position.y = 20; this.city = city;
       for (let i = 0; i < 26; i++){ const a = i/26*Math.PI*2, R = 50 + Math.random()*60, w = 10 + Math.random()*14, h = 20 + Math.random()*70; const b = new T.Mesh(new T.BoxGeometry(w, h, w), new T.MeshStandardMaterial({color: 0x2a3040, roughness: .6, metalness: .3, emissive: 0xffc870, emissiveIntensity: 0, emissiveMap: this.winTex()})); b.position.set(Math.cos(a)*R, h/2 - 30, -6 + Math.sin(a)*R); g.add(b); this.winMats.push(b.material); }
-      const tower = new T.Group(); tower.position.set(8.5, 0, -15); g.add(tower); const tank = new T.Mesh(new T.CylinderGeometry(1.2, 1.2, 2.2, 14), L.stdMat(0x6a4a30, .9)); tank.position.y = 3.6; tower.add(tank); const tr2 = new T.Mesh(new T.ConeGeometry(1.35, .9, 14), L.stdMat(0x3a2a20, .9)); tr2.position.y = 5.15; tower.add(tr2); for (const [x, z] of [[-.8, -.8], [.8, -.8], [-.8, .8], [.8, .8]]) L.wCyl(tower, .05, .05, 2.5, L.stdMat(0x2a2a2a, .6), x, 1.25, z, 6);
-      for (const [x, z] of [[-9.5, -14], [-8, 3]]){ const ac = L.wBox(g, 1.4, 1, 1, L.stdMat(0xb8bcc0, .5, {metalness: .5}), x, .5, z); ac.castShadow = true; }
+      const tower = new T.Group(); tower.position.set(9.5, 0, 2.6); g.add(tower); const tank = new T.Mesh(new T.CylinderGeometry(1.2, 1.2, 2.2, 14), L.stdMat(0x6a4a30, .9)); tank.position.y = 3.6; tower.add(tank); const tr2 = new T.Mesh(new T.ConeGeometry(1.35, .9, 14), L.stdMat(0x3a2a20, .9)); tr2.position.y = 5.15; tower.add(tr2); for (const [x, z] of [[-.8, -.8], [.8, -.8], [-.8, .8], [.8, .8]]) L.wCyl(tower, .05, .05, 2.5, L.stdMat(0x2a2a2a, .6), x, 1.25, z, 6);
+      for (const [x, z] of [[-9.5, 1.5], [-8, 3]]){ const ac = L.wBox(g, 1.4, 1, 1, L.stdMat(0xb8bcc0, .5, {metalness: .5}), x, .5, z); ac.castShadow = true; }
       this.bulbs = []; for (let i = 0; i < 18; i++){ const t = i/17, x = -10 + t*20, y = 2.6 - Math.sin(t*Math.PI)*.5; const b = new T.Mesh(new T.SphereGeometry(.06, 8, 6), new T.MeshBasicMaterial({color: 0xffd890})); b.position.set(x, y, 3.6); g.add(b); this.bulbs.push(b); }
       for (const x of [-10, 10]) L.wCyl(g, .04, .04, 2.6, L.stdMat(0x1a1a1a, .5), x, 1.3, 3.6, 6);
     } else if (lot === "zen"){
       ring(LOW ? 30 : 60, 14, 30, (x, z) => { if (Math.abs(x) < 13 && z > -17 && z < 6) return; for (let k = 0; k < 4; k++){ const h = 4 + Math.random()*3, b = L.wCyl(g, .05, .06, h, this.barkMat("#7a9a3a"), x + (Math.random() - .5)*1.2, h/2, z + (Math.random() - .5)*1.2, 6); for (let n = 1; n < 6; n++) L.wCyl(g, .065, .065, .04, L.stdMat(0x5a7a2a, .8), b.position.x, n*h/6, b.position.z, 6); } this.clump(g, .7, "#5a9a3a", x, 4.5, z); });
-      for (const [x, z] of [[-9, 2], [9, 2.5], [-9.5, -14], [9.5, -14], [-12, -6], [12, -5]]) g.add(this.at(this.tree(Math.random() < .5 ? "maple" : "cherry", .9 + Math.random()*.3), x, 0, z));
+      for (const [x, z] of [[-9, 2], [9, 2.5], [-9.5, -18.5], [9.5, -18.5], [-12.5, -6], [12.5, -5]]) g.add(this.at(this.tree(Math.random() < .5 ? "maple" : "cherry", .9 + Math.random()*.3), x, 0, z));
       const gate = new T.Group(); gate.position.set(0, 0, 8); g.add(gate); const red = L.stdMat(0xc0281a, .5); for (const s of [-1.6, 1.6]) L.wCyl(gate, .16, .2, 4, red, s, 2, 0, 12); L.wBox(gate, 4.6, .3, .35, red, 0, 3.6, 0); L.wBox(gate, 5.4, .3, .45, L.stdMat(0x1a1a1a, .5), 0, 4.1, 0); L.wBox(gate, 3.6, .2, .25, red, 0, 2.9, 0);
       for (const [x, z] of [[-3.5, 6], [3.5, 6]]){ const ln = new T.Group(); ln.position.set(x, 0, z); g.add(ln); const st = L.stdMat(0x9a958a, .9); L.wCyl(ln, .25, .3, .3, st, 0, .15, 0, 8); L.wCyl(ln, .08, .1, .8, st, 0, .7, 0, 8); L.wBox(ln, .5, .4, .5, st, 0, 1.3, 0); L.wGlow(ln, 0xffc070, .8, 0, 1.3, 0, .6); const r = new T.Mesh(new T.ConeGeometry(.5, .3, 4), st); r.rotation.y = Math.PI/4; r.position.y = 1.65; ln.add(r); }
       const city = add(new T.Mesh(new T.CylinderGeometry(160, 160, 70, 48, 1, true), new T.MeshBasicMaterial({map: Tex.make(Tex.skyline(), {repeat: [5, 1]}), side: T.BackSide, transparent: true, fog: false, color: 0xd8a8ff})), g, false); city.position.y = 12; this.city = city;
@@ -15758,7 +15883,7 @@ const Home = {
       const gmat = new T.MeshStandardMaterial({color: 0x6a9a40, roughness: .9}); this.windU = {value: 0};
       gmat.onBeforeCompile = sh => { sh.uniforms.uWind = this.windU; sh.vertexShader = "uniform float uWind;\n" + sh.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\n  #ifdef USE_INSTANCING\n  float wph = instanceMatrix[3].x*.35 + instanceMatrix[3].z*.27;\n  transformed.x += sin(uWind*1.8 + wph)*.06*position.y/.28;\n  transformed.z += cos(uWind*1.3 + wph)*.03*position.y/.28;\n  #endif"); };
       const im = new T.InstancedMesh(bladeG, gmat, n), o = new T.Object3D(), col = new T.Color(); let k2 = 0;
-      for (let i = 0; i < n*3 && k2 < n; i++){ const x = px0 - 6 + Math.random()*(px1 - px0 + 12), z = pz0 - 4 + Math.random()*(pz1 - pz0 + 8); if (x > hx0 - .4 && x < hx1 + .4 && z > hz0 - .4 && z < hz1 + .4) continue; if (Math.abs(x) < .7 && z > hz1 && z < pz1 + 1) continue;
+      for (let i = 0; i < n*3 && k2 < n; i++){ const x = px0 - 6 + Math.random()*(px1 - px0 + 12), z = pz0 - 4 + Math.random()*(pz1 - pz0 + 8); if (this.rooms().some(([a, b, c, d]) => x > a - .4 && x < b + .4 && z > c - .4 && z < d + .4)) continue; if (Math.abs(x) < .7 && z > hz1 && z < pz1 + 1) continue;
         o.position.set(x, 0, z); o.rotation.set((Math.random() - .5)*.4, Math.random()*6, (Math.random() - .5)*.4); o.scale.set(1, .6 + Math.random()*1.1, 1); o.updateMatrix(); im.setMatrixAt(k2, o.matrix); im.setColorAt && im.setColorAt(k2, col.setHSL(.2 + Math.random()*.1, .3, .75 + Math.random()*.25)); k2++; }
       im.count = k2; im.receiveShadow = true; g.add(im);
       if (lot === "suburb") for (let i = 0; i < 6; i++){ const fx = (Math.random() < .5 ? -1 : 1)*(7 + Math.random()*3.5), fz = -7 + Math.random()*10; for (let k = 0; k < 6; k++){ const f = new T.Mesh(new T.SphereGeometry(.05, 6, 4), new T.MeshStandardMaterial({color: [0xffffff, 0xffd020, 0xff6a9a, 0xb08af0][Math.floor(Math.random()*4)]})); f.position.set(fx + (Math.random() - .5)*.8, .2, fz + (Math.random() - .5)*.8); g.add(f); } }
@@ -15775,12 +15900,13 @@ const Home = {
     this.sun = new T.DirectionalLight(0xfff0d8, 1.1); this.sun.position.set(20, 30, 10); g.add(this.sun); g.add(this.sun.target);
     if (!LOW){ this.sun.castShadow = true; const sz = U ? 2048 : 1024; this.sun.shadow.mapSize.set(sz, sz); Object.assign(this.sun.shadow.camera, {left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 90}); this.sun.shadow.bias = -.0005; this.sun.shadow.normalBias = .04; this.sun.target.position.set(0, 0, -6); }
     this.hemi = new T.HemisphereLight(0xcfe8ff, lot === "cabin" ? 0xc8d4e0 : lot === "beach" ? 0xd8c8a0 : 0x3a5a2a, .7); g.add(this.hemi);
-    this.lamps = []; for (const [x, z] of [[-2, -12], [3, -12]]){ const l = new T.PointLight(0xffc880, 0, 8, 2); l.position.set(x, 2.6, z); g.add(l); this.lamps.push(l); }
+    this.lamps = this.lamps || []; for (const [x, z] of [[-2, -12], [3, -12]]){ const l = new T.PointLight(0xffc880, 0, 8, 2); l.position.set(x, 2.6, z); g.add(l); this.lamps.push(l); }
     this.fog = new T.Fog(LT.day, LT.fog[0], LT.fog[1]);
     this.layer = new T.Group(); g.add(this.layer);
     const d = this.load(); this.items = d.items.filter(it => this.CAT[it.k]); this.gift = d.gift; this.itemsLot = lot;
     if (lot === "suburb" && !d.mirror && !this.items.some(i => i.k === "mirror")){ const spots = [[-5.5, -11.5], [-5.5, -10], [5.5, -12.5], [-3, -9.5]]; for (const [x, z] of spots) if (!this.valid("mirror", x, z)){ const now = Date.now(); this.items.push({id: Math.random().toString(36).slice(2, 9), k: "mirror", x, z, r: x < 0 ? 1 : 3, p: now, g: 0, wt: now, u: now}); break; } }
     if (!this.gift){ this.gift = true; try{ if (lot === "suburb"){ this.earn(400); setTimeout(() => toast("🏡 Welcome home! Here's $400 to decorate. Tap 🔨 Build."), 1500); } else setTimeout(() => toast(`${LT.i} Welcome to your ${LT.n}! It comes furnished. Tap 🔨 Build to make it yours.`), 1500); }catch(e){} this.save(); }
+    if (!d.rooms){ this.furnishRooms(lot); this.rooms_ok = true; this.save(); } else this.rooms_ok = true;
     this.nodes = new Map(); this.agents = []; for (const it of this.items) this.place(it); this.eco(true);
     L.CASTS.home = L.CASTS.home || [].concat(L.CASTS.coffee || [], L.CASTS.beach || []).slice(0, 10); try{ Jobs.street(L, g, lot); }catch(e){ console.warn("Jobs", e); }
     return {id: "home", name: `${LT.i} ${LT.n}`, group: g, floorY: 0, fog: this.fog, exposure: 1.0, bloom: .3, far: 700,
@@ -15829,6 +15955,19 @@ const Home = {
       case "rock": sph(.35, 0x8a8478, 0, .18, 0, 1.2, .7, 1); sph(.2, 0x7a7468, .3, .1, .1); break;
       case "mirror": { const fr = L.stdMat(0xc9a46a, .3, {metalness: .8}); box(.7, 1.9, .06, fr, 0, .95, 0); const mm = Mirrors.make(.6, 1.78); mm.position.set(0, .95, .035); g.add(mm); box(.5, .04, .3, fr, 0, .02, -.1); } break;
       case "path": { const s = new T.Mesh(new T.CylinderGeometry(.3, .32, .05, 10), m(0xb8b0a0)); s.position.y = .03; s.scale.z = .8; g.add(s); } break;
+      case "kcounter": box(1.2, .86, .6, 0xf4efe6, 0, .43, 0); box(1.24, .05, .64, L.stdMat(0x3a3a3e, .25), 0, .885, 0); box(.56, .7, .01, 0xe8e0d0, -.29, .45, .301); box(.56, .7, .01, 0xe8e0d0, .29, .45, .301); for (const x of [-.06, .06]) box(.02, .14, .02, L.stdMat(0xc9a46a, .3, {metalness: .8}), x, .62, .32); box(1.2, .7, .32, 0xf4efe6, 0, 2.0, -.14); break;
+      case "stove": box(.8, .86, .62, 0xd8dadc, 0, .43, 0); box(.82, .04, .64, 0x18181a, 0, .88, 0); for (const [x, z] of [[-.2, -.14], [.2, -.14], [-.2, .14], [.2, .14]]){ const b = cyl(.1, .1, .012, new T.MeshStandardMaterial({color: 0x441008, emissive: 0xff3a10, emissiveIntensity: .35}), x, .905, z, 18); } box(.6, .36, .01, new T.MeshStandardMaterial({color: 0x111111, roughness: .1, metalness: .3}), 0, .45, .315); box(.6, .03, .03, L.stdMat(0xc0c4c8, .2, {metalness: .9}), 0, .72, .33); cyl(.14, .13, .18, 0xc62828, -.2, 1.0, -.14, 16); box(.82, .5, .12, L.stdMat(0xb8bcc0, .3, {metalness: .7}), 0, 1.9, -.25); break;
+      case "ksink": box(1.2, .86, .6, 0xf4efe6, 0, .43, 0); box(1.24, .05, .64, L.stdMat(0x3a3a3e, .25), 0, .885, 0); box(.6, .04, .4, L.stdMat(0x9aa0a6, .15, {metalness: .9}), 0, .9, .02); cyl(.018, .018, .32, L.stdMat(0xc0c4c8, .2, {metalness: .9}), 0, 1.06, -.2, 8); box(.03, .03, .2, L.stdMat(0xc0c4c8, .2, {metalness: .9}), 0, 1.21, -.11); box(1.2, .7, .32, 0xf4efe6, 0, 2.0, -.14); break;
+      case "island": box(1.6, .88, .8, 0x2f5d62, 0, .44, 0); box(1.7, .05, .9, L.stdMat(0xf2efe8, .2), 0, .905, 0); for (const x of [-.45, .45]){ cyl(.17, .17, .05, 0x8a5a34, x, .72, .65, 16); cyl(.025, .03, .7, L.stdMat(0x222222, .4, {metalness: .6}), x, .36, .65, 8); } sph(.07, 0xd84315, -.3, .99, -.1); sph(.07, 0xfdd835, -.15, .99, .05); sph(.06, 0x7cb342, -.42, .98, .08); break;
+      case "tub": box(1.7, .55, .8, L.stdMat(0xfafafa, .1), 0, .3, 0); { const w = new T.Mesh(new T.PlaneGeometry(1.5, .6), new T.MeshStandardMaterial({color: 0x8fd8f0, roughness: .05, transparent: true, opacity: .85})); w.rotation.x = -Math.PI/2; w.position.y = .56; g.add(w); } for (let i = 0; i < 9; i++) sph(.06 + Math.random()*.05, L.stdMat(0xffffff, .2), -.6 + Math.random()*1.2, .58, -.2 + Math.random()*.4); for (const x of [-.75, .75]) for (const z of [-.32, .32]) sph(.05, L.stdMat(0xc9a46a, .3, {metalness: .8}), x, .03, z); cyl(.02, .02, .25, L.stdMat(0xc0c4c8, .2, {metalness: .9}), .7, .7, -.3, 8); break;
+      case "shower": box(.9, .08, .9, L.stdMat(0xf4f4f4, .2), 0, .04, 0); { const gl = new T.MeshStandardMaterial({color: 0xcfeaf5, transparent: true, opacity: .28, roughness: .05}); box(.9, 2.0, .02, gl, 0, 1.08, .44); box(.02, 2.0, .9, gl, .44, 1.08, 0); } box(.9, 2.0, .04, 0xdfe6ea, 0, 1.08, -.43); box(.04, 2.0, .9, 0xdfe6ea, -.43, 1.08, 0); cyl(.12, .12, .03, L.stdMat(0xc0c4c8, .2, {metalness: .9}), 0, 2.0, -.25, 16); break;
+      case "toilet": cyl(.2, .17, .4, L.stdMat(0xfafafa, .1), 0, .2, .05, 16); cyl(.22, .22, .05, L.stdMat(0xfafafa, .15), 0, .43, .07, 18); box(.42, .5, .18, L.stdMat(0xfafafa, .1), 0, .62, -.2); box(.08, .03, .03, L.stdMat(0xc0c4c8, .2, {metalness: .9}), .12, .8, -.1); break;
+      case "vanity": box(.9, .82, .5, 0x3a5a7a, 0, .41, 0); box(.95, .05, .55, L.stdMat(0xf4f4f4, .15), 0, .845, 0); cyl(.18, .14, .1, L.stdMat(0xffffff, .1), 0, .9, .03, 18); cyl(.015, .015, .22, L.stdMat(0xc0c4c8, .2, {metalness: .9}), 0, .98, -.17, 8); box(.7, .9, .03, new T.MeshStandardMaterial({color: 0xbfd8e8, metalness: .9, roughness: .05}), 0, 1.6, -.24); box(.06, .14, .06, 0xff6aa0, .32, .93, .1); break;
+      case "towels": box(.05, 1.2, .05, L.stdMat(0xc0c4c8, .2, {metalness: .9}), -.35, .6, 0); box(.05, 1.2, .05, L.stdMat(0xc0c4c8, .2, {metalness: .9}), .35, .6, 0); for (const [y, c] of [[1.05, 0x4fc3f7], [.75, 0xf06292], [.45, 0xfff176]]) box(.62, .26, .06, c, 0, y, 0); break;
+      case "wardrobe": box(1.6, 2.1, .6, 0x6b4a30, 0, 1.05, 0); box(.78, 1.95, .02, 0x8a6040, -.4, 1.07, .31); { const door = box(.78, 1.95, .03, 0x8a6040, .62, 1.07, .55); door.rotation.y = -1.1; } cyl(.015, .015, .7, L.stdMat(0xc9a46a, .3, {metalness: .8}), .38, 1.75, .1, 6).rotation.z = Math.PI/2; for (let i = 0; i < 4; i++) box(.06, .7, .34, [0xe53935, 0xffc21a, 0x1e88e5, 0x8e24aa][i], .14 + i*.13, 1.35, .1); for (const x of [-.06, .06]) box(.02, .2, .02, L.stdMat(0xc9a46a, .3, {metalness: .8}), x, 1.1, .33); break;
+      case "shoerack": box(.9, .9, .34, 0xe8e0d0, 0, .45, 0); for (let r = 0; r < 3; r++){ box(.86, .02, .3, 0xd0c8b8, 0, .12 + r*.3, 0); for (let i = 0; i < 3; i++) box(.2, .1, .26, [0xffffff, 0xe53935, 0x111111, 0x1e88e5, 0xffc21a, 0x43a047, 0xf48fb1, 0xff7043, 0x7e57c2][r*3 + i], -.28 + i*.28, .18 + r*.3, 0); } break;
+      case "clothesrack": for (const x of [-.55, .55]) cyl(.02, .02, 1.6, L.stdMat(0xc0c4c8, .2, {metalness: .9}), x, .8, 0, 8); box(1.15, .03, .03, L.stdMat(0xc0c4c8, .2, {metalness: .9}), 0, 1.6, 0); for (let i = 0; i < 6; i++){ const c = box(.05, .8, .38, [0x26a69a, 0xffffff, 0xec407a, 0x212121, 0xffa726, 0x5c6bc0][i], -.4 + i*.16, 1.15, 0); } box(1.2, .04, .4, 0x8a6a4a, 0, .04, 0); break;
+      case "roadcar": { const paint = new T.MeshPhysicalMaterial({color: 0xd32f2f, roughness: .25, metalness: .45, clearcoat: 1}), gl = new T.MeshStandardMaterial({color: 0x9fd8ff, transparent: true, opacity: .5, roughness: .05}); box(1.9, .55, 4.0, paint, 0, .6, 0); box(1.6, .55, 1.9, paint, 0, 1.12, -.25); box(1.45, .42, .04, gl, 0, 1.14, .72); box(.04, .38, 1.7, gl, .81, 1.14, -.25); box(.04, .38, 1.7, gl, -.81, 1.14, -.25); for (const [x, z] of [[-.9, 1.3], [.9, 1.3], [-.9, -1.3], [.9, -1.3]]){ const w = cyl(.34, .34, .26, 0x151515, x, .34, z, 18); w.rotation.z = Math.PI/2; } for (const x of [-.6, .6]){ box(.3, .14, .03, new T.MeshStandardMaterial({color: 0xfff6d0, emissive: 0xffe9a0, emissiveIntensity: .8}), x, .72, 2.01); box(.3, .1, .03, new T.MeshStandardMaterial({color: 0xff2a2a, emissive: 0xff0000, emissiveIntensity: .5}), x, .74, -2.01); } box(1.1, .3, .7, 0x1e88e5, 0, 1.55, -.3); } break;
     }
     const CK = this.CAT[k];
     if (CK && (CK.pk || CK.mine)){ const ht = CK.ht || .5, fb = []; fb.push(box(CK.r*1.3, ht, CK.r*1.1, 0x8a7a6a, 0, ht/2, 0));
@@ -15862,6 +16001,8 @@ const Home = {
     if (C.plant){
       if (this.ripe(it)){ it.h = now; this.earn(C.crop[0]); this.save(); this.refreshNode(it); toast(`${C.i} Harvested! +$${C.crop[0]}`); try{ this.L.burst(pos, 10); }catch(e){} return; }
       it.wt = now; this.save(); this.refreshNode(it); this.waterFx(it); toast(this.stage(it) < 2 ? `💧 Watered your ${C.n.toLowerCase()}. It's growing.` : `💧 Your ${C.n.toLowerCase()} is happy.`); return; }
+    if (C.closet){ toast("👗 Your closet. Save outfits and change into them."); try{ Closet.open(); }catch(e){} return; }
+    if (C.cruise){ toast("🚗 Road trip! Opening Cruising USA VR…"); try{ Cruising.open(); }catch(e){} return; }
     if (it.k === "beehive"){ if (now - (it.h || 0) > 10*6e4 && this.ecoNow && this.ecoNow.species.bee){ it.h = now; this.earn(15); this.save(); toast("🍯 You collected honey! +$15"); } else toast("🐝 The bees are busy. Honey every 10 minutes when bees live here."); return; }
     if (C.use){ const [need, v, msg] = C.use, last = (this.used || (this.used = {}))[it.id] || 0; if (now - last < 6e4){ toast(`${C.i} ${msg}`); return; } this.used[it.id] = now; Wellness.add(need, v); toast(`${C.i} ${msg} ${Wellness.NEEDS[need]} +${v}`);
       if (it.k === "piano") [0, 4, 7, 12].forEach((n, i) => setTimeout(() => Wellness.tone(262*Math.pow(2, n/12), .8, "triangle", .15), i*220));
@@ -15918,9 +16059,10 @@ const Home = {
       else if (this.mode === "move" && this.pick && k === "r"){ const it = this.items.find(i => i.id === this.pick); if (it) this.moveItem(it, it.x, it.z, ((it.r || 0) + 1) % 4); }
       else if (this.mode === "move" && this.pick && (k === "delete" || k === "backspace")){ const it = this.items.find(i => i.id === this.pick); if (it){ this.pickSet(null); this.remove(it); } } }); },
   /* where something can go: furniture inside or on the patio, plants and garden things outside */
-  inHouse(x, z){ const [a, b, c, d] = this.HOUSE; return x > a + .3 && x < b - .3 && z > c + .3 && z < d - .3; },
+  inHouse(x, z){ return this.rooms().some(([a, b, c, d]) => x > a + .3 && x < b - .3 && z > c + .3 && z < d - .3); },
+  roomAt(x, z){ for (const [k, [a, b, c, d]] of Object.entries(this.WINGS)) if (x > a && x < b && z > c && z < d) return k; const [a, b, c, d] = this.HOUSE; return x > a && x < b && z > c && z < d ? "main" : ""; },
   valid(k, x, z, self){ const C = this.CAT[k], [a, b, c, d] = this.PLOT; if (x < a + .3 || x > b - .3 || z < c + .3 || z > d - .3) return "That's outside your plot.";
-    const [h0, h1, h2, h3] = this.HOUSE, nearWall = x > h0 - .4 && x < h1 + .4 && z > h2 - .4 && z < h3 + .4 && !this.inHouse(x, z); if (nearWall) return "Too close to the wall.";
+    const nearWall = !this.inHouse(x, z) && this.rooms().some(([h0, h1, h2, h3]) => x > h0 - .4 && x < h1 + .4 && z > h2 - .4 && z < h3 + .4); if (nearWall) return "Too close to the wall.";
     if (C.out && this.inHouse(x, z)) return "That goes outside, in the garden.";
     if (!self && this.items.length >= 150) return "Your home is full (150 things). Remove something first.";
     for (const o of this.items){ if (o === self) continue; const O = this.CAT[o.k]; if ((C.flat && O.flat) || (C.flat && !O.flat && k === "rug") || (O.flat && o.k === "rug" && !C.flat)) continue; if (Math.hypot(o.x - x, o.z - z) < (C.r + O.r)*.75) return "Something's already there."; }
@@ -15959,7 +16101,7 @@ const Home = {
     for (const [sp, n] of Object.entries(want)) for (let i = have[sp] || 0; i < n && this.agents.length < 32; i++) this.agents.push(this.mkAgent(sp));
   },
   spots(f){ return this.items.filter(f); },
-  gardenPt(){ const [a, b, c, d] = this.PLOT; for (let i = 0; i < 20; i++){ const x = a + 1 + Math.random()*(b - a - 2), z = c + 1 + Math.random()*(d - c - 2); if (!this.inHouse(x, z) && !(x > this.HOUSE[0] - .5 && x < this.HOUSE[1] + .5 && z < this.HOUSE[3] + .5)) return [x, z]; } return [0, -2]; },
+  gardenPt(){ const [a, b, c, d] = this.PLOT; for (let i = 0; i < 20; i++){ const x = a + 1 + Math.random()*(b - a - 2), z = c + 1 + Math.random()*(d - c - 2); if (!this.inHouse(x, z) && !(x > -11.5 && x < 11.5 && z < this.HOUSE[3] + .5)) return [x, z]; } return [0, -2]; },
   mkAgent(sp){
     const T = THREE, g = new T.Group(), m = c => this.mat(c, .6), a = {sp, g, x: 0, y: 0, z: 0, tx: 0, ty: 0, tz: 0, wait: Math.random()*2, ph: Math.random()*6, wings: []};
     const ball = (r, c, x, y, z, sx = 1, sy = 1, sz = 1) => { const s = new T.Mesh(new T.SphereGeometry(r, 10, 8), m(c)); s.position.set(x, y, z); s.scale.set(sx, sy, sz); g.add(s); return s; };
