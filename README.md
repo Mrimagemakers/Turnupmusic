@@ -332,7 +332,10 @@ My Home's ground, floors, walls, road, roof shingles and bark use photo textures
 - **My models**: Sketchfab search (`api.sketchfab.com/v3/search`, downloadable only) and download (`/v3/models/{uid}/download` with the player's own API token); `.glb` or zipped `.gltf` import from the device. Stored in IndexedDB (`hm:<id>`), listed in `homeModels`.
 - **Escape Room**: random six-puzzle sets from ten puzzle types, each with a "Show me the clue" camera move. Fixed a bug where "Look around" didn't actually hide the panel.
 - **My Empire fix**: new $500 Pop-up Lounge starter club, cash shown, "need $X more" labels, toasts on buy/upgrade/hire, paging for owned and for-sale clubs, and handlers that re-read the wallet (no stale saves).
+- **House party invites**: friend picker sends a signed kind-1 note tagged `l=house-invite` with the code (12h expiration) to chosen pubkeys; the app polls every 2 min and shows an invite card. Invite-only door (knock → Let in / Not now), guest list with remove, 🎆 Hype broadcast, and House party entry in the Party dialog.
 - **Home editing**: ✋ Move mode (tap/drag to pick up, drag or tap to place, camera-relative nudge pad, ↻ turn) and ↶ Undo / ↷ Redo for add, remove, move and turn (80 steps, money-consistent).
+- **House parties**: host with a code/link (`#house=CODE`, party room `house-CODE`, `house` action channel). The host broadcasts the home layout (lot + items); guests render it read-only (`Home.visit`, saves disabled). Decorations, neighbor NPCs, host DJ without VIP, karaoke/trivia/dance-off, and per-minute host rewards.
+- **House parties+**: themes (classic, Halloween, birthday, glow, luau) with custom banner text synced to guests; planned parties (`housePlan`) with timed invites (`when`/`theme` tags), 10-minute reminders for host and guests; guest gifts ($20, capped at $100 per guest).
 - **Phone expand**: the ⛶ button puts the Mogul game panel full screen (and requests landscape on Android). Bouncer cards zoom on tap.
 
 ## Neighborhood and jobs

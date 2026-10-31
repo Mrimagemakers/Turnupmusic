@@ -358,9 +358,22 @@ dialog.wide{width:min(860px,calc(100% - 24px))}
 @media (max-width:560px){.tl-tiles{grid-template-columns:1fr}.tl-tile{min-height:64px}.tl-aed{grid-template-columns:1fr}.tl-bar{width:52px}}
 .homehud{position:fixed;left:10px;top:70px;z-index:44;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:min(560px,calc(100vw - 20px));font:500 13px var(--f-body,system-ui)}
 .homehud .hh-card,.homehud .hh-dock{pointer-events:auto;background:rgba(20,13,10,.88);border:1px solid rgba(255,194,26,.5);border-radius:16px;padding:10px 12px;color:#fff;box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.homehud .hh-themes{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.homehud .hh-themes small{flex:1 1 100%;color:#ffd87a;font-weight:800;letter-spacing:.06em}.homehud .hh-lbl{display:flex;flex-direction:column;gap:4px;margin:6px 0;font-weight:700}
+.homehud .hh-lbl input,.homehud #hpPBan{min-height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.35);color:#fff;padding:0 10px;font:500 14px var(--f-body,system-ui);color-scheme:dark;width:100%;box-sizing:border-box}
 .homehud .hh-move{margin-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}.homehud .hh-move b{flex:1 1 100%;font:800 14px var(--f-display,system-ui);color:#ffd87a}
 .homehud .hh-pad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,44px);gap:4px}.homehud .hh-pad button{width:48px;height:44px;padding:0;font-size:20px}
 .homehud .hh-mv2{display:flex;flex-direction:column;gap:6px}
+.homehud .hh-pbtn{position:relative;padding:4px 8px}.homehud .hh-pbtn i{position:absolute;top:-6px;right:-6px;min-width:16px;height:16px;border-radius:8px;background:#ff3a5a;color:#fff;font:800 10px/16px var(--f-body);font-style:normal}
+.homehud .hh-knock div,.homehud .hh-guests div{display:flex;align-items:center;gap:6px;margin:4px 0}.homehud .hh-knock span,.homehud .hh-guests span{flex:1;font-size:12.5px}
+.homehud .hh-knock{background:rgba(255,194,26,.14);border-radius:10px;padding:4px 8px;margin:6px 0}.homehud .hh-guests{margin:6px 0}.homehud .hh-guests small{color:#ffd87a;font-weight:800;letter-spacing:.06em}
+.skdlg .iv-list{display:flex;flex-direction:column;gap:4px;max-height:46vh;overflow:auto;margin:6px 0}.skdlg .iv-row{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:10px;background:rgba(255,255,255,.05);cursor:pointer}.skdlg .iv-row[hidden]{display:none}.skdlg .iv-row input{width:20px;height:20px;flex:none;min-height:0}.skdlg .iv-row .av{width:34px;height:34px;border-radius:50%;flex:none}.skdlg .iv-row span{display:flex;flex-direction:column}.skdlg .iv-row small{color:rgba(255,255,255,.6)}
+.hp-card{position:fixed;left:50%;transform:translateX(-50%);top:max(14px,env(safe-area-inset-top,0px));z-index:95;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);padding:10px 12px;border-radius:16px;background:linear-gradient(135deg,#3a1260,#1a0a2a);border:1px solid #ff4fd8;color:#fff;font:600 14px var(--f-body,system-ui);box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.hp-card[hidden]{display:none}.hp-card button{min-height:40px;padding:6px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font:800 14px var(--f-body,system-ui);cursor:pointer}.hp-card .primary{background:#ffc21a;color:#241404;border-color:#ffc21a}
+.homehud .hh-party{margin-top:8px;padding:8px;border-radius:12px;background:linear-gradient(135deg,rgba(255,79,216,.18),rgba(77,225,255,.12));border:1px solid rgba(255,79,216,.45)}
+.homehud .hh-party p{margin:0 0 8px;font-size:12.5px;line-height:1.35}.homehud .hh-party .primary{background:#ffc21a;color:#241404;border-color:#ffc21a;font-weight:800}
+.homehud .hh-pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.homehud .hh-pgrid button{font-size:12px;padding:6px 4px}
+.homehud .hh-code{font:800 14px ui-monospace,monospace;letter-spacing:2px;color:#ffd87a}.homehud .hh-end{margin-top:6px;width:100%;border-color:rgba(255,90,74,.6)!important}
+.homehud .hh-join{display:flex;gap:6px;margin-top:8px}.homehud .hh-join input{flex:1;min-width:0;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.35);color:#fff;padding:6px 8px;font:700 13px ui-monospace,monospace;text-transform:uppercase}
 @media (max-height:520px){.homehud .hh-pad{grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,32px);gap:3px}.homehud .hh-pad button{width:40px;height:32px;font-size:16px}.homehud .hh-move{margin-top:4px}}
 .homehud .hh-btns button[disabled]{opacity:.4;cursor:default}
 .homehud .hh-card{width:250px}.homehud .hh-top{display:flex;align-items:center;gap:8px}.homehud .hh-top b{flex:1;font:800 15px var(--f-display,system-ui)}.homehud .hh-cash{color:#ffd87a;font-weight:800}
@@ -1146,6 +1159,12 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
       <h3>Private party</h3>
       <p class="hint">Make up a code and share it with friends. Everyone who enters the same code ends up in the same room.</p>
       <div class="row2"><input class="field" id="partyCode" maxlength="16" placeholder="e.g. DARNELL-BDAY"><button class="ghost" id="partyPrivate" type="button">Join with code</button></div>
+    </div>
+    <div class="setgroup">
+      <h3>🏡 House party</h3>
+      <p class="hint">Host a party at your home: invite friends, decorate, play your music, karaoke and trivia. Or join a friend's with their house code.</p>
+      <div class="btnrow"><button class="primary" id="partyHouse" type="button">🎉 Host at my house</button></div>
+      <div class="row2"><input class="field" id="partyHouseCode" maxlength="12" placeholder="House code, e.g. K7PX2Q" autocapitalize="characters"><button class="ghost" id="partyHouseJoin" type="button">Go to their house</button></div>
     </div>
   </div>
   <div id="partyIn" hidden>
@@ -9871,6 +9890,7 @@ $("#btnResetYes").addEventListener("click", () => { S.user = []; S.favs.clear();
     else if (h === "events") Events.open();
     else if (h === "mogul") setTimeout(() => Mogul.open(), 600);
     else if (h === "empire") setTimeout(() => Mogul.empire(), 600);
+    else if (/^house=[A-Za-z0-9]{4,12}$/.test(h)) setTimeout(() => Home.partyJoin(h.slice(6)), 400);
     else if (/^user=[0-9a-f]{64}$/.test(h)) Social.openPage(h.slice(5));
     else if (/^event=[\w.%-]{1,120}$/.test(h)){ try{ Events.openLink(decodeURIComponent(h.slice(6))); }catch(e){} }
     else if (/^watch=[\w-]{11}(-\d+)?$/.test(h)){ const [id, t] = h.slice(6).split("-"); Theater.open({svc: "YouTube", kind: "video", id, start: +t || 0, url: `https://youtu.be/${id}`}, +t || 0, null); } }, 0);
@@ -11055,7 +11075,7 @@ const Party = {
     if (!store.get("partyAdvisory", false)){ Safety.advisory(() => this.join(kind, code)); return; }
     if (!this.available()){ toast("The party couldn't connect. Check your internet connection and try again.", 5000); return; }
     const w = Lounge.worldId || "rooftop";
-    const key = kind === "event" ? "event-" + code : kind === "code" ? "code-" + String(code).toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 16) : "world-" + w;
+    const key = kind === "house" ? "house-" + String(code).toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 12) : kind === "event" ? "event-" + code : kind === "code" ? "code-" + String(code).toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 16) : "world-" + w;
     if (this.room && this.roomKey === key) return;
     const ban = store.get("ban:" + key, 0); if (ban > Date.now()){ toast(`A moderator removed you from this party. You can come back in ${Math.ceil((ban - Date.now())/60e3)} minutes.`, 6000); return; }
     const keepMic = this.mic; if (keepMic) this.mic = null;
@@ -11066,7 +11086,8 @@ const Party = {
     catch(e){ toast("The party couldn't connect right now.", 5000); return; }
     this.room = room; this.roomKey = key; this.kind = kind; this.eventId = kind === "event" ? code : null;
     const A = {};
-    for (const n of ["hello", "pose", "chat", "react", "music", "mod", "link", "screen", "karaoke", "avatar", "trivia"]) A[n] = room.makeAction(n);
+    for (const n of ["hello", "pose", "chat", "react", "music", "mod", "link", "screen", "karaoke", "avatar", "trivia", "house"]) A[n] = room.makeAction(n);
+    A.house.onMessage = (d, ctx) => { try{ Home.onHouse(ctx.peerId, d); }catch(e){ console.warn(e); } };
     A.trivia.onMessage = (d, ctx) => { try{ TriviaLive.onMsg(ctx.peerId, d); }catch(e){ console.warn(e); } };
     A.avatar.onMessage = (d, ctx) => { try{ this.onAvatarBlob(ctx.peerId, d); }catch(e){ console.warn(e); } };
     A.karaoke.onMessage = (d, ctx) => { try{ Karaoke.onMsg(ctx.peerId, d); }catch(e){ console.warn(e); } };
@@ -11088,6 +11109,7 @@ const Party = {
       setTimeout(() => { try{ this.shareAvatar(id); }catch(e){} }, 2200);
       setTimeout(() => Screens.resend(id), 1500);
       setTimeout(() => { try{ Karaoke.snapshot(id); }catch(e){} }, 1800);
+      try{ Home.housePeer(id); }catch(e){}
       this.sysMsg("Someone joined the party");
     };
     room.onPeerLeave = id => { const p = this.peers[id]; if (p) this.sysMsg(`${p.profile.name} left`); this.dropPeer(id); try{ Karaoke.peerLeft(id); }catch(e){} try{ TriviaLive.peerLeft(id); }catch(e){} };
@@ -11095,11 +11117,13 @@ const Party = {
     A.hello.send(this.myHello());
     if (kind === "event"){ const ev = Events.byId(code); if (ev && ev.pk === Events.myKey()) this.setDJ(true, true); }
     Lounge.spawnInParty();
-    this.sysMsg(kind === "event" ? "You joined the event. Say hi!" : kind === "code" ? `You're in private party ${key.slice(5)}. Share the code with friends.` : `You joined the party in the ${Lounge.world?.name || "lounge"}.`);
+    if (kind === "house") setTimeout(() => { try{ Home.houseHello(); Home.refresh(); }catch(e){} }, 1200);
+    this.sysMsg(kind === "house" ? "You're at the house party. Say hi!" : kind === "event" ? "You joined the event. Say hi!" : kind === "code" ? `You're in private party ${key.slice(5)}. Share the code with friends.` : `You joined the party in the ${Lounge.world?.name || "lounge"}.`);
     this.ui();
   },
   leave(quiet){
     if (!this.room) return;
+    try{ Home.onPartyLeave(this.roomKey); }catch(e){}
     try{ this.room.leave(); }catch(e){}
     for (const id of Object.keys(this.peers)) this.dropPeer(id);
     this.room = null; this.roomKey = ""; this.act = null; this.eventId = null;
@@ -11148,7 +11172,7 @@ const Party = {
     const changed = JSON.stringify(prof) !== JSON.stringify(p.profile);
     const first = !p.hello; p.hello = true; p.profile = prof;
     if (changed || !p.slot) this.buildAvatar(p);
-    if (first){ this.sysMsg(`${prof.name} is here`); if (!d.reply) this.act.hello.send(Object.assign(this.myHello(), {reply: true}), {target: id}); }
+    if (first){ this.sysMsg(`${prof.name} is here`); if (!d.reply) this.act.hello.send(Object.assign(this.myHello(), {reply: true}), {target: id}); try{ Home.onGuestHello(id, p); }catch(e){ console.warn(e); } }
     this.ui();
   },
   onPose(id, d){
@@ -11171,7 +11195,7 @@ const Party = {
     if (p.slot && p.slot.group.visible) this.floatEmoji(e, p.slot.group.localToWorld(new THREE.Vector3(0, 2.1*p.profile.height, 0)));
   },
   onMusic(id, d){
-    const p = this.peers[id]; if (!p || p.role === "guest" || !(p.profile.dj || (this.eventId && Events.byId(this.eventId)?.pk === p.profile.pk))) return;
+    const p = this.peers[id]; if (!p || !((p.houseHost && this.kind === "house") || (p.role !== "guest" && (p.profile.dj || (this.eventId && Events.byId(this.eventId)?.pk === p.profile.pk))))) return;
     if (d && d.live === false){ this.endDJAudio(p); return; }
     if (!this.follow || this.dj) return;
     const st = this.stationFrom(d); if (!st) return;
@@ -11217,7 +11241,7 @@ const Party = {
   },
   stopLocalShare(){ if (this.localShare){ this.localShare = false; this.stopDJStream(); } },
   setDJ(on, silent){
-    if (on && !VIP.can("dj")){ VIP.open("DJing is a VIP perk."); return; }
+    if (on && !VIP.can("dj") && !(this.kind === "house" && Home.party && Home.party.host)){ VIP.open("DJing is a VIP perk."); return; }
     if (on){ const other = Object.values(this.peers).find(p => p.profile.dj); if (other && !silent){ toast(`${other.profile.name} is already the DJ.`); return; } }
     this.dj = !!on; if (this.act){ this.act.hello.send(this.myHello()); if (this.dj && S.current){ if (S.current.local){ if (S.playing) this.shareLocal(); } else this.act.music.send(this.stationMsg(S.current)); } if (!this.dj) this.stopLocalShare(); }
     if (!silent) toast(this.dj ? "You're the DJ: everyone following hears your station." : "You're no longer the DJ.");
@@ -11514,6 +11538,8 @@ const Party = {
   bindUI(){
     $("#btnParty").addEventListener("click", () => { this.renderDlg(); $("#partyDlg").showModal(); });
     $("#partyPublic").addEventListener("click", () => { $("#partyDlg").close(); this.join("world"); });
+    $("#partyHouse").addEventListener("click", () => { $("#partyDlg").close(); Home.hostFromAnywhere(); });
+    $("#partyHouseJoin").addEventListener("click", () => { const v = $("#partyHouseCode").value; $("#partyDlg").close(); Home.partyJoin(v); });
     $("#partyPrivate").addEventListener("click", () => { const c = $("#partyCode").value.trim(); if (c.length < 3){ toast("Pick a code with at least 3 letters or numbers."); return; } $("#partyDlg").close(); this.join("code", c); });
     $("#partyLeave").addEventListener("click", () => { $("#partyDlg").close(); this.leave(); });
     $("#partyClose").addEventListener("click", () => $("#partyDlg").close());
@@ -13210,6 +13236,7 @@ Object.assign(Social, {
       const out = [], seenF = new Set();
       for (const e of evs.sort((a, b) => b.created_at - a.created_at)){
         if (e.pubkey === me || VIP.hides.has(e.id)) continue;
+        if (e.kind === 1 && e.tags.some(t => t[0] === "l" && t[1] === "house-invite")) continue;   // house invites have their own card
         if (e.kind === 3){ if (seenF.has(e.pubkey)) continue; seenF.add(e.pubkey); out.push({e, kind: "follow"}); }
         else if (e.kind === 7) out.push({e, kind: "like", ref: (e.tags.filter(t => t[0] === "e").pop() || [])[1]});
         else out.push({e, kind: e.tags.some(t => t[0] === "l" && t[1] === "wall") ? "wall" : "reply"}); }
@@ -15461,6 +15488,9 @@ Mogul.GAMES.escape = Mogul.scripted({
     return "Time's up. The door stays locked. Try again: the puzzles change every time. 🔐"; }
 });
 
+/* house-party invites: check now and then while the app is open */
+setTimeout(() => { try{ Home.inviteCheck(); }catch(e){} setInterval(() => { try{ if (!document.hidden) Home.inviteCheck(); }catch(e){} }, 120e3); }, 9000);
+
 /* ================= 📦 Model packs: real 3D furniture and props (Higgsfield 3D + Poly Haven CC0), several models per file ================= */
 const HFP = {
   BASE: "https://d2ol7oe51mr4n9.cloudfront.net/user_2xqdkXQxcL6UFHjJwLK5drKd1tT/",
@@ -15594,7 +15624,8 @@ const Home = {
   WINGS: {kitchen: [-11, -6, -15.5, -9.5], bath: [6, 11, -15.5, -12.5], closet: [6, 11, -12.5, -9.5]},
   rooms(){ return [this.HOUSE, ...Object.values(this.WINGS)]; },
   items: [], nodes: new Map(), agents: [], mode: "", sel: "", rot: 0, active: false,
-  load(){ const d = store.get(this.key(), null); if (d && Array.isArray(d.items)) return d;
+  load(){ if (this.visit) return {v: 1, gift: true, items: this.visit.items.map(i => Object.assign({}, i))};
+    const d = store.get(this.key(), null); if (d && Array.isArray(d.items)) return d;
     const now = Date.now(), it = (k, x, z, r = 0) => ({id: Math.random().toString(36).slice(2, 9), k, x, z, r, p: now, g: 1e9, wt: now, u: now}), lot = this.lot();
     if (lot === "beach") return {v: 1, gift: false, mirror: true, items: [it("sofa", -2, -14.6), it("rug", -2, -12.6), it("table", -2, -12.4), it("bed", 4, -13.8), it("lamp", -4.6, -14.8), it("boombox", 4.5, -10), it("mirror", -5.5, -11.5, 1), it("palm", -6, -3), it("palm", 7, -2), it("birdbath", 3, -4), it("bench", -3, -2.5), it("daisy", 2, -6), it("sunflower", -1.5, -6)]};
     if (lot === "cabin") return {v: 1, gift: false, mirror: true, items: [it("leathersofa", -2, -14.6), it("rug", -2, -12.6), it("armchair", -4.6, -12.5, 1), it("bed", 4, -13.8), it("bookshelf", 5.4, -10, 3), it("lamp", -4.6, -14.8), it("mirror", -5.5, -10.5, 1), it("pine", -7, -3), it("pine", 7, -4), it("birdhouse", 3, -3), it("bench", -3, -2.5), it("fern", 2, -6)]};
@@ -15602,7 +15633,7 @@ const Home = {
     if (lot === "zen") return {v: 1, gift: false, mirror: true, items: [it("yogamat", -2, -12.5), it("armchair", -4.6, -14.4), it("bed", 4, -13.8), it("table", -2, -14.4), it("lamp", -4.6, -10), it("mirror", -5.5, -11.5, 1), it("maple", -7, -3), it("cherry", 7, -3), it("pond", 4, -4), it("rock", 1.5, -3), it("lavender", -3, -5), it("path", 0, -7.5), it("path", 0, -6.5), it("path", 0, -5.5)]};
     return {v: 1, gift: false, items: [it("sofa", -2, -14.6, 0), it("rug", -2, -12.6), it("table", -2, -12.4), it("lamp", -4.6, -14.8), it("bed", 4, -13.8, 0), it("bookshelf", 5.4, -10, 3),
       it("mirror", -5.5, -11.5, 1), it("daisy", -2.5, -5.5), it("tulip", -1.5, -5.5), it("oak", 7, -4), it("fern", 2, -5.5), it("path", 0, -7.5), it("path", 0, -6.5), it("path", 0, -5.5)]}; },
-  save(){ if (!this.g || !this.itemsLot) return; store.set(this.itemsLot === "suburb" ? "home" : "home:" + this.itemsLot, {v: 1, gift: this.gift, mirror: true, rooms: !!this.rooms_ok, items: this.items.slice(0, 160)}); },
+  save(){ if (this.party && this.party.host) this.houseSoon(); if (this.visit || !this.g || !this.itemsLot) return; store.set(this.itemsLot === "suburb" ? "home" : "home:" + this.itemsLot, {v: 1, gift: this.gift, mirror: true, rooms: !!this.rooms_ok, items: this.items.slice(0, 160)}); },
   /* the kitchen, bathroom and closet come furnished (only where nothing is in the way) */
   furnishRooms(lot){ const now = Date.now(), add = (k, x, z, r = 0) => { if (!this.CAT[k] || this.valid(k, x, z)) return; this.items.push({id: Math.random().toString(36).slice(2, 9), k, x, z, r, p: now, g: 1e9, wt: now, u: now}); };
     add("ksink", -10.1, -14.9); add("stove", -8.9, -14.9); add("kcounter", -7.7, -14.9); add("fridge", -10.4, -12.6, 1); add("island", -8.4, -11.4);
@@ -15644,9 +15675,9 @@ const Home = {
     loft: {n: "Downtown Loft", i: "🌆", d: "A rooftop terrace above the city", wall: "brick", trim: 0x1a1a1a, ground: "deck", day: 0x7ab0e0, night: 0x0b0d1e, fog: [60, 260]},
     zen: {n: "Tokyo Garden House", i: "🏯", d: "Bamboo, maples and the neon city beyond", wall: "#2a1c14", trim: 0x1a120c, ground: "moss", day: 0x88b8e8, night: 0x0c0a24, fog: [30, 140]}
   },
-  lot(){ const l = store.get("homeLot", "suburb"); return this.LOTS[l] ? l : "suburb"; },
+  lot(){ if (this.visit && this.LOTS[this.visit.lot]) return this.visit.lot; const l = store.get("homeLot", "suburb"); return this.LOTS[l] ? l : "suburb"; },
   key(){ const l = this.lot(); return l === "suburb" ? "home" : "home:" + l; },
-  moveTo(lot){ if (!this.LOTS[lot] || lot === this.lot()) return; this.save(); store.set("homeLot", lot); const L = Lounge;
+  moveTo(lot){ if (this.visit){ toast("You're visiting a friend's party. Leave the party to go back to your own homes."); return; } if (!this.LOTS[lot] || lot === this.lot()) return; this.save(); store.set("homeLot", lot); const L = Lounge;
     try{ if (L.worlds.home){ const cur = L.worldId; if (cur === "home") L.worldId = "__switch"; L.unloadWorld("home"); if (cur === "home") L.worldId = cur; } if (L.worldId === "home") L.setWorld("home"); else L.chooseWorld("home"); }catch(e){ console.warn(e); try{ L.chooseWorld("home"); }catch(er){} }
     toast(`${this.LOTS[lot].i} Welcome to your ${this.LOTS[lot].n}!`); },
   /* ---------- Higgsfield-made photo textures and 3D tree models (loaded from the web; the hand-drawn versions show until they arrive, and stay if they can't load) ---------- */
@@ -15800,7 +15831,7 @@ const Home = {
   },
   /* ---------- the world ---------- */
   build(L){
-    const T = THREE, add = L.add, g = new T.Group(); L.scene.add(g); L.room = g; this.L = L; this.g = g; this.lamps = []; this.rooms_ok = false; try{ this.mineInit(); this.dragInit(); }catch(e){} this.hist = []; this.fut = []; this.pick = null; if (this.ring && this.ring.parent) this.ring.parent.remove(this.ring); this.swayers = []; this.nightGlows = []; this.winMats = []; this.streetGlows = []; this.sea = this.snow = this.petals = this.city = this.bulbs = this.foam = null;
+    const T = THREE, add = L.add, g = new T.Group(); L.scene.add(g); L.room = g; this.L = L; this.g = g; this.lamps = []; this.rooms_ok = false; this.decoG = null; this.npcs = []; try{ this.mineInit(); this.dragInit(); }catch(e){} setTimeout(() => { try{ this.partyDecoSync(); }catch(e){ console.warn(e); } }, 400); this.hist = []; this.fut = []; this.pick = null; if (this.ring && this.ring.parent) this.ring.parent.remove(this.ring); this.swayers = []; this.nightGlows = []; this.winMats = []; this.streetGlows = []; this.sea = this.snow = this.petals = this.city = this.bulbs = this.foam = null;
     const lot = this.lot(), LT = this.LOTS[lot], U = typeof GFX !== "undefined" && GFX.level === "ultra", LOW = typeof GFX !== "undefined" && GFX.level === "low";
     const [hx0, hx1, hz0, hz1] = this.HOUSE, HW = hx1 - hx0, HD = hz1 - hz0, hcx = (hx0 + hx1)/2, hcz = (hz0 + hz1)/2, WH = 3, [px0, px1, pz0, pz1] = this.PLOT;
     // ground
@@ -15995,6 +16026,7 @@ const Home = {
   },
   /* ---------- tapping things in your home ---------- */
   click(it){
+    if (this.visit && (this.mode || this.CAT[it.k].plant || it.k === "beehive")){ const C = this.CAT[it.k]; toast(`${C.i} ${C.n} · ${this.visit.name || "Your friend"}'s ${C.plant ? "garden" : "place"}`); return; }
     if (this.mode === "remove"){ this.remove(it); return; }
     if (this.mode === "move"){ this.pickSet(this.pick === it.id ? null : it.id); return; }
     const C = this.CAT[it.k], now = Date.now(), pos = new THREE.Vector3(it.x, 1, it.z);
@@ -16077,7 +16109,7 @@ const Home = {
     if (this.mode !== "place" || !this.sel) return false;
     const o = ray.ray ? ray.ray.origin : ray.origin, d = ray.ray ? ray.ray.direction : ray.direction; if (d.y > -.02) return true;
     const t = -o.y/d.y, x = this.snap(o.x + d.x*t), z = this.snap(o.z + d.z*t); this.tryPlace(this.sel, x, z); return true; },
-  tryPlace(k, x, z){ const C = this.CAT[k], why = this.valid(k, x, z); if (why){ toast(why); return false; }
+  tryPlace(k, x, z){ if (this.visit){ toast("This is your friend's house: you can't build here."); return false; } const C = this.CAT[k], why = this.valid(k, x, z); if (why){ toast(why); return false; }
     if (!this.spend(C.cost)){ toast(`Not enough cash. ${C.n} costs $${C.cost}. Earn more with jobs and activities.`); return false; }
     const now = Date.now(), it = {id: Math.random().toString(36).slice(2, 9), k, x, z, r: this.rot, p: now, g: 0, wt: now, u: now}; this.items.push(it); this.place(it); this.save(); this.eco(); this.rec({t: "add", it, cash: C.cost});
     try{ this.L.burst(new THREE.Vector3(x, .5, z), 8); }catch(e){} toast(`${C.i} ${C.n} placed. −$${C.cost}`); return true; },
@@ -16155,7 +16187,7 @@ const Home = {
   /* ---------- the clock: sky, lights, growth ---------- */
   daylight(){ const d = new Date(), h = d.getHours() + d.getMinutes()/60; return h < 5 || h > 21 ? 0 : h < 7 ? (h - 5)/2 : h > 19 ? (21 - h)/2 : 1; },
   update(dt, t){
-    if (!this.g) return; this.clk = (this.clk || 0) + dt;
+    if (!this.g) return; this.clk = (this.clk || 0) + dt; try{ this.partyTick(dt, t || performance.now()/1000); }catch(e){}
     if (this.clk > 2){ this.clk = 0; const now = Date.now(); let ch = false;
       for (const it of this.items){ this.tickPlant(it, now); const n = this.nodes.get(it.id); if (n && n.sig !== this.sig(it)){ this.place(it); ch = true; } }
       if (ch){ this.eco(); this.refresh(); } if (Math.random() < .1) this.save();
@@ -16202,6 +16234,8 @@ const Home = {
         else if (a === "imp"){ this.importFile(); return; }
         else if (a === "mdel" && this.mode === "move"){ const it = this.items.find(i => i.id === this.pick); if (it){ this.pickSet(null); this.remove(it); } }
         else if (a === "mdel"){ if (this.sel && this.CAT[this.sel] && this.CAT[this.sel].mine) this.mineDelete(this.sel); }
+        else if (a === "party"){ this.partyOpen = !this.partyOpen; if (this.partyOpen){ this.min = false; if (innerHeight < 620) this.mode = ""; } }
+        else if (a.startsWith("hp:")){ this.partyAct(a.slice(3)); return; }
         else if (a === "move"){ this.mode = this.mode === "move" ? "" : "move"; this.pickSet(null); }
         else if (a === "undo") this.undo();
         else if (a === "redo") this.redo();
@@ -16216,19 +16250,260 @@ const Home = {
     const bars = Object.entries(Wellness.NEEDS).map(([k, l]) => `<div class="hbar"><span>${l}</span><i style="--v:${Math.round(w.n[k])}%;--c:${w.n[k] > 60 ? "#3ad07a" : w.n[k] > 30 ? "#ffc21a" : "#ff5a4a"}"></i></div>`).join("");
     const mood = Object.values(w.n).reduce((a, b) => a + b, 0)/5, face = mood > 70 ? "😄" : mood > 50 ? "🙂" : mood > 30 ? "😐" : "😟";
     const plants = this.items.filter(i => this.CAT[i.k].plant), thirsty = plants.filter(i => this.thirsty(i)).length;
-    h.innerHTML = `<div class="hh-card"><div class="hh-top"><b>${this.LOTS[this.lot()].i} ${this.LOTS[this.lot()].n} ${face}</b><span class="hh-cash">$${Math.round(this.cash()).toLocaleString()}</span><button type="button" data-h="min" aria-label="${minNow ? "Show" : "Hide"} details">${minNow ? "▸" : "▾"}</button></div>
+    const keepCode = ($("#hpCode") || {}).value || "", hadFocus = document.activeElement && document.activeElement.id === "hpCode";
+    h.innerHTML = `<div class="hh-card"><div class="hh-top"><b>${this.LOTS[this.lot()].i} ${this.visit ? esc((this.visit.name || "Friend") + "'s ") : ""}${this.LOTS[this.lot()].n} ${face}</b><span class="hh-cash">$${Math.round(this.cash()).toLocaleString()}</span><button type="button" data-h="party" class="hh-pbtn" aria-pressed="${!!this.partyOpen}" title="House party">🎉${this.party && this.party.host && this.party.knock && this.party.knock.length ? `<i>${this.party.knock.length}</i>` : ""}</button><button type="button" data-h="min" aria-label="${minNow ? "Show" : "Hide"} details">${minNow ? "▸" : "▾"}</button></div>
       ${minNow ? "" : `${bars}<div class="hh-eco"><button type="button" data-h="eco">🌿 ${e.level} · ${e.score}</button><span>${Object.keys(e.species).map(s => this.SPECIES[s].i).join(" ") || "No wildlife yet"}</span></div>
       ${this.ecoOpen ? `<div class="hh-tips">${Object.entries(this.SPECIES).map(([id, S]) => `<p>${e.species[id] ? "✅" : "⬜"} ${S.i} ${S.n}${e.species[id] ? "" : ": " + this.hint(id)}</p>`).join("")}</div>` : ""}
-      <div class="hh-eco"><button type="button" data-h="lots">🏘 Neighborhood · switch homes</button></div>
+      ${this.visit ? "" : `<div class="hh-eco"><button type="button" data-h="lots">🏘 Neighborhood · switch homes</button></div>`}
+      <div class="hh-eco"><button type="button" data-h="party" aria-pressed="${!!this.partyOpen}">🎉 ${this.party ? (this.party.host ? `House party · ${this.guestCount()} guest${this.guestCount() === 1 ? "" : "s"}` : `At ${esc(this.visit && this.visit.name || "a friend")}'s party`) : "House party"}</button></div>
+      ${this.partyOpen ? this.partyPanel() : ""}
       ${this.lotsOpen ? `<div class="hh-lots">${Object.entries(this.LOTS).map(([k, L]) => `<button type="button" data-h="lot:${k}" aria-pressed="${k === this.lot()}"><b>${L.i} ${L.n}</b><small>${L.d}</small></button>`).join("")}</div>` : ""}
       ${thirsty ? `<p class="hh-warn">💧 ${thirsty} plant${thirsty === 1 ? " is" : "s are"} thirsty</p>` : ""}`}</div>
-      <div class="hh-dock">${this.mode === "place" ? `<div class="hh-cats">${Object.entries(this.CATS).map(([k, l]) => `<button type="button" data-h="cat:${k}" aria-pressed="${k === cat}">${l}</button>`).join("")}</div>
+      <div class="hh-dock" ${this.visit ? "hidden" : ""}>${this.mode === "place" ? `<div class="hh-cats">${Object.entries(this.CATS).map(([k, l]) => `<button type="button" data-h="cat:${k}" aria-pressed="${k === cat}">${l}</button>`).join("")}</div>
         <div class="hh-items">${cat === "mine" ? `<button type="button" data-h="sk"><span>🌐</span>Find on Sketchfab<small>free models</small></button><button type="button" data-h="imp"><span>📁</span>Import a .glb<small>CGTrader, etc.</small></button>` : ""}${Object.entries(this.CAT).filter(([, C]) => C.c === cat).map(([k, C]) => `<button type="button" data-h="it:${k}" aria-pressed="${k === this.sel}" class="${this.cash() < C.cost ? "poor" : ""}" title="${C.credit ? esc(C.credit) : ""}"><span>${C.i}</span>${esc(C.n)}<small>$${C.cost}</small></button>`).join("")}${cat === "mine" && this.sel && this.CAT[this.sel] && this.CAT[this.sel].mine ? `<button type="button" data-h="mdel"><span>🗑</span>Delete "${esc(this.CAT[this.sel].n.slice(0, 18))}"<small>from My models</small></button>` : ""}</div>${cat === "mine" && this.sel && this.CAT[this.sel] && this.CAT[this.sel].credit ? `<p class="hh-hint">${esc(this.CAT[this.sel].credit)}</p>` : ""}` : ""}
         <div class="hh-btns"><button type="button" data-h="build" aria-pressed="${this.mode === "place"}">🔨 ${this.mode === "place" ? "Done" : "Build"}</button><button type="button" data-h="move" aria-pressed="${this.mode === "move"}">✋ ${this.mode === "move" ? "Done" : "Move"}</button><button type="button" data-h="remove" aria-pressed="${this.mode === "remove"}">🗑 ${this.mode === "remove" ? "Done" : "Remove"}</button>${this.mode === "place" ? `<button type="button" data-h="rot">↻ Turn</button>` : ""}<button type="button" data-h="undo" ${this.hist && this.hist.length ? "" : "disabled"} title="Undo (Ctrl+Z)">↶ Undo</button><button type="button" data-h="redo" ${this.fut && this.fut.length ? "" : "disabled"} title="Redo (Ctrl+Y)">↷ Redo</button>${this.mode ? "" : `<button type="button" data-h="water">💧 Water all</button>`}</div>
         ${this.mode === "move" && this.pick ? (() => { const it = this.items.find(i => i.id === this.pick), C = it && this.CAT[it.k]; return it ? `<div class="hh-move"><b>${C.i} ${esc(C.n)}</b><div class="hh-pad"><span></span><button type="button" data-h="nud:f" aria-label="Move away">▲</button><span></span><button type="button" data-h="nud:l" aria-label="Move left">◀</button><button type="button" data-h="mrot" aria-label="Turn">↻</button><button type="button" data-h="nud:r" aria-label="Move right">▶</button><span></span><button type="button" data-h="nud:b" aria-label="Move closer">▼</button><span></span></div><div class="hh-mv2"><button type="button" data-h="mdesel">✓ Drop it here</button><button type="button" data-h="mdel">🗑 Remove</button></div></div>` : ""; })() : ""}
-        ${this.mode === "move" ? `<p class="hh-hint">${this.pick ? "Drag it, tap a new spot, or use the arrows (relative to where you're looking). ↻ turns it." : "Tap (or drag) something to pick it up."} Drag empty space to look around.</p>` : this.mode === "place" ? `<p class="hh-hint">Tap the ground to place: ${this.sel ? this.CAT[this.sel].i + " " + this.CAT[this.sel].n : "pick something"}. Plants go outside. Drag to look around.</p>` : this.mode === "remove" ? `<p class="hh-hint">Tap something to remove it (you get 60% back).</p>` : `<p class="hh-hint">Tap plants to water or harvest, and furniture to use it.</p>`}</div>`;
+        ${this.mode === "move" ? `<p class="hh-hint">${this.pick ? "Drag it, tap a new spot, or use the arrows (relative to where you're looking). ↻ turns it." : "Tap (or drag) something to pick it up."} Drag empty space to look around.</p>` : this.mode === "place" ? `<p class="hh-hint">Tap the ground to place: ${this.sel ? this.CAT[this.sel].i + " " + this.CAT[this.sel].n : "pick something"}. Plants go outside. Drag to look around.</p>` : this.mode === "remove" ? `<p class="hh-hint">Tap something to remove it (you get 60% back).</p>` : `<p class="hh-hint">Tap plants to water or harvest, and furniture to use it.</p>`}</div>`; { const hc = $("#hpCode"); if (hc && keepCode){ hc.value = keepCode; } if (hc && hadFocus) hc.focus(); }
   },
   hint(id){ return {bee: "plant 3+ flowers or a beehive", butterfly: "2 kinds of flowers", bird: "a tree, bird house or bird bath", ladybug: "5 grown plants", fish: "dig a pond", frog: "a pond and 3 plants", squirrel: "2 trees", rabbit: "2 tomato plants or 8 plants", hedgehog: "a bush and a compost bin", firefly: "a pond and 4 plants (night)", fox: "4 trees and 10 plants"}[id] || ""; },
+
+  /* ---------- 🎉 House parties: invite people over with a link; they see your house, hear your music and party with you ---------- */
+  houseKey(){ return this.party ? "house-" + this.party.code : ""; },
+  inHouseRoom(){ return !!(this.party && typeof Party !== "undefined" && Party.room && Party.roomKey === this.houseKey()); },
+  guestCount(){ try{ return this.inHouseRoom() ? Object.values(Party.peers).filter(p => p.hello).length : 0; }catch(e){ return 0; } },
+  houseLink(code){ return (typeof Flyer !== "undefined" ? Flyer.SITE : "https://turnupmusic.online/") + "#house=" + (code || (this.party ? this.party.code : "")); },
+  myName(){ try{ return Profile.ensure().name || "A friend"; }catch(e){ return "A friend"; } },
+  houseSend(m, target){ if (!this.inHouseRoom() || !Party.act.house) return; try{ Party.act.house.send(m, target ? {target} : undefined); }catch(e){} },
+  layoutMsg(){ return {t: "layout", lot: this.lot(), name: this.myName().slice(0, 30), deco: !!this.party.deco, npc: !!this.party.npc, theme: this.party.theme || "classic", banner: this.party.banner || "",
+    items: this.items.filter(i => this.CAT[i.k] && !this.CAT[i.k].mine).slice(0, 160).map(i => ({id: String(i.id).slice(0, 12), k: i.k, x: +i.x, z: +i.z, r: (i.r | 0) % 4, g: +i.g || 0, wt: +i.wt || 0, p: +i.p || 0}))}; },
+  houseSoon(){ clearTimeout(this._hs); this._hs = setTimeout(() => { if (this.party && this.party.host) this.houseSend(this.layoutMsg()); }, 700); },
+  houseHello(){ if (!this.party) return; if (this.party.host) this.houseSend(this.layoutMsg()); else this.houseSend({t: "req"}); },
+  housePeer(id){ if (this.party && this.party.host && !this.party.door) setTimeout(() => this.houseSend(this.layoutMsg(), id), 1500); setTimeout(() => this.refresh(), 2000); },
+  /* someone arrived: remember them as a guest, and if the door is closed (invite only) they knock first */
+  onGuestHello(id, p){ const P = this.party; if (!P || !P.host || !this.inHouseRoom()) return; const pk = p.profile.pk || "", name = p.profile.name || "Someone";
+    if (pk){ const g = store.get("houseGuests", {}); g[pk] = {n: String(name).slice(0, 30), at: Date.now()}; const keys = Object.keys(g).sort((a, b) => g[b].at - g[a].at).slice(0, 60), out = {}; keys.forEach(k => out[k] = g[k]); store.set("houseGuests", out); }
+    P.admitted = P.admitted || new Set(); P.knock = P.knock || [];
+    if (!P.door || (pk && P.invited && P.invited.has(pk)) || P.admitted.has(id)){ P.admitted.add(id); this.houseSend(this.layoutMsg(), id); if (pk && P.invited && P.invited.has(pk)) toast(`🎉 ${name} arrived!`); }
+    else { if (!P.knock.includes(id)) P.knock.push(id); this.houseSend({t: "door"}, id); toast(`🚪 ${name} is at the door. Open 🎉 to let them in.`, 5000); this.partyOpen = true; this.min = false; }
+    this.refresh(); },
+  admit(id, yes){ const P = this.party; if (!P) return; P.knock = (P.knock || []).filter(k => k !== id); const p = Party.peers[id];
+    if (yes){ (P.admitted || (P.admitted = new Set())).add(id); this.houseSend({t: "admit"}, id); this.houseSend(this.layoutMsg(), id); toast(`🚪 You let ${p ? p.profile.name : "them"} in.`); }
+    else { this.houseSend({t: "bye", why: "door"}, id); } this.refresh(); },
+  kickGuest(id){ const p = Party.peers[id]; if (!p) return; this.houseSend({t: "bye", why: "removed"}, id); if (this.party.admitted) this.party.admitted.delete(id); try{ Party.addBan(p.profile.pk, p.did); }catch(e){} toast(`${p.profile.name} was asked to leave.`); setTimeout(() => { try{ Party.dropPeer(id); }catch(e){} this.refresh(); }, 600); },
+  /* 🎆 hype: fireworks and confetti over the house, for everyone at the party */
+  hype(send){ const now = Date.now(); if (now - (this._hypeT || 0) < 4000) return; this._hypeT = now; if (send) this.houseSend({t: "fx"});
+    const L = Lounge, T = THREE, [hx0, hx1, hz0, hz1] = this.HOUSE, cols = [523, 659, 784, 1047];
+    for (let i = 0; i < 9; i++) setTimeout(() => { try{ L.burst(new T.Vector3(hx0 + Math.random()*(hx1 - hx0), 3.5 + Math.random()*2.5, hz0 + Math.random()*(hz1 - hz0) + 2), 26); Wellness.tone(cols[i % 4], .25, "triangle", .08); }catch(e){} }, i*260); },
+  onHouse(id, d){ if (!d || typeof d !== "object" || !this.party) return;
+    if (d.t === "fx"){ this.hype(false); return; }
+    if (d.t === "req"){ if (this.party.host && (!this.party.door || (this.party.admitted && this.party.admitted.has(id)))) this.houseSend(this.layoutMsg(), id); return; }
+    if (d.t === "gift" && this.party.host){ const amt = Math.max(1, Math.min(50, d.amt | 0)), G = this.party.gifts || (this.party.gifts = {}), p0 = Party.peers[id]; if ((G[id] || 0) + amt > 100) return; G[id] = (G[id] || 0) + amt; this.earn(amt); Wellness.add("social", 2, true); toast(`🎁 ${p0 ? p0.profile.name : "A guest"} brought you a gift: +$${amt}!`); this.hype(false); this.refresh(); return; }
+    if (this.party.host) return;   // hosts never take another house's layout
+    if (d.t === "door"){ this.party.waiting = true; toast("🚪 You knocked. Waiting for the host to let you in…", 5000); this.partyOpen = true; this.refresh(); return; }
+    if (d.t === "admit"){ this.party.waiting = false; toast("🎉 You're in! Welcome to the party."); this.refresh(); return; }
+    if (d.t === "bye"){ toast(d.why === "removed" ? "The host asked you to leave the party." : "The host couldn't let you in right now.", 5000); if (d.why === "removed") store.set("ban:" + Party.roomKey, Date.now() + 30*60e3); try{ Party.leave(); }catch(e){} return; }
+    const p = Party.peers[id];
+    if (d.t === "layout"){ if (!this.LOTS[d.lot] || !Array.isArray(d.items)) return; if (this.visit && this.visit.from && this.visit.from !== id && Party.peers[this.visit.from]) return;
+      const [a, b, c, e] = this.PLOT, items = d.items.slice(0, 160).filter(i => i && this.CAT[i.k] && !this.CAT[i.k].mine && isFinite(i.x) && isFinite(i.z)).map(i => ({id: String(i.id).replace(/[^\w]/g, "").slice(0, 12) || Math.random().toString(36).slice(2, 8), k: i.k, x: Math.max(a, Math.min(b, +i.x)), z: Math.max(c, Math.min(e, +i.z)), r: (i.r | 0) % 4, g: +i.g || 0, wt: +i.wt || 0, p: +i.p || 0, u: Date.now()}));
+      const first = !this.visit, lotChanged = !this.visit || this.visit.lot !== d.lot;
+      this.visit = {lot: d.lot, items, name: Party.clean ? String(d.name || "").slice(0, 30) : String(d.name || "").replace(/[<>]/g, "").slice(0, 30), deco: !!d.deco, npc: !!d.npc, theme: this.THEMES[d.theme] ? d.theme : "classic", banner: this.cleanBanner(d.banner), from: id};
+      if (p) p.houseHost = true;
+      if (first) toast(`🎉 Welcome to ${this.visit.name || "the"}'s house party!`);
+      this.visitApply(lotChanged); return; }
+    if (d.t === "deco" && this.visit && id === this.visit.from){ this.visit.deco = !!d.on; this.visit.npc = !!d.npc; if (this.THEMES[d.theme]) this.visit.theme = d.theme; if (d.banner !== undefined) this.visit.banner = this.cleanBanner(d.banner); this.partyDecoSync(); this.refresh(); return; }
+    if (d.t === "end" && this.visit && id === this.visit.from){ toast(`🎉 ${this.visit.name || "The host"} ended the party. Thanks for coming!`, 5000); try{ Party.leave(); }catch(e){} } },
+  rebuildHome(){ const L = Lounge; try{ if (L.worlds.home){ const cur = L.worldId; if (cur === "home") L.worldId = "__switch"; L.unloadWorld("home"); if (cur === "home") L.worldId = cur; } if (L.worldId === "home") L.setWorld("home"); else L.chooseWorld("home"); }catch(e){ console.warn(e); try{ L.chooseWorld("home"); }catch(er){} } },
+  visitApply(lotChanged){ const L = Lounge; if (!L.built) return;
+    if (L.worldId !== "home" || lotChanged || !this.g || !this.layer){ clearTimeout(this._vr); this._vr = setTimeout(() => this.rebuildHome(), 250); return; }
+    for (const n of this.nodes.values()){ this.layer.remove(n.g); L.clickables = L.clickables.filter(o => o !== n.proxy); } this.nodes.clear();
+    this.items = this.visit.items.map(i => Object.assign({}, i)); for (const it of this.items) this.place(it); this.eco(true); this.partyDecoSync(); this.refresh(); },
+  onPartyLeave(key){ if (!this.party || key !== this.houseKey()) return; const wasVisit = !!this.visit; if (wasVisit){ this.itemsLot = null; } this.npcClear(); this.party = null; this.partyOpen = this.partyOpen && !wasVisit; this.visit = null;
+    if (wasVisit){ toast("You left the house party. Back to your own home."); if (Lounge.worldId === "home") setTimeout(() => this.rebuildHome(), 200); } else this.partyDecoSync(); this.refresh(); },
+  partyStart(){ if (this.visit) return toast("You're at someone else's party right now."); if (typeof Party === "undefined" || !Party.available()) return toast("Parties need an internet connection. Try again in a moment.");
+    const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let code = ""; for (let i = 0; i < 6; i++) code += A[Math.floor(Math.random()*A.length)];
+    const plan = this.plan(), def = new Date().getMonth() === 9 && new Date().getDate() >= 24 ? "halloween" : "classic"; if (plan){ code = plan.code; store.set("housePlan", null); }
+    this.party = {code, host: true, deco: true, npc: false, t0: Date.now(), theme: plan ? plan.theme : def, banner: plan ? plan.banner : "", invited: new Set(plan && plan.invited || [])}; this.partyOpen = true; this.partyDecoSync();
+    Party.join("house", code); setTimeout(() => this.refresh(), 1500); this.refresh(); toast(`🎉 Your house party is on! Invite code ${code}`, 5000); },
+  hostFromAnywhere(){ store.set("world", "home"); const go = () => { if (Lounge.worldId !== "home") Lounge.chooseWorld("home"); const w = setInterval(() => { if (Lounge.worldId === "home" && this.g){ clearInterval(w); setTimeout(() => { if (!this.party) this.partyStart(); this.partyOpen = true; this.min = false; this.refresh(); }, 800); } }, 300); setTimeout(() => clearInterval(w), 90000); };
+    if ($("#stage").hidden || !Lounge.built){ openStage("lounge"); const w = setInterval(() => { if (Lounge.built && Lounge.worlds[Lounge.worldId]){ clearInterval(w); setTimeout(go, 600); } }, 300); setTimeout(() => clearInterval(w), 90000); } else go(); },
+  partyEnd(){ if (!this.party) return; if (this.party.host){ this.houseSend({t: "end"}); toast("🎉 Party's over. Thanks for hosting!"); } setTimeout(() => { try{ if (Party.roomKey === this.houseKey()) Party.leave(); else this.onPartyLeave(this.houseKey()); }catch(e){} }, 300); },
+  partyJoin(code){ code = String(code || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 12); if (code.length < 4){ toast("That party code looks too short."); return; }
+    if (this.party && this.party.host){ toast("End your own party first."); return; } this.party = {code, host: false}; this.visit = null; this.partyOpen = true; store.set("world", "home");
+    const go = () => { if (Lounge.worldId !== "home") Lounge.chooseWorld("home"); setTimeout(() => { Party.join("house", code); toast("🎉 Joining the house party…"); }, 700); };
+    if ($("#stage").hidden || !Lounge.built){ openStage("lounge"); const w = setInterval(() => { if (Lounge.built && Lounge.worlds[Lounge.worldId]){ clearInterval(w); setTimeout(go, 600); } }, 300); setTimeout(() => clearInterval(w), 90000); } else go(); },
+  partyAct(a){ const P = this.party;
+    if (a === "invite") return this.inviteOpen();
+    if (a === "door" && P && P.host){ P.door = !P.door; toast(P.door ? "🚪 Invite only: people you didn't invite knock first, and you let them in." : "🚪 Open door: anyone with the code or link can come in."); }
+    if (a === "hype") this.hype(true);
+    if (a.startsWith("in:")){ this.admit(a.slice(3), true); return; }
+    if (a.startsWith("no:")){ this.admit(a.slice(3), false); return; }
+    if (a.startsWith("kick:")){ this.kickGuest(a.slice(5)); return; }
+    if (a.startsWith("ij:")){ this.partyJoin(a.slice(3)); return; }
+    if (a === "start") return this.partyStart();
+    if (a === "end" || a === "leave") return this.partyEnd();
+    if (a === "join"){ const v = ($("#hpCode") || {}).value || ""; return this.partyJoin(v); }
+    if (a === "copy"){ const l = this.houseLink(); (navigator.clipboard ? navigator.clipboard.writeText(l) : Promise.reject()).then(() => toast("🔗 Invite link copied. Paste it in a text or DM.")).catch(() => prompt("Copy this invite link:", l)); return; }
+    if (a === "share"){ const t = `🎉 Come to my house party on Turn Up Music! Code ${P.code}`; if (navigator.share) navigator.share({title: "House party", text: t, url: this.houseLink()}).catch(() => {}); else this.partyAct("copy"); return; }
+    if (a === "post"){ try{ Social.compose(); $("#postText").value = `🎉 House party at my ${this.LOTS[this.lot()].n} on Turn Up Music! Pull up: ${this.houseLink()}`; }catch(e){ this.partyAct("copy"); } return; }
+    if (a === "deco" && P && P.host){ P.deco = !P.deco; this.partyDecoSync(); this.houseSend({t: "deco", on: P.deco, npc: P.npc, theme: P.theme, banner: P.banner || ""}); }
+    if (a === "npc" && P && P.host){ P.npc = !P.npc; this.partyDecoSync(); this.houseSend({t: "deco", on: P.deco, npc: P.npc, theme: P.theme, banner: P.banner || ""}); }
+    if (a.startsWith("th:") && P && P.host){ this.setTheme(a.slice(3)); return; }
+    if (a === "ban" && P && P.host){ this.setTheme(P.theme || "classic", ($("#hpBan") || {}).value || ""); toast("🪧 Banner updated."); return; }
+    if (a === "gift" && P && !P.host){ const g = (P.gave || 0); if (g >= 100) return toast("You've already brought plenty of gifts. 🎁"); if (this.cash() < 20) return toast("A gift is $20. Earn more with jobs first."); this.spend(20); P.gave = g + 20; this.houseSend({t: "gift", amt: 20}); this.hype(false); toast(`🎁 You gave ${this.visit && this.visit.name || "the host"} a $20 gift. Social up!`); Wellness.add("social", 3, true); }
+    if (a === "plan"){ this.planOpen = !this.planOpen; }
+    if (a.startsWith("pth:")){ this.planTheme = a.slice(4); }
+    if (a === "psave") return this.planSave();
+    if (a === "pdel"){ store.set("housePlan", null); this.planOpen = false; toast("📅 Plan cancelled."); }
+    if (a === "pinv") return this.inviteOpen();
+    if (a === "dj"){ try{ if (!S.current) toast("Pick a station first (📻 Radio), then tap this again."); else Party.setDJ(!Party.dj); }catch(e){} }
+    if (a === "karaoke") try{ Karaoke.toggle(); }catch(e){}
+    if (a === "trivia") try{ TriviaLive.open(); }catch(e){}
+    if (a === "dance") try{ Mogul.ensure(); Mogul.on = true; Mogul.box.hidden = false; Mogul.startGame("danceoff", false); }catch(e){}
+    this.refresh(); },
+  partyPanel(){ const P = this.party, live = this.inHouseRoom(), n = this.guestCount();
+    if (!P) return `<div class="hh-party"><p>Throw a party at your ${esc(this.LOTS[this.lot()].n)}. Invite friends (they get a notification), or share a link or code. Guests see your place, hear your music, sing karaoke and play trivia with you.</p>
+      <button type="button" class="primary" data-h="hp:start">🎉 ${this.plan() ? "Start my planned party now" : "Start a house party"}</button>${this.planHtml()}${this.invitesHtml()}
+      <div class="hh-join"><input id="hpCode" placeholder="Got a code? e.g. K7PX2Q" maxlength="12" autocapitalize="characters"><button type="button" data-h="hp:join">Join</button></div></div>`;
+    if (!P.host) return `<div class="hh-party"><p>${P.waiting ? "🚪 You knocked. Waiting for the host to let you in…" : live ? `You're at <b>${esc(this.visit && this.visit.name || "a friend")}</b>'s party with ${n} ${n === 1 ? "person" : "people"}.` : "Connecting to the party…"}</p>
+      <div class="hh-pgrid"><button type="button" data-h="hp:hype">🎆 Hype!</button><button type="button" data-h="hp:karaoke">🎤 Karaoke</button><button type="button" data-h="hp:trivia">❓ Trivia</button><button type="button" data-h="hp:dance">🕺 Dance-off</button><button type="button" data-h="hp:gift">🎁 Bring a gift ($20)</button><button type="button" data-h="hp:leave">🚪 Leave party</button></div></div>`;
+    return `<div class="hh-party"><p>${live ? `🟢 Live · <b>${n}</b> guest${n === 1 ? "" : "s"} here` : "Connecting…"} · code <b class="hh-code">${esc(P.code)}</b></p>
+      <div class="hh-pgrid"><button type="button" class="primary" data-h="hp:share">📤 Invite</button><button type="button" data-h="hp:copy">🔗 Copy link</button><button type="button" data-h="hp:post">📣 Post</button>
+      <button type="button" data-h="hp:deco" aria-pressed="${!!P.deco}">🪩 Decorations</button><button type="button" data-h="hp:npc" aria-pressed="${!!P.npc}">🧑‍🤝‍🧑 Neighbors</button><button type="button" data-h="hp:dj" aria-pressed="${!!(typeof Party !== "undefined" && Party.dj)}">🎧 My music</button>
+      <button type="button" data-h="hp:karaoke">🎤 Karaoke</button><button type="button" data-h="hp:trivia">❓ Trivia</button><button type="button" data-h="hp:dance">🕺 Dance-off</button>
+      <button type="button" class="primary" data-h="hp:invite">👥 Invite friends</button><button type="button" data-h="hp:door" aria-pressed="${!!P.door}">🚪 ${P.door ? "Invite only" : "Open door"}</button><button type="button" data-h="hp:hype">🎆 Hype!</button></div>
+      <div class="hh-themes"><small>PARTY THEME</small>${Object.entries(this.THEMES).map(([k, T]) => `<button type="button" data-h="hp:th:${k}" aria-pressed="${(P.theme || "classic") === k}">${T.n}</button>`).join("")}</div>
+      <div class="hh-join"><input id="hpBan" placeholder="Banner text, e.g. HAPPY 30TH MIA" maxlength="24" value="${esc(P.banner || "")}"><button type="button" data-h="hp:ban">🪧 Set</button></div>
+      ${this.guestListHtml()}
+      <button type="button" class="hh-end" data-h="hp:end">⏹ End the party</button></div>`; },
+  /* ---------- 📅 planning a party for later: pick a time and theme, invite friends now, start it when it's time ---------- */
+  plan(){ const p = store.get("housePlan", null); if (!p || !p.code) return null; if (p.when && Date.now() > p.when + 12*36e5){ store.set("housePlan", null); return null; } return p; },
+  whenText(ms){ try{ const d = new Date(ms), now = new Date(), same = d.toDateString() === now.toDateString(), tm = d.toLocaleTimeString([], {hour: "numeric", minute: "2-digit"}); return same ? "Today " + tm : d.toLocaleDateString([], {weekday: "short", month: "short", day: "numeric"}) + " " + tm; }catch(e){ return ""; } },
+  planHtml(){ const p = this.plan();
+    if (p) return `<div class="hh-guests"><small>📅 YOUR PLANNED PARTY</small><p><b>${esc(this.whenText(p.when))}</b> · ${esc((this.THEMES[p.theme] || this.THEMES.classic).n)}${p.banner ? " · “" + esc(p.banner) + "”" : ""} · code <b class="hh-code">${esc(p.code)}</b>${p.invited && p.invited.length ? ` · ${p.invited.length} invited` : ""}</p>
+      <div class="hh-pgrid"><button type="button" class="primary" data-h="hp:pinv">👥 Invite friends</button><button type="button" data-h="hp:pdel">🗑 Cancel plan</button></div></div>`;
+    if (!this.planOpen) return `<button type="button" data-h="hp:plan">📅 Plan a party for later</button>`;
+    const def = new Date(Date.now() + 864e5); def.setHours(20, 0, 0, 0); const loc = new Date(def.getTime() - def.getTimezoneOffset()*6e4).toISOString().slice(0, 16), th = this.planTheme || "classic";
+    return `<div class="hh-guests"><small>📅 PLAN A PARTY</small><label class="hh-lbl">When<input id="hpWhen" type="datetime-local" value="${loc}"></label>
+      <div class="hh-themes">${Object.entries(this.THEMES).map(([k, T]) => `<button type="button" data-h="hp:pth:${k}" aria-pressed="${th === k}">${T.n}</button>`).join("")}</div>
+      <input id="hpPBan" placeholder="Banner text (optional)" maxlength="24">
+      <div class="hh-pgrid"><button type="button" class="primary" data-h="hp:psave">💾 Save and invite</button><button type="button" data-h="hp:plan">Cancel</button></div></div>`; },
+  planSave(){ const v = ($("#hpWhen") || {}).value || "", when = v ? new Date(v).getTime() : 0; if (!when || isNaN(when)) return toast("Pick a day and time.");
+    if (when < Date.now() - 5*6e4) return toast("That time has already passed. Pick a time in the future.");
+    const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let code = ""; for (let i = 0; i < 6; i++) code += A[Math.floor(Math.random()*A.length)];
+    store.set("housePlan", {code, when, theme: this.planTheme || "classic", banner: this.cleanBanner(($("#hpPBan") || {}).value), lot: this.lot(), invited: []}); this.planOpen = false; this.refresh();
+    toast(`📅 Party planned for ${this.whenText(when)}. Now invite your friends!`, 5000); setTimeout(() => this.inviteOpen(), 400); },
+  planCard(p){ let c = $("#hpPlanCard"); if (!c){ c = document.createElement("div"); c.id = "hpPlanCard"; c.className = "hp-card"; document.body.appendChild(c); c.addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (!b) return; c.hidden = true; if (b.dataset.c === "go") this.hostFromAnywhere(); }); }
+    c.innerHTML = `<span>📅 Your ${esc((this.THEMES[p.theme] || this.THEMES.classic).n)} house party starts ${p.when > Date.now() ? "at " + esc(this.whenText(p.when)) : "now"}!</span><button type="button" class="primary" data-c="go">🎉 Start it</button><button type="button" data-c="later">Later</button>`; c.hidden = false; try{ Wellness.tone(784, .2, "triangle", .1); }catch(e){} },
+  guestListHtml(){ const P = this.party; if (!P || !this.inHouseRoom()) return ""; const knock = (P.knock || []).filter(id => Party.peers[id]), here = Object.values(Party.peers).filter(p => p.hello && !knock.includes(p.id));
+    return `${knock.length ? `<div class="hh-knock">${knock.map(id => `<div><span>🚪 <b>${esc(Party.peers[id].profile.name)}</b> is at the door</span><button type="button" class="primary" data-h="hp:in:${esc(id)}">Let in</button><button type="button" data-h="hp:no:${esc(id)}">Not now</button></div>`).join("")}</div>` : ""}
+      ${here.length ? `<div class="hh-guests"><small>GUESTS</small>${here.map(p => `<div><span>${esc(p.profile.name)}${p.profile.pk && P.invited && P.invited.has(p.profile.pk) ? " 📨" : ""}</span><button type="button" data-h="hp:kick:${esc(p.id)}" title="Ask them to leave">✕</button></div>`).join("")}</div>` : `<p class="hh-hint">No guests yet. Tap 👥 Invite friends or 📤 Invite.</p>`}`; },
+  invitesHtml(){ const now = Date.now(), L = (store.get("invList", []) || []).filter(v => v.when ? now < v.when + 6*36e5 : now - v.at < 12*36e5).sort((a, b) => (a.when || a.at) - (b.when || b.at)).slice(0, 5); if (!L.length) return "";
+    return `<div class="hh-guests"><small>📨 INVITES FOR YOU</small>${L.map(v => `<div><span><b>${esc(v.n)}</b>'s ${v.theme && this.THEMES[v.theme] ? esc(this.THEMES[v.theme].n) + " " : ""}party${v.when && v.when > now + 15*6e4 ? ` · ${esc(this.whenText(v.when))}` : ""}</span><button type="button" class="primary" data-h="hp:ij:${esc(v.code)}">Join</button></div>`).join("")}</div>`; },
+  /* ---------- 📨 inviting friends: they get an invite card (and it waits in their party panel) ---------- */
+  invitePeople(){ const S = Social, me = Events.myKey(), out = new Map(), add = (pk, tag) => { if (!pk || pk === me || (typeof Safety !== "undefined" && Safety.blocked && Safety.blocked(pk))) return; if (!out.has(pk)) out.set(pk, {pk, tag}); };
+    try{ for (const pk of S.follows) add(pk, "You follow"); }catch(e){} const g = store.get("houseGuests", {}); for (const pk of Object.keys(g)) add(pk, "Came to your party");
+    try{ for (const n of S.notes || []) if (n.kind === "follow") add(n.e.pubkey, "Follows you"); }catch(e){}
+    return [...out.values()].map(o => { let w = {}; try{ w = S.who(o.pk) || {}; }catch(e){} return Object.assign(o, {name: w.name || (g[o.pk] && g[o.pk].n) || "Friend " + o.pk.slice(0, 5), avatar: w.avatar}); }); },
+  invTarget(){ if (this.party && this.party.host) return {code: this.party.code, invited: this.party.invited || (this.party.invited = new Set()), when: 0}; const p = this.plan(); return p ? {code: p.code, invited: new Set(p.invited || []), when: p.when, plan: true} : null; },
+  async inviteOpen(){ const IT = this.invTarget(); if (!IT) return toast("Start your house party (or plan one), then invite friends."); let d = $("#hpInvite");
+    if (!d){ d = document.createElement("div"); d.id = "hpInvite"; d.className = "skdlg"; document.body.appendChild(d);
+      d.addEventListener("click", e => { const b = e.target.closest("[data-iv]"); if (!b) return; const a = b.dataset.iv; if (a === "close") d.hidden = true; else if (a === "send") this.inviteSend([...d.querySelectorAll("input[data-pk]:checked")].map(i => i.dataset.pk)); else if (a === "all") d.querySelectorAll("input[data-pk]").forEach(i => i.checked = true); });
+      d.addEventListener("input", e => { if (e.target.id === "ivQ"){ const q = e.target.value.toLowerCase(); d.querySelectorAll(".iv-row").forEach(r => r.hidden = q && !r.dataset.n.includes(q)); } }); }
+    d.hidden = false; d.innerHTML = `<div class="sk-card"><div class="sk-top"><b>👥 Invite friends</b><button type="button" data-iv="close" aria-label="Close">✕</button></div><p class="sk-note">Loading your friends…</p></div>`;
+    try{ const S = Social; await S.loadProfiles([...S.follows].filter(k => !S.profiles.has(k)).slice(0, 100)); if (!(S.notes && S.notes.length)) await S.loadNotes(); }catch(e){}
+    const ppl = this.invitePeople(), sent = IT.invited;
+    d.innerHTML = `<div class="sk-card"><div class="sk-top"><b>👥 Invite friends to your ${esc(this.LOTS[this.lot()].n)}</b><button type="button" data-iv="close" aria-label="Close">✕</button></div>
+      <p class="sk-note">${IT.when ? `For your party on <b>${esc(this.whenText(IT.when))}</b>. They get an invite card now, and a reminder when it starts.` : "They get an invite card next time they open Turn Up Music (good for 12 hours)."} Invited friends walk right in, even when the door is set to invite only.</p>
+      ${ppl.length ? `<div class="sk-row"><input id="ivQ" type="search" placeholder="Search names…"><button type="button" data-iv="all">Select all</button></div>
+      <div class="iv-list">${ppl.map(o => `<label class="iv-row" data-n="${esc(o.name.toLowerCase())}"><input type="checkbox" data-pk="${esc(o.pk)}" ${sent.has(o.pk) ? "checked disabled" : ""}><span class="av" style="${avThumbStyle(o.avatar, 34)}"></span><span><b>${esc(o.name)}</b><small>${sent.has(o.pk) ? "Invited ✓" : esc(o.tag)}</small></span></label>`).join("")}</div>
+      <div class="sk-row"><button type="button" class="primary" data-iv="send">📨 Send invites</button></div>` : `<p class="sk-note">No friends yet. Follow people in 👥 Social (or have them follow you) and they'll show up here. Meanwhile, use 📤 Invite to send your link by text.</p>`}
+      <p class="sk-note">Party code <b>${esc(IT.code)}</b> · link: ${esc(this.houseLink(IT.code))}</p></div>`; },
+  async inviteSend(pks){ pks = pks.filter(Boolean).slice(0, 40); if (!pks.length) return toast("Pick at least one friend.");
+    if (!window.TUNet) return toast("Invites need an internet connection."); const IT = this.invTarget(); if (!IT) return;
+    try{ const now = Math.floor(Date.now()/1000), whenS = IT.when ? Math.floor(IT.when/1000) : 0, th = IT.plan ? (this.plan() || {}).theme : this.party.theme, tn = (this.THEMES[th] || this.THEMES.classic).n;
+      const ev = TUNet.finalizeEvent({kind: 1, created_at: now, content: `🎉 ${this.myName()} invited you to a ${tn} house party at their ${this.LOTS[this.lot()].n} on Turn Up Music${whenS ? " on " + this.whenText(IT.when) : ""}! Open the app to join: ${this.houseLink(IT.code)}`,
+        tags: [["l", "house-invite"], ["code", IT.code], ["lot", this.lot()], ["theme", th || "classic"], ...(whenS ? [["when", String(whenS)]] : []), ["expiration", String(Math.max(now, whenS) + 12*3600)], ...pks.map(k => ["p", k])]}, Events.sk());
+      await Promise.any(Events.pool().publish(NET.relays, ev)); pks.forEach(k => IT.invited.add(k));
+      if (IT.plan){ const p = this.plan(); if (p){ p.invited = [...IT.invited].slice(0, 200); store.set("housePlan", p); } }
+      $("#hpInvite").hidden = true; toast(`📨 Invite sent to ${pks.length} friend${pks.length === 1 ? "" : "s"}.`); this.refresh();
+    }catch(e){ console.warn(e); toast("Couldn't send the invites right now. Try 📤 Invite to share the link instead."); } },
+  /* look for invites sent to me (every couple of minutes while the app is open) */
+  async inviteCheck(){ try{ this.reminders(); }catch(e){} if (!window.TUNet || typeof Age === "undefined" || !Age.adult() || !store.get("hostSecret", "")) return; const me = Events.myKey(), now = Math.floor(Date.now()/1000);
+    try{ const evs = await Events.pool().querySync(NET.relays, {kinds: [1], "#p": [me], since: now - 14*86400, limit: 60}, {maxWait: 4000});
+      const seen = new Set(store.get("invSeen", [])), list = store.get("invList", []) || [], fresh = [];
+      for (const e of evs){ if (!e.tags.some(t => t[0] === "l" && t[1] === "house-invite") || e.pubkey === me || seen.has(e.id)) continue; if (typeof Safety !== "undefined" && Safety.blocked && Safety.blocked(e.pubkey)) continue; try{ if (!TUNet.verifyEvent(e)) continue; }catch(er){ continue; }
+        const code = ((e.tags.find(t => t[0] === "code") || [])[1] || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 12); const exp = +((e.tags.find(t => t[0] === "expiration") || [])[1] || 0); if (code.length < 4 || (exp && exp < now)) continue; seen.add(e.id); fresh.push({e, code, when: +((e.tags.find(t => t[0] === "when") || [])[1] || 0)*1000, theme: (e.tags.find(t => t[0] === "theme") || [])[1] || ""}); }
+      if (!fresh.length) return; try{ await Social.loadProfiles([...new Set(fresh.map(f => f.e.pubkey))].filter(k => !Social.profiles.has(k))); }catch(er){}
+      for (const f of fresh){ const n = (Social.who(f.e.pubkey) || {}).name || "A friend"; list.unshift({id: f.e.id, n, code: f.code, at: f.e.created_at*1000, when: f.when || 0, theme: this.THEMES[f.theme] ? f.theme : ""}); }
+      store.set("invSeen", [...seen].slice(-200)); store.set("invList", list.slice(0, 10)); const top = fresh.sort((a, b) => b.e.created_at - a.e.created_at)[0]; this.inviteCard((Social.who(top.e.pubkey) || {}).name || "A friend", top.code, top.when); this.refresh();
+    }catch(e){} },
+  /* reminders: a planned party of mine is starting, or a party I'm invited to is starting */
+  reminders(){ const now = Date.now(), p = this.plan(); if (p && !this.party && now >= p.when - 10*6e4 && !p.rem){ p.rem = 1; store.set("housePlan", p); this.planCard(p); }
+    const L = store.get("invList", []) || []; let ch = false; for (const v of L) if (v.when && !v.rem && now >= v.when - 10*6e4 && now < v.when + 6*36e5){ v.rem = 1; ch = true; if (!(this.party && this.party.code === v.code)) this.inviteCard(v.n, v.code, v.when, true); break; } if (ch) store.set("invList", L); },
+  inviteCard(name, code, when, starting){ let c = $("#hpCard"); if (!c){ c = document.createElement("div"); c.id = "hpCard"; c.className = "hp-card"; document.body.appendChild(c); c.addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (!b) return; c.hidden = true; if (b.dataset.c === "join") this.partyJoin(c.dataset.code); }); }
+    c.dataset.code = code; c.innerHTML = `<span>${starting ? `⏰ <b>${esc(name)}</b>'s house party is starting now!` : `📨 <b>${esc(name)}</b> invited you to a house party${when && when > Date.now() + 15*6e4 ? ` on <b>${esc(this.whenText(when))}</b>` : ""}!`}</span><button type="button" class="primary" data-c="join">🎉 Join</button><button type="button" data-c="later">Later</button>`; c.hidden = false; try{ Wellness.tone(784, .2, "triangle", .1); setTimeout(() => Wellness.tone(1047, .3, "triangle", .1), 160); }catch(e){} },
+  /* party look: a disco ball, colored lights, string lights, balloons and a banner */
+  THEMES: {
+    classic: {n: "🎉 Classic", cols: [0xff4fd8, 0x4de1ff, 0xffc21a, 0x8dff9e, 0xff6a3a, 0x9a6aff], bal: [0xff3a6a, 0xffc21a, 0x3a8aff, 0xffffff, 0xb05aff], ban: ["HOUSE PARTY", "🎉 turn it up 🎉"], sign: {bg: "#1a0a2a", edge: "#ff4fd8", ink: "#ffd8ff"}},
+    halloween: {n: "🎃 Halloween", cols: [0xff7a1a, 0x9a3aff, 0x3aff6a, 0xff3a1a, 0xffa01a, 0x6a1aff], bal: [0xff7a1a, 0x1a1a1a, 0x9a3aff, 0x3aff6a, 0xff7a1a], ban: ["HAUNTED HOUSE", "🎃 trick or treat 🎃"], sign: {bg: "#120808", edge: "#ff7a1a", ink: "#ffb060"}, props: "halloween"},
+    birthday: {n: "🎂 Birthday", cols: [0xff4fd8, 0xffc21a, 0x4de1ff, 0x8dff9e, 0xff8ac8, 0xffffff], bal: [0xff8ac8, 0xffc21a, 0x4de1ff, 0xffffff, 0x8dff9e], ban: ["HAPPY BIRTHDAY", "🎂 make a wish 🎂"], sign: {bg: "#2a0a1e", edge: "#ffc21a", ink: "#fff0c8"}, props: "cake"},
+    glow: {n: "✨ Glow party", cols: [0x9a3aff, 0x3affd8, 0xff3ad8, 0x3a6aff, 0xc8ff3a, 0xff3a6a], bal: [0x3affd8, 0xff3ad8, 0xc8ff3a, 0x9a3aff, 0x3a6aff], ban: ["GLOW PARTY", "✨ light it up ✨"], sign: {bg: "#0a0418", edge: "#3affd8", ink: "#d8fff8"}, props: "glow", neon: true},
+    luau: {n: "🌴 Luau", cols: [0xff7a3a, 0xffc21a, 0x3ad08a, 0xff4f8a, 0xffa01a, 0x3ac8ff], bal: [0xff4f8a, 0xffc21a, 0x3ad08a, 0xff7a3a, 0xffffff], ban: ["ALOHA LUAU", "🌺 hang loose 🌺"], sign: {bg: "#0a2a1e", edge: "#ffc21a", ink: "#fff4d8"}, props: "torches"}
+  },
+  partyLook(){ const P = this.party && this.party.host ? this.party : this.visit; const id = P && this.THEMES[P.theme] ? P.theme : "classic"; return {id, T: this.THEMES[id], banner: P && P.banner || ""}; },
+  cleanBanner(t){ return String(t || "").replace(/[<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 24).toUpperCase(); },
+  setTheme(id, banner){ const P = this.party; if (!P || !P.host || !this.THEMES[id]) return; P.theme = id; if (banner !== undefined) P.banner = this.cleanBanner(banner); P.deco = true; this.partyDecoSync(); this.houseSend({t: "deco", on: P.deco, npc: P.npc, theme: P.theme, banner: P.banner || ""}); this.refresh(); },
+  partyDecoSync(){ const on = !!((this.party && this.party.host && this.party.deco) || (this.visit && this.visit.deco)), npc = !!((this.party && this.party.host && this.party.npc) || (this.visit && this.visit.npc));
+    { const lk = this.partyLook(), key = on ? lk.id + "|" + lk.banner : ""; if (this.decoG && this._decoKey !== key){ if (this.decoG.parent) this.decoG.parent.remove(this.decoG); this.decoG = null; this.decoLights = null; } this._decoKey = key; }
+    if (on && !this.decoG && this.g) this.decoBuild(); if (!on && this.decoG){ if (this.decoG.parent) this.decoG.parent.remove(this.decoG); this.decoG = null; this.decoLights = null; }
+    if (npc && !(this.npcs && this.npcs.length) && Lounge.worldId === "home") this.npcSpawn(); if (!npc) this.npcClear(); },
+  decoBuild(){ const T = THREE, L = this.L, g = this.decoG = new T.Group(); this.g.add(g); const [hx0, hx1, hz0, hz1] = this.HOUSE, cx = (hx0 + hx1)/2, cz = (hz0 + hz1)/2, LOW = typeof GFX !== "undefined" && GFX.level === "low";
+    const ball = new T.Mesh(new T.IcosahedronGeometry(.32, 2), new T.MeshStandardMaterial({color: 0xdddddd, metalness: 1, roughness: .12, flatShading: true, envMap: L.envTex || null})); ball.position.set(cx, 2.55, cz); g.add(ball); this.decoBall = ball;
+    const cord = new T.Mesh(new T.CylinderGeometry(.006, .006, .5, 4), new T.MeshBasicMaterial({color: 0x222222})); cord.position.set(cx, 3.05, cz); g.add(cord);
+    const LK = this.partyLook(), TH = LK.T, cols = TH.cols; this.decoSpots = cols.map((c, i) => { const s = L.wGlow(g, c, 1.6, cx, .05, cz, .55); s.userData.ph = i/cols.length*Math.PI*2; return s; });
+    this.decoLights = LOW ? [] : [0, 1].map(i => { const l = new T.PointLight(cols[i], .9, 9, 2); l.position.set(cx + (i ? 2 : -2), 2.3, cz); g.add(l); return l; });
+    const bulbM = cols.map(c => new T.MeshBasicMaterial({color: c, toneMapped: false})), bulb = new T.SphereGeometry(.045, 6, 4), edge = (x0, z0, x1, z1) => { const n = Math.round(Math.hypot(x1 - x0, z1 - z0)/.5); for (let i = 0; i <= n; i++){ const t = i/n, m = new T.Mesh(bulb, bulbM[i % bulbM.length]); m.position.set(x0 + (x1 - x0)*t, 3.02 - Math.sin(t*Math.PI*6)*.08, z0 + (z1 - z0)*t); g.add(m); } };
+    edge(hx0, hz0, hx1, hz0); edge(hx0, hz1, hx1, hz1); edge(hx0, hz0, hx0, hz1); edge(hx1, hz0, hx1, hz1);
+    this.decoBalloons = []; const bcol = TH.bal;
+    for (const [bx, bz] of [[cx - 1.7, hz1 + .5], [cx + 1.7, hz1 + .5], [hx0 + .6, hz0 + .6], [hx1 - .6, hz0 + .6]]) for (let k = 0; k < 5; k++){ const b = new T.Mesh(new T.SphereGeometry(.17, 14, 10), TH.neon ? new T.MeshBasicMaterial({color: bcol[k], toneMapped: false}) : new T.MeshStandardMaterial({color: bcol[k], roughness: .25, metalness: .1})); b.scale.y = 1.2;
+      const ox = (Math.random() - .5)*.45, oz = (Math.random() - .5)*.45, h = 1.5 + Math.random()*.6; b.position.set(bx + ox, h, bz + oz); b.userData = {h, ph: Math.random()*6}; g.add(b); this.decoBalloons.push(b);
+      const st = new T.Mesh(new T.CylinderGeometry(.004, .004, h - .2, 3), new T.MeshBasicMaterial({color: 0xdddddd})); st.position.set(bx + ox*.4, (h - .2)/2, bz + oz*.4); g.add(st); }
+    try{ L.wSign(g, [LK.banner || TH.ban[0], TH.ban[1]], cx, 2.35, hz0 + .14, 3.2, .9, 0, TH.sign); }catch(e){}
+    this.decoFlames = []; try{ this.decoProps(g, TH.props, cx, cz, LOW); }catch(e){ console.warn(e); } },
+  /* themed extras: pumpkins and skulls, a birthday cake and presents, glow sticks, tiki torches */
+  decoProps(g, kind, cx, cz, LOW){ if (!kind) return; const T = THREE, L = this.L, [hx0, hx1, hz0, hz1] = this.HOUSE, flame = (x, y, z, c, s = .5) => { const f = L.wGlow(g, c, s, x, y, z, .9); f.userData.ph = Math.random()*6; this.decoFlames.push(f); return f; };
+    if (kind === "halloween"){
+      const pm = new T.MeshStandardMaterial({color: 0xe8701a, roughness: .55, emissive: 0xff5a00, emissiveIntensity: .12}), stem = new T.MeshStandardMaterial({color: 0x3a5a1a, roughness: .8});
+      const pumpkin = (x, z, s) => { const p = new T.Group(); p.position.set(x, 0, z); g.add(p); for (let i = 0; i < 6; i++){ const lobe = new T.Mesh(new T.SphereGeometry(.16*s, 12, 10), pm); lobe.scale.set(.75, .85, 1.05); const a = i/6*Math.PI*2; lobe.position.set(Math.cos(a)*.07*s, .14*s, Math.sin(a)*.07*s); lobe.rotation.y = -a; p.add(lobe); }
+        const st = new T.Mesh(new T.CylinderGeometry(.015*s, .025*s, .08*s, 6), stem); st.position.y = .3*s; p.add(st); flame(x, .16*s, z + .05, 0xff8a20, .45*s); };
+      for (const [x, z, s] of [[cx - 1.5, hz1 + .7, 1.3], [cx + 1.5, hz1 + .7, 1.1], [cx - 2.4, hz1 + 1.4, .9], [cx + 2.3, hz1 + 1.5, 1.2], [hx0 + .5, hz0 + .5, 1.1], [hx1 - .5, hz0 + .5, .9], [cx - .8, hz1 + 3, 1], [cx + .9, hz1 + 4.2, .8]]) pumpkin(x, z, s);
+      L.asset(g, "skull", {x: hx0 + .9, y: 0, z: hz0 + .5, h: .25, ry: .6}); L.asset(g, "skull", {x: hx1 - .9, y: 0, z: hz0 + .5, h: .25, ry: -.6}); L.asset(g, "candles", {x: cx, z: hz0 + .4, h: .35});
+      // cobweb strands in the corners
+      const web = new T.LineBasicMaterial({color: 0xdddddd, transparent: true, opacity: .55}); for (const [x, z, sx, sz] of [[hx0, hz0, 1, 1], [hx1, hz0, -1, 1], [hx0, hz1, 1, -1], [hx1, hz1, -1, -1]]){ const pts = []; for (let i = 0; i < 6; i++){ const a = i/5*Math.PI/2; pts.push(new T.Vector3(x, 3, z), new T.Vector3(x + sx*Math.cos(a)*.9, 3 - Math.sin(a)*.9*.8, z + sz*Math.sin(a)*.2)); } g.add(new T.LineSegments(new T.BufferGeometry().setFromPoints(pts), web)); } }
+    if (kind === "cake"){
+      const tx = cx + 2.4, tz = hz0 + 1.3; L.wCyl(g, .5, .5, .05, L.stdMat(0xf4f0e8, .4), tx, .75, tz, 24); L.wCyl(g, .05, .08, .75, L.stdMat(0xd8d0c0, .4), tx, .375, tz, 10);
+      const tiers = [[.32, .2, 0xfff4f8], [.24, .18, 0xff8ac8], [.16, .16, 0xfff4f8]]; let y = .78; for (const [r, h, c] of tiers){ L.wCyl(g, r, r, h, L.stdMat(c, .5), tx, y + h/2, tz, 24); y += h; }
+      for (let i = 0; i < 5; i++){ const a = i/5*Math.PI*2, x = tx + Math.cos(a)*.09, z = tz + Math.sin(a)*.09; L.wCyl(g, .008, .008, .08, L.stdMat([0x4de1ff, 0xffc21a, 0xff4fd8][i % 3], .5), x, y + .04, z, 6); flame(x, y + .1, z, 0xffc070, .14); }
+      const gift = (x, z, s, c) => { const b = L.wBox(g, .35*s, .3*s, .35*s, L.stdMat(c, .5), x, .15*s, z); L.wBox(g, .37*s, .31*s, .06*s, L.stdMat(0xffd84a, .3), x, .15*s, z, false); L.wBox(g, .06*s, .31*s, .37*s, L.stdMat(0xffd84a, .3), x, .15*s, z, false); return b; };
+      [[tx - .9, tz + .2, 1, 0x3a8aff], [tx - .6, tz + .6, .8, 0xff3a6a], [tx + .7, tz + .5, 1.1, 0x8dff9e], [tx + .9, tz - .1, .7, 0xb05aff], [tx - 1.2, tz + .7, .9, 0xffc21a]].forEach(([x, z, s, c]) => gift(x, z, s, c)); }
+    if (kind === "glow"){
+      const nc = [0x3affd8, 0xff3ad8, 0xc8ff3a, 0x9a3aff, 0x3a6aff, 0xff7a3a]; for (let i = 0; i < (LOW ? 18 : 40); i++){ const m = new T.Mesh(new T.CylinderGeometry(.012, .012, .18, 6), new T.MeshBasicMaterial({color: nc[i % nc.length], toneMapped: false})); m.position.set(hx0 + .4 + Math.random()*(hx1 - hx0 - .8), .02, hz0 + .4 + Math.random()*(hz1 - hz0 - .8)); m.rotation.set(Math.PI/2, 0, Math.random()*6); g.add(m); }
+      for (let i = 0; i < 4; i++){ const r = new T.Mesh(new T.TorusGeometry(.5 + i*.18, .015, 6, 40), new T.MeshBasicMaterial({color: nc[i], toneMapped: false})); r.position.set(cx, 2.75, cz); r.rotation.x = Math.PI/2; g.add(r); }
+      for (let i = 0; i < 10; i++) flame(hx0 + Math.random()*(hx1 - hx0), .6 + Math.random()*2, hz0 + Math.random()*(hz1 - hz0), nc[i % nc.length], .5); }
+    if (kind === "torches"){
+      for (const [x, z] of [[cx - 1.4, hz1 + 1.2], [cx + 1.4, hz1 + 1.2], [cx - 1.4, hz1 + 3.4], [cx + 1.4, hz1 + 3.4], [hx0 - .9, hz1 + .8], [hx1 + .9, hz1 + .8]]){ L.wCyl(g, .035, .045, 1.7, L.stdMat(0x9a7a4a, .8), x, .85, z, 8); L.wCyl(g, .07, .05, .14, L.stdMat(0x5a3a1a, .8), x, 1.74, z, 8); flame(x, 1.9, z, 0xff8a20, .7); }
+      const lei = [0xff4f8a, 0xffc21a, 0xffffff, 0xff7a3a]; for (let i = 0; i < 24; i++){ const a = i/24*Math.PI*2, f = new T.Mesh(new T.SphereGeometry(.05, 6, 4), new T.MeshStandardMaterial({color: lei[i % 4], roughness: .6})); f.position.set(cx + Math.cos(a)*1.1, 2.6 + Math.sin(i*1.7)*.05, cz + Math.sin(a)*.8); g.add(f); } } },
+  npcSpawn(){ this.npcClear(); const [hx0, hx1, hz0, hz1] = this.HOUSE, spots = [[-2.5, -10.2], [-1, -11.4], [1.2, -10.6], [2.8, -12], [-3.5, -12.6], [0, -13.6], [-6, -5.5], [6, -6]];
+    this.npcs = spots.map(([x, z], i) => { try{ const sl = Mogul.spawn(x, z, Math.random()*6, "dance", {gender: i % 2 ? "m" : "f"}); if (sl) sl.houseNpc = true; return sl; }catch(e){ return null; } }).filter(Boolean); },
+  npcClear(){ for (const sl of this.npcs || []) try{ Mogul.despawn(sl); }catch(e){} this.npcs = []; },
+  partyTick(dt, t){ const g = this.decoG; if (g){ if (this.decoBall) this.decoBall.rotation.y += dt*.8; const [hx0, hx1, hz0, hz1] = this.HOUSE, cx = (hx0 + hx1)/2, cz = (hz0 + hz1)/2;
+      (this.decoSpots || []).forEach((s, i) => { const a = t*.7 + s.userData.ph; s.position.set(cx + Math.cos(a)*2.4, .05, cz + Math.sin(a*1.3)*1.8); s.material.opacity = .4 + .3*Math.sin(t*3 + i); });
+      (this.decoLights || []).forEach((l, i) => { l.color.setHSL((t*.12 + i*.5) % 1, 1, .55); });
+      (this.decoBalloons || []).forEach(b => { b.position.y = b.userData.h + Math.sin(t*1.4 + b.userData.ph)*.06; });
+      (this.decoFlames || []).forEach(f => { f.material.opacity = .65 + Math.sin(t*11 + f.userData.ph)*.15 + Math.sin(t*23 + f.userData.ph*2)*.1; }); }
+    if (!this.party) return; this._pt = (this._pt || 0) + dt; if (this._pt < 60) return; this._pt = 0; const n = this.guestCount();
+    if (this.party.host){ if (n > 0){ const cash = Math.min(60, 12*n); this.earn(cash); Wellness.add("social", 2 + n, true); toast(`🎉 Your party's popping: ${n} guest${n === 1 ? "" : "s"}. +$${cash}, 👥 Social up`); } else if (this.party.npc) Wellness.add("social", 1, true); }
+    else if (this.visit) Wellness.add("social", 3, true); },
 
   /* ---------- 📦 My models: 3D models you bring in from Sketchfab or a .glb file (kept in this browser) ---------- */
   mineList(){ return store.get("homeModels", []); },
