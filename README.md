@@ -336,6 +336,7 @@ My Home's ground, floors, walls, road, roof shingles and bark use photo textures
 - **Home editing**: ✋ Move mode (tap/drag to pick up, drag or tap to place, camera-relative nudge pad, ↻ turn) and ↶ Undo / ↷ Redo for add, remove, move and turn (80 steps, money-consistent).
 - **House parties**: host with a code/link (`#house=CODE`, party room `house-CODE`, `house` action channel). The host broadcasts the home layout (lot + items); guests render it read-only (`Home.visit`, saves disabled). Decorations, neighbor NPCs, host DJ without VIP, karaoke/trivia/dance-off, and per-minute host rewards.
 - **House parties+**: themes (classic, Halloween, birthday, glow, luau) with custom banner text synced to guests; planned parties (`housePlan`) with timed invites (`when`/`theme` tags), 10-minute reminders for host and guests; guest gifts ($20, capped at $100 per guest).
+- **Game controllers** (`Pad`): standard Gamepad API (Xbox, PlayStation, others). World: sticks walk/look, Ⓐ taps the center dot, bumpers change station, triggers zoom. Menus/dialogs/Mogul canvas: spatial focus with a gold highlight; ☰ toggles on-screen-button mode.
 - **Phone expand**: the ⛶ button puts the Mogul game panel full screen (and requests landscape on Android). Bouncer cards zoom on tap.
 
 ## Neighborhood and jobs

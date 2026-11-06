@@ -568,6 +568,8 @@ details.setgroup summary{cursor:pointer;color:var(--muted);font-weight:600}
 .mogul-xp{position:absolute;left:58px;top:10px;width:40px;height:36px;border-radius:10px;border:1px solid rgba(255,194,26,.5);background:rgba(16,10,8,.9);color:#ffc21a;font:800 18px var(--f-body);cursor:pointer}
 .mogul.xpand{left:0!important;right:0!important;top:0!important;bottom:0!important;width:100vw!important;height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;background:rgba(8,5,12,.95);z-index:72;padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);box-sizing:border-box}
 .mogul.xpand[hidden]{display:none}
+.pad-focus{outline:3px solid #ffc21a!important;outline-offset:2px!important;box-shadow:0 0 0 6px rgba(255,194,26,.35)!important}
+#padDot{position:fixed;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 0 0 2px rgba(0,0,0,.55),0 0 10px rgba(255,194,26,.8);z-index:30;pointer-events:none}#padDot[hidden]{display:none}
 body.mg-xp .homehud,body.mg-xp .karaoke{display:none!important}
 .mogul.xpand canvas{width:auto!important;height:auto!important;max-width:100%;max-height:100%;border-radius:0}
 .mogul.xpand .mogul-mini{display:none}.mogul.xpand .mogul-xp{position:fixed;left:auto;right:14px;top:max(10px,env(safe-area-inset-top,0px));width:48px;height:44px;font-size:20px;z-index:2}
@@ -8919,6 +8921,8 @@ const Lounge = {
       if (this.keys.has("arrowleft")) this.yaw += dt*1.8; if (this.keys.has("arrowright")) this.yaw -= dt*1.8;
       if (f || s){ this.walkStep(f, s, this.yaw, dt*2.4); this.standing = true; this.moved = true; }
     }
+    // 🎮 Xbox / PlayStation controller: sticks walk and look
+    try{ if (typeof Pad !== "undefined" && Pad.on && !this.renderer.xr.isPresenting) Pad.move(dt); }catch(e){}
     // VR sticks: left walks, right turns in 30° steps
     if (this.renderer.xr.isPresenting && this.mode === "vr" && this.session){
       for (const src of this.session.inputSources){
@@ -16965,6 +16969,99 @@ Object.assign(Mogul, {
     this.night = {name: v.name, profit, lines}; this.say(profit >= 0 ? `${v.name} made ${this.money(profit)} tonight!` : `${v.name} lost ${this.money(-profit)} tonight.`, profit < 0);
   }
 });
+
+/* ================= 🎮 Game controllers: Xbox, PlayStation and other standard gamepads =================
+   Left stick walks, right stick looks, Ⓐ/✕ taps what the center dot is on, Ⓑ/◯ goes back, bumpers change the station,
+   triggers zoom. In menus, windows and game panels the D-pad (or left stick) moves a gold highlight and Ⓐ presses it.
+   ☰ Menu / Options switches between moving around and using the on-screen buttons. */
+const Pad = {
+  on: false, uiMode: false, prev: [], held: {}, mfocus: null, lastCtx: "",
+  init(){ if (!("getGamepads" in navigator)) return;
+    addEventListener("gamepadconnected", e => { const first = !this.on; this.on = true; this.loop(); this.cross(); if (first) toast(`🎮 ${this.kind(e.gamepad)} controller connected! Left stick walks · right stick looks · ${this.btnName("a")} selects · ${this.btnName("b")} back · ${this.btnName("menu")} on-screen buttons.`, 7000); });
+    addEventListener("gamepaddisconnected", () => { if (!this.pads().length){ this.on = false; this.uiMode = false; this.cross(); this.clearFocus(); toast("🎮 Controller disconnected."); } });
+    if (this.pads().length){ this.on = true; this.loop(); } },
+  pads(){ try{ return [...navigator.getGamepads()].filter(g => g && g.connected && g.buttons && g.buttons.length >= 10); }catch(e){ return []; } },
+  kind(g){ const id = String(g && g.id || "").toLowerCase(); return /054c|playstation|dualsense|dualshock|wireless controller|ps[345]/.test(id) ? "PlayStation" : /045e|xbox|xinput|microsoft/.test(id) ? "Xbox" : "Game"; },
+  ps(){ const g = this.pads()[0]; return g && this.kind(g) === "PlayStation"; },
+  btnName(k){ const ps = this.ps(); return ({a: ps ? "✕" : "Ⓐ", b: ps ? "◯" : "Ⓑ", x: ps ? "□" : "Ⓧ", y: ps ? "△" : "Ⓨ", menu: ps ? "Options" : "☰ Menu"})[k]; },
+  loop(){ if (this._raf) return; const f = () => { if (!this.pads().length){ this._raf = null; return; } this._raf = requestAnimationFrame(f); try{ this.poll(); }catch(e){ console.warn(e); } }; this._raf = requestAnimationFrame(f); },
+  /* where the controller's buttons should go right now */
+  ctx(){ const vis = el => el && !el.hidden && el.offsetParent !== null;
+    if (document.querySelector("dialog[open]")) return "dom";
+    for (const sel of ["#skDlg", "#hpInvite", ".tlive", ".karaoke", "#hpCard", "#hpPlanCard"]){ const el = document.querySelector(sel); if (el && !el.hidden && getComputedStyle(el).display !== "none") return "dom"; }
+    const M = typeof Mogul !== "undefined" ? Mogul : null; if (M && M.on && M.box && !M.box.hidden && !M.peeking) return "mogul";
+    if (this.uiMode) return "dom";
+    const st = $("#stage"); if (!st || st.hidden || typeof Lounge === "undefined" || !Lounge.running) return "dom";
+    return "world"; },
+  poll(){ const g = this.pads()[0]; if (!g) return; if (typeof Lounge !== "undefined" && Lounge.renderer && Lounge.renderer.xr.isPresenting) return;
+    const B = i => !!(g.buttons[i] && (g.buttons[i].pressed || g.buttons[i].value > .5)), ax = g.axes || [], now = performance.now();
+    const st = {a: B(0), b: B(1), x: B(2), y: B(3), lb: B(4), rb: B(5), menu: B(9), view: B(8), l3: B(10),
+      up: B(12) || (ax[1] || 0) < -.6, down: B(13) || (ax[1] || 0) > .6, left: B(14) || (ax[0] || 0) < -.6, right: B(15) || (ax[0] || 0) > .6};
+    const ctx = this.ctx(); if (ctx !== this.lastCtx){ this.lastCtx = ctx; this.cross(); if (ctx !== "mogul" && typeof Mogul !== "undefined" && this.mfocus){ this.mfocus = null; } if (ctx === "world") this.clearFocus(); }
+    const P = this.prevSt || {}; this.prevSt = st;
+    const press = k => st[k] && !P[k], release = k => !st[k] && P[k];
+    // the D-pad (and the left stick in menus) repeats while held
+    const dirs = ["up", "down", "left", "right"], rep = k => { if (press(k)){ this.held[k] = now + 380; return true; } if (st[k] && now > (this.held[k] || 0)){ this.held[k] = now + 120; return true; } return false; };
+    if (press("menu") || press("view")){ if (ctx === "world") this.uiMode = true; else if (this.uiMode) this.uiMode = false; else return; this.cross(); if (this.uiMode){ this.clearFocus(); this.moveFocus(null); toast(`🎮 On-screen buttons: D-pad to move, ${this.btnName("a")} to press. ${this.btnName("menu")} to go back to walking.`, 3500); } else this.clearFocus(); return; }
+    if (ctx === "world"){
+      if (press("a")){ this.rumble(); this.centerTap(); }
+      if (press("b")) this.esc();
+      if (press("x")) try{ Party.setEmote(Party.emote === "dance" ? "idle" : "dance"); toast(Party.emote === "dance" ? "🕺 Dancing!" : "Stopped dancing."); }catch(e){}
+      if (press("y")) try{ Mogul.open(); }catch(e){}
+      if (press("lb")) try{ step(-1); }catch(e){}
+      if (press("rb")) try{ step(1); }catch(e){}
+      return; }
+    if (ctx === "mogul") return this.mogul(st, press, release, rep);
+    // menus, windows and the on-screen buttons
+    for (const d of dirs) if (rep(d)) this.moveFocus(d);
+    if (press("a")){ const el = this.focusEl(); if (el){ this.rumble(); if (/INPUT|TEXTAREA/.test(el.tagName) && !/checkbox|radio|range|button|submit/.test(el.type)) el.focus(); else el.click(); setTimeout(() => { if (!this.focusEl()) this.moveFocus(null); }, 120); } else this.moveFocus(null); }
+    if (press("b")){ if (this.uiMode && !document.querySelector("dialog[open]")){ this.uiMode = false; this.clearFocus(); this.cross(); } else this.esc(); }
+    if (press("lb")) try{ step(-1); }catch(e){} if (press("rb")) try{ step(1); }catch(e){} },
+  /* every frame: sticks walk and look, triggers zoom */
+  move(dt){ const g = this.pads()[0]; if (!g || this.ctx() !== "world") return; const L = Lounge, ax = g.axes || [], dz = v => Math.abs(v) < .15 ? 0 : (v - Math.sign(v)*.15)/.85;
+    const lx = dz(ax[0] || 0), ly = dz(ax[1] || 0), rx = dz(ax[2] || 0), ry = dz(ax[3] || 0), run = g.buttons[10] && g.buttons[10].pressed ? 1.9 : 1;
+    let f = -ly, s = lx; if (g.buttons[12] && g.buttons[12].pressed) f = 1; if (g.buttons[13] && g.buttons[13].pressed) f = -1;
+    if (f || s){ L.walkStep(f, s, L.yaw, dt*2.4*run*Math.min(1, Math.hypot(f, s) + .2)); L.standing = true; L.moved = true; }
+    let turn = rx; if (g.buttons[14] && g.buttons[14].pressed) turn = -1; if (g.buttons[15] && g.buttons[15].pressed) turn = 1;
+    if (turn){ L.yaw -= turn*dt*2.4; L.userLooked = true; } if (ry){ L.pitch = Math.max(-1.2, Math.min(1.2, L.pitch - ry*dt*1.7)); L.userLooked = true; }
+    const lt = g.buttons[6] ? g.buttons[6].value : 0, rt = g.buttons[7] ? g.buttons[7].value : 0; if ((lt > .1 || rt > .1) && typeof View !== "undefined") View.set(View.zt*Math.exp((rt - lt)*dt*1.6)); },
+  /* Ⓐ in the world: tap whatever the center dot is on */
+  centerTap(){ const L = Lounge; if (!L.camera || !L.ray) return; L.ray.setFromCamera(new THREE.Vector2(0, 0), L.camera);
+    try{ if (L.screenGrab && L.mode !== "ar" && L.screenGrab()) return; }catch(e){} try{ if (Home.tapRay(L.ray)) return; }catch(e){} try{ if (!L.pick() && L.mode !== "ar") L.tapFloor(); }catch(e){} },
+  esc(){ const d = document.querySelector("dialog[open]"); if (d){ try{ d.close(); }catch(e){} return; } for (const sel of ["#skDlg", "#hpInvite"]){ const el = document.querySelector(sel); if (el && !el.hidden){ el.hidden = true; return; } }
+    const pb = $("#mgPeek"); if (pb && !pb.hidden){ pb.click(); return; } document.dispatchEvent(new KeyboardEvent("keydown", {key: "Escape", bubbles: true})); dispatchEvent(new KeyboardEvent("keydown", {key: "Escape"})); },
+  rumble(){ try{ const g = this.pads()[0], v = g && g.vibrationActuator; if (v && v.playEffect) v.playEffect("dual-rumble", {duration: 35, strongMagnitude: .15, weakMagnitude: .35}); }catch(e){} },
+  /* the center dot for aiming taps */
+  cross(){ let c = $("#padDot"); const show = this.on && this.ctx() === "world" && !this.uiMode; if (!c){ if (!show) return; c = document.createElement("div"); c.id = "padDot"; c.setAttribute("aria-hidden", "true"); document.body.appendChild(c); } c.hidden = !show; },
+  /* ---- the gold highlight in menus ---- */
+  root(){ const d = [...document.querySelectorAll("dialog[open]")].pop(); if (d) return d; for (const sel of ["#skDlg", "#hpInvite", ".tlive", "#hpPlanCard", "#hpCard", ".karaoke"]){ const el = document.querySelector(sel); if (el && !el.hidden && getComputedStyle(el).display !== "none") return el; } return document.body; },
+  items(){ const r = this.root(), vw = innerWidth, vh = innerHeight; return [...r.querySelectorAll("button, a[href], input, select, textarea, summary, [tabindex]:not([tabindex='-1'])")].filter(el => { if (el.disabled || el.closest("[hidden]") || el.closest("[inert]")) return false; const b = el.getBoundingClientRect(); if (!(b.width > 4 && b.height > 4 && b.bottom > 0 && b.right > 0 && b.top < vh && b.left < vw && getComputedStyle(el).visibility !== "hidden")) return false;
+      // only things that are really on top (not hidden behind the 3D view or another window)
+      const x = Math.min(vw - 1, Math.max(0, b.left + b.width/2)), y = Math.min(vh - 1, Math.max(0, b.top + b.height/2)), hit = document.elementFromPoint(x, y); return !!hit && (hit === el || el.contains(hit) || hit.contains(el) || (el.tagName === "INPUT" && hit.tagName === "LABEL" && hit.contains(el))); }); },
+  focusEl(){ const el = this._f; return el && el.isConnected && this.items().includes(el) ? el : null; },
+  clearFocus(){ if (this._f) this._f.classList.remove("pad-focus"); this._f = null; },
+  setFocus(el){ this.clearFocus(); if (!el) return; this._f = el; el.classList.add("pad-focus"); try{ el.focus({preventScroll: true}); }catch(e){} try{ el.scrollIntoView({block: "nearest", inline: "nearest"}); }catch(e){} },
+  nearest(list, cur, dir, R){ if (!cur) return list.slice().sort((a, b) => (R(a).y - R(b).y) || (R(a).x - R(b).x))[0];
+    const c = R(cur), cx = c.x + c.w/2, cy = c.y + c.h/2; let best = null, bs = 1e9;
+    for (const o of list){ if (o === cur) continue; const r = R(o), ox = r.x + r.w/2, oy = r.y + r.h/2, dx = ox - cx, dy = oy - cy;
+      const main = dir === "right" ? dx : dir === "left" ? -dx : dir === "down" ? dy : -dy, side = dir === "left" || dir === "right" ? Math.abs(dy) : Math.abs(dx); if (main < 4) continue;
+      const sc = main + side*2.2; if (sc < bs){ bs = sc; best = o; } } return best; },
+  moveFocus(dir){ const L = this.items(); if (!L.length) return; const cur = this.focusEl(), R = el => { const b = el.getBoundingClientRect(); return {x: b.left, y: b.top, w: b.width, h: b.height}; };
+    const nx = this.nearest(L, cur, dir, R); if (nx) this.setFocus(nx); else if (!cur) this.setFocus(L[0]); },
+  /* ---- the Nightclub Mogul / games panel (it's drawn on a canvas, so we highlight its buttons) ---- */
+  mogul(st, press, release, rep){ const M = Mogul, g = M.game, keyed = g && M.view === "game" && typeof g.key === "function", KM = {up: "arrowup", down: "arrowdown", left: "arrowleft", right: "arrowright"};
+    for (const d of ["up", "down", "left", "right"]){
+      if (keyed && press(d) && g.key(KM[d], true)){ this._keyed = true; continue; } if (keyed && release(d) && this._keyed){ try{ g.key(KM[d], false); }catch(e){} continue; }
+      if (rep(d)){ const regs = M.regions.filter(r => r.W > 0), cur = regs.find(r => r.id === this.mfocus), nx = this.nearest(regs, cur, cur ? d : null, r => ({x: r.X, y: r.Y, w: r.W, h: r.H})); if (nx){ this.mfocus = nx.id; M.hover = nx.id; M.draw(); } } }
+    if (press("a")){ if (keyed && g.key(" ", true)){ this._keyA = true; } else { let r = M.regions.find(x => x.id === this.mfocus); if (!r){ const regs = M.regions.filter(x => !["mx", "mback"].includes(x.id)); r = this.nearest(regs, null, null, x => ({x: x.X, y: x.Y, w: x.W, h: x.H})); if (r){ this.mfocus = r.id; M.hover = r.id; M.draw(); return; } }
+        if (r){ this.rumble(); if (r.hold){ this._hold = r; r.hold(true); } else { try{ r.fn({px: r.X + r.W/2, py: r.Y + r.H/2}); }catch(e){ console.warn(e); } } M.draw(); setTimeout(() => { if (!M.regions.some(x => x.id === this.mfocus)) this.mfocus = null; }, 60); } } }
+    if (release("a")){ if (this._keyA){ this._keyA = false; try{ g.key(" ", false); }catch(e){} } if (this._hold){ try{ this._hold.hold(false); }catch(e){} this._hold = null; M.draw(); } }
+    if (press("b")){ const r = M.regions.find(x => x.id === "mback") || (M.view !== "game" ? M.regions.find(x => x.id === "mx") : null); if (r) r.fn({}); else if (M.peeking) this.esc(); M.draw(); }
+    if (press("y")){ const r = M.regions.find(x => x.id === "peek"); if (r) r.fn({}); }
+    if (press("x")) try{ M.expand(!M.box.classList.contains("xpand")); }catch(e){}
+    if (press("lb")) try{ step(-1); }catch(e){} if (press("rb")) try{ step(1); }catch(e){} }
+};
+try{ Pad.init(); }catch(e){}
 
 /* ================= 🔍 View: zoom, "watch up close", and how-to-move help for every device ================= */
 const View = {
