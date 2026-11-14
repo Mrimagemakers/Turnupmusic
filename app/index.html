@@ -202,6 +202,20 @@ form.add label{display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--m
 .mini button{width:48px;height:48px;border-radius:50%;background:var(--gold);color:#2a1405;display:grid;place-items:center}
 .mini svg{width:22px;height:22px;fill:currentColor}
 
+#cbLayer{position:fixed;inset:0;z-index:95;touch-action:none;-webkit-user-select:none;user-select:none}#cbLayer[hidden]{display:none}
+#cbLayer .cb-mid{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:rgba(0,0,0,.85)}
+#cbLayer .cb-dot{position:absolute;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;--p:0%;pointer-events:none}
+#cbLayer .cb-dot::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(#ffc21a var(--p),transparent 0);-webkit-mask:radial-gradient(circle,transparent 8px,#000 9px);mask:radial-gradient(circle,transparent 8px,#000 9px)}
+#cbLayer .cb-dot i{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.6)}
+#cbLayer .cb-dot.hot i{background:#ffc21a}
+#cbLayer .cb-x,#cbLayer .cb-c{position:absolute;top:8px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.45);color:#fff;font:700 18px system-ui;cursor:pointer;opacity:.6}
+#cbLayer .cb-x{left:calc(50% - 48px)}#cbLayer .cb-c{left:calc(50% + 8px)}
+#cbLayer .cb-turn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;background:rgba(8,5,12,.92);color:#fff;font:800 20px system-ui}#cbLayer .cb-turn[hidden]{display:none}
+body.cb-on #stage > :not(#loungeCv){display:none!important}
+body.cb-on .toast,body.cb-on .mogul,body.cb-on #homeHud,body.cb-on #padDot,body.cb-on .v360bar,body.cb-on #mgPeek{display:none!important}
+.v360bar{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;display:flex;gap:8px;align-items:center;padding:8px 10px;border-radius:16px;background:rgba(16,10,8,.88);border:1px solid rgba(255,194,26,.5);color:#fff;max-width:calc(100% - 24px)}
+.v360bar[hidden]{display:none}.v360bar b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40vw}.v360bar button{min-height:40px;padding:6px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-weight:700;cursor:pointer}
+.v360f{display:flex;flex-direction:column;gap:10px}.v360f .filebtn{display:inline-flex;justify-content:center;cursor:pointer}.v360f .row{display:flex;gap:8px}.v360cb{display:flex;gap:8px;align-items:center;font-weight:600}
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;z-index:9;padding:10px 16px;border-radius:12px;background:var(--chrome);color:var(--ink);font-weight:600;transition:.25s;pointer-events:none;max-width:calc(100% - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
@@ -981,6 +995,8 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
       <button class="chipbtn xr" id="btnVR" type="button">Enter VR</button>
       <button class="chipbtn xr" id="btnAR" type="button">Place in my room (AR)</button>
       <button class="chipbtn xr" id="btnMR" type="button">🕶 Mixed reality (Quest passthrough)</button>
+      <button class="chipbtn xr" id="btnCB" type="button">📱 Phone VR viewer (Cardboard)</button>
+      <button class="chipbtn" id="btn360" type="button">🌐 Watch a 360° video</button>
     </div>
     <p class="hint" id="xpHint"></p>
     <p class="hint" id="xrSupport"></p>
@@ -1543,7 +1559,8 @@ function save(){
 
 /* ---------- Toast ---------- */
 let toastT;
-function toast(msg, ms=2600){ try{ if (Lounge.renderer && Lounge.renderer.xr.isPresenting) VRMenu.say(msg); }catch(e){} const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove("show"), ms); }
+function XRV(){ try{ return !!(Lounge.renderer && (Lounge.renderer.xr.isPresenting || (typeof Cardboard !== "undefined" && Cardboard.on))); }catch(e){ return false; } }
+function toast(msg, ms=2600){ try{ if (XRV()) VRMenu.say(msg); }catch(e){} const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove("show"), ms); }
 
 /* ---------- Audio engine ---------- */
 // Playback is started inside the tap itself (no waiting first), which every browser requires.
@@ -8635,7 +8652,7 @@ const Lounge = {
     const cv = $("#loungeCv"), w = cv.clientWidth || innerWidth, h = cv.clientHeight || innerHeight;
     this.renderer.setSize(w, h, false);
     if (this.composer){ this.composer.setPixelRatio((typeof GFX !== "undefined" && GFX.pr) || Math.min(devicePixelRatio || 1, 2)); this.composer.setSize(w, h); }
-    this.baseFov = w < h ? 92 : 70; this.camera.aspect = w/h; this.camera.fov = this.baseFov/((typeof View !== "undefined" && View.zoom) || 1); this.camera.updateProjectionMatrix();
+    this.baseFov = typeof Cardboard !== "undefined" && Cardboard.on ? 84 : w < h ? 92 : 70; this.camera.aspect = w/h; this.camera.fov = this.baseFov/((typeof View !== "undefined" && View.zoom) || 1); this.camera.updateProjectionMatrix();
     if (!this.userLooked) this.pitch = w < h ? -.02 : -.12;
   },
 
@@ -8646,6 +8663,7 @@ const Lounge = {
     vr.disabled = ar.disabled = false;
     if (!navigator.xr){
       this.xrSupported = {vr: false, ar: false};
+      if (typeof Cardboard !== "undefined" && Cardboard.prefer()){ msg.textContent = "📱 Phone VR ready: tap Enter VR, then slide your phone into a Google Cardboard (or any phone VR viewer)."; return; }
       msg.textContent = !isSecureContext
         ? "Headset mode needs this page to be opened from a website (https://…), not a downloaded file. On your Quest, open the Turn Up Music web link in the Meta Quest Browser."
         : "This browser can't do VR or AR. On a Quest, use the Meta Quest Browser; on Android, use Chrome.";
@@ -8654,7 +8672,7 @@ const Lounge = {
     try{ this.xrSupported.vr = await navigator.xr.isSessionSupported("immersive-vr"); }catch(e){ this.xrSupported.vr = false; }
     try{ this.xrSupported.ar = await navigator.xr.isSessionSupported("immersive-ar"); }catch(e){ this.xrSupported.ar = false; }
     vr.classList.toggle("dim", !this.xrSupported.vr); ar.classList.toggle("dim", !this.xrSupported.ar); if (mrb) mrb.classList.toggle("dim", !this.xrSupported.ar);
-    msg.textContent = this.xrSupported.vr ? "Headset ready: tap Enter VR." : this.xrSupported.ar ? "" : "No VR headset or AR phone found on this device. The 3D lounge still works here: drag to look around.";
+    msg.textContent = typeof Cardboard !== "undefined" && Cardboard.prefer() ? "📱 Phone VR ready: tap Enter VR, then slide your phone into a Google Cardboard (or any phone VR viewer)." : this.xrSupported.vr ? "Headset ready: tap Enter VR." : this.xrSupported.ar ? "" : "No VR headset or AR phone found on this device. The 3D lounge still works here: drag to look around.";
   },
   xrFail(text){ $("#xrSupport").textContent = text; toast(text, 7000); },
   async enterXR(kind, o = {}){
@@ -9547,9 +9565,11 @@ const Lounge = {
 
     if (!this.renderer.xr.isPresenting){
       this.camera.rotation.set(this.pitch, this.yaw, this.camRoll || 0, "YXZ");
-      if (Fight.shake > .0005){ this.camera.rotation.x += (Math.random() - .5)*Fight.shake; this.camera.rotation.y += (Math.random() - .5)*Fight.shake; Fight.shake = Math.max(0, Fight.shake - dt*.12); }
-      if (!this.drag) this.yaw += Math.sin(t*.1)*.0003;
+      if (typeof Cardboard !== "undefined" && Cardboard.on){ try{ Cardboard.apply(dt); }catch(e){ console.warn(e); } }
+      else if (Fight.shake > .0005){ this.camera.rotation.x += (Math.random() - .5)*Fight.shake; this.camera.rotation.y += (Math.random() - .5)*Fight.shake; Fight.shake = Math.max(0, Fight.shake - dt*.12); }
+      if (!this.drag && !(typeof Cardboard !== "undefined" && Cardboard.on)) this.yaw += Math.sin(t*.1)*.0003;
     }
+    try{ if (typeof Vid360 !== "undefined" && Vid360.on) Vid360.tick(); }catch(e){}
     if (this.mode === "ar" && xrFrame && this.hitSource && (!this.placed || MR.anchorPending)){
       const hits = xrFrame.getHitTestResults(this.hitSource);
       const ref = this.renderer.xr.getReferenceSpace();
@@ -9591,12 +9611,13 @@ const Lounge = {
     try{ Hunt.update(dt, t); }catch(e){ console.warn("Hunt", e); } try{ Pets.tick(dt, t); }catch(e){ console.warn("Pets", e); } try{ Mirrors.update(); SelfBody.update(dt); }catch(e){ console.warn("Mirrors", e); } try{ Jobs.tick(dt); }catch(e){ console.warn("Jobs", e); } this.updatePeople(dt, bass); this.updateCurtain(dt); try{ Mogul.update(dt); }catch(e){ console.warn(e); } try{ View.update(dt); }catch(e){ console.warn(e); }
     try{ Cam.xrFrame(dt); }catch(e){ console.warn(e); }
     try{ if (!GFX.ready) GFX.init(); GFX.tick(dt); }catch(e){ console.warn(e); }
-    if (this.composer && !this.gfxNoPost && !this.renderer.xr.isPresenting){ this.finalPass.uniforms.exposure.value = this.renderer.toneMappingExposure; if (this.finalPass.uniforms.time) this.finalPass.uniforms.time.value = this.clock.elapsedTime; this.composer.render(dt); }
+    if (typeof Cardboard !== "undefined" && Cardboard.on && !this.renderer.xr.isPresenting) Cardboard.render();
+    else if (this.composer && !this.gfxNoPost && !this.renderer.xr.isPresenting){ this.finalPass.uniforms.exposure.value = this.renderer.toneMappingExposure; if (this.finalPass.uniforms.time) this.finalPass.uniforms.time.value = this.clock.elapsedTime; this.composer.render(dt); }
     else this.renderer.render(this.scene, this.camera);
     Cam.afterRender();
   }
 };
-$("#btnVR").addEventListener("click", () => Lounge.enterXR("vr"));
+$("#btnVR").addEventListener("click", () => { if (Cardboard.prefer()) Cardboard.start(); else Lounge.enterXR("vr"); });
 $("#btnAR").addEventListener("click", () => Lounge.enterXR("ar"));
 $("#btnMR").addEventListener("click", () => Lounge.enterXR("ar", {mr: true}));
 $("#btnMood").addEventListener("click", () => { if (Lounge.built) Lounge.nextMood(); });
@@ -13586,7 +13607,7 @@ const Mogul = {
     return this.mesh;
   },
   placePanel(side = .55){
-    if (!this.mesh) return;
+    if (!this.mesh) return; if (typeof Cardboard !== "undefined" && Cardboard.on) side = 0;   // phone VR: right in front of you
     const L = Lounge, head = L.headPos(), yaw = L.headYaw() + side, d = .85;
     this.mesh.position.set(head.x - Math.sin(yaw)*d, head.y - .22, head.z - Math.cos(yaw)*d);
     this.mesh.rotation.set(-.12, yaw, 0, "YXZ");
@@ -13640,8 +13661,8 @@ const Mogul = {
     this.ensure(); this.on = true; this.view = this.view === "game" && this.game ? "game" : "menu";
     const go = () => {
       if (Lounge.worldId !== "club" && !(this.game && this.game.anyWorld)) Lounge.chooseWorld("club");
-      this.box.hidden = Lounge.renderer && Lounge.renderer.xr.isPresenting;
-      if (Lounge.renderer && Lounge.renderer.xr.isPresenting){ this.vrPanel().visible = true; this.placePanel(); }
+      this.box.hidden = XRV();
+      if (XRV()){ this.vrPanel().visible = true; this.placePanel(); }
       this.draw();
     };
     if ($("#stage").hidden || !Lounge.built){ store.set("world", "club"); openStage("lounge"); const w = setInterval(() => { if (Lounge.built){ clearInterval(w); go(); } }, 300); setTimeout(() => clearInterval(w), 60000); }
@@ -13658,7 +13679,7 @@ const Mogul = {
   /* 🥊 Brawl mode: a fight starts right where you're standing, in whatever world you're in */
   brawlHere(){
     if (!Age.ok("Brawl mode")) return;
-    const go = () => { this.ensure(); this.on = true; const xr = Lounge.renderer && Lounge.renderer.xr.isPresenting; this.box.hidden = xr; if (xr){ this.vrPanel().visible = true; } if (this.game && this.view === "game") this.quitGame(true); this.startGame("brawl", false); };
+    const go = () => { this.ensure(); this.on = true; const xr = XRV(); this.box.hidden = xr; if (xr){ this.vrPanel().visible = true; } if (this.game && this.view === "game") this.quitGame(true); this.startGame("brawl", false); };
     if ($("#stage").hidden || !Lounge.built){ openStage("lounge"); const w = setInterval(() => { if (Lounge.built && Lounge.worlds[Lounge.worldId]){ clearInterval(w); setTimeout(go, 800); } }, 300); setTimeout(() => clearInterval(w), 60000); }
     else go();
   },
@@ -13689,7 +13710,7 @@ const Mogul = {
     const G = this.GAMES[r.id], tips = G && G.howTo || [];
     this.text("HOW IT WORKS", 28, y + 18, 18, "#ffc21a", 800); y += 50;
     tips.slice(0, 5).forEach(t => { y = this.wrap("• " + t, 40, y, 21, this.W - 80, "rgba(255,255,255,.8)"); });
-    if (Lounge.renderer && Lounge.renderer.xr.isPresenting && G && G.vrTip) y = this.wrap("🥽 In VR: " + G.vrTip, 40, y + 4, 21, this.W - 80, "#9fe8ff");
+    if (XRV() && G && G.vrTip) y = this.wrap("🥽 In VR: " + G.vrTip, 40, y + 4, 21, this.W - 80, "#9fe8ff");
     const by = this.H - 90;
     if (r.well){ this.btn("shift", 28, by, 360, 66, "▶ Start", () => this.startGame(r.id, false), {primary: true, size: 28}); return; }
     this.btn("train", 28, by, 300, 66, d.tut[r.id] ? "🎓 Train again" : "🎓 Start training", () => this.startGame(r.id, true), {primary: !d.tut[r.id], size: 26});
@@ -13707,7 +13728,7 @@ const Mogul = {
     this.shift = {role, train, lv, t: 0, earn: 0, tips: 0, strikes: 0, maxStrikes: train || G.well ? 99 : 3, scores: [], log: [], over: false};
     this.game = Object.create(G); this.game.m = this; this.view = "game";
     try{ this.game.start(this.shift); }catch(e){ console.warn(e); }
-    if (Lounge.renderer && Lounge.renderer.xr.isPresenting){ this.vrPanel().visible = true; setTimeout(() => this.placePanel(this.game.panelSide ?? .55), 120); }
+    if (XRV()){ this.vrPanel().visible = true; setTimeout(() => this.placePanel(this.game.panelSide ?? .55), 120); }
     this.draw();
   },
   strike(msg){ const s = this.shift; if (!s) return; if (!s.train) s.strikes++; this.say((s.train ? "Practice tip: " : `Strike ${s.strikes}/${s.maxStrikes}: `) + msg, true); if (!s.train && s.strikes >= s.maxStrikes) setTimeout(() => this.endGame("Three strikes. The manager sent you home early."), 900); },
@@ -13771,7 +13792,7 @@ const Mogul = {
   /* every frame from the lounge */
   update(dt){
     if (!this.on) return;
-    const vr = Lounge.renderer.xr.isPresenting;
+    const vr = XRV();
     if (this.box) this.box.hidden = vr || !!this.peeking || !!(this.game && this.game.padEl && this.view === "game");
     if (this.mesh) this.mesh.visible = vr;
     if (vr && this.mesh && !this.mesh.userData.placed){ this.mesh.userData.placed = true; this.placePanel(); }
@@ -13808,7 +13829,7 @@ const Mogul = {
     const s = new T.Sprite(new T.SpriteMaterial({map: Tex.make(c), transparent: true, depthWrite: false, depthTest: false})); s.scale.set(1.1, .275, 1); s.position.y = 2.15; s.renderOrder = 9; slot.p.add(s); slot.bub = s;
   },
   moveMe(x, z, yaw){ const L = Lounge; L.moveTo(x, z, {instant: true, force: true}); if (yaw && typeof yaw === "object") yaw = Math.atan2(-(yaw.x - x), -(yaw.z - z)); if (!L.renderer.xr.isPresenting && yaw !== undefined){ L.yaw = yaw; L.pitch = -.12; L.userLooked = true; } },
-  vr(){ return Lounge.renderer && Lounge.renderer.xr.isPresenting; },
+  vr(){ return XRV(); },
   GAMES: {}
 };
 /* ---------- shared helpers for the games ---------- */
@@ -16203,7 +16224,7 @@ const Home = {
       (this.winMats || []).forEach(m => { m.emissiveIntensity = night*1.1; }); this.nightGlows = (this.nightGlows || []).filter(s => { for (let p = s; p; p = p.parent) if (p === this.g) return true; return false; }); this.nightGlows.forEach(s => { s.material.opacity = .15 + night*.75; }); (this.streetGlows || []).forEach(s => { s.material.opacity = night*.9; }); (this.bulbs || []).forEach(b => b.material.color.setHex(night > .3 ? 0xffd890 : 0x8a7a5a));
       this.swayers = (this.swayers || []).filter(s => { for (let p = s; p; p = p.parent) if (p === this.g) return true; return false; }); this.stars.material.opacity = night; this.sun.intensity = .15 + day*1.0; this.hemi.intensity = .25 + day*.5; this.lamps.forEach(l => { l.intensity = night*1.1; }); (this.gLamps || []).forEach(([gl, b]) => { gl.material.opacity = night*.8; b.material.emissiveIntensity = night*1.5; }); (this.clouds || []).forEach(c => { c.material.color.setScalar(.25 + day*.75); c.material.opacity = .25 + day*.55; });
       try{ if (typeof Party !== "undefined" && Party.room && Object.keys(Party.peers).length) Wellness.add("social", .15, true); }catch(e){}
-      { const hh = $("#homeHud"), show = this.active && !(Lounge.renderer && Lounge.renderer.xr.isPresenting) && !$("#stage").hidden; if (!hh ? show : hh.hidden === show) this.hud(); } }
+      { const hh = $("#homeHud"), show = this.active && !XRV() && !$("#stage").hidden; if (!hh ? show : hh.hidden === show) this.hud(); } }
     if (this.windU) this.windU.value = t;
     for (const s of this.swayers || []){ const k = s.userData.sway || 0; s.rotation.z = Math.sin(t*.9 + k)*.03; s.rotation.x = Math.cos(t*.7 + k*1.3)*.02; }
     if (this.sea){ const p = this.sea.geometry.attributes.position, b = this.sea.userData.base; for (let i = 0; i < p.count; i++){ const x = b[i*3], y = b[i*3 + 1]; p.setZ(i, Math.sin(x*.08 + t*1.2)*.35 + Math.sin(y*.15 - t*1.6)*.25); } p.needsUpdate = true; this.sea.geometry.computeVertexNormals(); }
@@ -16220,7 +16241,7 @@ const Home = {
   /* ---------- the build panel (phone and computer) ---------- */
   onWorld(id){ this.active = id === "home"; if (!this.active){ this.mode = ""; } if (this.min === undefined) this.min = innerHeight < 620; this.hud(); },
   hud(){
-    let h = $("#homeHud"); const show = this.active && !(Lounge.renderer && Lounge.renderer.xr.isPresenting) && !$("#stage").hidden;
+    let h = $("#homeHud"); const show = this.active && !XRV() && !$("#stage").hidden;
     if (!show){ if (h) h.hidden = true; return; }
     if (!h){ h = document.createElement("div"); h.id = "homeHud"; h.className = "homehud"; document.body.appendChild(h);
       h.addEventListener("click", e => { const b = e.target.closest("[data-h]"); if (!b) return; const a = b.dataset.h;
@@ -16732,7 +16753,7 @@ Mogul.GAMES.trivia = Mogul.scripted({
 /* start a dance-off right here, from the party bar */
 Mogul.danceHere = function(){
   if (!Age.ok("Dance-off")) return;
-  const go = () => { this.ensure(); this.on = true; const xr = Lounge.renderer && Lounge.renderer.xr.isPresenting; this.box.hidden = xr; if (xr) this.vrPanel().visible = true; if (this.game && this.view === "game") this.quitGame(true); this.startGame("danceoff", false); };
+  const go = () => { this.ensure(); this.on = true; const xr = XRV(); this.box.hidden = xr; if (xr) this.vrPanel().visible = true; if (this.game && this.view === "game") this.quitGame(true); this.startGame("danceoff", false); };
   if ($("#stage").hidden || !Lounge.built){ openStage("lounge"); const w = setInterval(() => { if (Lounge.built && Lounge.worlds[Lounge.worldId]){ clearInterval(w); setTimeout(go, 800); } }, 300); setTimeout(() => clearInterval(w), 60000); }
   else go();
 };
@@ -16970,6 +16991,129 @@ Object.assign(Mogul, {
   }
 });
 
+/* ================= 📱 Phone VR viewers: Google Cardboard and other "put your phone in it" headsets =================
+   Side-by-side picture for the two lenses, head tracking from the phone's motion sensors, a center aim dot.
+   Tap the screen (or the viewer's button, or Ⓐ on a controller) to select. No button? Look at something for a moment.
+   Look straight down at your feet to open the menu. Works on iPhone and Android, no app needed. */
+const Cardboard = {
+  on: false, yawOff: 0, q: null, dev: null, lastYaw: null, gazeKey: "", gazeT: 0, downT: 0, downLock: false, manual: false,
+  phone(){ const ua = navigator.userAgent || ""; if (/OculusBrowser|Quest|Pico|Wolvic|VisionOS/i.test(ua)) return false; return (matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) <= 900) || /iPhone|Android.+Mobile/i.test(ua); },
+  prefer(){ return this.phone(); },
+  async start(){ if (this.on) return; const L = Lounge;
+    // iPhone: motion sensors need permission from a tap
+    try{ if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function"){ const r = await DeviceOrientationEvent.requestPermission(); if (r !== "granted") toast("Motion access was turned off, so drag with your finger to look around. (iPhone: Settings › Safari › Motion & Orientation Access.)", 7000); } }catch(e){}
+    if (!L.running){ try{ $("#btnVR").disabled = true; $("#xrSupport").textContent = "Loading the lounge…"; L.start(); }catch(e){} for (let i = 0; i < 240 && !L.renderer; i++) await new Promise(r => setTimeout(r, 250)); $("#btnVR").disabled = false; $("#xrSupport").textContent = ""; if (!L.renderer) return toast("The lounge didn't load. Try again.");
+      if ($("#stage").hidden){ try{ openStage(); }catch(e){ $("#stage").hidden = false; } } }
+    this.on = true; this.manual = false; this.dev = null; this.lastYaw = null; this.gazeKey = ""; this.downT = 0; this.downLock = true; document.body.classList.add("cb-on");
+    if (!this.stereo){ this.stereo = new THREE.StereoCamera(); this.stereo.eyeSep = .064; this.stereo.aspect = .5; }
+    this.layer(); this.onOri = e => { if (e.alpha == null && e.beta == null) return; this.dev = e; }; addEventListener("deviceorientation", this.onOri, true);
+    this.onScr = () => { this.rot(); setTimeout(() => L.resize(), 200); }; addEventListener("orientationchange", this.onScr); addEventListener("resize", this.onScr);
+    try{ const el = document.documentElement; if (el.requestFullscreen && !document.fullscreenElement) await el.requestFullscreen({navigationUI: "hide"}); }catch(e){}
+    try{ await screen.orientation.lock("landscape"); }catch(e){}
+    try{ if (navigator.wakeLock) this.wake = await navigator.wakeLock.request("screen"); }catch(e){}
+    this.onFs = () => { if (!document.fullscreenElement && this.on && this.fsSeen) this.stop(); if (document.fullscreenElement) this.fsSeen = true; }; document.addEventListener("fullscreenchange", this.onFs);
+    L.standing = true; L.userLooked = true; L.resize(); this.rot();
+    setTimeout(() => { if (this.on && !this.dev){ this.manual = true; toast("No motion sensor found: drag with your finger to look around.", 5000); } }, 2500);
+    try{ VRMenu.toggle(false); }catch(e){}
+    VRMenu.say("📱 Phone VR: tap to select · look down at your feet for the menu");
+    toast("📱 Slide your phone into the viewer. Tap the screen (or the viewer's button) to select, look down for the menu.", 6000); },
+  stop(){ if (!this.on) return; this.on = false; document.body.classList.remove("cb-on"); removeEventListener("deviceorientation", this.onOri, true); removeEventListener("orientationchange", this.onScr); removeEventListener("resize", this.onScr); document.removeEventListener("fullscreenchange", this.onFs); this.fsSeen = false;
+    try{ if (this.wake) this.wake.release(); }catch(e){} this.wake = null; try{ screen.orientation.unlock(); }catch(e){} try{ if (document.fullscreenElement) document.exitFullscreen(); }catch(e){}
+    const L = Lounge; try{ VRMenu.toggle(false); }catch(e){} try{ if (Mogul.on){ Mogul.vrPanel().visible = false; Mogul.box.hidden = false; } }catch(e){} try{ if (Vid360.on) Vid360.close(); }catch(e){}
+    if (this.el) this.el.hidden = true; L.camRoll = 0; L.renderer.setScissorTest(false); L.resize(); toast("Left phone VR."); },
+  scrAngle(){ try{ return ((screen.orientation && screen.orientation.angle) ?? window.orientation ?? 0)*Math.PI/180; }catch(e){ return 0; } },
+  rot(){ const p = this.el && this.el.querySelector(".cb-turn"); if (p) p.hidden = innerWidth >= innerHeight; },
+  /* each frame: the phone's tilt becomes your head */
+  apply(dt){ const L = Lounge, T = THREE, cam = L.camera;
+    if (this.lastYaw !== null && Math.abs(L.yaw - this.lastYaw) > 1e-6) this.yawOff += L.yaw - this.lastYaw;   // something else turned you (stick, snap turn, teleport)
+    if (this.dev && !this.manual){ const e = this.dev, d2r = Math.PI/180;
+      const eu = new T.Euler((e.beta || 0)*d2r, (e.alpha || 0)*d2r, -(e.gamma || 0)*d2r, "YXZ"), q = new T.Quaternion().setFromEuler(eu);
+      q.multiply(new T.Quaternion(-Math.SQRT1_2, 0, 0, Math.SQRT1_2)); q.multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 0, 1), -this.scrAngle()));
+      if (this.firstYaw == null || this.recenter){ const f = new T.Euler().setFromQuaternion(q, "YXZ"); this.yawOff = L.yaw - f.y; this.firstYaw = 1; this.recenter = false; }
+      q.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 1, 0), this.yawOff)); cam.quaternion.copy(q);
+      const f = new T.Euler().setFromQuaternion(q, "YXZ"); L.yaw = f.y; L.pitch = f.x; L.camRoll = f.z; }
+    else cam.rotation.set(L.pitch, L.yaw, 0, "YXZ");
+    this.lastYaw = L.yaw; this.gaze(); },
+  /* the two lenses */
+  render(){ const L = Lounge, r = L.renderer, cam = L.camera, sz = r.getSize(new THREE.Vector2()), w = sz.x, h = sz.y;
+    cam.updateMatrixWorld(true); this.stereo.update(cam); r.setScissorTest(true);
+    r.setScissor(0, 0, w/2, h); r.setViewport(0, 0, w/2, h); r.render(L.scene, this.stereo.cameraL);
+    r.setScissor(w/2, 0, w/2, h); r.setViewport(w/2, 0, w/2, h); r.render(L.scene, this.stereo.cameraR);
+    r.setScissorTest(false); r.setViewport(0, 0, w, h); },
+  /* the overlay: two aim dots, a divider, a turn-sideways note and an exit button */
+  layer(){ let el = this.el; if (!el){ el = this.el = document.createElement("div"); el.id = "cbLayer";
+      el.innerHTML = `<div class="cb-mid"></div><div class="cb-dot" style="left:25%"><i></i></div><div class="cb-dot" style="left:75%"><i></i></div>
+        <div class="cb-turn" hidden>🔄 Turn your phone sideways and slide it into the viewer</div><button type="button" class="cb-x" aria-label="Leave phone VR">✕</button><button type="button" class="cb-c" aria-label="Recenter">⟲</button>`;
+      document.body.appendChild(el); el.querySelector(".cb-x").addEventListener("click", e => { e.stopPropagation(); this.stop(); }); el.querySelector(".cb-c").addEventListener("click", e => { e.stopPropagation(); this.recenter = true; toast("Recentered."); });
+      let down = null; el.addEventListener("pointerdown", e => { if (e.target.closest("button")) return; down = {x: e.clientX, y: e.clientY, yaw: Lounge.yaw, pitch: Lounge.pitch, t: performance.now(), moved: false}; try{ el.setPointerCapture(e.pointerId); }catch(err){} });
+      el.addEventListener("pointermove", e => { if (!down) return; const dx = e.clientX - down.x, dy = e.clientY - down.y; if (Math.hypot(dx, dy) > 12) down.moved = true; if (down.moved && (this.manual || !this.dev)){ Lounge.yaw = down.yaw + dx*.006; Lounge.pitch = Math.max(-1.3, Math.min(1.3, down.pitch + dy*.006)); this.lastYaw = Lounge.yaw; } });
+      el.addEventListener("pointerup", e => { if (!down) return; const d = down; down = null; if (!d.moved && performance.now() - d.t < 700){ this.select(); } }); }
+    el.hidden = false; this.rot(); },
+  ring(p, menu){ if (!this.el) return; this.el.querySelectorAll(".cb-dot").forEach(d => { d.style.setProperty("--p", Math.round(p*100) + "%"); d.classList.toggle("hot", p > 0); d.classList.toggle("menu", !!menu); }); },
+  ray(){ const L = Lounge, o = L.headPos(), d = new THREE.Vector3(); L.camera.getWorldDirection(d); return [o, d]; },
+  /* what you're looking at: a menu button, a game button, or something you can tap */
+  target(){ const L = Lounge, [o, d] = this.ray(); 
+    if (Mogul.on && Mogul.mesh && Mogul.mesh.visible){ Mogul.rc.set(o, d); Mogul.rc.far = 5; const h = Mogul.rc.intersectObject(Mogul.mesh, false)[0]; if (h && h.uv){ const px = h.uv.x*Mogul.W, py = (1 - h.uv.y)*Mogul.H, r = Mogul.regions.find(r => px >= r.X && px <= r.X + r.W && py >= r.Y && py <= r.Y + r.H); if (Mogul.hover !== (r && r.id)){ Mogul.hover = r && r.id; Mogul.draw(); } return {key: r ? "m:" + r.id : "m", menu: true, hit: !!r, wait: 1.2}; } else if (Mogul.hover){ Mogul.hover = null; Mogul.draw(); } }
+    if (VRMenu.open && VRMenu.g && VRMenu.g.visible){ const h = VRMenu.hitFor(L.camera); if (h){ VRMenu.cursor.position.copy(VRMenu.g.worldToLocal(h.point.clone())).setZ(.002); VRMenu.cursor.visible = true; const id = h.region && h.region.id; if (VRMenu.hover !== id){ VRMenu.hover = id; VRMenu.draw(); } return {key: id ? "v:" + id : "v", menu: true, hit: !!id, wait: 1.2}; } VRMenu.cursor.visible = false; }
+    L.ray.set(o, d); const hits = L.ray.intersectObjects(L.clickables, false).filter(h => L.isShown(h.object) && h.distance < 12); if (hits.length) return {key: "c:" + hits[0].object.uuid, hit: true, wait: 1.6};
+    return null; },
+  gaze(){ const L = Lounge, now = performance.now(), dt = Math.min(.25, (now - (this.gT || now))/1000); this.gT = now;
+    // look down at your feet: menu (or leave a 360° video)
+    if (L.pitch < -1.12){ if (!this.downLock){ this.downT += dt; this.ring(Math.min(1, this.downT/1.1), true); if (this.downT >= 1.1){ this.downLock = true; this.downT = 0; this.ring(0); if (Vid360.on) Vid360.close(); else { VRMenu.toggle(); if (VRMenu.open) VRMenu.say("Look at a button and tap (or hold your gaze) to press it."); } } } return; }
+    if (L.pitch > -.9) this.downLock = false; this.downT = 0;
+    if (Vid360.on){ this.ring(0); return; }
+    const t = this.target(); if (!t || !t.hit){ this.gazeKey = ""; this.gazeT = 0; this.ring(0, t && t.menu); return; }
+    if (t.key !== this.gazeKey){ this.gazeKey = t.key; this.gazeT = 0; this.fired = false; }
+    if (this.fired){ this.ring(0, t.menu); return; } this.gazeT += dt; const p = Math.max(0, (this.gazeT - .35)/(t.wait - .35)); this.ring(Math.min(1, p), t.menu);
+    if (this.gazeT >= t.wait){ this.fired = true; this.ring(0); this.select(); } },
+  /* tap: press whatever the dot is on, or walk to that spot */
+  select(){ const L = Lounge, [o, d] = this.ray(); try{ navigator.vibrate && navigator.vibrate(15); }catch(e){}
+    if (Vid360.on){ Vid360.toggle(); return; }
+    try{ if (Mogul.pressRay(o, d)) return; }catch(e){} try{ if (VRMenu.pressRay(o, d)) return; }catch(e){}
+    L.ray.set(o, d); try{ if (Home.tapRay(L.ray)) return; }catch(e){} try{ if (!L.pick()) L.tapFloor(); }catch(e){} }
+};
+
+/* ================= 🌐 360° video: wrap a 360° video all the way around you (works on screens, phone VR and headsets) ================= */
+const Vid360 = {
+  on: false,
+  open(src, name){ const L = Lounge, T = THREE; if (!L.scene) return toast("Open the lounge first.");
+    this.close(true); const v = this.v = document.createElement("video"); v.crossOrigin = "anonymous"; v.loop = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.src = src;
+    v.addEventListener("error", () => { toast("⚠ That video couldn't play here. Use an MP4 file from your device, or a direct .mp4 link from a site that allows sharing."); this.close(); }, {once: true});
+    const tex = new T.VideoTexture(v); tex.encoding = T.sRGBEncoding; tex.minFilter = T.LinearFilter;
+    const geo = new T.SphereGeometry(40, 64, 40); geo.scale(-1, 1, 1);
+    this.sphere = new T.Mesh(geo, new T.MeshBasicMaterial({map: tex, toneMapped: false, depthWrite: false})); this.sphere.renderOrder = -10;
+    // hide the world while you watch
+    this.hidden = []; for (const o of L.scene.children){ if (o.visible && o !== L.rig && o !== (VRMenu.g || null) && o !== (Mogul.mesh || null)){ o.visible = false; this.hidden.push(o); } }
+    this.fog = L.scene.fog; L.scene.fog = null; this.bg = L.scene.background; L.scene.background = new T.Color(0); L.scene.add(this.sphere);
+    this.on = true; this.wasPlaying = typeof S !== "undefined" && S.playing; try{ if (this.wasPlaying) togglePlay(); }catch(e){}
+    v.play().catch(() => toast("Tap to start the video."));
+    this.bar(name || "360° video"); toast(Cardboard.on ? "🌐 Look around! Tap to pause, look down at your feet to leave." : "🌐 Drag (or move your phone/headset) to look around.", 5000); },
+  tick(){ if (this.sphere) this.sphere.position.copy(Lounge.headPos()); },
+  toggle(){ const v = this.v; if (!v) return; if (v.paused) v.play().catch(() => {}); else v.pause(); this.bar(); },
+  close(quiet){ if (!this.on) return; const L = Lounge; this.on = false; try{ this.v.pause(); this.v.removeAttribute("src"); this.v.load(); }catch(e){}
+    if (this.sphere){ L.scene.remove(this.sphere); this.sphere.geometry.dispose(); this.sphere.material.map.dispose(); this.sphere.material.dispose(); this.sphere = null; }
+    (this.hidden || []).forEach(o => o.visible = true); this.hidden = []; L.scene.fog = this.fog; L.scene.background = this.bg;
+    if (this.url){ URL.revokeObjectURL(this.url); this.url = null; } const b = $("#v360Bar"); if (b) b.hidden = true; try{ if (this.wasPlaying && typeof S !== "undefined" && !S.playing) togglePlay(); }catch(e){} if (!quiet) toast("Back to the lounge."); },
+  bar(name){ let b = $("#v360Bar"); if (!b){ b = document.createElement("div"); b.id = "v360Bar"; b.className = "v360bar"; document.body.appendChild(b);
+      b.addEventListener("click", e => { const k = e.target.closest("[data-v]"); if (!k) return; if (k.dataset.v === "pp") this.toggle(); else if (k.dataset.v === "x") this.close(); else if (k.dataset.v === "cb") Cardboard.start(); }); }
+    if (name) this.name = name; b.innerHTML = `<b>🌐 ${esc(this.name || "360° video")}</b><button type="button" data-v="pp">${this.v && !this.v.paused ? "⏸ Pause" : "▶ Play"}</button>${Cardboard.prefer() && !Cardboard.on ? `<button type="button" data-v="cb">📱 Phone VR</button>` : ""}<button type="button" data-v="x">✕ Close</button>`; b.hidden = false; },
+  /* pick a 360° video: a file on this device, or a direct link */
+  pick(){ let d = $("#v360Dlg"); if (!d){ d = document.createElement("dialog"); d.id = "v360Dlg"; d.className = "sheet";
+      d.innerHTML = `<form method="dialog" class="v360f"><h2>🌐 Watch a 360° video</h2><p class="hint">A 360° video wraps all the way around you. Watch it here (drag to look around), on a headset, or in a phone VR viewer like Google Cardboard.</p>
+        <label class="primary filebtn">📁 Choose a 360° video on this device<input type="file" accept="video/*" id="v360File" hidden></label>
+        <p class="hint">…or paste a direct video link (ends in .mp4 or .webm; YouTube links won't work here):</p><input class="field" id="v360Url" type="url" placeholder="https://…/my-360-video.mp4">
+        <label class="v360cb"><input type="checkbox" id="v360Cb"> Watch in my phone VR viewer (Cardboard)</label>
+        <div class="row"><button class="primary" type="button" id="v360Go">▶ Play link</button><button type="submit">Cancel</button></div></form>`;
+      document.body.appendChild(d);
+      const go = (src, name) => { const cb = $("#v360Cb").checked; d.close(); const run = () => this.open(src, name); if (cb && !Cardboard.on) Cardboard.start().then(() => setTimeout(run, 600)); else { if ($("#stage").hidden){ try{ openStage(); }catch(e){} } setTimeout(run, Lounge.running ? 0 : 3000); } };
+      $("#v360File").addEventListener("change", e => { const f = e.target.files && e.target.files[0]; if (!f) return; if (this.url) URL.revokeObjectURL(this.url); this.url = URL.createObjectURL(f); go(this.url, f.name.replace(/\.[a-z0-9]+$/i, "")); e.target.value = ""; });
+      $("#v360Go").addEventListener("click", () => { const u = $("#v360Url").value.trim(); if (!/^https:\/\/\S+$/i.test(u)) return toast("Paste a link that starts with https://"); go(u, u.split("/").pop().split("?")[0] || "360° video"); }); }
+    $("#v360Cb").checked = Cardboard.prefer(); if (!$("#v360Cb").closest("label").hidden) $("#v360Cb").closest("label").hidden = !Cardboard.prefer(); d.showModal(); }
+};
+$("#btnCB").addEventListener("click", () => Cardboard.start());
+$("#btn360").addEventListener("click", () => Vid360.pick());
+try{ if (!Cardboard.prefer()) $("#btnCB").hidden = true; }catch(e){}
+
 /* ================= 🎮 Game controllers: Xbox, PlayStation and other standard gamepads =================
    Left stick walks, right stick looks, Ⓐ/✕ taps what the center dot is on, Ⓑ/◯ goes back, bumpers change the station,
    triggers zoom. In menus, windows and game panels the D-pad (or left stick) moves a gold highlight and Ⓐ presses it.
@@ -16986,7 +17130,7 @@ const Pad = {
   btnName(k){ const ps = this.ps(); return ({a: ps ? "✕" : "Ⓐ", b: ps ? "◯" : "Ⓑ", x: ps ? "□" : "Ⓧ", y: ps ? "△" : "Ⓨ", menu: ps ? "Options" : "☰ Menu"})[k]; },
   loop(){ if (this._raf) return; const f = () => { if (!this.pads().length){ this._raf = null; return; } this._raf = requestAnimationFrame(f); try{ this.poll(); }catch(e){ console.warn(e); } }; this._raf = requestAnimationFrame(f); },
   /* where the controller's buttons should go right now */
-  ctx(){ const vis = el => el && !el.hidden && el.offsetParent !== null;
+  ctx(){ const vis = el => el && !el.hidden && el.offsetParent !== null; if (typeof Cardboard !== "undefined" && Cardboard.on) return "world";
     if (document.querySelector("dialog[open]")) return "dom";
     for (const sel of ["#skDlg", "#hpInvite", ".tlive", ".karaoke", "#hpCard", "#hpPlanCard"]){ const el = document.querySelector(sel); if (el && !el.hidden && getComputedStyle(el).display !== "none") return "dom"; }
     const M = typeof Mogul !== "undefined" ? Mogul : null; if (M && M.on && M.box && !M.box.hidden && !M.peeking) return "mogul";
@@ -17026,9 +17170,9 @@ const Pad = {
     if (turn){ L.yaw -= turn*dt*2.4; L.userLooked = true; } if (ry){ L.pitch = Math.max(-1.2, Math.min(1.2, L.pitch - ry*dt*1.7)); L.userLooked = true; }
     const lt = g.buttons[6] ? g.buttons[6].value : 0, rt = g.buttons[7] ? g.buttons[7].value : 0; if ((lt > .1 || rt > .1) && typeof View !== "undefined") View.set(View.zt*Math.exp((rt - lt)*dt*1.6)); },
   /* Ⓐ in the world: tap whatever the center dot is on */
-  centerTap(){ const L = Lounge; if (!L.camera || !L.ray) return; L.ray.setFromCamera(new THREE.Vector2(0, 0), L.camera);
+  centerTap(){ const L = Lounge; if (!L.camera || !L.ray) return; if (typeof Cardboard !== "undefined" && Cardboard.on) return Cardboard.select(); L.ray.setFromCamera(new THREE.Vector2(0, 0), L.camera);
     try{ if (L.screenGrab && L.mode !== "ar" && L.screenGrab()) return; }catch(e){} try{ if (Home.tapRay(L.ray)) return; }catch(e){} try{ if (!L.pick() && L.mode !== "ar") L.tapFloor(); }catch(e){} },
-  esc(){ const d = document.querySelector("dialog[open]"); if (d){ try{ d.close(); }catch(e){} return; } for (const sel of ["#skDlg", "#hpInvite"]){ const el = document.querySelector(sel); if (el && !el.hidden){ el.hidden = true; return; } }
+  esc(){ if (typeof Cardboard !== "undefined" && Cardboard.on){ if (Vid360.on) Vid360.close(); else if (VRMenu.open) VRMenu.toggle(false); else if (Mogul.on) Mogul.close(); else Cardboard.stop(); return; } const d = document.querySelector("dialog[open]"); if (d){ try{ d.close(); }catch(e){} return; } for (const sel of ["#skDlg", "#hpInvite"]){ const el = document.querySelector(sel); if (el && !el.hidden){ el.hidden = true; return; } }
     const pb = $("#mgPeek"); if (pb && !pb.hidden){ pb.click(); return; } document.dispatchEvent(new KeyboardEvent("keydown", {key: "Escape", bubbles: true})); dispatchEvent(new KeyboardEvent("keydown", {key: "Escape"})); },
   rumble(){ try{ const g = this.pads()[0], v = g && g.vibrationActuator; if (v && v.playEffect) v.playEffect("dual-rumble", {duration: 35, strongMagnitude: .15, weakMagnitude: .35}); }catch(e){} },
   /* the center dot for aiming taps */
@@ -19088,7 +19232,7 @@ const VRMenu = {
     return {dist: h.distance, point: h.point, region: r, px, py};
   },
   update(dt){
-    const L = Lounge; if (!L.renderer.xr.isPresenting){ if (this.g && this.g.visible){ this.g.visible = false; this.open = false; } return; }
+    const L = Lounge; if (!XRV()){ if (this.g && this.g.visible){ this.g.visible = false; this.open = false; } return; }
     if (!this.g) this.build();
     this.attachWrist();
     this.pollButtons();
