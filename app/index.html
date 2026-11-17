@@ -763,6 +763,17 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
 @media (max-width:1024px),(pointer:coarse){.xp-bottom .partybar.dashgrid,.xp-bottom .btnrow.dtiles{overflow-x:visible;flex-wrap:wrap}.dtiles{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}}
 /* Stage controls: minimize to a slim bar (default on phones and tablets) */
 .xp-minibar{display:none}
+/* the dashboard never covers the whole screen: it scrolls, and "Hide controls" stays pinned on top */
+.xp-bottom{max-height:calc(100% - 96px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(255,194,26,.5) transparent}
+.stage:not(.dashmin) .xp-hide{position:sticky;top:0;z-index:3;background:rgba(20,13,10,.92)}
+.stage:not(.dashmin) .xp-bottom{pointer-events:auto}
+/* smart TVs: a big, clear highlight on whatever the remote is on */
+.tv :focus{outline:3px solid #ffc21a!important;outline-offset:3px;box-shadow:0 0 0 7px rgba(255,194,26,.3)!important}
+.tv .stage:not(.dashmin) .xp-bottom{pointer-events:auto;max-height:62vh;background:linear-gradient(rgba(7,4,3,.6),rgba(7,4,3,.94));border-radius:22px 22px 0 0}
+.tv .xp-minibar button{height:52px;font-size:16px}
+.tv .wp-card{max-height:92vh}
+.tv #btnVR,.tv #btnAR,.tv #btnMR,.tv #btnCB,.tv #miniVR{display:none!important}
+.tv .stage:not(.dashmin) .xp-bottom{padding-right:max(84px,env(safe-area-inset-right,0px))}
 .xp-hide{justify-self:center;pointer-events:auto;padding:6px 16px;border-radius:99px;border:1px solid var(--line);background:rgba(20,13,10,.6);color:rgba(255,255,255,.8);font:700 12px var(--f-body,sans-serif);letter-spacing:.04em}
 .stage.dashmin .xp-bottom>*:not(.xp-minibar){display:none!important}
 .stage.dashmin .xp-bottom{padding-top:18px;max-height:none;overflow:visible;background:linear-gradient(rgba(7,4,3,0),rgba(7,4,3,.7))}
@@ -997,6 +1008,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
       <button class="chipbtn xr" id="btnMR" type="button">🕶 Mixed reality (Quest passthrough)</button>
       <button class="chipbtn xr" id="btnCB" type="button">📱 Phone VR viewer (Cardboard)</button>
       <button class="chipbtn" id="btn360" type="button">🌐 Watch a 360° video</button>
+      <button class="chipbtn" id="btnTV" type="button">📺 TV mode</button>
     </div>
     <p class="hint" id="xpHint"></p>
     <p class="hint" id="xrSupport"></p>
@@ -1567,6 +1579,11 @@ function toast(msg, ms=2600){ try{ if (XRV()) VRMenu.say(msg); }catch(e){} const
 // Each station has backup links; if one fails the player moves to the next automatically.
 const UA = navigator.userAgent;
 const IS_APPLE_SAFARI = /Safari/.test(UA) && /iPhone|iPad|iPod|Macintosh/.test(UA) && !/Chrome|CriOS|Edg|Firefox|FxiOS|Android/.test(UA);
+/* smart TVs and TV sticks (Samsung, LG, Sony, Fire TV, Android/Google TV, Roku, Hisense…), or ?tv=1 / ?tv=0 to force it */
+const IS_TV = (() => { try{ const q = new URLSearchParams(location.search).get("tv"); if (q === "1" || q === "0") localStorage.setItem("tum:tvMode", q === "1" ? "true" : "false");
+    const p = localStorage.getItem("tum:tvMode"); if (p === "true") return true; if (p === "false") return false; }catch(e){}
+  return /SMART-?TV|SmartTV|Tizen|Web0S|webOS|NetCast|BRAVIA|\bAFT[A-Z]|Android ?TV|Google ?TV|CrKey|HbbTV|Roku|VIDAA|Hisense|Viera|Opera TV|AppleTV|\bDTV\b|LargeScreen/i.test(UA) || (/Android/.test(UA) && !/Mobile/.test(UA) && /\bTV\b/.test(UA)); })();
+if (IS_TV) document.documentElement.classList.add("tv");
 const IN_FRAME = (() => { try{ return window.self !== window.top; }catch(e){ return true; } })();
 let audio = null, actx = null, analyser = null, freq = null, vizLive = false, playToken = 0;
 
@@ -1596,7 +1613,7 @@ function playStation(st){
   store.set("last", st);
   ui(); renderLists(); setMediaSession();
   // Visualizer audio engine (skipped on Safari, which can't analyse live streams reliably)
-  if (!IS_APPLE_SAFARI){
+  if (!IS_APPLE_SAFARI && !IS_TV){
     try{
       if (!actx){ const AC = window.AudioContext || window.webkitAudioContext; if (AC) actx = new AC(); }
       if (actx && actx.state === "suspended") actx.resume().catch(()=>{});
@@ -2524,7 +2541,7 @@ $("#xpModes").addEventListener("click", e => { const b = e.target.closest("butto
 
 /* ---------- Stage controls: minimize / expand (phones and tablets start minimized) ---------- */
 const Dash = {
-  small(){ return matchMedia("(max-width: 1024px), (pointer: coarse)").matches; },
+  small(){ return IS_TV || matchMedia("(max-width: 1024px), (pointer: coarse)").matches; },
   set(mini, remember){
     $("#stage").classList.toggle("dashmin", !!mini);
     if (remember) store.set("dashMini", !!mini);
@@ -7057,7 +7074,7 @@ const Lounge = {
   /* ---------- memory: only a couple of worlds stay loaded ----------
      Every world is a lot of textures and meshes. A headset or phone runs out of memory after a few,
      and the browser shuts down. So worlds you've left are released (and rebuilt if you go back). */
-  lowPower(){ return /OculusBrowser|Quest|Pico|Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || this.iOS() || (navigator.deviceMemory || 8) <= 4; },
+  lowPower(){ return IS_TV || /OculusBrowser|Quest|Pico|Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || this.iOS() || (navigator.deviceMemory || 8) <= 4; },
   /* iPhone and iPad (iPadOS Safari says it's a Mac, but Macs have no touch screen). Safari closes a tab that uses too much memory, so these get a lighter setup */
   iOS(){ return /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && (navigator.maxTouchPoints || 0) > 1); },
   /* before building a new world, let go of the oldest ones so a phone or headset never holds too many at once */
@@ -9552,6 +9569,7 @@ const Lounge = {
   },
 
   frame(time, xrFrame){
+    if (IS_TV && !xrFrame){ const n = performance.now(); if (n - (this.tvT || 0) < 30) return; this.tvT = n; }
     try{ this.frameInner(time, xrFrame); }
     catch(e){ if (!this.frameErr || performance.now() - this.frameErr > 5000){ this.frameErr = performance.now(); console.error("Lounge frame:", e); }
       try{ this.renderer.render(this.scene, this.camera); }catch(e2){} }
@@ -16995,6 +17013,86 @@ Object.assign(Mogul, {
    Side-by-side picture for the two lenses, head tracking from the phone's motion sensors, a center aim dot.
    Tap the screen (or the viewer's button, or Ⓐ on a controller) to select. No button? Look at something for a moment.
    Look straight down at your feet to open the menu. Works on iPhone and Android, no app needed. */
+/* ---------- TV remotes: arrows move a highlight between buttons, OK presses, Back steps out ---------- */
+const Remote = {
+  SEL: "button,a[href],input,select,textarea,summary,[tabindex]:not([tabindex='-1'])",
+  BACK_CODES: [10009, 461, 8, 27],
+  shown(el){ if (!el || el.disabled || el.closest("[hidden],[inert]")) return false; const r = el.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return false;
+    const cs = getComputedStyle(el); return cs.visibility !== "hidden" && cs.display !== "none" && +cs.opacity > .05; },
+  stageOpen(){ const st = $("#stage"); return st && !st.hidden; },
+  scope(){ const ds = [...document.querySelectorAll("dialog[open]")]; if (ds.length) return ds[ds.length - 1];
+    const wp = $("#worldPick"); if (wp) return wp;
+    return this.stageOpen() ? $("#stage") : document.body; },
+  ui(el){ return !!(el && el !== document.body && el.matches && el.matches(this.SEL)); },
+  move(dir){
+    const sc = this.scope(), all = [...sc.querySelectorAll(this.SEL)].filter(e => this.shown(e)); if (!all.length) return false;
+    const cur = document.activeElement;
+    if (!this.ui(cur) || !sc.contains(cur)){ this.go(sc.querySelector(".on[data-w]") || all[0]); return true; }
+    const a = cur.getBoundingClientRect(), ax = a.left + a.width/2, ay = a.top + a.height/2;
+    let best = null, bs = 1e9;
+    for (const el of all){ if (el === cur) continue; const b = el.getBoundingClientRect(), bx = b.left + b.width/2, by = b.top + b.height/2;
+      let along, side;
+      if (dir === "up"){ if (b.bottom > a.top + 4 && by >= ay - 4) continue; along = ay - by; side = Math.max(0, b.left - a.right, a.left - b.right); }
+      else if (dir === "down"){ if (b.top < a.bottom - 4 && by <= ay + 4) continue; along = by - ay; side = Math.max(0, b.left - a.right, a.left - b.right); }
+      else if (dir === "left"){ if (b.right > a.left + 4 && bx >= ax - 4) continue; along = ax - bx; side = Math.max(0, b.top - a.bottom, a.top - b.bottom); }
+      else { if (b.left < a.right - 4 && bx <= ax + 4) continue; along = bx - ax; side = Math.max(0, b.top - a.bottom, a.top - b.bottom); }
+      if (along <= 0) continue; const sc2 = along + side*3; if (sc2 < bs){ bs = sc2; best = el; } }
+    if (best) this.go(best); return true;
+  },
+  go(el){ try{ el.focus({preventScroll: true}); el.scrollIntoView({block: "nearest", inline: "nearest"}); }catch(e){ try{ el.focus(); }catch(er){} } },
+  rest(){ try{ document.activeElement && document.activeElement.blur(); }catch(e){} },
+  back(e){
+    const wp = $("#worldPick"); if (wp){ wp.remove(); this.go($("#miniWorld")); return true; }
+    const ds = [...document.querySelectorAll("dialog[open]")]; if (ds.length){ if (e.key !== "Escape"){ try{ ds[ds.length - 1].close(); }catch(er){} return true; } return false; }
+    if (this.stageOpen() && !$("#stage").classList.contains("dashmin")){ Dash.set(true); this.rest(); return true; }
+    if (this.stageOpen() && this.ui(document.activeElement)){ this.rest(); return true; }
+    if (e.key !== "Escape"){ document.dispatchEvent(new KeyboardEvent("keydown", {key: "Escape", bubbles: true})); return true; }
+    return false;
+  },
+  key(e){
+    const t = e.target, typing = t && /INPUT|TEXTAREA|SELECT/.test(t.tagName) && !/button|checkbox|radio|range/.test(t.type || "");
+    const k = e.key, code = e.keyCode;
+    // a highlight left on something hidden (behind the stage, or a closed window) doesn't count
+    const act = document.activeElement; if (this.ui(act) && !(this.scope().contains(act) && this.shown(act))) this.rest();
+    // media buttons on the remote
+    if (k === "MediaPlayPause" || code === 415 || code === 19 || code === 10252){ e.preventDefault(); togglePlay(); return; }
+    if (k === "MediaTrackNext" || k === "ChannelUp" || code === 427 || code === 417){ e.preventDefault(); step(1); return; }
+    if (k === "MediaTrackPrevious" || k === "ChannelDown" || code === 428 || code === 412){ e.preventDefault(); step(-1); return; }
+    const isBack = k === "Escape" || k === "GoBack" || k === "BrowserBack" || k === "XF86Back" || (k === "Backspace" && !typing) || [10009, 461].includes(code);
+    if (isBack){ if (this.back(e)){ e.preventDefault(); e.stopImmediatePropagation(); } return; }
+    const dir = {ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right"}[k];
+    if (dir){
+      if (typing && (dir === "left" || dir === "right")) return;
+      const inUI = this.ui(document.activeElement) || $("#worldPick") || document.querySelector("dialog[open]");
+      const walking = this.stageOpen() && typeof Lounge !== "undefined" && Lounge.running && !inUI;
+      if (walking) return;                        // arrows walk you around the world
+      if (this.move(dir)){ e.preventDefault(); e.stopImmediatePropagation(); }
+      return;
+    }
+    // OK with nothing highlighted while walking: bring up the controls
+    if ((k === "Enter" || code === 13) && this.stageOpen() && !this.ui(document.activeElement) && !$("#worldPick") && !document.querySelector("dialog[open]")){
+      e.preventDefault(); e.stopImmediatePropagation();
+      if ($("#stage").classList.contains("dashmin")) this.go($("#miniOpen")); else this.go($("#xpHide"));
+      this.hint();
+    }
+  },
+  hint(){ if (store.get("tvHint", 0)) return; store.set("tvHint", 1);
+    toast("📺 Remote: arrows move the highlight, OK presses it, Back hides the controls so the arrows walk again.", 8000); },
+  init(){
+    if (IS_TV) addEventListener("keydown", e => this.key(e), true);
+    else addEventListener("keydown", e => {   // keyboards: arrows move around the world picker too
+      if (!$("#worldPick")) return; const dir = {ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right"}[e.key];
+      if (dir){ this.move(dir); e.preventDefault(); e.stopImmediatePropagation(); } else if (e.key === "Escape"){ $("#worldPick").remove(); e.stopImmediatePropagation(); } }, true);
+    // after the controls open from the remote, put the highlight on the first tile
+    $("#miniOpen").addEventListener("click", () => { if (IS_TV) requestAnimationFrame(() => this.go($("#xpHide"))); });
+    $("#xpHide").addEventListener("click", () => { if (IS_TV) requestAnimationFrame(() => this.go($("#miniOpen"))); });
+    const b = $("#btnTV"); if (b){ b.textContent = IS_TV ? "📺 TV mode: on" : "📺 TV mode: off";
+      b.addEventListener("click", () => { store.set("tvMode", !IS_TV); toast(IS_TV ? "TV mode off. Reloading…" : "📺 TV mode on: remote control, lighter graphics, steadier music. Reloading…", 2500); setTimeout(() => location.reload(), 1200); }); }
+    if (IS_TV) setTimeout(() => { try{ if (!this.ui(document.activeElement)){ const f = $("#btnLounge") || document.querySelector("main button"); f && this.go(f); } }catch(e){} }, 1500);
+  }
+};
+try{ Remote.init(); }catch(e){ console.warn(e); }
+
 const Cardboard = {
   on: false, yawOff: 0, q: null, dev: null, lastYaw: null, gazeKey: "", gazeT: 0, downT: 0, downLock: false, manual: false,
   phone(){ const ua = navigator.userAgent || ""; if (/OculusBrowser|Quest|Pico|Wolvic|VisionOS/i.test(ua)) return false; return (matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) <= 900) || /iPhone|Android.+Mobile/i.test(ua); },
@@ -17240,7 +17338,7 @@ const View = {
     setInterval(() => { try{ if (!Lounge.running || $("#stage").hidden || $("#loungeCv").hidden || Lounge.renderer.xr.isPresenting || document.querySelector("dialog[open]")) return;
       const dev = this.device(); if (store.get("navSeen:" + dev, false)) return; this.help(dev); store.set("navSeen:" + dev, true); }catch(e){} }, 2500);
   },
-  device(){ const ua = navigator.userAgent || ""; if (/OculusBrowser|Quest|Pico|Wolvic/i.test(ua)) return "vr"; if (matchMedia("(pointer: coarse)").matches) return "touch"; return "computer"; },
+  device(){ const ua = navigator.userAgent || ""; if (/OculusBrowser|Quest|Pico|Wolvic/i.test(ua)) return "vr"; if (IS_TV) return "tv"; if (matchMedia("(pointer: coarse)").matches) return "touch"; return "computer"; },
   set(z){ this.zt = Math.max(1, Math.min(6, z)); const lv = $("#zoomLv"); if (lv) lv.textContent = (Math.round(this.zt*10)/10) + "×"; },
   update(dt){
     const L = Lounge, cam = L.camera; if (!cam) return;
@@ -17329,6 +17427,13 @@ const View = {
       ["Zoom in or out", "Scroll the mouse wheel or pinch the trackpad. Or press + and −. Press 0 to reset."], ["Watch a screen up close", "Press F (or click 📺 or the 🔍 under a screen). Press Esc to go back."],
       ["Use things", "Click screens, buttons, people and objects. Click an object to pick it up, then click again to toss it."],
       ["This help", "Press H any time, or click 🧭 on the right."]]},
+    tv: {name: "📺 Smart TV", rows: [
+      ["Walk", "Press the arrow buttons on your remote: ▲ forward, ▼ back, ◀ ▶ turn."], ["Open the controls", "Press OK. The highlight jumps to ▲ Controls; press OK again to open the dashboard."],
+      ["Move between buttons", "Use the arrows to move the gold highlight, then OK to press it. The dashboard scrolls as you go."],
+      ["Back to walking", "Press Back (or Return). The dashboard tucks away and the arrows walk again. Press Back again to leave the stage."],
+      ["Change worlds", "Highlight 🌍 at the bottom and press OK, then pick a world with the arrows."],
+      ["Music", "Play/Pause on the remote plays or stops the radio. Channel ▲ ▼ switch stations."],
+      ["Game controller", "An Xbox or PlayStation controller paired to the TV works too."]]},
     vr: {name: "🥽 VR headset", rows: [
       ["Walk", "Push the LEFT thumbstick. Or point at the floor (a gold ring appears) and pull the trigger to jump there."], ["Turn", "Flick the RIGHT thumbstick left or right (30° steps, so you don't get dizzy)."],
       ["Menu", "Press B or Y, or tap ☰ on your left wrist. Point and pull the trigger to choose."], ["Grab and throw", "Hold the GRIP button to pick things up. Let go while moving your hand to throw."],
@@ -17521,8 +17626,9 @@ const WorldPick = {
     d = document.createElement("div"); d.id = "worldPick"; d.className = "worldpick"; d.setAttribute("role", "dialog"); d.setAttribute("aria-label", "Choose a world");
     d.innerHTML = `<div class="wp-card"><div class="wp-head"><b>🌍 Choose a world</b><button type="button" class="wp-x" aria-label="Close">✕</button></div><div class="wp-grid">${Lounge.WORLDS.map(w => `<button type="button" data-w="${w.id}" class="${w.id === cur ? "on" : ""}">${w.name}</button>`).join("")}</div></div>`;
     document.body.appendChild(d);
+    try{ (d.querySelector(".wp-grid .on") || d.querySelector(".wp-grid button")).focus({preventScroll: true}); d.querySelector(".wp-grid .on")?.scrollIntoView({block: "nearest"}); }catch(e){}
     d.addEventListener("click", e => {
-      if (e.target === d || e.target.closest(".wp-x")){ d.remove(); return; }
+      if (e.target === d || e.target.closest(".wp-x")){ d.remove(); try{ $("#miniWorld").focus(); }catch(er){} return; }
       const b = e.target.closest("[data-w]"); if (!b) return; d.remove();
       if (Lounge.renderer) Lounge.chooseWorld(b.dataset.w); else store.set("world", b.dataset.w);
       document.querySelectorAll("#worldSeg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.w === b.dataset.w));
@@ -17889,7 +17995,7 @@ const GFX = {
     ultra: {name: "💎 Ultra", tip: "Sharpest picture: extra resolution, smooth edges, live shadows from everyone, crisp textures, cinematic color and glow."}},
   level: "high", seen: new WeakSet(), fpsT: 0, frames: 0, slow: 0,
   strong(){ const gl = Lounge.renderer && Lounge.renderer.capabilities; return !Lounge.lowPower() && !!(gl && gl.isWebGL2) && (navigator.hardwareConcurrency || 4) >= 8 && (navigator.deviceMemory || 8) >= 8; },
-  pick(){ if (store.get("crashGuard", 0) >= 1 && store.get("gfx", "auto") === "auto") return "low"; const s = store.get("gfx", "auto"); return s === "auto" ? (this.strong() ? "ultra" : Lounge.lowPower() && (navigator.deviceMemory || 8) <= 3 ? "low" : "high") : s; },
+  pick(){ if (store.get("crashGuard", 0) >= 1 && store.get("gfx", "auto") === "auto") return "low"; if (IS_TV && store.get("gfx", "auto") === "auto") return "low"; const s = store.get("gfx", "auto"); return s === "auto" ? (this.strong() ? "ultra" : Lounge.lowPower() && (navigator.deviceMemory || 8) <= 3 ? "low" : "high") : s; },
   init(){ if (this.ready || !Lounge.renderer) return; this.ready = true; this.apply(this.pick(), true); this.ui(); },
   set(lv){ store.set("gfx", lv); this.apply(lv); this.ui(); toast(`${this.LEVELS[lv].name} graphics on. ${this.LEVELS[lv].tip}`); },
   apply(lv, first){
