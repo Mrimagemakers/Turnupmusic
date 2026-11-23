@@ -803,6 +803,37 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
 #closetDlg .cllook .row{display:flex;gap:6px}
 #closetDlg .cllook .row button{flex:1;padding:6px 4px;font-size:12px}
 #closetDlg .clempty{opacity:.7;text-align:center;padding:18px 6px;grid-column:1/-1}
+
+/* ===== Smart TVs: everything sits inside the TV's safe area, fits the screen, and every panel scrolls =====
+   TV browsers report small screens (often 960×540 or 1280×720), so the controls are drawn smaller
+   and the dashboard can use the full height under the top bar, scrolling to reach every option. */
+.tv{--tvx:max(3vw,18px);--tvy:max(3vh,12px);--tvz:.8}
+@media (min-width:1500px){.tv{--tvz:1}}
+.tv body{overflow-y:auto}
+.tv *{scroll-margin:20px}
+.tv .app{max-width:none;zoom:var(--tvz);padding:calc(var(--tvy)/var(--tvz)) calc(var(--tvx)/var(--tvz)) calc(var(--tvy)/var(--tvz) + 40px)}
+.tv .deck{position:static!important}
+.tv .xp-top{padding:var(--tvy) var(--tvx) 8px}
+.tv .xp-top>*{zoom:var(--tvz)}
+.tv .stage:not(.dashmin) .xp-bottom{max-height:calc(100% - var(--tvy) - 60px);overflow-y:auto;overflow-x:hidden;gap:8px;
+  padding:10px max(var(--tvx),72px) calc(var(--tvy) + 16px) var(--tvx);border-radius:22px 22px 0 0;background:linear-gradient(rgba(7,4,3,.35),rgba(7,4,3,.92) 40%)}
+.tv .stage:not(.dashmin) .xp-bottom>*{zoom:var(--tvz)}
+.tv .stage:not(.dashmin) .xp-bottom>.xp-hide{zoom:1;top:-10px}
+.tv .stage:not(.dashmin) .xp-bottom *{scroll-margin:64px 0 28px}
+/* every row wraps instead of hiding options off the right edge */
+.tv .xp-bottom .seg,.tv .xp-bottom .btnrow,.tv .xp-bottom .partybar,.tv .xp-bottom .emotes{flex-wrap:wrap!important;overflow-x:visible!important}
+.tv .dtiles{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+.tv .partybar.dashgrid{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr))}
+.tv .xp-bottom #xpHint{display:none}
+.tv .stage.dashmin .xp-bottom{padding:12px var(--tvx) var(--tvy)}
+/* the "Hide controls" view: the 3D world fills the screen, the slim bar stays clear of the TV's edge */
+.tv .xp-minibar{flex-wrap:wrap}
+/* windows and pop-ups never run off the screen */
+.tv dialog{max-height:calc(100vh - 2*var(--tvy));overflow-y:auto;overscroll-behavior:contain}
+.tv dialog>*{zoom:var(--tvz)}
+.tv .wp-card{max-height:calc(100vh - 2*var(--tvy))}
+.tv .artist-sheet,.tv .media{padding:var(--tvy) var(--tvx)}
+.tv .toast{bottom:calc(var(--tvy) + 70px)}
 </style>
 </head>
 <body>
