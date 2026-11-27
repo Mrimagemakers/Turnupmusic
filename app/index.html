@@ -210,6 +210,14 @@ form.add label{display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--m
 #cbLayer .cb-dot.hot i{background:#ffc21a}
 #cbLayer .cb-x,#cbLayer .cb-c{position:absolute;top:8px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.45);color:#fff;font:700 18px system-ui;cursor:pointer;opacity:.6}
 #cbLayer .cb-x{left:calc(50% - 48px)}#cbLayer .cb-c{left:calc(50% + 8px)}
+#cbLayer .cb-s{position:absolute;top:8px;left:calc(50% + 56px);height:40px;padding:0 12px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.45);color:#fff;font:700 13px system-ui;cursor:pointer;opacity:.6}
+#cbLayer .cb-s[hidden]{display:none}
+body.cb-glasses #cbLayer .cb-mid{opacity:.25}
+body.cb-glasses.cb-flat #cbLayer .cb-mid,body.cb-glasses.cb-flat #cbLayer .cb-dot:last-of-type{display:none}
+body.cb-glasses.cb-flat #cbLayer .cb-dot:first-of-type{left:50%!important}
+.glassdlg .gopt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:inherit;font:600 15px var(--f-body);cursor:pointer}
+.glassdlg .gopt b{display:block;font-size:16px;margin-bottom:3px}.glassdlg .gopt span{opacity:.75;font-weight:500;font-size:13.5px}
+.glassdlg .gopt:hover,.glassdlg .gopt:focus{border-color:#ffc21a}
 #cbLayer .cb-turn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;background:rgba(8,5,12,.92);color:#fff;font:800 20px system-ui}#cbLayer .cb-turn[hidden]{display:none}
 body.cb-on #stage > :not(#loungeCv){display:none!important}
 body.cb-on .toast,body.cb-on .mogul,body.cb-on #homeHud,body.cb-on #padDot,body.cb-on .v360bar,body.cb-on #mgPeek{display:none!important}
@@ -1038,6 +1046,7 @@ dialog.socdlg{width:min(1000px,calc(100% - 16px));max-height:calc(100dvh - 16px)
       <button class="chipbtn xr" id="btnAR" type="button">Place in my room (AR)</button>
       <button class="chipbtn xr" id="btnMR" type="button">🕶 Mixed reality (Quest passthrough)</button>
       <button class="chipbtn xr" id="btnCB" type="button">📱 Phone VR viewer (Cardboard)</button>
+      <button class="chipbtn xr" id="btnGlasses" type="button">🕶 Smart glasses</button>
       <button class="chipbtn" id="btn360" type="button">🌐 Watch a 360° video</button>
       <button class="chipbtn" id="btnTV" type="button">📺 TV mode</button>
     </div>
@@ -8700,7 +8709,7 @@ const Lounge = {
     const cv = $("#loungeCv"), w = cv.clientWidth || innerWidth, h = cv.clientHeight || innerHeight;
     this.renderer.setSize(w, h, false);
     if (this.composer){ this.composer.setPixelRatio((typeof GFX !== "undefined" && GFX.pr) || Math.min(devicePixelRatio || 1, 2)); this.composer.setSize(w, h); }
-    this.baseFov = typeof Cardboard !== "undefined" && Cardboard.on ? 84 : w < h ? 92 : 70; this.camera.aspect = w/h; this.camera.fov = this.baseFov/((typeof View !== "undefined" && View.zoom) || 1); this.camera.updateProjectionMatrix();
+    this.baseFov = typeof Cardboard !== "undefined" && Cardboard.on ? (Cardboard.mode === "glasses" ? 62 : 84) : w < h ? 92 : 70; this.camera.aspect = w/h; this.camera.fov = this.baseFov/((typeof View !== "undefined" && View.zoom) || 1); this.camera.updateProjectionMatrix();
     if (!this.userLooked) this.pitch = w < h ? -.02 : -.12;
   },
 
@@ -17125,33 +17134,67 @@ const Remote = {
 try{ Remote.init(); }catch(e){ console.warn(e); }
 
 const Cardboard = {
-  on: false, yawOff: 0, q: null, dev: null, lastYaw: null, gazeKey: "", gazeT: 0, downT: 0, downLock: false, manual: false,
+  on: false, yawOff: 0, q: null, dev: null, lastYaw: null, gazeKey: "", gazeT: 0, downT: 0, downLock: false, manual: false, mode: "phone", sbs: "half",
   phone(){ const ua = navigator.userAgent || ""; if (/OculusBrowser|Quest|Pico|Wolvic|VisionOS/i.test(ua)) return false; return (matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) <= 900) || /iPhone|Android.+Mobile/i.test(ua); },
   prefer(){ return this.phone(); },
-  async start(){ if (this.on) return; const L = Lounge;
+  async start(opt){ if (this.on) return; const L = Lounge; opt = opt || {};
+    this.mode = opt.glasses ? "glasses" : "phone"; const G = this.mode === "glasses";
+    if (G){ this.sbs = opt.sbs || this.sbs; document.body.classList.add("cb-glasses"); document.body.classList.toggle("cb-flat", this.sbs === "flat"); }
     // iPhone: motion sensors need permission from a tap
-    try{ if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function"){ const r = await DeviceOrientationEvent.requestPermission(); if (r !== "granted") toast("Motion access was turned off, so drag with your finger to look around. (iPhone: Settings › Safari › Motion & Orientation Access.)", 7000); } }catch(e){}
+    try{ if (!G && typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function"){ const r = await DeviceOrientationEvent.requestPermission(); if (r !== "granted") toast("Motion access was turned off, so drag with your finger to look around. (iPhone: Settings › Safari › Motion & Orientation Access.)", 7000); } }catch(e){}
     if (!L.running){ try{ $("#btnVR").disabled = true; $("#xrSupport").textContent = "Loading the lounge…"; L.start(); }catch(e){} for (let i = 0; i < 240 && !L.renderer; i++) await new Promise(r => setTimeout(r, 250)); $("#btnVR").disabled = false; $("#xrSupport").textContent = ""; if (!L.renderer) return toast("The lounge didn't load. Try again.");
       if ($("#stage").hidden){ try{ openStage(); }catch(e){ $("#stage").hidden = false; } } }
     this.on = true; this.manual = false; this.dev = null; this.lastYaw = null; this.gazeKey = ""; this.downT = 0; this.downLock = true; document.body.classList.add("cb-on");
-    if (!this.stereo){ this.stereo = new THREE.StereoCamera(); this.stereo.eyeSep = .064; this.stereo.aspect = .5; }
+    if (!this.stereo){ this.stereo = new THREE.StereoCamera(); this.stereo.eyeSep = .064; }
+    this.stereo.aspect = G && this.sbs === "half" ? 1 : .5;   // half-SBS glasses stretch each half back to full width
     this.layer(); this.onOri = e => { if (e.alpha == null && e.beta == null) return; this.dev = e; }; addEventListener("deviceorientation", this.onOri, true);
     this.onScr = () => { this.rot(); setTimeout(() => L.resize(), 200); }; addEventListener("orientationchange", this.onScr); addEventListener("resize", this.onScr);
     try{ const el = document.documentElement; if (el.requestFullscreen && !document.fullscreenElement) await el.requestFullscreen({navigationUI: "hide"}); }catch(e){}
-    try{ await screen.orientation.lock("landscape"); }catch(e){}
+    if (!G){ try{ await screen.orientation.lock("landscape"); }catch(e){} }
+    if (G){ this.manual = true; this.onKey = e => this.key(e); addEventListener("keydown", this.onKey, true); }
     try{ if (navigator.wakeLock) this.wake = await navigator.wakeLock.request("screen"); }catch(e){}
     this.onFs = () => { if (!document.fullscreenElement && this.on && this.fsSeen) this.stop(); if (document.fullscreenElement) this.fsSeen = true; }; document.addEventListener("fullscreenchange", this.onFs);
     L.standing = true; L.userLooked = true; L.resize(); this.rot();
-    setTimeout(() => { if (this.on && !this.dev){ this.manual = true; toast("No motion sensor found: drag with your finger to look around.", 5000); } }, 2500);
+    if (!G) setTimeout(() => { if (this.on && !this.dev){ this.manual = true; toast("No motion sensor found: drag with your finger to look around.", 5000); } }, 2500);
     try{ VRMenu.toggle(false); }catch(e){}
+    this.sbsBtn();
+    if (G){ VRMenu.say("🕶 Smart glasses: click or tap to select · M for the menu");
+      toast("🕶 Smart glasses on. Drag (mouse, trackpad or phone screen) to look around · WASD or arrows to walk · click/tap or Enter to press what the dot is on · M for the menu · Esc to leave.", 8000); return; }
     VRMenu.say("📱 Phone VR: tap to select · look down at your feet for the menu");
     toast("📱 Slide your phone into the viewer. Tap the screen (or the viewer's button) to select, look down for the menu.", 6000); },
-  stop(){ if (!this.on) return; this.on = false; document.body.classList.remove("cb-on"); removeEventListener("deviceorientation", this.onOri, true); removeEventListener("orientationchange", this.onScr); removeEventListener("resize", this.onScr); document.removeEventListener("fullscreenchange", this.onFs); this.fsSeen = false;
+  stop(){ if (!this.on) return; this.on = false; const G = this.mode === "glasses"; document.body.classList.remove("cb-on", "cb-glasses", "cb-flat"); if (this.onKey){ removeEventListener("keydown", this.onKey, true); this.onKey = null; } removeEventListener("deviceorientation", this.onOri, true); removeEventListener("orientationchange", this.onScr); removeEventListener("resize", this.onScr); document.removeEventListener("fullscreenchange", this.onFs); this.fsSeen = false;
     try{ if (this.wake) this.wake.release(); }catch(e){} this.wake = null; try{ screen.orientation.unlock(); }catch(e){} try{ if (document.fullscreenElement) document.exitFullscreen(); }catch(e){}
     const L = Lounge; try{ VRMenu.toggle(false); }catch(e){} try{ if (Mogul.on){ Mogul.vrPanel().visible = false; Mogul.box.hidden = false; } }catch(e){} try{ if (Vid360.on) Vid360.close(); }catch(e){}
-    if (this.el) this.el.hidden = true; L.camRoll = 0; L.renderer.setScissorTest(false); L.resize(); toast("Left phone VR."); },
+    if (this.el) this.el.hidden = true; L.camRoll = 0; L.renderer.setScissorTest(false); L.resize(); this.mode = "phone"; toast(G ? "Left smart-glasses view." : "Left phone VR."); },
+  /* smart glasses: keys for laptops and keyboards */
+  key(e){ if (!this.on || this.mode !== "glasses") return; const t = e.target; if (t && /INPUT|TEXTAREA|SELECT/.test(t.tagName)) return;
+    if (document.querySelector("dialog[open]")) return;
+    const k = e.key;
+    if (k === "Enter" || k === " "){ if (t && t.closest && t.closest("button")) return; e.preventDefault(); e.stopImmediatePropagation(); this.select(); }
+    else if (k === "m" || k === "M" || k === "Tab"){ e.preventDefault(); e.stopImmediatePropagation(); try{ VRMenu.toggle(); }catch(er){} }
+    else if (k === "c" || k === "C"){ this.recenter = true; }
+    else if (k === "Escape"){ e.preventDefault(); e.stopImmediatePropagation(); if (Vid360.on) Vid360.close(); else if (VRMenu.open) VRMenu.toggle(false); else this.stop(); } },
+  /* full side-by-side (XREAL in 3D mode, 3840 wide), half side-by-side (VITURE, Rokid, RayNeo…), or flat 2D */
+  sbsAuto(){ return screen.width/Math.max(1, screen.height) >= 3 || innerWidth/Math.max(1, innerHeight) >= 3 ? "full" : "half"; },
+  sbsBtn(){ const b = this.el && this.el.querySelector(".cb-s"); if (!b) return; b.hidden = this.mode !== "glasses"; b.textContent = ({full: "3D: full SBS", half: "3D: half SBS", flat: "2D"})[this.sbs] + " ⇆"; },
+  setSbs(m){ this.sbs = m; this.stereo.aspect = m === "half" ? 1 : .5; document.body.classList.toggle("cb-flat", m === "flat"); this.sbsBtn(); Lounge.resize();
+    toast(({full: "Full side-by-side 3D (glasses set to 3D mode, 3840 wide).", half: "Half side-by-side 3D (glasses set to 3D / SBS mode).", flat: "2D: one picture, for glasses in normal mode."})[m]); },
+  /* choose how to use your glasses */
+  glassesMenu(){ let d = $("#glassDlg"); if (!d){ d = document.createElement("dialog"); d.id = "glassDlg"; d.className = "sheet glassdlg";
+      d.innerHTML = `<form method="dialog"><h2>🕶 Smart glasses</h2>
+        <p class="hint">Plug your glasses into your phone or computer (USB-C or adapter), open Turn Up Music, then pick how to view it:</p>
+        <button type="button" class="gopt" data-g="auto"><b>🧊 3D side-by-side</b><span>XREAL, VITURE, Rokid, RayNeo and similar. Switch your glasses to 3D / SBS mode first. We'll pick full or half side-by-side for your screen; tap ⇆ at the top to switch.</span></button>
+        <button type="button" class="gopt" data-g="flat"><b>🖥 2D big screen</b><span>Glasses in normal mode, or any glasses that just mirror your screen. Full screen with an aim dot in the middle.</span></button>
+        <button type="button" class="gopt" data-g="xr"><b>🥽 Glasses with their own browser</b><span>Apple Vision Pro, Android XR glasses and headsets, Snap Spectacles, Magic Leap: open turnupmusic.online/app in the glasses' browser and press Enter VR (or Enter AR to place the lounge in your room).</span></button>
+        <p class="hint">Look around: drag with a mouse, trackpad, or your phone's screen. Walk: WASD / arrow keys, or a game controller. Press what the dot is on: click, tap, Enter, or Ⓐ. Menu: M, or look straight down. Leave: Esc or ✕.</p>
+        <div class="row"><button type="submit">Close</button></div></form>`;
+      document.body.appendChild(d);
+      d.addEventListener("click", e => { const b = e.target.closest("[data-g]"); if (!b) return; d.close(); const g = b.dataset.g;
+        if (g === "xr"){ if (navigator.xr) Lounge.enterXR("vr"); else toast("This browser can't open VR. Open turnupmusic.online/app in your glasses' own browser and press Enter VR.", 7000); return; }
+        this.start({glasses: true, sbs: g === "flat" ? "flat" : this.sbsAuto()}); }); }
+    d.showModal(); try{ d.querySelector(".gopt").focus(); }catch(e){} },
   scrAngle(){ try{ return ((screen.orientation && screen.orientation.angle) ?? window.orientation ?? 0)*Math.PI/180; }catch(e){ return 0; } },
-  rot(){ const p = this.el && this.el.querySelector(".cb-turn"); if (p) p.hidden = innerWidth >= innerHeight; },
+  rot(){ const p = this.el && this.el.querySelector(".cb-turn"); if (p) p.hidden = this.mode === "glasses" || innerWidth >= innerHeight; },
   /* each frame: the phone's tilt becomes your head */
   apply(dt){ const L = Lounge, T = THREE, cam = L.camera;
     if (this.lastYaw !== null && Math.abs(L.yaw - this.lastYaw) > 1e-6) this.yawOff += L.yaw - this.lastYaw;   // something else turned you (stick, snap turn, teleport)
@@ -17165,15 +17208,17 @@ const Cardboard = {
     this.lastYaw = L.yaw; this.gaze(); },
   /* the two lenses */
   render(){ const L = Lounge, r = L.renderer, cam = L.camera, sz = r.getSize(new THREE.Vector2()), w = sz.x, h = sz.y;
-    cam.updateMatrixWorld(true); this.stereo.update(cam); r.setScissorTest(true);
+    cam.updateMatrixWorld(true); if (this.mode === "glasses" && this.sbs === "flat"){ r.render(L.scene, cam); return; }
+    this.stereo.update(cam); r.setScissorTest(true);
     r.setScissor(0, 0, w/2, h); r.setViewport(0, 0, w/2, h); r.render(L.scene, this.stereo.cameraL);
     r.setScissor(w/2, 0, w/2, h); r.setViewport(w/2, 0, w/2, h); r.render(L.scene, this.stereo.cameraR);
     r.setScissorTest(false); r.setViewport(0, 0, w, h); },
   /* the overlay: two aim dots, a divider, a turn-sideways note and an exit button */
   layer(){ let el = this.el; if (!el){ el = this.el = document.createElement("div"); el.id = "cbLayer";
       el.innerHTML = `<div class="cb-mid"></div><div class="cb-dot" style="left:25%"><i></i></div><div class="cb-dot" style="left:75%"><i></i></div>
-        <div class="cb-turn" hidden>🔄 Turn your phone sideways and slide it into the viewer</div><button type="button" class="cb-x" aria-label="Leave phone VR">✕</button><button type="button" class="cb-c" aria-label="Recenter">⟲</button>`;
+        <div class="cb-turn" hidden>🔄 Turn your phone sideways and slide it into the viewer</div><button type="button" class="cb-x" aria-label="Leave phone VR">✕</button><button type="button" class="cb-c" aria-label="Recenter">⟲</button><button type="button" class="cb-s" hidden></button>`;
       document.body.appendChild(el); el.querySelector(".cb-x").addEventListener("click", e => { e.stopPropagation(); this.stop(); }); el.querySelector(".cb-c").addEventListener("click", e => { e.stopPropagation(); this.recenter = true; toast("Recentered."); });
+      el.querySelector(".cb-s").addEventListener("click", e => { e.stopPropagation(); const o = ["full", "half", "flat"]; this.setSbs(o[(o.indexOf(this.sbs) + 1) % 3]); });
       let down = null; el.addEventListener("pointerdown", e => { if (e.target.closest("button")) return; down = {x: e.clientX, y: e.clientY, yaw: Lounge.yaw, pitch: Lounge.pitch, t: performance.now(), moved: false}; try{ el.setPointerCapture(e.pointerId); }catch(err){} });
       el.addEventListener("pointermove", e => { if (!down) return; const dx = e.clientX - down.x, dy = e.clientY - down.y; if (Math.hypot(dx, dy) > 12) down.moved = true; if (down.moved && (this.manual || !this.dev)){ Lounge.yaw = down.yaw + dx*.006; Lounge.pitch = Math.max(-1.3, Math.min(1.3, down.pitch + dy*.006)); this.lastYaw = Lounge.yaw; } });
       el.addEventListener("pointerup", e => { if (!down) return; const d = down; down = null; if (!d.moved && performance.now() - d.t < 700){ this.select(); } }); }
@@ -17191,6 +17236,7 @@ const Cardboard = {
     if (L.pitch < -1.12){ if (!this.downLock){ this.downT += dt; this.ring(Math.min(1, this.downT/1.1), true); if (this.downT >= 1.1){ this.downLock = true; this.downT = 0; this.ring(0); if (Vid360.on) Vid360.close(); else { VRMenu.toggle(); if (VRMenu.open) VRMenu.say("Look at a button and tap (or hold your gaze) to press it."); } } } return; }
     if (L.pitch > -.9) this.downLock = false; this.downT = 0;
     if (Vid360.on){ this.ring(0); return; }
+    if (this.mode === "glasses"){ const t = this.target(); this.ring(0, t && t.menu); return; }
     const t = this.target(); if (!t || !t.hit){ this.gazeKey = ""; this.gazeT = 0; this.ring(0, t && t.menu); return; }
     if (t.key !== this.gazeKey){ this.gazeKey = t.key; this.gazeT = 0; this.fired = false; }
     if (this.fired){ this.ring(0, t.menu); return; } this.gazeT += dt; const p = Math.max(0, (this.gazeT - .35)/(t.wait - .35)); this.ring(Math.min(1, p), t.menu);
@@ -17240,6 +17286,7 @@ const Vid360 = {
     $("#v360Cb").checked = Cardboard.prefer(); if (!$("#v360Cb").closest("label").hidden) $("#v360Cb").closest("label").hidden = !Cardboard.prefer(); d.showModal(); }
 };
 $("#btnCB").addEventListener("click", () => Cardboard.start());
+$("#btnGlasses").addEventListener("click", () => Cardboard.glassesMenu());
 $("#btn360").addEventListener("click", () => Vid360.pick());
 try{ if (!Cardboard.prefer()) $("#btnCB").hidden = true; }catch(e){}
 
